@@ -39,10 +39,32 @@ Follow these steps for every new section or meaningful change, not just large on
 
 ## Git workflow — per doc/code change
 
-1. Make the change to the relevant file locally (or via Claude, which edits the file directly).
-2. Commit with a clear message describing the decision, not just "update file" — e.g., `Lock trust-first homepage ordering` not `edits`.
-3. Push to the remote repo.
-4. For Tab32 service-layer code specifically (once that work starts): use a feature branch in git too, same atomic-change principle, merge via pull request rather than pushing straight to main once a collaborator/dev is involved.
+Same underlying concept as the Webflow workflow: **never edit the main branch directly for a real change.** A disposable feature branch means a mistake costs nothing — main is always in a known-good state.
+
+1. **Create a branch** before starting the change, named for what it is (e.g., `lock-typography-decision`, `tab32-service-layer-auth`, `add-urgent-path-doc`). One branch per feature/decision — don't bundle unrelated changes together (matches the atomic-change principle).
+2. **Make the change on the branch** — edit the relevant file(s), or write the code, locally on that branch only.
+3. **Commit with a clear message describing the decision or change**, not just "update file" — e.g., `Lock trust-first homepage ordering` or `Add Tab32 auth token refresh logic`, not `edits` or `wip`.
+4. **Push the branch** to the remote (not main).
+5. **Review before merging:**
+   - For docs: does the change conflict with anything already locked elsewhere? Does it need the decision-framework treatment (criteria/options/recommendation) before being locked as-is?
+   - For code (Tab32 service layer, once that work starts): does it pass tests (per the Testing principle in `supertooth-build-principles.md`)? Is it reviewed before merging — Akash as sole approver, per the locked principle, until a developer is formally brought into the project?
+6. **Merge the branch into main** only after review passes — via pull request once working with a collaborator, or a direct merge if working solo, but always as a deliberate step, not an accidental direct commit to main.
+7. **Push main** to the remote so the repo (and anyone else working from it) reflects the merged, reviewed state.
+
+### Per-change checklist (before merging a branch to main)
+- [ ] Change is atomic — one decision or one feature, not several bundled together
+- [ ] Commit message states the *decision*, not just that a file changed
+- [ ] No conflicting decision already locked elsewhere in the repo (check before merging, not after)
+- [ ] For code: tested, and reviewed by Akash before merge
+- [ ] Relevant status/tracking file updated to reflect the change (e.g., `supertooth-webflow-build-spec.md` status section)
+
+### Quick reference — starting a new doc/code change
+1. `git checkout -b <feature-name>` from an up-to-date main
+2. Make the change, commit with a decision-stating message
+3. `git push origin <feature-name>`
+4. Review (self-review solo, or PR review with a collaborator)
+5. Merge to main, then `git push origin main`
+6. Delete the feature branch once merged — don't let stale branches accumulate
 
 ---
 
