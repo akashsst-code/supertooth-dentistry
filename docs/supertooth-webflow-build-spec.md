@@ -132,6 +132,8 @@ Staged rollout via Webflow staging/preview before publishing live. Webflow versi
 
 Site: "Akash's Fantastic Site" (Webflow site ID `690d3dd0ad47f133f942dcb4`)
 
+**Publish status (checked 2026-08-15):** The homepage sections below were built and published directly on the site's `main` — no Webflow branch was created for this work, so it skipped the branch → staging review → merge sequence this doc's workflow calls for. Akash has reviewed and accepted this as-is (no rollback), so treat it as approved. **All work from this point forward must follow the branch-first workflow** (`docs/supertooth-development-workflow.md`): create a Webflow branch before building a section, publish that branch to staging for review, merge to main only after approval. Site is not yet attached to a custom domain — currently live only on the default Webflow subdomain.
+
 **Pages created:** Home (`/`), Services (`/services`), About & Meet the Team (`/about`), Insurance & New Patients (`/insurance-new-patients`), Contact (`/contact`) — all with SEO title/description set.
 
 **Homepage sections built (in locked order):**
