@@ -4,18 +4,18 @@ Standing process for every feature/section built from here forward — Webflow s
 
 ---
 
-## Two separate tracks
+## One track now (SUPERSEDED 2026-08-22 — see `supertooth-platform-pivot.md`)
 
-| Track | Tool | What it covers |
+The "two separate tracks" split below (Webflow branches for the site, git for docs/code) no longer applies — Webflow was replaced by a Next.js app that lives in this repo. Everything — site code, docs, and eventually the Tab32 integration — now goes through the single git workflow in this file. The section immediately below is kept as historical record of the old split; skip to "Git workflow — per doc/code change" for what's actually current.
+
+| Track (historical) | Tool | What it covered |
 |---|---|---|
 | **Site build** | Webflow branches | Pages, sections, elements, styles — the visual site itself |
 | **Docs & code** | Git (`supertooth-docs` repo) | Planning/reference markdown files, and future Tab32 service-layer code |
 
-Don't mix them — Webflow is the system of record for the site, git is the system of record for specs and code. This was already locked in `supertooth-build-principles.md`.
-
 ---
 
-## Webflow workflow — per feature/section
+## Webflow workflow — per feature/section (HISTORICAL — no longer used, kept for reference)
 
 Follow these steps for every new section or meaningful change, not just large ones:
 
@@ -26,13 +26,14 @@ Follow these steps for every new section or meaningful change, not just large on
 5. **Merge branch → main** only after review passes. If the branch conflicts with main, resolve conflicts explicitly (don't blind-merge).
 6. **Publish main** to the live domain only when ready to go live — merging to main and publishing to the live domain are two separate, deliberate steps.
 
-**Why this matters:** a disposable branch means a failed experiment costs nothing — main (and the live site, once published) is never at risk. This is the direct mechanism for "build incrementally, see it, don't lose what's already built."
+**Why this matters:** a disposable branch means a failed experiment costs nothing — main (and the live site, once published) is never at risk. This is the direct mechanism for "build incrementally, see it, don't lose what's already built." **This same principle now applies via the git workflow below + Vercel preview deployments, which serve the role "publish branch to staging" used to serve.**
 
-### Per-feature checklist (before merging a branch to main)
+### Per-feature checklist (before merging a branch to main) — still current, now applies to the git workflow below
 - [ ] Matches the locked design tokens (color, type, spacing) from `supertooth-ux-flow.md`
 - [ ] Matches the locked section order/content from `supertooth-webflow-build-spec.md`
 - [ ] Touch targets ≥44×44px, text ≥16px, WCAG AA contrast (per `supertooth-build-principles.md` Section 4 UX Guidelines)
 - [ ] No unverifiable claims / placeholder content clearly marked as placeholder, not passed off as real
+- [ ] Vercel preview URL checked before merge
 - [ ] Reviewed and approved by Akash (sole approval gate, per locked principle)
 
 ---
@@ -68,11 +69,9 @@ Same underlying concept as the Webflow workflow: **never edit the main branch di
 
 ---
 
-## When to use which
+## When to use which (SUPERSEDED — now just one workflow)
 
-- **Building or changing anything visible on the live site** → Webflow branch workflow
-- **Locking a new strategic/design decision, or writing/changing service-layer code** → git workflow
-- **A feature that touches both** (e.g., booking block needs both a Webflow section AND the Tab32 service layer) → do the git-tracked spec/code piece first, then build the Webflow branch referencing the finished, working API contract — don't build the Webflow side against an unfinished backend.
+Historical: this used to route site changes to Webflow branches and everything else to git. Since the platform pivot, there's no split — site code, docs, and the Tab32 integration (once built) all go through the single git workflow above. A feature touching both the UI and the Tab32 API (e.g. the booking block) is now one PR or two small sequential ones in the same repo, not two different systems.
 
 ---
 
