@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ClockIcon, CrownIcon, GoogleGIcon, ShieldCheckIcon, StarIcon } from "./icons";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
-import { differentiators, reviews, team } from "@/lib/content";
+import { archana, differentiators, reviews, team } from "@/lib/content";
 
 /**
  * Icon per differentiator, keyed by array position rather than added to
@@ -71,26 +71,46 @@ export function TrustBlock() {
           })}
         </div>
 
-        {/* Dr. Archana */}
-        <div className="max-w-xl mx-auto rounded-2xl bg-warm-ivory p-8 border border-sand mb-16">
-          <div className="flex gap-6 items-start">
+        {/*
+         * Dr. Archana — real bio content landed 2026-08-23 (see content.ts).
+         * Second pass, per Akash: the first version's small 96px circular
+         * thumbnail undersold the trust this section exists to build —
+         * "people trust images more" — so the photo now runs large (a real
+         * candid shot, not a posed studio headshot), full-bleed edge-to-edge
+         * on mobile at roughly half the section's height, echoing the
+         * image-forward "Meet Dr. Archana Dubey" reference layout. Bio
+         * copy also expanded from a single trimmed sentence back to the
+         * fuller bio (passion/practicing-since story, full specialty list,
+         * pull-quote, certifications line) — more text than the original
+         * "mobile-minimal" pass, but still one scroll's worth on a phone,
+         * and each line earns its place as a distinct trust signal rather
+         * than padding.
+         */}
+        <div className="max-w-3xl mx-auto rounded-3xl bg-warm-ivory border border-sand overflow-hidden mb-16 sm:flex sm:items-stretch">
+          <div className="relative aspect-[4/5] sm:aspect-auto sm:w-2/5 sm:shrink-0">
             <Image
-              src="/team/archana.webp"
-              alt="Dr. Archana, DDS"
-              width={96}
-              height={96}
-              className="shrink-0 h-24 w-24 rounded-full object-cover"
+              src={archana.photo}
+              alt="Dr. Archana Dubey, DDS, MDS, at an American Dental Association event"
+              fill
+              sizes="(min-width: 640px) 40vw, 100vw"
+              className="object-cover"
             />
-            <div>
-              <h3 className="font-display text-xl font-semibold text-espresso">Meet Dr. Archana</h3>
-              <p className="mt-2 text-sm text-espresso/70">
-                <Placeholder>Credentials, years of experience, background story</Placeholder>
-              </p>
-            </div>
           </div>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <TrustBadge>Accepting new patients</TrustBadge>
-            <TrustBadge>In-network with most insurance</TrustBadge>
+          <div className="p-6 sm:p-8 text-center sm:text-left">
+            <p className="text-xs font-semibold tracking-wide uppercase text-terracotta">
+              Meet Dr. Archana Dubey
+            </p>
+            <h3 className="mt-2 font-display text-2xl sm:text-3xl font-semibold text-espresso leading-tight">
+              {archana.tagline}
+            </h3>
+            <p className="mt-4 text-sm italic text-espresso/80">&ldquo;{archana.quote}&rdquo;</p>
+            <p className="mt-4 text-sm text-espresso/70">{archana.bio}</p>
+            <div className="mt-5 flex flex-wrap gap-2 justify-center sm:justify-start">
+              {archana.badges.map((badge) => (
+                <TrustBadge key={badge}>{badge}</TrustBadge>
+              ))}
+            </div>
+            <p className="mt-4 text-xs text-espresso/50">{archana.certifications}</p>
           </div>
         </div>
 
