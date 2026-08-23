@@ -3,10 +3,6 @@ import { contact, insuranceCarriers, practice, reviews } from "@/lib/content";
 import { ClinicVideo } from "./ClinicVideo";
 import { CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
 
-const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  `${practice.name}, ${practice.neighborhood}, ${practice.city}`,
-)}`;
-
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
  * pattern (real office video as the lead trust signal, video-first on
@@ -40,16 +36,11 @@ const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeU
  * headline right above, a third mention here was pure repetition) to
  * make room without losing meaning.
  *
- * No literal street address here: contact.address is still an
- * unconfirmed placeholder in content.ts, and putting a bracketed
- * [ Street address... ] placeholder in the single highest-visibility
- * spot on the site would read as broken — the same objection that
- * already got the dashed-underline treatment removed from the trust
- * strip above. Added a "Get directions" Google Maps link instead: it
- * only needs already-real data (practice name/neighborhood/city, all
- * `real: true` in content.ts), so it needs no placeholder and is
- * arguably more useful than static text. Swap in the literal address
- * once it's confirmed — this line doesn't need to change either way.
+ * Address line shows contact.address as plain text, not a link —
+ * Akash confirmed the real address and asked for it shown bare
+ * (state omitted; neighborhood/city are already established via nav
+ * + headline, so the street address alone is the bare minimum that
+ * adds new information here), not as a tappable/underlined map link.
  */
 export function Hero() {
   return (
@@ -104,15 +95,10 @@ export function Hero() {
             <CheckIcon className="shrink-0 text-terracotta" />
             In-network: {insuranceCarriers.slice(0, 3).join(", ")} + more
           </span>
-          <a
-            href={directionsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 underline decoration-warm-ivory/30 underline-offset-2 hover:text-warm-ivory hover:decoration-warm-ivory/60"
-          >
+          <span className="inline-flex items-center gap-1.5">
             <MapPinIcon className="shrink-0 text-terracotta" />
-            {practice.neighborhood}, {practice.city} · Get directions
-          </a>
+            {contact.address}
+          </span>
         </div>
 
         <div className="mt-4 flex flex-row flex-wrap gap-3">

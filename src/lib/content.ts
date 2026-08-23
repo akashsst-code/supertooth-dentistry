@@ -22,7 +22,7 @@ export const practice = {
 
 export const contact = {
   phone: "(206) 555-0148", // placeholder — real number needed
-  address: "Street address, Queen Anne, Seattle WA", // placeholder
+  address: "133 Queen Anne Ave N, Seattle", // real — confirmed by Akash; state omitted, not needed for local patients
   parkingNote: "Parking / transit note", // placeholder
 };
 
