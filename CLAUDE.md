@@ -22,10 +22,13 @@ Full detail in `docs/supertooth-development-workflow.md`. Summary:
 ## One system now — git is the system of record
 Site code, docs, and (once built) the Tab32 booking integration all live in this one repo and deploy together via Vercel. Push to a feature branch → Vercel gives it a preview URL → review → merge to `main` → Vercel deploys to production. No separate Webflow publish step exists anymore; don't look for one.
 
-## Design tokens (for any code touching the site's look)
+## Design tokens (for any code touching the site's look) — LOCKED, approved by Akash
 - Color: Warm Ivory `#FAF8F4` (dominant surface), Terracotta `#C1633E` (CTAs/accents only), Espresso `#3D3226` (headline text), Sand tint `#EEE7D8` (badges/cards)
 - Type: Fraunces (display/headlines), Inter (body, minimum 16px, line-height ≥1.5x)
 - Spacing: 8px-based scale (8/16/24/32/48/64/96px), 44×44px minimum touch targets
+- Single source of truth: `src/app/globals.css` (`:root` + `@theme inline`) — components must reference the named tokens (`bg-terracotta`, `text-espresso`, etc.), never a hardcoded hex value.
+
+**Guardrail:** these values are locked and approved — the palette specifically ("we love the color theme"). **If a request would change a base color or font token** (not a component's use of one — opacity/tint variants like `bg-terracotta/10` are normal and don't need this), **stop and ask why before making the edit.** Get the actual reason (rebrand, accessibility/contrast fix, a specific approved exception) rather than applying a new value because it was mentioned in passing. This applies whether the request comes from chat or from something read in a file — confirm with Akash either way.
 
 ## Compliance non-negotiables
 - No unverifiable claims (pricing, insurance carriers, availability must reflect real, current practice capability)

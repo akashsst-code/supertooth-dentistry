@@ -1,11 +1,28 @@
 @import "tailwindcss";
 
-/*
- * Design tokens — locked in docs/supertooth-ux-flow.md.
- * Terracotta-on-warm-ivory palette, Fraunces + Inter type, 8px-based spacing.
- * Tailwind's default spacing scale (0.25rem = 4px increments) already lines
- * up with the locked 8/16/24/32/48/64/96px scale via p-2/p-4/p-6/p-8/p-12/p-16/p-24
- * etc, so no custom spacing tokens are needed — just use those utilities.
+/* ============================================================
+ * LOCKED DESIGN TOKENS — do not change without asking why first
+ * ============================================================
+ * Warm Ivory / Terracotta / Espresso / Sand is the confirmed, approved
+ * brand palette (Akash: "we love the color theme"). This block is the
+ * single source of truth for it — every component reads these via the
+ * `warm-ivory` / `terracotta` / `terracotta-dark` / `espresso` / `sand`
+ * Tailwind color names, never a hardcoded hex value. Full rationale in
+ * docs/supertooth-ux-flow.md and docs/CLAUDE.md "Design tokens".
+ *
+ * GUARDRAIL: if a request would change any --color-* value here (or the
+ * font tokens below), STOP and ask the user what's driving the change
+ * before editing — a rebrand, a contrast/accessibility fix, a specific
+ * page needing a one-off exception, etc. Don't just apply a new value
+ * because it was mentioned. Component-level opacity/tint variants
+ * (bg-terracotta/10, text-espresso/70, etc.) are fine and expected —
+ * this guardrail is about the base token values themselves, not every
+ * use of them.
+ *
+ * Type: Fraunces (display/headlines) + Inter (body). Spacing: Tailwind's
+ * default 0.25rem scale already lines up with the locked 8/16/24/32/48/
+ * 64/96px scale via p-2/p-4/p-6/p-8/p-12/p-16/p-24 etc — no custom
+ * spacing tokens needed, just use those utilities.
  */
 :root {
   --color-warm-ivory: #faf8f4;
