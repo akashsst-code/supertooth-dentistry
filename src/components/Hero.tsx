@@ -34,7 +34,7 @@ import { CheckIcon, GoogleGIcon, StarIcon } from "./icons";
 export function Hero() {
   return (
     <section className="flex flex-col md:flex-row-reverse md:min-h-[560px]">
-      <div className="w-full md:w-3/5 h-[34vh] min-h-[160px] md:h-auto overflow-hidden">
+      <div className="w-full md:w-3/5 h-[34svh] min-h-[160px] md:h-auto overflow-hidden">
         <ClinicVideo />
       </div>
 
@@ -70,7 +70,13 @@ export function Hero() {
         <div className="mt-3 flex flex-col gap-1 text-xs text-warm-ivory/70">
           <span className="inline-flex items-center gap-1.5">
             <GoogleGIcon />
-            <StarIcon className="text-terracotta" />
+            <span className="flex gap-px text-terracotta">
+              <StarIcon className="h-3 w-3" />
+              <StarIcon className="h-3 w-3" />
+              <StarIcon className="h-3 w-3" />
+              <StarIcon className="h-3 w-3" />
+              <StarIcon className="h-3 w-3" />
+            </span>
             <strong className="text-warm-ivory font-semibold">{reviews.rating}</strong>({reviews.count}{" "}
             reviews)
           </span>
