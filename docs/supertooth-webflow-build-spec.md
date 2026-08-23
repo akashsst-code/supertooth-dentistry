@@ -132,6 +132,8 @@ Staged rollout via Webflow staging/preview before publishing live. Webflow versi
 
 Deployed on Vercel, connected to `github.com/akashsst-code/supertooth-dentistry`. Production: https://supertooth-dentistry.vercel.app (default Vercel subdomain — no custom domain pointed yet).
 
+**Hero v2 — merged to `main` 2026-08-22, reviewed and approved by Akash:** redesigned around a real trust visual, adapted from smilemakersfortworth.com's video-hero pattern — video-first on mobile, text-left/visual-right split on desktop, eyebrow badges and body copy de-emphasized (lower contrast, smaller) so the visual and the two CTAs (Book your visit / Call) carry the weight instead of competing with them. No office video exists yet, so the interim visual is Dr. Archana's real headshot with a cinematic treatment (slow Ken Burns zoom, gradient vignette, lower-third name caption, small play badge signaling real video is still coming — see `ClinicVideo.tsx`). Swap-in point for real footage is a single component. Nav logo updated to a two-line lockup (name + neighborhood/city), same placement pattern as the reference site.
+
 **Homepage v1 — merged to `main` 2026-08-22, reviewed and approved by Akash:**
 - [x] Hero — eyebrow badges, headline, body, Book your visit + Call CTAs
 - [x] Trust block — differentiators, Dr. Archana bio card (real photo + trust badges), team grid, office photo grid, Google reviews badge
