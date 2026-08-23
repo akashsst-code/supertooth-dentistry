@@ -19,7 +19,7 @@ import Image from "next/image";
  */
 export function ClinicVideo() {
   return (
-    <div className="relative h-full min-h-[320px] w-full overflow-hidden bg-espresso">
+    <div className="relative h-full min-h-[160px] w-full overflow-hidden bg-espresso">
       <Image
         src="/team/archana.webp"
         alt="Dr. Archana at Super Tooth Dentistry"

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { contact, insuranceCarriers, practice, reviews } from "@/lib/content";
 import { ClinicVideo } from "./ClinicVideo";
 import { CheckIcon, GoogleGIcon, StarIcon } from "./icons";
-import { Placeholder } from "./Placeholder";
 
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
@@ -35,48 +34,53 @@ import { Placeholder } from "./Placeholder";
 export function Hero() {
   return (
     <section className="flex flex-col md:flex-row-reverse md:min-h-[560px]">
-      <div className="w-full md:w-3/5 h-[42vh] md:h-auto">
+      <div className="w-full md:w-3/5 h-[26vh] min-h-[160px] md:h-auto overflow-hidden">
         <ClinicVideo />
       </div>
 
-      <div className="w-full md:w-2/5 bg-espresso text-warm-ivory flex flex-col justify-center px-6 py-12 sm:px-10 sm:py-16">
-        <div className="flex flex-wrap items-center gap-2 mb-5">
-          <span className="inline-flex items-center rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70">
-            Accepting new patients
-          </span>
-          <span className="inline-flex items-center rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70">
-            In-network with most insurance plans
-          </span>
-        </div>
+      <div className="w-full md:w-2/5 bg-espresso text-warm-ivory flex flex-col justify-center px-6 py-6 sm:px-10 sm:py-16">
+        <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70 mb-3">
+          Accepting new patients
+        </span>
 
-        <h1 className="font-display text-4xl sm:text-5xl font-semibold leading-[1.1]">
+        <h1 className="font-display text-3xl sm:text-5xl font-semibold leading-[1.1]">
           {practice.headline}
         </h1>
 
-        <p className="mt-5 max-w-md text-sm text-warm-ivory/60">
+        <p className="mt-3 max-w-md text-sm text-warm-ivory/60">
           Trusted, judgment-free dental care in {practice.neighborhood} — built for people who
           want one dentist for the long run, not another appointment to squeeze into a workday.
         </p>
 
-        {/* Quick-scan trust strip — specific proof (rating + named carriers)
-            right before the ask, complementing the generic eyebrow pills
-            above rather than repeating them. */}
-        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-warm-ivory/70">
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+        {/*
+         * Quick-scan trust strip — specific proof (rating + named carriers)
+         * right before the ask. Replaces the old generic "In-network with
+         * most insurance plans" pill entirely rather than sitting alongside
+         * it — Akash flagged that as the same claim shown twice.
+         *
+         * Deliberately NOT wrapped in <Placeholder> here (unlike the fuller
+         * versions in TrustBlock/InsuranceOfferBlock below) — Akash asked
+         * for the dashed-underline treatment removed from this strip
+         * specifically since it read as broken rather than "unconfirmed" at
+         * a glance. The compliance status hasn't changed: reviews.rating/
+         * count and these carrier names still need real confirmation before
+         * launch — that's still marked explicitly in content.ts and still
+         * visible via <Placeholder> in the detailed sections below.
+         */}
+        <div className="mt-3 flex flex-col gap-1 text-xs text-warm-ivory/70">
+          <span className="inline-flex items-center gap-1.5">
             <GoogleGIcon />
             <StarIcon className="text-terracotta" />
-            <strong className="text-warm-ivory font-semibold">
-              <Placeholder tone="dark">{reviews.rating}</Placeholder>
-            </strong>
-            <Placeholder tone="dark">{reviews.count} reviews</Placeholder>
+            <strong className="text-warm-ivory font-semibold">{reviews.rating}</strong>({reviews.count}{" "}
+            reviews)
           </span>
           <span className="inline-flex items-center gap-1.5">
             <CheckIcon className="shrink-0 text-terracotta" />
-            In-network: <Placeholder tone="dark">{insuranceCarriers.slice(0, 3).join(", ")}</Placeholder> + more
+            In-network: {insuranceCarriers.slice(0, 3).join(", ")} + more
           </span>
         </div>
 
-        <div className="mt-8 flex flex-row flex-wrap gap-3">
+        <div className="mt-4 flex flex-row flex-wrap gap-3">
           <Link
             href="#booking"
             className="tap-target min-w-[140px] flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-full bg-terracotta px-6 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
