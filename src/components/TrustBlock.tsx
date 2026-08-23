@@ -1,7 +1,17 @@
 import Image from "next/image";
-import { GoogleGIcon, StarIcon } from "./icons";
+import { ClockIcon, CrownIcon, GoogleGIcon, ShieldCheckIcon, StarIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
 import { differentiators, reviews, team } from "@/lib/content";
+
+/**
+ * Icon per differentiator, keyed by array position rather than added to
+ * content.ts — icon choice is a presentation concern, not practice
+ * content (docs/supertooth-build-principles.md Section 2, "content is
+ * separable from presentation"). Order matches the locked
+ * differentiators order in content.ts: same-day appointments, same-day
+ * crowns, in-network.
+ */
+const differentiatorIcons = [ClockIcon, CrownIcon, ShieldCheckIcon];
 
 function TrustBadge({ children }: { children: React.ReactNode }) {
   return (
@@ -26,14 +36,35 @@ export function TrustBlock() {
   return (
     <section className="bg-sand/40">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
-        {/* Differentiators */}
-        <div className="grid sm:grid-cols-3 gap-6 mb-16">
-          {differentiators.map((d) => (
-            <div key={d.title} className="rounded-2xl bg-warm-ivory p-6 border border-sand">
-              <h3 className="font-display text-lg font-semibold text-espresso mb-2">{d.title}</h3>
-              <p className="text-sm text-espresso/70">{d.detail}</p>
-            </div>
-          ))}
+        {/*
+         * Differentiators — icon-left row cards (icon beside title/detail,
+         * not stacked above it) rather than a denser multi-column grid.
+         * Akash preferred keeping the roomy full-width stacked cards over
+         * a compact 2-up grid, so the row layout does the space-saving
+         * work instead: same padding-driven roominess, but the icon no
+         * longer adds its own line of height. Combined with tightening
+         * the gap before the next section on mobile, Dr. Archana's card
+         * now starts to show on the same screen instead of requiring a
+         * full extra scroll.
+         */}
+        <div className="grid sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-16">
+          {differentiators.map((d, i) => {
+            const Icon = differentiatorIcons[i];
+            return (
+              <div
+                key={d.title}
+                className="rounded-2xl bg-warm-ivory p-5 border border-sand flex items-start gap-4"
+              >
+                <span className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-terracotta/10 text-terracotta">
+                  <Icon />
+                </span>
+                <div>
+                  <h3 className="font-display text-lg font-semibold text-espresso mb-1">{d.title}</h3>
+                  <p className="text-sm text-espresso/70">{d.detail}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Dr. Archana + reviews */}
