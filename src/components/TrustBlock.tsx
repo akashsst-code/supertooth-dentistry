@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { GoogleGIcon, StarIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
 import { differentiators, reviews, team } from "@/lib/content";
 
@@ -60,12 +61,23 @@ export function TrustBlock() {
           </div>
 
           <div className="rounded-2xl bg-warm-ivory p-8 border border-sand">
-            <div className="flex items-center gap-2 text-terracotta font-semibold text-lg">
-              <StarIcon /> <Placeholder>{reviews.rating}</Placeholder> on Google
+            <div className="flex items-center gap-2 text-espresso/60 text-sm font-medium">
+              <GoogleGIcon /> Google Reviews
             </div>
-            <p className="mt-1 text-sm text-espresso/70">
+            <div className="mt-3 flex items-center gap-3">
+              <div className="flex gap-0.5 text-terracotta">
+                <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
+              </div>
+              <span className="font-display text-xl font-semibold text-espresso">
+                <Placeholder>{reviews.rating}</Placeholder>
+              </span>
+            </div>
+            <p className="mt-2 text-sm text-espresso/70">
               <Placeholder>{reviews.count} reviews</Placeholder> — verify against live Google
               Business Profile before launch
+            </p>
+            <p className="mt-3 text-sm font-medium text-terracotta">
+              <Placeholder>Read our reviews on Google →</Placeholder>
             </p>
           </div>
         </div>
@@ -114,13 +126,5 @@ export function TrustBlock() {
         </div>
       </div>
     </section>
-  );
-}
-
-function StarIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-    </svg>
   );
 }

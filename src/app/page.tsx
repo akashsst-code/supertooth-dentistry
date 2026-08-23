@@ -16,9 +16,22 @@ import { Footer } from "@/components/Footer";
 export default function Home() {
   return (
     <>
-      <Nav />
-      <main>
+      {/*
+       * Nav + Hero share exactly one screen height on mobile (h-[100svh])
+       * instead of each guessing a vh/px budget that has to sum correctly
+       * — Nav takes its natural height (shrink-0), Hero gets whatever's
+       * left (flex-1), so it self-adjusts across phone sizes instead of
+       * needing per-device tuning. svh (not vh) so it's pinned to the
+       * smallest/worst-case visible area on mobile Safari, where vh is
+       * computed against the browser-chrome-collapsed viewport and
+       * silently overflows when the address bar is showing.
+       * md:h-auto / md:block: desktop just flows normally, unconstrained.
+       */}
+      <div className="flex flex-col h-[100svh] md:h-auto md:block">
+        <Nav />
         <Hero />
+      </div>
+      <main>
         <TrustBlock />
         <InsuranceOfferBlock />
         <BookingBlock />
