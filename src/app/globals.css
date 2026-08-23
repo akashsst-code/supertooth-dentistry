@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — locked in docs/supertooth-ux-flow.md.
+ * Terracotta-on-warm-ivory palette, Fraunces + Inter type, 8px-based spacing.
+ * Tailwind's default spacing scale (0.25rem = 4px increments) already lines
+ * up with the locked 8/16/24/32/48/64/96px scale via p-2/p-4/p-6/p-8/p-12/p-16/p-24
+ * etc, so no custom spacing tokens are needed — just use those utilities.
+ */
+:root {
+  --color-warm-ivory: #faf8f4;
+  --color-terracotta: #c1633e;
+  --color-terracotta-dark: #a34f30;
+  --color-espresso: #3d3226;
+  --color-sand: #eee7d8;
+
+  --background: var(--color-warm-ivory);
+  --foreground: var(--color-espresso);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-warm-ivory: var(--color-warm-ivory);
+  --color-terracotta: var(--color-terracotta);
+  --color-terracotta-dark: var(--color-terracotta-dark);
+  --color-espresso: var(--color-espresso);
+  --color-sand: var(--color-sand);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* WCAG 2.2 SC 1.4.12: paragraph spacing >= 2x font size */
+p {
+  margin-bottom: 2em;
+}
+
+/* 44x44px minimum touch target, per locked accessibility requirement */
+.tap-target {
+  min-width: 44px;
+  min-height: 44px;
+}
