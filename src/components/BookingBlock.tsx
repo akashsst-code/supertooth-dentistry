@@ -35,7 +35,7 @@ export function BookingBlock() {
             href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
             className="tap-target inline-flex items-center justify-center rounded-full border border-warm-ivory/30 px-7 py-3.5 text-base font-semibold text-warm-ivory hover:border-warm-ivory/60 transition-colors"
           >
-            Call <Placeholder>{contact.phone}</Placeholder>
+            Call <Placeholder tone="dark">{contact.phone}</Placeholder>
           </a>
         </div>
         <p className="text-sm text-warm-ivory/60">

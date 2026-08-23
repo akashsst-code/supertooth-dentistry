@@ -1,3 +1,4 @@
+import { CheckIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
 import { insuranceCarriers, offers } from "@/lib/content";
 
@@ -23,7 +24,7 @@ export function InsuranceOfferBlock() {
               key={c}
               className="flex items-center gap-2 rounded-xl bg-warm-ivory border border-sand px-4 py-3.5"
             >
-              <CheckIcon />
+              <CheckIcon className="shrink-0 text-terracotta" />
               <span className="text-sm font-medium text-espresso">
                 <Placeholder>{c}</Placeholder>
               </span>
@@ -49,14 +50,5 @@ export function InsuranceOfferBlock() {
         </div>
       </div>
     </section>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0 text-terracotta" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15" />
-      <path d="M8 12.5l2.5 2.5L16 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   );
 }

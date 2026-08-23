@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { contact, practice } from "@/lib/content";
+import { contact, insuranceCarriers, practice, reviews } from "@/lib/content";
 import { ClinicVideo } from "./ClinicVideo";
+import { CheckIcon, GoogleGIcon, StarIcon } from "./icons";
+import { Placeholder } from "./Placeholder";
 
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
@@ -55,6 +57,24 @@ export function Hero() {
           Trusted, judgment-free dental care in {practice.neighborhood} — built for people who
           want one dentist for the long run, not another appointment to squeeze into a workday.
         </p>
+
+        {/* Quick-scan trust strip — specific proof (rating + named carriers)
+            right before the ask, complementing the generic eyebrow pills
+            above rather than repeating them. */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-warm-ivory/70">
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+            <GoogleGIcon />
+            <StarIcon className="text-terracotta" />
+            <strong className="text-warm-ivory font-semibold">
+              <Placeholder tone="dark">{reviews.rating}</Placeholder>
+            </strong>
+            <Placeholder tone="dark">{reviews.count} reviews</Placeholder>
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <CheckIcon className="shrink-0 text-terracotta" />
+            In-network: <Placeholder tone="dark">{insuranceCarriers.slice(0, 3).join(", ")}</Placeholder> + more
+          </span>
+        </div>
 
         <div className="mt-8 flex flex-row flex-wrap gap-3">
           <Link
