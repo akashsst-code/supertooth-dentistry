@@ -150,6 +150,8 @@ Deployed on Vercel, connected to `github.com/akashsst-code/supertooth-dentistry`
 
 **Remaining before this is launch-ready:** urgent-path widget, booking block (needs Tab32 decisions resolved), CMS/content-editability decision (see platform-pivot doc), replacing remaining placeholders (rest of team/office photos, carrier names, address, hours, credentials copy) with real content, custom domain, and the compliance/accessibility checklist pass (Section 7).
 
+**Hero CTA fix — merged to `main` 2026-08-23, reviewed and approved by Akash ([PR #1](https://github.com/akashsst-code/supertooth-dentistry/pull/1)):** the hero's Call button was landing below the fold on mobile (only Book your visit was visible without scrolling) and its `href` pointed at `/contact` instead of actually dialing. Fixed by putting Book and Call side by side at every width — Book stays the wide primary pill, Call is now a compact icon + "Call" pill (matching the nav's mobile call button) — and wiring Call to a real `tel:` link. Verified at iPhone SE (375px), the md: layout-split boundary (768px, where an interim version briefly broke), iPhone 17 Pro Max (~430px), and 1280px desktop. No other hero spacing/sizing changed.
+
 ---
 
 ## Status: Webflow build (historical — superseded by the Next.js build above)
