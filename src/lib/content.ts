@@ -197,8 +197,11 @@ export const credentials = [
 // Zoom whitening before/after) — matched by content to the closest of
 // the 4 categories (same-day onlay -> same-day crowns; implant ->
 // restorative care; whitening -> cosmetic dentistry). No photo was
-// supplied for general/preventive care, so that card falls back to the
-// icon-tile treatment in ServicesSection.tsx rather than inventing one.
+// supplied for general/preventive care, so that card uses a temporary
+// Unsplash stand-in instead (per Akash's "bring images where we don't
+// have" call) — swap for real photography later, same as the other 3;
+// ServicesSection.tsx's icon-tile fallback still exists for any future
+// service entry that ships with no `image` at all.
 // Two other supplied images (Invisalign Gold Provider badge, Masseter
 // Botox before/after) don't map to any of these 4 categories and aren't
 // used here — worth a follow-up on where those belong (e.g. Botox next
@@ -209,6 +212,14 @@ export const services = [
     title: "General & preventive care",
     detail: "Cleanings, exams, and same-day appointments when you need them.",
     real: true,
+    // No real photo supplied yet for this category (see comment above) —
+    // temporary Unsplash stand-in per Akash's "bring images where we
+    // don't have" call, same pattern as the NewPatientOffersBlock photos.
+    // Swap for real practice photography once available.
+    image: {
+      src: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80",
+      alt: "Dental cleaning and checkup",
+    },
   },
   {
     title: "Same-day crowns",

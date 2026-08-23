@@ -28,15 +28,16 @@ function TrustBadge({ children }: { children: React.ReactNode }) {
  * — leading with the price offer risks reading as a discount clinic for
  * the routine/proactive primary persona).
  *
- * Internal order (differentiators -> Archana -> office photos -> office
- * blurb) trimmed per Akash's explicit call on the post-office-scroll
- * homepage flow: the flow through the office carousel stays as-is, but
- * the Google-reviews card and the "Meet the team" grid that used to sit
- * below it are gone from here — reviews moved into the new, more visual
- * TestimonialsSection (see page.tsx), and team is dropped entirely from
- * the homepage (still kept in content.ts for a future dedicated /about
- * page, not deleted). A one-line "about our office" blurb was added
- * right under the carousel per the same conversation.
+ * Internal order (differentiators -> office photos -> office blurb ->
+ * Archana) — reversed from the earlier Archana-then-office order per
+ * Akash's later explicit call ("move office scroll above bio"): office
+ * photos now lead, right after the differentiators, with the "about our
+ * office" blurb still directly under the carousel; Archana's bio card
+ * comes after both. The Google-reviews card and the "Meet the team" grid
+ * that used to sit below this section are gone from here — reviews moved
+ * into the new, more visual TestimonialsSection (see page.tsx), and team
+ * is dropped entirely from the homepage (still kept in content.ts for a
+ * future dedicated /about page, not deleted).
  *
  * Dr. Archana's training/affiliation badges live inside her bio card
  * (below) rather than a separate section further down the page — "bring
@@ -77,6 +78,15 @@ export function TrustBlock() {
           })}
         </div>
 
+        {/* Office photos — real photography, now leads (moved above the
+            bio per Akash's later "office scroll above bio" call) */}
+        <div>
+          <OfficeCarousel />
+        </div>
+
+        {/* Brief "about our office" blurb, directly under the carousel */}
+        <p className="mt-6 max-w-2xl mx-auto text-center text-espresso/70">{officeBlurb}</p>
+
         {/*
          * Dr. Archana — real bio content landed 2026-08-23 (see content.ts).
          * Second pass, per Akash: the first version's small 96px circular
@@ -92,7 +102,7 @@ export function TrustBlock() {
          * and each line earns its place as a distinct trust signal rather
          * than padding.
          */}
-        <div className="max-w-3xl mx-auto rounded-3xl bg-warm-ivory border border-sand overflow-hidden mb-16 sm:flex sm:items-stretch">
+        <div className="mt-16 max-w-3xl mx-auto rounded-3xl bg-warm-ivory border border-sand overflow-hidden sm:flex sm:items-stretch">
           <div className="relative aspect-[4/5] sm:aspect-auto sm:w-2/5 sm:shrink-0">
             <Image
               src={archana.photo}
@@ -139,14 +149,6 @@ export function TrustBlock() {
             </div>
           </div>
         </div>
-
-        {/* Office photos — real photography, right after Archana */}
-        <div>
-          <OfficeCarousel />
-        </div>
-
-        {/* Brief "about our office" blurb, directly under the carousel */}
-        <p className="mt-6 max-w-2xl mx-auto text-center text-espresso/70">{officeBlurb}</p>
       </div>
     </section>
   );
