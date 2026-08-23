@@ -19,9 +19,12 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-50 bg-warm-ivory/95 backdrop-blur border-b border-sand">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="font-display text-xl font-semibold text-espresso">
-          {practice.name}
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 min-h-16 py-2 flex items-center justify-between">
+        <Link href="/" className="flex flex-col leading-tight">
+          <span className="font-display text-xl font-semibold text-espresso">{practice.name}</span>
+          <span className="text-[11px] font-medium tracking-widest text-espresso/50 uppercase">
+            {practice.neighborhood} · {practice.city}
+          </span>
         </Link>
 
         {/* Desktop nav */}
@@ -72,7 +75,7 @@ export function Nav() {
 
       {/* Mobile full-screen menu */}
       {open && (
-        <div className="md:hidden fixed inset-0 top-16 bg-warm-ivory z-40 flex flex-col overflow-y-auto">
+        <div className="md:hidden fixed inset-0 top-[72px] bg-warm-ivory z-40 flex flex-col overflow-y-auto">
           <nav className="flex flex-col px-6 py-8 gap-6" aria-label="Mobile primary">
             {nav.map((item) => (
               <Link
