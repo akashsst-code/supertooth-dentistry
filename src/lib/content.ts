@@ -48,11 +48,14 @@ export const offers = {
 };
 
 export const insuranceCarriers = [
-  "Carrier 1",
-  "Carrier 2",
-  "Carrier 3",
-  "Carrier 4",
-]; // all placeholder — real accepted-plan list needed
+  "Delta Dental",
+  "Premera Blue Cross",
+  "Cigna",
+  "Aetna",
+]; // named per Akash in chat as examples of majors to feature — still
+// unconfirmed against the practice's actual current network status, so
+// these render through <Placeholder> until confirmed, same as offers/
+// reviews above. Real accepted-plan list still needed before launch.
 
 export const team = [
   { name: "Dr. Archana", role: "Dentist, Practice Owner", real: true, photo: "/team/archana.webp" },
