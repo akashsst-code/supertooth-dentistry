@@ -41,9 +41,7 @@ export function LocationMapSection() {
             <MapPinIcon className="shrink-0 mt-1 text-terracotta" />
             <div>
               <p className="font-medium text-espresso">{contact.address}</p>
-              <p className="text-sm text-espresso/70">
-                <Placeholder>{contact.parkingNote}</Placeholder>
-              </p>
+              <p className="text-sm text-espresso/70">{contact.parkingNote}</p>
             </div>
           </div>
 

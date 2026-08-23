@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Logo } from "./Logo";
-import { Placeholder } from "./Placeholder";
 import { contact, hours, nav } from "@/lib/content";
 
 /**
@@ -108,7 +107,7 @@ export function Nav() {
             <ul className="text-sm text-espresso/80 space-y-1 mb-4">
               {hours.map((h) => (
                 <li key={h.days}>
-                  {h.days} · <Placeholder>{h.time}</Placeholder>
+                  {h.days} · {h.time}
                 </li>
               ))}
             </ul>
@@ -127,7 +126,7 @@ export function Nav() {
               href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
               className="tap-target inline-flex items-center justify-center gap-2 rounded-full border border-espresso/20 px-6 py-3 text-sm font-semibold text-espresso"
             >
-              <PhoneIcon /> <Placeholder>{contact.phone}</Placeholder>
+              <PhoneIcon /> {contact.phone}
             </a>
           </div>
         </div>

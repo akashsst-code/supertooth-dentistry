@@ -14,6 +14,15 @@ import { contact, hours, practice } from "@/lib/content";
  *
  * Dark background uses the locked Espresso token, not a new color —
  * per Akash's call, no new base token gets introduced for this.
+ *
+ * Phone/address/hours are now real (see content.ts) — pulled from the
+ * practice's existing site. A compact emergency-line note was added to
+ * both variants to match that same source, kept deliberately small (one
+ * line, no separate box/section) so it doesn't compete with the larger
+ * emergency banner already at the top of BookingBlock right above this.
+ * No link lists were added here (New patient forms / Insurance & Payment
+ * / etc., as seen on that reference site) — consistent with this
+ * homepage's existing no-stub-links convention (Testimonials, Services).
  */
 export function Footer() {
   return (
@@ -36,10 +45,17 @@ function MobileFooter() {
         <ul className="text-sm text-warm-ivory/70 space-y-1">
           {hours.map((h) => (
             <li key={h.days}>
-              {h.days} · <Placeholder>{h.time}</Placeholder>
+              {h.days} · {h.time}
             </li>
           ))}
         </ul>
+
+        <p className="text-xs text-warm-ivory/60">
+          <span className="font-semibold text-terracotta">Dental emergency?</span> Current patients call{" "}
+          <a href={`tel:${contact.emergencyPhone.replace(/[^\d+]/g, "")}`} className="underline underline-offset-2">
+            <Placeholder tone="dark">{contact.emergencyPhone}</Placeholder>
+          </a>
+        </p>
 
         <div className="w-full flex flex-col gap-3">
           <Link
@@ -53,7 +69,7 @@ function MobileFooter() {
             className="tap-target inline-flex items-center justify-center gap-2 rounded-full border border-warm-ivory/30 px-6 py-3 text-sm font-semibold text-warm-ivory"
           >
             <PhoneIcon />
-            <Placeholder>{contact.phone}</Placeholder>
+            {contact.phone}
           </a>
         </div>
       </div>
@@ -72,9 +88,7 @@ function DesktopFooter() {
         <div>
           <p className="font-display text-lg font-semibold text-espresso">{practice.name}</p>
           <p className="mt-2 text-sm text-espresso/70">{contact.address}</p>
-          <p className="text-sm text-espresso/70">
-            <Placeholder>{contact.parkingNote}</Placeholder>
-          </p>
+          <p className="text-sm text-espresso/70">{contact.parkingNote}</p>
         </div>
 
         <div>
@@ -82,7 +96,7 @@ function DesktopFooter() {
           <ul className="text-sm text-espresso/70 space-y-1">
             {hours.map((h) => (
               <li key={h.days}>
-                {h.days} · <Placeholder>{h.time}</Placeholder>
+                {h.days} · {h.time}
               </li>
             ))}
           </ul>
@@ -94,8 +108,17 @@ function DesktopFooter() {
             href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
             className="text-sm text-espresso/70 hover:text-terracotta"
           >
-            <Placeholder>{contact.phone}</Placeholder>
+            {contact.phone}
           </a>
+          <p className="mt-3 text-xs text-espresso/60">
+            <span className="font-semibold text-terracotta">Dental emergency?</span> Current patients call{" "}
+            <a
+              href={`tel:${contact.emergencyPhone.replace(/[^\d+]/g, "")}`}
+              className="underline underline-offset-2 hover:text-terracotta"
+            >
+              <Placeholder>{contact.emergencyPhone}</Placeholder>
+            </a>
+          </p>
           <div className="mt-4">
             <Link
               href="/contact"

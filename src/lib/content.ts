@@ -21,14 +21,29 @@ export const practice = {
 };
 
 export const contact = {
-  phone: "(206) 555-0148", // placeholder — real number needed
-  address: "133 Queen Anne Ave N, Seattle", // real — confirmed by Akash; state omitted, not needed for local patients
-  parkingNote: "Parking / transit note", // placeholder
+  // Main line, full address, and hours below are real — sourced from the
+  // practice's existing site (gray-rail-265889.hostingersite.com), the
+  // same source already trusted for Dr. Archana's bio (see `archana`
+  // below and docs/supertooth-webflow-build-spec.md Status section).
+  phone: "(206) 687-7571",
+  address: "133 Queen Anne Ave N, Suite A, Seattle, WA 98109",
+  // Akash's exact wording (given directly in chat), not scraped.
+  parkingNote: "Bus stop on the same block. Street parking available on nearby streets.",
+  // Real, same source as above — but that source shows TWO different
+  // numbers for the emergency line (a top-banner CTA reads
+  // "(206) 593-3131", the footer's "current patients call Dr. Dubey
+  // directly" box reads "(206) 555-0199"). Using the footer-box number
+  // here since it's the one tied specifically to reaching the doctor
+  // directly; flagging the discrepancy for Akash to confirm which is
+  // correct before launch — kept behind <Placeholder> for that reason,
+  // unlike phone/address/hours above.
+  emergencyPhone: "(206) 555-0199",
+  emergencyContact: "Dr. Dubey", // matches archana.name's surname below
 };
 
 export const hours = [
-  { days: "Mon–Thu", time: "hours" }, // placeholder
-  { days: "Fri", time: "hours" }, // placeholder
+  { days: "Mon–Fri", time: "8:00 AM – 5:00 PM" },
+  { days: "Sat–Sun", time: "Closed" },
 ];
 
 export const differentiators = [
@@ -42,10 +57,29 @@ export const reviews = {
   count: "487", // unconfirmed per prior Webflow-build audit — verify before launch
 };
 
+// Each offer is one line of text + a half-card photo (per Akash's
+// "half page picture and 1 line text offer" call). Offer text is still
+// unconfirmed pricing, so it renders through <Placeholder>. Images are
+// stock photos pulled from Unsplash as a temporary stand-in ("bring from
+// internet for now, i'll change later" — Akash) — swap `image.src` for
+// real practice photography once available, same pattern as `services`
+// above.
 export const offers = {
-  newPatient: "$149 new-patient offer (exam + cleaning + x-rays)", // unconfirmed, verify before launch
-  invisalign: "$500 off Invisalign", // unconfirmed, verify before launch
-};
+  newPatient: {
+    text: "$149 new-patient offer — exam, cleaning, and x-rays included.",
+    image: {
+      src: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80",
+      alt: "Dentist examining a patient's smile",
+    },
+  },
+  invisalign: {
+    text: "$500 off Invisalign clear aligners.",
+    image: {
+      src: "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=800&q=80",
+      alt: "Clear aligner tray held up against a smile",
+    },
+  },
+}; // pricing unconfirmed, verify before launch
 
 export const insuranceCarriers = [
   "Delta Dental",
