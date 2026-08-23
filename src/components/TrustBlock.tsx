@@ -59,6 +59,38 @@ export function Differentiators() {
 }
 
 /**
+ * Compact variant of the differentiators row — single-line icon+label
+ * strip instead of the full bordered/padded cards above. Built for
+ * src/app/home-alt-order, where Akash asked for "a compressed visually
+ * appealing section for the 3 things" directly under the hero rather
+ * than the roomier card treatment `Differentiators` uses in the locked
+ * homepage. Not used by the locked `TrustBlock` — that keeps the
+ * original full-card `Differentiators` unchanged.
+ */
+export function CompactDifferentiators() {
+  return (
+    <div className="mx-auto max-w-4xl rounded-2xl bg-warm-ivory border border-sand px-4 sm:px-2 py-4 sm:py-3 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-sand">
+      {differentiators.map((d, i) => {
+        const Icon = differentiatorIcons[i];
+        return (
+          <div
+            key={d.title}
+            className="flex items-center gap-3 py-3 sm:py-0 sm:px-4 first:pt-0 last:pb-0"
+          >
+            <span className="shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-full bg-terracotta/10 text-terracotta">
+              <Icon />
+            </span>
+            <span className="font-display text-sm font-semibold text-espresso leading-tight">
+              {d.title}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
  * Dr. Archana — real bio content landed 2026-08-23 (see content.ts).
  * Second pass, per Akash: the first version's small 96px circular
  * thumbnail undersold the trust this section exists to build — "people
