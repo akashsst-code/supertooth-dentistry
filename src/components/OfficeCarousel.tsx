@@ -12,59 +12,122 @@ import {
   PlayIcon,
 } from "./icons";
 
-const AUTOPLAY_MS = 3500;
+const PIXELS_PER_SECOND = 30; // slow, ambient reel speed — not a distraction
 const IDLE_RESUME_MS = 4000;
+const DRAG_CLICK_THRESHOLD_PX = 6; // movement past this = a drag, not a tap
 
 /**
- * Office-photo carousel — real native horizontal scroll-snap (touch swipe,
- * trackpad, and the scrollbar all work for free) instead of a CSS-transform
- * marquee, so it responds to user input rather than fighting it.
+ * Office-photo carousel — a genuinely continuous "reel": position is
+ * driven frame-by-frame via requestAnimationFrame and a single transform,
+ * not periodic jumps to the next tile (that reads as jerky, not running).
+ * The photo list renders twice back-to-back; once the offset passes one
+ * copy's width it wraps by that same width, so the loop is seamless.
  *
- * Two separate reasons autoplay can be off, kept as separate state on
- * purpose: `userPaused` is a sticky choice (the pause button) that only
- * the user can undo; `interacting` is a transient flag set by any
- * swipe/drag/wheel/tile-click and auto-cleared after IDLE_RESUME_MS of no
- * further activity. Autoplay only runs when neither is set — keeps the
- * carousel quietly engaging by default, gets out of the way the instant
- * someone touches it, and comes back on its own once they're done,
- * without ever overriding an explicit pause. Goal is passive engagement
- * that builds trust before the booking CTA further down the page, not an
+ * A continuously-animating transform can't share an element with native
+ * browser scrolling (the two fight over position), so dragging is
+ * hand-rolled via pointer events instead of relying on overflow-x-auto:
+ * pointerdown captures the pointer and freezes the reel, pointermove
+ * adds the drag delta on top of wherever the reel had gotten to,
+ * pointerup either resumes the idle countdown (drag) or opens the
+ * lightbox (a tap — movement stayed under DRAG_CLICK_THRESHOLD_PX).
+ * touch-pan-y keeps vertical page scroll working through the carousel;
+ * only horizontal motion is claimed for the drag.
+ *
+ * Two independent reasons the reel can be stopped, kept as separate
+ * state on purpose: `userPaused` is sticky (only the pause button
+ * touches it) and `interacting` is transient (any pointerdown/wheel/tap
+ * sets it, auto-clears after IDLE_RESUME_MS of no further activity).
+ * Playing only when neither is set: quiet passive engagement by default,
+ * out of the way the instant someone touches it, back on its own once
+ * they're done — never overriding an explicit pause. Goal is building
+ * trust ahead of the booking CTA further down the page, not an
  * animation that fights the person looking at it.
  *
- * Clicking/tapping a tile opens it full-size in a lightbox — patients get
- * a closer look at the real space, serving the anxiety-reduction job this
- * section exists for (docs/supertooth-ux-flow.md Section 2). Deliberately
- * no pinch/scroll-to-zoom inside the lightbox — full-size is the job to
- * be done here, and zoom controls would be complexity without a clear
- * patient need.
+ * Clicking/tapping a tile opens it full-size in a lightbox — patients
+ * get a closer look at the real space, serving the anxiety-reduction
+ * job this section exists for (docs/supertooth-ux-flow.md Section 2).
+ * Deliberately no pinch/zoom inside the lightbox — considered and
+ * dropped as complexity the actual job (seeing the space clearly)
+ * doesn't need.
  *
  * Pause/play control is not decorative: WCAG 2.2.2 (Pause, Stop, Hide)
  * requires a way to stop auto-moving content that runs longer than 5
  * seconds, and this site's compliance checklist (build-spec Section 7)
- * treats WCAG AA as build-blocking. Autoplay also skips itself entirely
+ * treats WCAG AA as build-blocking. The reel also never starts at all
  * for prefers-reduced-motion, matching the ClinicVideo.tsx pattern.
  */
 export function OfficeCarousel() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const offsetRef = useRef(0);
+  const trackLoopWidthRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const lastFrameTimeRef = useRef<number | null>(null);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dragRef = useRef<{ startX: number; startOffset: number; moved: boolean; pointerId: number } | null>(null);
+
   const [userPaused, setUserPaused] = useState(false);
   const [interacting, setInteracting] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const playing = !userPaused && !interacting && !reducedMotion;
+  const playing = !userPaused && !interacting && !reducedMotion && lightboxIndex === null;
 
   useEffect(() => {
     setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
 
-  // Any real user activity (swipe/drag start, trackpad scroll, opening a
-  // photo) marks "interacting" and (re)starts the idle countdown. Not
-  // wired to the container's scroll event on purpose — autoplay's own
-  // scrollIntoView also fires scroll events, and listening there would
-  // make autoplay immediately re-pause itself after every tick.
+  // One copy's rendered width (photos + gaps), so the doubled track can
+  // wrap seamlessly. Re-measured on resize since tile size changes at
+  // the sm: breakpoint.
+  useEffect(() => {
+    function measure() {
+      const first = tileRefs.current[0];
+      const firstOfSecondCopy = tileRefs.current[officePhotos.length];
+      if (first && firstOfSecondCopy) {
+        trackLoopWidthRef.current = firstOfSecondCopy.offsetLeft - first.offsetLeft;
+      }
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  function applyTransform() {
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(-${offsetRef.current}px)`;
+    }
+  }
+
+  useEffect(() => {
+    if (!playing) {
+      lastFrameTimeRef.current = null;
+      return;
+    }
+    function frame(t: number) {
+      if (lastFrameTimeRef.current != null) {
+        // Clamped: if the tab was backgrounded (or the debugger paused
+        // execution) between frames, the browser delivers the next rAF
+        // callback with a timestamp reflecting the full real-world gap.
+        // Uncapped, that one frame would jump the reel forward by
+        // however long it was away instead of resuming smoothly.
+        const dt = Math.min((t - lastFrameTimeRef.current) / 1000, 0.1);
+        const w = trackLoopWidthRef.current;
+        let next = offsetRef.current + PIXELS_PER_SECOND * dt;
+        if (w > 0) next = next % w;
+        offsetRef.current = next;
+        applyTransform();
+      }
+      lastFrameTimeRef.current = t;
+      rafRef.current = requestAnimationFrame(frame);
+    }
+    rafRef.current = requestAnimationFrame(frame);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      lastFrameTimeRef.current = null;
+    };
+  }, [playing]);
+
   function markInteracting() {
     setInteracting(true);
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
@@ -77,34 +140,43 @@ export function OfficeCarousel() {
     };
   }, []);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const mostVisible = entries.reduce(
-          (best, entry) => (entry.intersectionRatio > (best?.intersectionRatio ?? 0) ? entry : best),
-          entries[0]
-        );
-        if (mostVisible?.isIntersecting) {
-          const index = tileRefs.current.findIndex((el) => el === mostVisible.target);
-          if (index !== -1) setActiveIndex(index);
-        }
-      },
-      { root: container, threshold: [0.6] }
-    );
-    tileRefs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+  function onPointerDown(e: React.PointerEvent<HTMLButtonElement>) {
+    // Pointer capture keeps drag tracking correct if the finger moves
+    // outside the tile's bounds mid-drag — a nice-to-have, not required
+    // for the drag itself to work (pointermove/pointerup still bubble
+    // without it as long as the finger stays roughly over the track).
+    // Some browsers throw NotFoundError for edge-case pointer ids, so
+    // this must not be allowed to abort the handler before dragRef gets
+    // set below.
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // no-op — see comment above
+    }
+    dragRef.current = { startX: e.clientX, startOffset: offsetRef.current, moved: false, pointerId: e.pointerId };
+    markInteracting();
+  }
 
-  useEffect(() => {
-    if (!playing) return;
-    const id = setInterval(() => {
-      const nextIndex = (activeIndex + 1) % officePhotos.length;
-      tileRefs.current[nextIndex]?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
-    }, AUTOPLAY_MS);
-    return () => clearInterval(id);
-  }, [playing, activeIndex]);
+  function onPointerMove(e: React.PointerEvent<HTMLButtonElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== e.pointerId) return;
+    const dx = e.clientX - drag.startX;
+    if (Math.abs(dx) > DRAG_CLICK_THRESHOLD_PX) drag.moved = true;
+    const w = trackLoopWidthRef.current;
+    let next = drag.startOffset - dx;
+    if (w > 0) next = ((next % w) + w) % w;
+    offsetRef.current = next;
+    applyTransform();
+  }
+
+  function onPointerUp(e: React.PointerEvent<HTMLButtonElement>, tileIndex: number) {
+    const drag = dragRef.current;
+    dragRef.current = null;
+    markInteracting();
+    if (drag && drag.pointerId === e.pointerId && !drag.moved) {
+      setLightboxIndex(tileIndex % officePhotos.length);
+    }
+  }
 
   return (
     <div>
@@ -121,42 +193,50 @@ export function OfficeCarousel() {
         </button>
       </div>
 
-      <div
-        ref={containerRef}
-        onPointerDown={markInteracting}
-        onWheel={markInteracting}
-        className="office-scroll flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2"
-      >
-        {officePhotos.map((photo, i) => (
-          <button
-            key={photo.src}
-            ref={(el) => {
-              tileRefs.current[i] = el;
-            }}
-            type="button"
-            onClick={() => {
-              markInteracting();
-              setLightboxIndex(i);
-            }}
-            className="group relative shrink-0 snap-start"
-            aria-label={`View larger: ${photo.alt}`}
-          >
-            <Image
-              src={photo.src}
-              alt={photo.alt}
-              width={320}
-              height={240}
-              className="h-48 sm:h-60 w-64 sm:w-80 rounded-2xl object-cover border border-sand"
-            />
-            <span className="tap-target absolute bottom-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-espresso/60 text-warm-ivory">
-              <ExpandIcon />
-            </span>
-          </button>
-        ))}
+      <div className="overflow-hidden" onWheel={markInteracting}>
+        <div ref={trackRef} className="flex gap-4 w-max" style={{ willChange: "transform" }}>
+          {[...officePhotos, ...officePhotos].map((photo, i) => (
+            <button
+              key={`${photo.src}-${i}`}
+              ref={(el) => {
+                tileRefs.current[i] = el;
+              }}
+              type="button"
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={(e) => onPointerUp(e, i)}
+              onPointerCancel={() => {
+                dragRef.current = null;
+              }}
+              aria-hidden={i >= officePhotos.length}
+              aria-label={`View larger: ${photo.alt}`}
+              className="group relative shrink-0 touch-pan-y cursor-grab select-none active:cursor-grabbing"
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                width={320}
+                height={240}
+                draggable={false}
+                className="h-48 sm:h-60 w-64 sm:w-80 rounded-2xl object-cover border border-sand pointer-events-none"
+              />
+              <span className="tap-target absolute bottom-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-espresso/60 text-warm-ivory">
+                <ExpandIcon />
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {lightboxIndex !== null && (
-        <Lightbox index={lightboxIndex} onClose={() => setLightboxIndex(null)} onNavigate={setLightboxIndex} />
+        <Lightbox
+          index={lightboxIndex}
+          onClose={() => {
+            setLightboxIndex(null);
+            markInteracting();
+          }}
+          onNavigate={setLightboxIndex}
+        />
       )}
     </div>
   );

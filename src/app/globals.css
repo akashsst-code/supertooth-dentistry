@@ -80,25 +80,3 @@ p {
     animation: none;
   }
 }
-
-/* Office-photo carousel — real native horizontal scroll (touch swipe,
-   trackpad, scrollbar-drag), auto-advanced by JS (see OfficeCarousel.tsx)
-   rather than a CSS transform, so user scroll input isn't fought by a
-   competing animation. This just gives the scrollbar itself a styled,
-   on-brand look instead of the bare OS default, on browsers that support
-   scrollbar styling. */
-.office-scroll {
-  scrollbar-color: var(--color-terracotta) transparent;
-  scrollbar-width: thin;
-  -webkit-overflow-scrolling: touch;
-}
-.office-scroll::-webkit-scrollbar {
-  height: 6px;
-}
-.office-scroll::-webkit-scrollbar-thumb {
-  background: var(--color-terracotta);
-  border-radius: 9999px;
-}
-.office-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
