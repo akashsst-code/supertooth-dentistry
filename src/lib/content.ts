@@ -59,6 +59,18 @@ export const insuranceCarriers = [
 // these render through <Placeholder> until confirmed, same as offers/
 // reviews above. Real accepted-plan list still needed before launch.
 
+// Real office photography — supplied by Akash 2026-08-23, replaces the
+// placeholder tiles that previously stood in for this section (Section 8
+// content blocker in docs/supertooth-webflow-build-spec.md). `real: true`
+// per the same convention as team[0]/archana.webp above.
+export const officePhotos = [
+  { src: "/office/office-1.webp", alt: "Front desk and reception area" },
+  { src: "/office/office-2.webp", alt: "Treatment room with dental chair and equipment" },
+  { src: "/office/office-3.webp", alt: "Hallway inside the practice" },
+  { src: "/office/office-4.jpg", alt: "Framed art near a treatment room entrance" },
+  { src: "/office/office-5.jpg", alt: "Waiting area seating" },
+];
+
 /**
  * Short-name teaser for the hero's one-line trust strip specifically —
  * "Delta Dental, Premera Blue Cross, Aetna" doesn't fit one line on a
