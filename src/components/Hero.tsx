@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { practice } from "@/lib/content";
+import { contact, practice } from "@/lib/content";
 import { ClinicVideo } from "./ClinicVideo";
 
 /**
@@ -12,6 +12,12 @@ import { ClinicVideo } from "./ClinicVideo";
  * body copy are visually de-emphasized (lighter weight/opacity) so the
  * video and the two CTAs carry the visual weight instead of competing
  * with them.
+ *
+ * CTA row is column-stacked on mobile (call button lands directly under
+ * book, not dependent on flex-wrap's unpredictable line breaks) and
+ * side-by-side again from sm: up — no other spacing changed. Call CTA
+ * now uses a real tel: link (it previously routed to /contact instead
+ * of dialing).
  */
 export function Hero() {
   return (
@@ -39,19 +45,19 @@ export function Hero() {
           want one dentist for the long run, not another appointment to squeeze into a workday.
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-4">
+        <div className="mt-8 flex flex-col gap-4 sm:flex-row">
           <Link
             href="#booking"
             className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-7 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
           >
             Book your visit
           </Link>
-          <Link
-            href="/contact"
+          <a
+            href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
             className="tap-target inline-flex items-center justify-center rounded-full border border-warm-ivory/40 px-7 py-3.5 text-base font-semibold text-warm-ivory hover:border-warm-ivory/70 transition-colors"
           >
             Call {practice.name}
-          </Link>
+          </a>
         </div>
       </div>
     </section>
