@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { contact, insuranceCarriers, practice, reviews } from "@/lib/content";
 import { ClinicVideo } from "./ClinicVideo";
-import { CheckIcon, GoogleGIcon, StarIcon } from "./icons";
+import { CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
+
+const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  `${practice.name}, ${practice.neighborhood}, ${practice.city}`,
+)}`;
 
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
@@ -30,6 +34,22 @@ import { CheckIcon, GoogleGIcon, StarIcon } from "./icons";
  * own line instead of forcing an ugly in-button wrap. No other hero
  * spacing changed. Call CTA uses a real tel: link (it previously
  * routed to /contact instead of dialing).
+ *
+ * Body copy trimmed from 4 lines to 3 on mobile — dropped "dental" and
+ * "in {neighborhood}" (already stated in the nav subtitle and the
+ * headline right above, a third mention here was pure repetition) to
+ * make room without losing meaning.
+ *
+ * No literal street address here: contact.address is still an
+ * unconfirmed placeholder in content.ts, and putting a bracketed
+ * [ Street address... ] placeholder in the single highest-visibility
+ * spot on the site would read as broken — the same objection that
+ * already got the dashed-underline treatment removed from the trust
+ * strip above. Added a "Get directions" Google Maps link instead: it
+ * only needs already-real data (practice name/neighborhood/city, all
+ * `real: true` in content.ts), so it needs no placeholder and is
+ * arguably more useful than static text. Swap in the literal address
+ * once it's confirmed — this line doesn't need to change either way.
  */
 export function Hero() {
   return (
@@ -48,8 +68,8 @@ export function Hero() {
         </h1>
 
         <p className="mt-2 max-w-md text-sm text-warm-ivory/60">
-          Trusted, judgment-free dental care in {practice.neighborhood} — built for people who
-          want one dentist for the long run, not another appointment to squeeze into a workday.
+          Trusted, judgment-free care for people who want one dentist for the long run — not
+          another appointment squeezed into a workday.
         </p>
 
         {/*
@@ -84,6 +104,15 @@ export function Hero() {
             <CheckIcon className="shrink-0 text-terracotta" />
             In-network: {insuranceCarriers.slice(0, 3).join(", ")} + more
           </span>
+          <a
+            href={directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 underline decoration-warm-ivory/30 underline-offset-2 hover:text-warm-ivory hover:decoration-warm-ivory/60"
+          >
+            <MapPinIcon className="shrink-0 text-terracotta" />
+            {practice.neighborhood}, {practice.city} · Get directions
+          </a>
         </div>
 
         <div className="mt-4 flex flex-row flex-wrap gap-3">
