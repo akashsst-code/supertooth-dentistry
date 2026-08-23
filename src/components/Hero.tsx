@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { contact, insuranceCarriers, practice, reviews } from "@/lib/content";
+import { contact, insuranceCarriersHeroTeaser, practice, reviews } from "@/lib/content";
 import { ClinicVideo } from "./ClinicVideo";
 import { CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
 
@@ -77,6 +77,15 @@ export function Hero() {
          * count and these carrier names still need real confirmation before
          * launch — that's still marked explicitly in content.ts and still
          * visible via <Placeholder> in the detailed sections below.
+         *
+         * In-network line uses insuranceCarriersHeroTeaser (short names:
+         * "Delta, Premera, Aetna"), not the full-name insuranceCarriers
+         * list — the full names wrapped to 2 lines on mobile. Considered
+         * a tap-to-expand "+more" instead, but skipped it: hover doesn't
+         * exist on mobile (touch-only, and this is a mobile-first site),
+         * and the full carrier list already has a proper home one scroll
+         * down in InsuranceOfferBlock — an interactive popover here would
+         * just duplicate that for one line of hero real estate.
          */}
         <div className="mt-3 flex flex-col gap-1 text-xs text-warm-ivory/70">
           <span className="inline-flex items-center gap-1.5">
@@ -93,7 +102,7 @@ export function Hero() {
           </span>
           <span className="inline-flex items-center gap-1.5">
             <CheckIcon className="shrink-0 text-terracotta" />
-            In-network: {insuranceCarriers.slice(0, 3).join(", ")} + more
+            In-network: {insuranceCarriersHeroTeaser.join(", ")} + more
           </span>
           <span className="inline-flex items-center gap-1.5">
             <MapPinIcon className="shrink-0 text-terracotta" />

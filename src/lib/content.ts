@@ -50,12 +50,26 @@ export const offers = {
 export const insuranceCarriers = [
   "Delta Dental",
   "Premera Blue Cross",
-  "Cigna",
   "Aetna",
+  "Cigna",
+  "Guardian",
+  "Humana",
 ]; // named per Akash in chat as examples of majors to feature — still
 // unconfirmed against the practice's actual current network status, so
 // these render through <Placeholder> until confirmed, same as offers/
 // reviews above. Real accepted-plan list still needed before launch.
+
+/**
+ * Short-name teaser for the hero's one-line trust strip specifically —
+ * "Delta Dental, Premera Blue Cross, Aetna" doesn't fit one line on a
+ * phone alongside the "In-network:" label and "+ more", so this trims
+ * to the colloquial short names Akash used in chat. Full/proper names
+ * still live in insuranceCarriers above for every other section
+ * (InsuranceOfferBlock, the /services carrier chips) — this is a
+ * presentation-only abbreviation for one tight space, not a separate
+ * source of truth.
+ */
+export const insuranceCarriersHeroTeaser = ["Delta", "Premera", "Aetna"];
 
 export const team = [
   { name: "Dr. Archana", role: "Dentist, Practice Owner", real: true, photo: "/team/archana.webp" },
