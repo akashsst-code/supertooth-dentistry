@@ -8,9 +8,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 grid sm:grid-cols-3 gap-8">
         <div>
           <p className="font-display text-lg font-semibold text-espresso">{practice.name}</p>
-          <p className="mt-2 text-sm text-espresso/70">
-            <Placeholder>{contact.address}</Placeholder>
-          </p>
+          <p className="mt-2 text-sm text-espresso/70">{contact.address}</p>
           <p className="text-sm text-espresso/70">
             <Placeholder>{contact.parkingNote}</Placeholder>
           </p>
