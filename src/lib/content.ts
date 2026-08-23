@@ -55,7 +55,7 @@ export const insuranceCarriers = [
 ]; // all placeholder — real accepted-plan list needed
 
 export const team = [
-  { name: "Dr. Archana", role: "Dentist, Practice Owner", real: true },
+  { name: "Dr. Archana", role: "Dentist, Practice Owner", real: true, photo: "/team/archana.webp" },
   { name: "Hygienist name", role: "Hygienist", real: false },
   { name: "Hygienist name", role: "Hygienist", real: false },
   { name: "Staff name", role: "Front Desk", real: false },

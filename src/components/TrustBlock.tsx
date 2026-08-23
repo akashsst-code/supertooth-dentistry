@@ -1,5 +1,14 @@
+import Image from "next/image";
 import { Placeholder } from "./Placeholder";
 import { differentiators, reviews, team } from "@/lib/content";
+
+function TrustBadge({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full bg-sand px-3 py-1 text-xs font-medium text-espresso">
+      {children}
+    </span>
+  );
+}
 
 /**
  * Trust block — locked in docs/supertooth-ux-flow.md Section 2, ordered
@@ -28,15 +37,25 @@ export function TrustBlock() {
 
         {/* Dr. Archana + reviews */}
         <div className="grid md:grid-cols-2 gap-10 items-center mb-16">
-          <div className="rounded-2xl bg-warm-ivory p-8 border border-sand flex gap-6 items-start">
-            <div className="shrink-0 h-24 w-24 rounded-full bg-sand flex items-center justify-center text-xs text-espresso/60 text-center">
-              <Placeholder>Dr. Archana photo</Placeholder>
+          <div className="rounded-2xl bg-warm-ivory p-8 border border-sand">
+            <div className="flex gap-6 items-start">
+              <Image
+                src="/team/archana.webp"
+                alt="Dr. Archana, DDS"
+                width={96}
+                height={96}
+                className="shrink-0 h-24 w-24 rounded-full object-cover"
+              />
+              <div>
+                <h3 className="font-display text-xl font-semibold text-espresso">Meet Dr. Archana</h3>
+                <p className="mt-2 text-sm text-espresso/70">
+                  <Placeholder>Credentials, years of experience, background story</Placeholder>
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-display text-xl font-semibold text-espresso">Meet Dr. Archana</h3>
-              <p className="mt-2 text-sm text-espresso/70">
-                <Placeholder>Credentials, years of experience, background story</Placeholder>
-              </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <TrustBadge>Accepting new patients</TrustBadge>
+              <TrustBadge>In-network with most insurance</TrustBadge>
             </div>
           </div>
 
@@ -54,12 +73,22 @@ export function TrustBlock() {
         {/* Team grid */}
         <div>
           <h3 className="font-display text-xl font-semibold text-espresso mb-6">Meet the team</h3>
-          <div className="grid sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
             {team.map((member, i) => (
               <div key={i} className="rounded-2xl bg-warm-ivory p-6 border border-sand text-center">
-                <div className="mx-auto h-20 w-20 rounded-full bg-sand mb-4 flex items-center justify-center text-xs text-espresso/60">
-                  {member.real ? "Photo" : <Placeholder>photo</Placeholder>}
-                </div>
+                {member.photo ? (
+                  <Image
+                    src={member.photo}
+                    alt={member.name}
+                    width={80}
+                    height={80}
+                    className="mx-auto h-20 w-20 rounded-full object-cover mb-4"
+                  />
+                ) : (
+                  <div className="mx-auto h-20 w-20 rounded-full bg-sand mb-4 flex items-center justify-center text-xs text-espresso/60">
+                    {member.real ? "Photo" : <Placeholder>photo</Placeholder>}
+                  </div>
+                )}
                 <p className="font-medium text-espresso">
                   {member.real ? member.name : <Placeholder>{member.name}</Placeholder>}
                 </p>
@@ -72,7 +101,7 @@ export function TrustBlock() {
         {/* Office photos */}
         <div className="mt-16">
           <h3 className="font-display text-xl font-semibold text-espresso mb-6">Our office</h3>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
