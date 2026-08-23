@@ -95,9 +95,7 @@ export function Nav() {
                 </li>
               ))}
             </ul>
-            <p className="text-sm text-espresso/80">
-              <Placeholder>{contact.address}</Placeholder>
-            </p>
+            <p className="text-sm text-espresso/80">{contact.address}</p>
           </div>
 
           <div className="mt-auto px-6 py-6 border-t border-sand flex flex-col gap-3">
