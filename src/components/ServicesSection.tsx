@@ -1,33 +1,23 @@
-import { ClockIcon, CrownIcon, ImplantIcon, SparkleIcon } from "./icons";
+import Image from "next/image";
+import { ClockIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
 import { services } from "@/lib/content";
 
-const serviceIcons = [ClockIcon, CrownIcon, SparkleIcon, ImplantIcon];
-
 /**
- * Services teaser — positioned after Testimonials. Rebuilt from the
- * first pass per this round of feedback ("bring exact similar pattern
- * like [smilemakersfortworth.com] which had 4 big items with large
- * images in rectangular boundaries and connected lines... no click
- * throughs"):
+ * Services teaser — positioned after Testimonials. Rebuilt again per
+ * this round of feedback: real marketing photography (before/after
+ * shots Akash supplied — see content.ts) now stands in for the earlier
+ * icon-tile placeholders on 3 of the 4 cards, sized with the same
+ * `aspect-[4/5]` large-image treatment introduced on Dr. Archana's bio
+ * card in TrustBlock ("bring this as element across our items") — full-
+ * width photo taking roughly half the mobile screen, compact text below.
+ * No photo exists yet for "General & preventive care", so that one card
+ * keeps the icon-tile fallback at the same aspect ratio rather than
+ * inventing a photo.
  *
- * - Exactly 4 items (trimmed in content.ts), stacked as one column with
- *   a big image tile above compact title+description text — not a
- *   multi-column card grid.
- * - No links anywhere (dropped the earlier "Learn more" — /services
- *   doesn't exist in this repo yet, and this round asked for no
- *   click-throughs regardless: "keep within the site for now").
- * - A vertical thread connects the 4 items down the page — a single
- *   line behind the stack with a node dot at each card, matching the
- *   same connected-card language introduced in TestimonialsSection.
- * - "Pictures take half screen or almost that much on mobile, then some
- *   words" (Akash's general guideline, modeled on the reference site) —
- *   each image tile is ~50% of the mobile viewport height. No real
- *   per-service photography exists yet (and the site's real-photography-
- *   only rule for trust content, build-spec Section 8, means stock
- *   photos shouldn't stand in for it either), so the "image" is a large
- *   tinted icon tile rather than a photo — swap in real photography
- *   later without changing the layout.
+ * Still: exactly 4 items, no links (no click-throughs for now), and the
+ * vertical connecting thread + node dot down the stack from the prior
+ * pass.
  */
 export function ServicesSection() {
   return (
@@ -46,30 +36,39 @@ export function ServicesSection() {
             aria-hidden="true"
           />
           <div className="flex flex-col gap-10 sm:gap-14">
-            {services.map((s, i) => {
-              const Icon = serviceIcons[i];
-              return (
-                <div key={s.title} className="relative pl-10 sm:pl-16">
-                  <span
-                    className="absolute left-4 sm:left-6 top-4 -translate-x-1/2 h-3 w-3 rounded-full bg-terracotta"
-                    aria-hidden="true"
-                  />
-                  <div className="rounded-2xl overflow-hidden border border-sand bg-warm-ivory">
-                    <div className="flex h-[50vh] max-h-[26rem] sm:h-64 items-center justify-center bg-terracotta/10">
-                      <Icon className="h-16 w-16 sm:h-20 sm:w-20 text-terracotta" />
+            {services.map((s) => (
+              <div key={s.title} className="relative pl-10 sm:pl-16">
+                <span
+                  className="absolute left-4 sm:left-6 top-4 -translate-x-1/2 h-3 w-3 rounded-full bg-terracotta"
+                  aria-hidden="true"
+                />
+                <div className="rounded-2xl overflow-hidden border border-sand bg-warm-ivory">
+                  {s.image ? (
+                    <div className="relative aspect-[4/5]">
+                      <Image
+                        src={s.image.src}
+                        alt={s.image.alt}
+                        fill
+                        sizes="(min-width: 640px) 40rem, 100vw"
+                        className="object-cover"
+                      />
                     </div>
-                    <div className="p-6 sm:p-8">
-                      <h3 className="font-display text-xl sm:text-2xl font-semibold text-espresso mb-2">
-                        {s.title}
-                      </h3>
-                      <p className="text-espresso/70">
-                        {s.real ? s.detail : <Placeholder>{s.detail}</Placeholder>}
-                      </p>
+                  ) : (
+                    <div className="flex aspect-[4/5] items-center justify-center bg-terracotta/10">
+                      <ClockIcon className="h-16 w-16 sm:h-20 sm:w-20 text-terracotta" />
                     </div>
+                  )}
+                  <div className="p-6 sm:p-8">
+                    <h3 className="font-display text-xl sm:text-2xl font-semibold text-espresso mb-2">
+                      {s.title}
+                    </h3>
+                    <p className="text-espresso/70">
+                      {s.real ? s.detail : <Placeholder>{s.detail}</Placeholder>}
+                    </p>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </div>

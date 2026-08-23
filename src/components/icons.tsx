@@ -168,30 +168,6 @@ export function QuoteIcon({ className }: { className?: string }) {
   );
 }
 
-/** Cosmetic dentistry — ServicesSection. */
-export function SparkleIcon({ className }: { className?: string }) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path
-        d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/** Restorative care / implants — ServicesSection. */
-export function ImplantIcon({ className }: { className?: string }) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path d="M12 3l6 3v2H6V6l6-3z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M12 8v13M9 21l1-4M15 21l-1-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 /** Professional-affiliation credential badge — TrustBlock (Dr. Archana's bio card). */
 export function BadgeIcon({ className }: { className?: string }) {
   return (

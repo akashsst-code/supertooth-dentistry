@@ -153,10 +153,23 @@ export const credentials = [
 // Homepage services teaser — trimmed to exactly 4 per Akash's call to
 // match smilemakersfortworth.com's 4-big-item pattern. Same-day crowns
 // and same-day appointments are already-locked real differentiators (see
-// differentiators above); the rest are common general-dentistry
-// categories used as a structural placeholder until Akash confirms the
-// practice's actual service list (still an open content item, build-spec
-// Section 8).
+// differentiators above); the description text for cosmetic/restorative
+// is still a structural placeholder pending Akash's confirmed service
+// list (build-spec Section 8) even though the photos backing them are
+// now real.
+//
+// `image` is real marketing photography Akash supplied directly
+// (same-day onlay before/after, implant x-ray before/after, in-office
+// Zoom whitening before/after) — matched by content to the closest of
+// the 4 categories (same-day onlay -> same-day crowns; implant ->
+// restorative care; whitening -> cosmetic dentistry). No photo was
+// supplied for general/preventive care, so that card falls back to the
+// icon-tile treatment in ServicesSection.tsx rather than inventing one.
+// Two other supplied images (Invisalign Gold Provider badge, Masseter
+// Botox before/after) don't map to any of these 4 categories and aren't
+// used here — worth a follow-up on where those belong (e.g. Botox next
+// to Dr. Archana's "Certified Botox Provider" credential, Invisalign
+// alongside the existing $500-off offer).
 export const services = [
   {
     title: "General & preventive care",
@@ -167,9 +180,20 @@ export const services = [
     title: "Same-day crowns",
     detail: "In-house technology — no second visit, no temporary crown.",
     real: true,
+    image: { src: "/services/same-day-crown-onlay.jpg", alt: "Same-day onlay, before and after" },
   },
-  { title: "Cosmetic dentistry", detail: "Veneers, whitening, and smile design.", real: false },
-  { title: "Restorative care", detail: "Crowns, bridges, and implant restorations.", real: false },
+  {
+    title: "Cosmetic dentistry",
+    detail: "Veneers, whitening, and smile design.",
+    real: false,
+    image: { src: "/services/teeth-whitening.jpg", alt: "In-office Zoom teeth whitening, before and after" },
+  },
+  {
+    title: "Restorative care",
+    detail: "Crowns, bridges, and implant restorations.",
+    real: false,
+    image: { src: "/services/implant-dentistry.jpg", alt: "Dental implant, before and after x-ray" },
+  },
 ];
 
 // Neighborhoods served, for the map section — modeled on
