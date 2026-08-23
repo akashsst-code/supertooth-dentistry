@@ -102,7 +102,7 @@ Clean, distinct URLs per service/location page (SEO-ready structure, per locked 
 ## 8. Content Blockers (must be resolved before full launch, though build can proceed in parallel)
 
 - [ ] **Team/office photography** — not yet shot. Needs: coordinator (Akash vs. Archana's staff), professional vs. high-quality phone photos, timeline. Blocks Trust block completion specifically — stock imagery should NOT be substituted (undermines the trust signal this section exists to create).
-- [ ] Real practice content: exact practice name/address/hours, Dr. Archana bio, services list, insurance plans accepted, testimonials/reviews source, logo file.
+- [ ] Real practice content: exact practice name/address/hours, services list, insurance plans accepted, testimonials/reviews source, logo file. (Dr. Archana bio landed — see Status below.)
 - [ ] Tab32 service-layer sub-questions (Section 6) need resolution before booking flow can be built end-to-end.
 
 ---
@@ -131,6 +131,8 @@ Staged rollout via Webflow staging/preview before publishing live. Webflow versi
 ## Status: Next.js build (current — see `supertooth-platform-pivot.md`)
 
 Deployed on Vercel, connected to `github.com/akashsst-code/supertooth-dentistry`. Production: https://supertooth-dentistry.vercel.app (default Vercel subdomain — no custom domain pointed yet).
+
+**Dr. Archana bio content — PR open, not yet merged:** the Trust block's Dr. Archana card had been carrying a placeholder ("Credentials, years of experience, background story") since Hero v2 landed her headshot. Replaced with her real bio (`content.ts`'s new `archana` export): practicing since 2012, DDS from the University of Colorado, Master's in Prosthodontics, specializing in implants/crowns/veneers/smile design — condensed down from the fuller bio Akash supplied (which also covers Botox certification and research recognition; that's a fit for a future dedicated `/about` page, not this compact card) to what earns its place in a mobile trust card. Card layout also changed from side-by-side to stacked/centered on mobile (photo above name, badges centered) and side-by-side from `sm:` up — the original fixed layout left too little width for real bio text on a 375px screen. The two generic badges ("Accepting new patients", "In-network with most insurance") were swapped for her actual credential badges (15+ years experience, University of Colorado, Invisalign certified); the "in-network" claim already lives in the insurance/offer section right below, so keeping it here was redundant.
 
 **Real office photography + trust-block reorder — PR open, not yet merged:** first real office photos landed (`public/office/`, 5 images supplied by Akash), replacing the placeholder office-photo tiles — the first Section 8 content blocker fully resolved for office (team photography is still pending). Because this content is now real, Trust block order changed from the doc's originally-proposed Archana → team → office → reviews to **Archana → office → reviews → team** (Akash's explicit call): office moves up since it's real now, team stays deferred lower since it's still placeholder-only.
 

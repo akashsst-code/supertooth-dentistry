@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ClockIcon, CrownIcon, GoogleGIcon, ShieldCheckIcon, StarIcon } from "./icons";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
-import { differentiators, reviews, team } from "@/lib/content";
+import { archana, differentiators, reviews, team } from "@/lib/content";
 
 /**
  * Icon per differentiator, keyed by array position rather than added to
@@ -71,26 +71,35 @@ export function TrustBlock() {
           })}
         </div>
 
-        {/* Dr. Archana */}
-        <div className="max-w-xl mx-auto rounded-2xl bg-warm-ivory p-8 border border-sand mb-16">
-          <div className="flex gap-6 items-start">
+        {/*
+         * Dr. Archana — real bio content landed 2026-08-23 (see content.ts),
+         * replacing the placeholder bio copy. Stacked/centered on mobile
+         * rather than the original side-by-side layout: at 375px the old
+         * fixed 96px photo + gap left only ~190px for bio text, too
+         * cramped once the placeholder was swapped for real sentences.
+         * Photo-above-name also reads as the more familiar mobile
+         * "profile card" pattern. Side-by-side returns at sm: and up,
+         * where there's room for it.
+         */}
+        <div className="max-w-xl mx-auto rounded-2xl bg-warm-ivory p-6 sm:p-8 border border-sand mb-16">
+          <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 items-center sm:items-start text-center sm:text-left">
             <Image
               src="/team/archana.webp"
-              alt="Dr. Archana, DDS"
+              alt="Dr. Archana Dubey, DDS, MDS"
               width={96}
               height={96}
               className="shrink-0 h-24 w-24 rounded-full object-cover"
             />
             <div>
-              <h3 className="font-display text-xl font-semibold text-espresso">Meet Dr. Archana</h3>
-              <p className="mt-2 text-sm text-espresso/70">
-                <Placeholder>Credentials, years of experience, background story</Placeholder>
-              </p>
+              <h3 className="font-display text-xl font-semibold text-espresso">{archana.name}</h3>
+              <p className="mt-1 text-sm italic text-terracotta">{archana.tagline}</p>
+              <p className="mt-3 text-sm text-espresso/70">{archana.bio}</p>
             </div>
           </div>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <TrustBadge>Accepting new patients</TrustBadge>
-            <TrustBadge>In-network with most insurance</TrustBadge>
+          <div className="mt-5 flex flex-wrap gap-2 justify-center sm:justify-start">
+            {archana.badges.map((badge) => (
+              <TrustBadge key={badge}>{badge}</TrustBadge>
+            ))}
           </div>
         </div>
 

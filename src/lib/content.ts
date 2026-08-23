@@ -83,6 +83,20 @@ export const officePhotos = [
  */
 export const insuranceCarriersHeroTeaser = ["Delta", "Premera", "Aetna"];
 
+// Dr. Archana Dubey's real bio and credentials — supplied by Akash
+// 2026-08-23, resolves the "Dr. Archana bio" content blocker in
+// docs/supertooth-webflow-build-spec.md Section 8. `real: true` per the
+// same convention as team[0]/archana.webp above. Trimmed from the fuller
+// supplied bio (full DDS/MDS history, Botox certification, research
+// recognition) down to what earns its place in the Trust block's compact
+// mobile card — the rest is a fit for a future dedicated /about page.
+export const archana = {
+  name: "Dr. Archana Dubey, DDS, MDS",
+  tagline: "Experienced care. Personalized smiles.",
+  bio: "Practicing since 2012, with a DDS from the University of Colorado and a Master's in Prosthodontics. Dr. Dubey specializes in implants, crowns, veneers, and smile design — with thoughtful, personalized care for patients of every age.",
+  badges: ["15+ years experience", "University of Colorado", "Invisalign certified"],
+};
+
 export const team = [
   { name: "Dr. Archana", role: "Dentist, Practice Owner", real: true, photo: "/team/archana.webp" },
   { name: "Hygienist name", role: "Hygienist", real: false },
