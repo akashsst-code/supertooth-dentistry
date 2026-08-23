@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { ClockIcon, CrownIcon, ShieldCheckIcon } from "./icons";
+import { BadgeIcon, ClockIcon, CrownIcon, ShieldCheckIcon } from "./icons";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
-import { differentiators, officeBlurb } from "@/lib/content";
+import { credentials, differentiators, officeBlurb } from "@/lib/content";
 
 /**
  * Icon per differentiator, keyed by array position rather than added to
@@ -37,6 +37,10 @@ function TrustBadge({ children }: { children: React.ReactNode }) {
  * the homepage (still kept in content.ts for a future dedicated /about
  * page, not deleted). A one-line "about our office" blurb was added
  * right under the carousel per the same conversation.
+ *
+ * Dr. Archana's training/affiliation badges live inside her bio card
+ * (below) rather than a separate section further down the page — "bring
+ * archana's training affiliations along with her bio space" (Akash).
  */
 export function TrustBlock() {
   return (
@@ -93,6 +97,26 @@ export function TrustBlock() {
           <div className="mt-5 flex flex-wrap gap-2">
             <TrustBadge>Accepting new patients</TrustBadge>
             <TrustBadge>In-network with most insurance</TrustBadge>
+          </div>
+
+          {/* Training & affiliations — kept with the bio, not a separate
+              section (see the top-of-file comment). Real org names not
+              yet confirmed, so every entry renders through <Placeholder>. */}
+          <div className="mt-6 pt-5 border-t border-sand">
+            <p className="text-xs font-semibold uppercase tracking-wide text-espresso/60 mb-3">
+              Training &amp; affiliations
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {credentials.map((c, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-xs font-medium text-espresso"
+                >
+                  <BadgeIcon className="shrink-0 text-terracotta" />
+                  <Placeholder>{c}</Placeholder>
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 

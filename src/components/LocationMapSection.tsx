@@ -3,7 +3,7 @@ import { Placeholder } from "./Placeholder";
 import { contact, practice, serviceAreas } from "@/lib/content";
 
 /**
- * Map + "areas we serve" — new section, positioned after Credentials per
+ * Map + "areas we serve" — new section, positioned after Services per
  * Akash's locked homepage-flow order, modeled on
  * smilemakersfortworth.com's map-plus-neighborhood-list pattern near the
  * bottom of their homepage. Standard Google Maps embed (no API key/

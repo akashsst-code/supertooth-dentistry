@@ -182,21 +182,6 @@ export function SparkleIcon({ className }: { className?: string }) {
   );
 }
 
-/** Invisalign / orthodontics — ServicesSection. */
-export function AlignIcon({ className }: { className?: string }) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path
-        d="M4 9c2.5 2 5 3 8 3s5.5-1 8-3M4 15c2.5 2 5 3 8 3s5.5-1 8-3"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 /** Restorative care / implants — ServicesSection. */
 export function ImplantIcon({ className }: { className?: string }) {
   return (
@@ -207,23 +192,7 @@ export function ImplantIcon({ className }: { className?: string }) {
   );
 }
 
-/** Emergency care — ServicesSection. */
-export function AlertIcon({ className }: { className?: string }) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path
-        d="M12 3l9 16H3l9-16z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <path d="M12 10v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="12" cy="17" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
-/** Professional-affiliation credential badge — CredentialsSection. */
+/** Professional-affiliation credential badge — TrustBlock (Dr. Archana's bio card). */
 export function BadgeIcon({ className }: { className?: string }) {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">

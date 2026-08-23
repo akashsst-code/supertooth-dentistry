@@ -5,9 +5,10 @@ import { insuranceCarriers } from "@/lib/content";
 /**
  * Insurance block — the carriers-only half of the old
  * InsuranceOfferBlock, split so new-patient offers can move to the end
- * of the homepage flow (see NewPatientOffersBlock.tsx / page.tsx). Stays
- * in its original position, right after Trust — "leave insurance, it's
- * covered earlier" (Akash, on the post-office-scroll flow reorder).
+ * of the homepage flow (see NewPatientOffersBlock.tsx / page.tsx). Kept
+ * in its own earlier slot in the flow — "leave insurance, it's covered
+ * earlier" (Akash) — now sitting right after TestimonialsSection once
+ * testimonials moved up to directly follow the office blurb.
  *
  * Redesigned from plain check+text pills into a typographic "wordmark
  * badge" per carrier: real trademarked carrier logo files aren't

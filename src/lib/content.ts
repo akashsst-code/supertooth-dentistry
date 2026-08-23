@@ -114,21 +114,23 @@ export const testimonials = [
 
 // Dr. Archana's professional affiliations/certifications — distinct from
 // the archana.badges credential chips above (those are already-confirmed
-// bio facts). This is the smilemakersfortworth.com-inspired "credential
-// logos" row (ADA / AGD / state-society style membership badges) — real
-// org names not yet confirmed, so every entry is a placeholder pending
-// Akash.
+// bio facts). Rendered inside her bio card in TrustBlock ("training &
+// affiliations along with her bio space" — Akash), not a standalone
+// section. Real org names not yet confirmed, so every entry is a
+// placeholder pending Akash.
 export const credentials = [
   "Professional association membership — pending confirmation",
   "Professional association membership — pending confirmation",
   "Continuing-education / certification — pending confirmation",
 ];
 
-// Homepage services teaser — same-day crowns and same-day appointments
-// are already-locked real differentiators (see differentiators above);
-// the rest are common general-dentistry categories used as a structural
-// placeholder until Akash confirms the practice's actual service list
-// (still an open content item, build-spec Section 8).
+// Homepage services teaser — trimmed to exactly 4 per Akash's call to
+// match smilemakersfortworth.com's 4-big-item pattern. Same-day crowns
+// and same-day appointments are already-locked real differentiators (see
+// differentiators above); the rest are common general-dentistry
+// categories used as a structural placeholder until Akash confirms the
+// practice's actual service list (still an open content item, build-spec
+// Section 8).
 export const services = [
   {
     title: "General & preventive care",
@@ -141,9 +143,7 @@ export const services = [
     real: true,
   },
   { title: "Cosmetic dentistry", detail: "Veneers, whitening, and smile design.", real: false },
-  { title: "Invisalign", detail: "Straighten your smile discreetly.", real: false },
   { title: "Restorative care", detail: "Crowns, bridges, and implant restorations.", real: false },
-  { title: "Emergency care", detail: "Same-day help when something's wrong.", real: false },
 ];
 
 // Neighborhoods served, for the map section — modeled on
