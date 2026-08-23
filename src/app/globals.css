@@ -48,3 +48,18 @@ p {
   min-width: 44px;
   min-height: 44px;
 }
+
+/* Slow Ken Burns zoom — makes a static hero photo read as "videographic"
+   until real footage replaces it, see ClinicVideo.tsx */
+@keyframes slow-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+.animate-slow-zoom {
+  animation: slow-zoom 20s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-slow-zoom {
+    animation: none;
+  }
+}
