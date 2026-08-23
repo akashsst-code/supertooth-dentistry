@@ -83,6 +83,32 @@ export const officePhotos = [
  */
 export const insuranceCarriersHeroTeaser = ["Delta", "Premera", "Aetna"];
 
+// Dr. Archana Dubey's real bio and credentials — supplied by Akash
+// 2026-08-23, resolves the "Dr. Archana bio" content blocker in
+// docs/supertooth-webflow-build-spec.md Section 8. `real: true` per the
+// same convention as team[0]/archana.webp above. Sourced from the
+// practice's existing site (gray-rail-265889.hostingersite.com and its
+// /about-us/ page, per Akash) — that site has no personal-life/hobby
+// content beyond her professional passion and philosophy, so this
+// doesn't invent any (would violate the no-unverifiable-claims rule in
+// docs/supertooth-build-principles.md Section 8). Photo is a real,
+// candid shot (at an ADA event, badge visible) rather than a posed
+// studio headshot — swapped in for the Trust block specifically because
+// it reads as more human/trustworthy at large size; the original
+// studio headshot (archana.webp) stays as-is for the Hero video panel
+// and team grid.
+export const archana = {
+  name: "Dr. Archana Dubey, DDS, MDS",
+  tagline: "Experienced care. Personalized smiles.",
+  photo: "/team/archana-profile.jpg",
+  quote:
+    "My philosophy is to combine the precision of modern dental science with the warmth of human care, enhancing every smile with thoughtful, personalized treatment.",
+  bio: "Dr. Dubey discovered her passion for dentistry in 2007 and has been practicing since 2012, with a DDS from the University of Colorado and a Master's in Prosthodontics from India. She specializes in esthetic and restorative dentistry — implants, crowns, veneers, smile design, and implant-supported dentures — and is especially passionate about creating joyful dental experiences for patients of every age, from children to seniors.",
+  badges: ["15+ years experience", "University of Colorado", "Invisalign certified"],
+  certifications:
+    "Certified Invisalign Provider · Certified Botox Provider · Nationally recognized scientific research",
+};
+
 export const team = [
   { name: "Dr. Archana", role: "Dentist, Practice Owner", real: true, photo: "/team/archana.webp" },
   { name: "Hygienist name", role: "Hygienist", real: false },
