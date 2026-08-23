@@ -26,15 +26,17 @@ import { Footer } from "@/components/Footer";
  * (docs/supertooth-webflow-build-spec.md Section 2) still need to be
  * built at /services, /about, /insurance-new-patients, /contact.
  *
- * Nav + Hero sharing exactly one screen height on mobile is handled by
- * ViewportHero — see that file for why a plain h-[100svh] div wasn't
- * enough (in-app browsers like WhatsApp's often don't support svh).
+ * Nav is fixed (pinned for the whole page, see Nav.tsx) and rendered
+ * outside ViewportHero. Hero still fills exactly one screen height on
+ * mobile below it — handled by ViewportHero, which reserves Nav's
+ * height; see that file for why a plain h-[100svh] div wasn't enough
+ * (in-app browsers like WhatsApp's often don't support svh).
  */
 export default function Home() {
   return (
     <>
+      <Nav />
       <ViewportHero>
-        <Nav />
         <Hero />
       </ViewportHero>
       <main>
