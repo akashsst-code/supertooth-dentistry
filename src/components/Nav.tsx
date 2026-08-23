@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Logo } from "./Logo";
 import { Placeholder } from "./Placeholder";
-import { contact, hours, nav, practice } from "@/lib/content";
+import { contact, hours, nav } from "@/lib/content";
 
 /**
  * Nav — Pattern A, locked in docs/supertooth-navigation-requirements.md:
@@ -20,12 +21,7 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-50 bg-warm-ivory/95 backdrop-blur border-b border-sand">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 min-h-16 py-2 flex items-center justify-between">
-        <Link href="/" className="flex flex-col leading-tight">
-          <span className="font-display text-xl font-semibold text-espresso">{practice.name}</span>
-          <span className="text-[11px] font-medium tracking-widest text-espresso/50 uppercase">
-            {practice.neighborhood} · {practice.city}
-          </span>
-        </Link>
+        <Logo />
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
