@@ -77,7 +77,7 @@ export const officePhotos = [
  * phone alongside the "In-network:" label and "+ more", so this trims
  * to the colloquial short names Akash used in chat. Full/proper names
  * still live in insuranceCarriers above for every other section
- * (InsuranceOfferBlock, the /services carrier chips) — this is a
+ * (InsuranceBlock, the /services carrier chips) — this is a
  * presentation-only abbreviation for one tight space, not a separate
  * source of truth.
  */
@@ -114,6 +114,101 @@ export const team = [
   { name: "Hygienist name", role: "Hygienist", real: false },
   { name: "Hygienist name", role: "Hygienist", real: false },
   { name: "Staff name", role: "Front Desk", real: false },
+]; // no longer rendered on the homepage (moved off per Akash's call, see
+// TrustBlock.tsx) — kept here for the future dedicated /about page in
+// docs/supertooth-webflow-build-spec.md Section 2.
+
+// Brief "about our office" copy for the homepage, directly under the
+// office-photo carousel — Akash's explicit placement call. Tone copy
+// (like the hero/Archana-bio copy), not a factual claim needing
+// Placeholder treatment; only references already-real differentiators
+// (same-day crowns) rather than unconfirmed physical specifics.
+export const officeBlurb =
+  "Step inside and it feels less like a dental office and more like a quiet reset — comfortable treatment rooms, same-day crown technology on-site, and a team that walks you through every step before it happens.";
+
+// "What patients are saying" — real Google rating/count already exist
+// above (reviews). These quote slots are structural placeholders only:
+// real patient testimonials cannot be invented (HIPAA / no-unverifiable-
+// claims, docs/supertooth-webflow-build-spec.md Section 7) — render each
+// through <Placeholder> until Akash supplies real reviews in first-name +
+// last-initial format.
+export const testimonials = [
+  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
+  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
+  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
+];
+
+// Dr. Archana's professional affiliations/certifications — distinct from
+// the archana.badges credential chips above (those are already-confirmed
+// bio facts). Rendered inside her bio card in TrustBlock ("training &
+// affiliations along with her bio space" — Akash), not a standalone
+// section. Real org names not yet confirmed, so every entry is a
+// placeholder pending Akash.
+export const credentials = [
+  "Professional association membership — pending confirmation",
+  "Professional association membership — pending confirmation",
+  "Continuing-education / certification — pending confirmation",
+];
+
+// Homepage services teaser — trimmed to exactly 4 per Akash's call to
+// match smilemakersfortworth.com's 4-big-item pattern. Same-day crowns
+// and same-day appointments are already-locked real differentiators (see
+// differentiators above); the description text for cosmetic/restorative
+// is still a structural placeholder pending Akash's confirmed service
+// list (build-spec Section 8) even though the photos backing them are
+// now real.
+//
+// `image` is real marketing photography Akash supplied directly
+// (same-day onlay before/after, implant x-ray before/after, in-office
+// Zoom whitening before/after) — matched by content to the closest of
+// the 4 categories (same-day onlay -> same-day crowns; implant ->
+// restorative care; whitening -> cosmetic dentistry). No photo was
+// supplied for general/preventive care, so that card falls back to the
+// icon-tile treatment in ServicesSection.tsx rather than inventing one.
+// Two other supplied images (Invisalign Gold Provider badge, Masseter
+// Botox before/after) don't map to any of these 4 categories and aren't
+// used here — worth a follow-up on where those belong (e.g. Botox next
+// to Dr. Archana's "Certified Botox Provider" credential, Invisalign
+// alongside the existing $500-off offer).
+export const services = [
+  {
+    title: "General & preventive care",
+    detail: "Cleanings, exams, and same-day appointments when you need them.",
+    real: true,
+  },
+  {
+    title: "Same-day crowns",
+    detail: "In-house technology — no second visit, no temporary crown.",
+    real: true,
+    image: { src: "/services/same-day-crown-onlay.jpg", alt: "Same-day onlay, before and after" },
+  },
+  {
+    title: "Cosmetic dentistry",
+    detail: "Veneers, whitening, and smile design.",
+    real: false,
+    image: { src: "/services/teeth-whitening.jpg", alt: "In-office Zoom teeth whitening, before and after" },
+  },
+  {
+    title: "Restorative care",
+    detail: "Crowns, bridges, and implant restorations.",
+    real: false,
+    image: { src: "/services/implant-dentistry.jpg", alt: "Dental implant, before and after x-ray" },
+  },
+];
+
+// Neighborhoods served, for the map section — modeled on
+// smilemakersfortworth.com's "Proudly Serving Fort Worth & Surrounding
+// Areas" pattern. Only the practice's own neighborhood is confirmed real;
+// the rest are plausible-by-proximity Seattle neighborhoods, held as
+// placeholders until Akash confirms the actual service-area list (an
+// unverifiable-claims risk per build-spec Section 7 if stated as fact).
+export const serviceAreas = [
+  practice.neighborhood, // real
+  "Magnolia",
+  "Belltown",
+  "South Lake Union",
+  "Fremont",
+  "Ballard",
 ];
 
 export const nav = [

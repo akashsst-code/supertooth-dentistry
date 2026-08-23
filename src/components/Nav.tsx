@@ -14,64 +14,81 @@ import { contact, hours, nav } from "@/lib/content";
  * shown inline (zero extra taps), and Book Now + phone repeated at the
  * bottom. "Open now" live status is deliberately not implemented — the
  * doc calls a static hours list an acceptable lower-cost v1.
+ *
+ * `fixed` rather than `sticky`: this used to render nested inside
+ * ViewportHero's one-screen-tall wrapper alongside Hero. A sticky
+ * element only sticks within its own containing block — once a reader
+ * scrolled past that wrapper (i.e. past Hero, into TrustBlock and
+ * everything below), the wrapper itself had fully scrolled offscreen,
+ * so the "stuck" nav scrolled away with it and never came back. `fixed`
+ * pins it to the viewport for the entire page instead. NAV_HEIGHT_PX in
+ * ViewportHero.tsx must stay in sync with this header's rendered height
+ * (h-16 below) since Nav is now out of normal flow and everything after
+ * it has to reserve that space itself.
  */
 export function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 shrink-0 bg-warm-ivory/95 backdrop-blur border-b border-sand">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 min-h-16 py-2 flex items-center justify-between">
-        <Logo />
+    <>
+      <header className="fixed top-0 inset-x-0 z-50 bg-warm-ivory/95 backdrop-blur border-b border-sand">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Logo />
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
-          {nav.map((item) => (
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium text-espresso hover:text-terracotta transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
             <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-espresso hover:text-terracotta transition-colors"
+              href="/contact"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
             >
-              {item.label}
+              Book Now
             </Link>
-          ))}
-          <Link
-            href="/contact"
-            className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
-          >
-            Book Now
-          </Link>
-        </nav>
+          </nav>
 
-        {/* Mobile controls */}
-        <div className="flex md:hidden items-center gap-2">
-          <a
-            href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-            aria-label="Call the practice"
-            className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/20 text-espresso"
-          >
-            <PhoneIcon />
-          </a>
-          <Link
-            href="/contact"
-            className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-4 text-sm font-semibold text-warm-ivory"
-          >
-            Book
-          </Link>
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/20 text-espresso"
-          >
-            {open ? <CloseIcon /> : <MenuIcon />}
-          </button>
+          {/* Mobile controls */}
+          <div className="flex md:hidden items-center gap-2">
+            <a
+              href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
+              aria-label="Call the practice"
+              className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/20 text-espresso"
+            >
+              <PhoneIcon />
+            </a>
+            <Link
+              href="/contact"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-4 text-sm font-semibold text-warm-ivory"
+            >
+              Book
+            </Link>
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+              className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/20 text-espresso"
+            >
+              {open ? <CloseIcon /> : <MenuIcon />}
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile full-screen menu */}
+      {/* Mobile full-screen menu — deliberately rendered outside <header>:
+          that element has backdrop-blur, and backdrop-filter establishes
+          a new containing block for fixed-position descendants, which
+          collapsed this menu's fixed inset-0 box to the header's own
+          65px height instead of the viewport. */}
       {open && (
-        <div className="md:hidden fixed inset-0 top-[72px] bg-warm-ivory z-40 flex flex-col overflow-y-auto">
+        <div className="md:hidden fixed inset-0 top-16 bg-warm-ivory z-40 flex flex-col overflow-y-auto">
           <nav className="flex flex-col px-6 py-8 gap-6" aria-label="Mobile primary">
             {nav.map((item) => (
               <Link
@@ -115,7 +132,7 @@ export function Nav() {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 
