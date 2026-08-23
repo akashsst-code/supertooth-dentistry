@@ -68,6 +68,25 @@ export function CrownIcon({ className }: { className?: string }) {
   );
 }
 
+/** Office-photo carousel pause/play control, TrustBlock. */
+export function PauseIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <rect x="6" y="5" width="4" height="14" rx="1" />
+      <rect x="14" y="5" width="4" height="14" rx="1" />
+    </svg>
+  );
+}
+
+/** Office-photo carousel pause/play control, TrustBlock. */
+export function PlayIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M7 4.5v15l13-7.5-13-7.5z" />
+    </svg>
+  );
+}
+
 /** In-network with most plans — differentiator icon, TrustBlock. */
 export function ShieldCheckIcon({ className }: { className?: string }) {
   return (

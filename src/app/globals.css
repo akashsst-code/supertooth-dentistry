@@ -80,3 +80,20 @@ p {
     animation: none;
   }
 }
+
+/* Office-photo carousel — continuous right-to-left scroll. The track
+   renders the photo list twice back-to-back and translates exactly -50%
+   (one full copy's width), so the loop point is seamless regardless of
+   photo count/size. See TrustBlock.tsx. */
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-left 32s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}

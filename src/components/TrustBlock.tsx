@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ClockIcon, CrownIcon, GoogleGIcon, ShieldCheckIcon, StarIcon } from "./icons";
+import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
 import { differentiators, reviews, team } from "@/lib/content";
 
@@ -27,10 +28,13 @@ function TrustBadge({ children }: { children: React.ReactNode }) {
  * — leading with the price offer risks reading as a discount clinic for
  * the routine/proactive primary persona).
  *
- * Team/office photography does not exist yet (tracked as a launch-blocking
- * content item, not a design decision, per the same doc) — photo slots are
- * placeholder tiles, not stock imagery, since stock would undermine the
- * "real, legitimate practice" trust signal this section exists to create.
+ * Internal order (Archana -> office photos -> reviews -> team) is Akash's
+ * explicit call, not the doc's originally proposed Archana -> team ->
+ * office -> reviews sequence: office photography is real content now (see
+ * OfficeCarousel.tsx / content.ts officePhotos), so it moves up to sit
+ * right after Archana; team is still placeholder-only and deferred lower
+ * until real staff photos exist, rather than blocking on the doc's exact
+ * proposed order.
  */
 export function TrustBlock() {
   return (
@@ -67,53 +71,57 @@ export function TrustBlock() {
           })}
         </div>
 
-        {/* Dr. Archana + reviews */}
-        <div className="grid md:grid-cols-2 gap-10 items-center mb-16">
-          <div className="rounded-2xl bg-warm-ivory p-8 border border-sand">
-            <div className="flex gap-6 items-start">
-              <Image
-                src="/team/archana.webp"
-                alt="Dr. Archana, DDS"
-                width={96}
-                height={96}
-                className="shrink-0 h-24 w-24 rounded-full object-cover"
-              />
-              <div>
-                <h3 className="font-display text-xl font-semibold text-espresso">Meet Dr. Archana</h3>
-                <p className="mt-2 text-sm text-espresso/70">
-                  <Placeholder>Credentials, years of experience, background story</Placeholder>
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 flex flex-wrap gap-2">
-              <TrustBadge>Accepting new patients</TrustBadge>
-              <TrustBadge>In-network with most insurance</TrustBadge>
+        {/* Dr. Archana */}
+        <div className="max-w-xl mx-auto rounded-2xl bg-warm-ivory p-8 border border-sand mb-16">
+          <div className="flex gap-6 items-start">
+            <Image
+              src="/team/archana.webp"
+              alt="Dr. Archana, DDS"
+              width={96}
+              height={96}
+              className="shrink-0 h-24 w-24 rounded-full object-cover"
+            />
+            <div>
+              <h3 className="font-display text-xl font-semibold text-espresso">Meet Dr. Archana</h3>
+              <p className="mt-2 text-sm text-espresso/70">
+                <Placeholder>Credentials, years of experience, background story</Placeholder>
+              </p>
             </div>
           </div>
-
-          <div className="rounded-2xl bg-warm-ivory p-8 border border-sand">
-            <div className="flex items-center gap-2 text-espresso/60 text-sm font-medium">
-              <GoogleGIcon /> Google Reviews
-            </div>
-            <div className="mt-3 flex items-center gap-3">
-              <div className="flex gap-0.5 text-terracotta">
-                <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
-              </div>
-              <span className="font-display text-xl font-semibold text-espresso">
-                <Placeholder>{reviews.rating}</Placeholder>
-              </span>
-            </div>
-            <p className="mt-2 text-sm text-espresso/70">
-              <Placeholder>{reviews.count} reviews</Placeholder> — verify against live Google
-              Business Profile before launch
-            </p>
-            <p className="mt-3 text-sm font-medium text-terracotta">
-              <Placeholder>Read our reviews on Google →</Placeholder>
-            </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <TrustBadge>Accepting new patients</TrustBadge>
+            <TrustBadge>In-network with most insurance</TrustBadge>
           </div>
         </div>
 
-        {/* Team grid */}
+        {/* Office photos — real photography, right after Archana */}
+        <div className="mb-16">
+          <OfficeCarousel />
+        </div>
+
+        {/* Reviews */}
+        <div className="max-w-xl mx-auto rounded-2xl bg-warm-ivory p-8 border border-sand mb-16">
+          <div className="flex items-center gap-2 text-espresso/60 text-sm font-medium">
+            <GoogleGIcon /> Google Reviews
+          </div>
+          <div className="mt-3 flex items-center gap-3">
+            <div className="flex gap-0.5 text-terracotta">
+              <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
+            </div>
+            <span className="font-display text-xl font-semibold text-espresso">
+              <Placeholder>{reviews.rating}</Placeholder>
+            </span>
+          </div>
+          <p className="mt-2 text-sm text-espresso/70">
+            <Placeholder>{reviews.count} reviews</Placeholder> — verify against live Google
+            Business Profile before launch
+          </p>
+          <p className="mt-3 text-sm font-medium text-terracotta">
+            <Placeholder>Read our reviews on Google →</Placeholder>
+          </p>
+        </div>
+
+        {/* Team grid — still placeholder photography, deferred to last */}
         <div>
           <h3 className="font-display text-xl font-semibold text-espresso mb-6">Meet the team</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
@@ -136,21 +144,6 @@ export function TrustBlock() {
                   {member.real ? member.name : <Placeholder>{member.name}</Placeholder>}
                 </p>
                 <p className="text-sm text-espresso/60">{member.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Office photos */}
-        <div className="mt-16">
-          <h3 className="font-display text-xl font-semibold text-espresso mb-6">Our office</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="aspect-4/3 rounded-2xl bg-sand flex items-center justify-center text-xs text-espresso/60"
-              >
-                <Placeholder>office photo {i}</Placeholder>
               </div>
             ))}
           </div>
