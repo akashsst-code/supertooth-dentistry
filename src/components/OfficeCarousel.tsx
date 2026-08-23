@@ -13,18 +13,30 @@ import {
 } from "./icons";
 
 const AUTOPLAY_MS = 3500;
+const IDLE_RESUME_MS = 4000;
 
 /**
  * Office-photo carousel — real native horizontal scroll-snap (touch swipe,
  * trackpad, and the scrollbar all work for free) instead of a CSS-transform
- * marquee, so it responds to user input rather than fighting it: any
- * pointerdown pauses autoplay immediately, and an IntersectionObserver
- * tracks which tile the user actually scrolled to, so resuming autoplay
- * continues from there instead of jumping back to a fixed position.
+ * marquee, so it responds to user input rather than fighting it.
+ *
+ * Two separate reasons autoplay can be off, kept as separate state on
+ * purpose: `userPaused` is a sticky choice (the pause button) that only
+ * the user can undo; `interacting` is a transient flag set by any
+ * swipe/drag/wheel/tile-click and auto-cleared after IDLE_RESUME_MS of no
+ * further activity. Autoplay only runs when neither is set — keeps the
+ * carousel quietly engaging by default, gets out of the way the instant
+ * someone touches it, and comes back on its own once they're done,
+ * without ever overriding an explicit pause. Goal is passive engagement
+ * that builds trust before the booking CTA further down the page, not an
+ * animation that fights the person looking at it.
  *
  * Clicking/tapping a tile opens it full-size in a lightbox — patients get
  * a closer look at the real space, serving the anxiety-reduction job this
- * section exists for (docs/supertooth-ux-flow.md Section 2).
+ * section exists for (docs/supertooth-ux-flow.md Section 2). Deliberately
+ * no pinch/scroll-to-zoom inside the lightbox — full-size is the job to
+ * be done here, and zoom controls would be complexity without a clear
+ * patient need.
  *
  * Pause/play control is not decorative: WCAG 2.2.2 (Pause, Stop, Hide)
  * requires a way to stop auto-moving content that runs longer than 5
@@ -35,14 +47,34 @@ const AUTOPLAY_MS = 3500;
 export function OfficeCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [playing, setPlaying] = useState(true);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [userPaused, setUserPaused] = useState(false);
+  const [interacting, setInteracting] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  const playing = !userPaused && !interacting && !reducedMotion;
+
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setPlaying(false);
-    }
+    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+
+  // Any real user activity (swipe/drag start, trackpad scroll, opening a
+  // photo) marks "interacting" and (re)starts the idle countdown. Not
+  // wired to the container's scroll event on purpose — autoplay's own
+  // scrollIntoView also fires scroll events, and listening there would
+  // make autoplay immediately re-pause itself after every tick.
+  function markInteracting() {
+    setInteracting(true);
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(() => setInteracting(false), IDLE_RESUME_MS);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -80,18 +112,19 @@ export function OfficeCarousel() {
         <h3 className="font-display text-xl font-semibold text-espresso">Our office</h3>
         <button
           type="button"
-          onClick={() => setPlaying((p) => !p)}
-          aria-label={playing ? "Pause office photo scroll" : "Resume office photo scroll"}
-          aria-pressed={!playing}
+          onClick={() => setUserPaused((p) => !p)}
+          aria-label={userPaused ? "Resume office photo scroll" : "Pause office photo scroll"}
+          aria-pressed={userPaused}
           className="tap-target inline-flex items-center justify-center rounded-full border border-sand text-espresso/70 hover:text-espresso hover:border-terracotta/50 transition-colors"
         >
-          {playing ? <PauseIcon /> : <PlayIcon />}
+          {userPaused ? <PlayIcon /> : <PauseIcon />}
         </button>
       </div>
 
       <div
         ref={containerRef}
-        onPointerDown={() => setPlaying(false)}
+        onPointerDown={markInteracting}
+        onWheel={markInteracting}
         className="office-scroll flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2"
       >
         {officePhotos.map((photo, i) => (
@@ -102,7 +135,7 @@ export function OfficeCarousel() {
             }}
             type="button"
             onClick={() => {
-              setPlaying(false);
+              markInteracting();
               setLightboxIndex(i);
             }}
             className="group relative shrink-0 snap-start"
