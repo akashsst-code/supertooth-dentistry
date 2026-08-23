@@ -148,6 +148,12 @@ Deployed on Vercel, connected to `github.com/akashsst-code/supertooth-dentistry`
 
 **Remaining before this is launch-ready:** urgent-path widget, booking block (needs Tab32 decisions resolved), CMS/content-editability decision (see platform-pivot doc), replacing remaining placeholders (rest of team/office photos, carrier names, address, hours, credentials copy) with real content, custom domain, and the compliance/accessibility checklist pass (Section 7).
 
+**Hero CTA visibility + Google rating in hero — on branch `feature/hero-cta-and-reviews-visibility`, pending Akash review (not yet merged, 2026-08-22):**
+- [x] Call CTA below Book on mobile is now column-stacked (deterministic order, not flex-wrap-dependent) and wired to a real `tel:` link — it previously routed to `/contact` instead of dialing.
+- [x] Hero vertical spacing (video height, badge/heading/paragraph/CTA gaps) tightened so both Book and Call CTAs clear the fold on a small mobile reference viewport, not just large phones — verified at iPhone SE (375×667) and iPhone 17 Pro Max sizes. New guardrail rule added to `supertooth-build-principles.md` Sections 4 and 6.
+- [x] Google rating badge (`4.9 · 487 on Google`) added to the hero eyebrow row as a lightweight above-the-fold echo of the full review block already in Trust block — same "pull a quick trust tag into the hero" precedent as the insurance-acceptance signal. Still unconfirmed data, rendered through `<Placeholder tone="dark">` per the compliance rule.
+- [x] `Placeholder` component gained a `tone="dark"` variant so unverified content stays WCAG-AA-legible when used on the dark hero panel (previously only styled for light surfaces).
+
 ---
 
 ## Status: Webflow build (historical — superseded by the Next.js build above)

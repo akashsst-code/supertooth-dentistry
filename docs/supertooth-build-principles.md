@@ -39,6 +39,7 @@ Governing document for how this product gets designed, built, reviewed, and ship
 - **Friction is the enemy at the moment of conversion.** Stage 4 (booking) should never require more steps than a restaurant reservation. Every added field or click needs to justify itself.
 - **Accessibility is not optional.** WCAG AA baseline — color contrast (check against the locked palette), alt text, keyboard navigation, readable font sizes. This is a healthcare site; patients skew older and more diverse in ability than average.
 - **Consistent with the locked style guide.** Any new component or page must be checked against the v2 developer style guide (colors, typography, spacing) already produced — no ad hoc styling decisions mid-build.
+- **Primary + secondary CTAs must both clear the fold on a small mobile reference viewport, not just whatever phone is in hand.** Checking layout only on a large phone (e.g. iPhone Pro Max) can hide a real overflow problem that shows up on smaller screens. Use iPhone SE (375×667) as the minimum reference size when verifying that hero/above-the-fold CTAs are visible without scrolling, and budget for the browser's own chrome (URL bar, bottom toolbar) eating real vertical space beyond the raw viewport height — don't design to the exact pixel edge.
 
 ---
 
@@ -62,6 +63,7 @@ Governing document for how this product gets designed, built, reviewed, and ship
   - Forms: test submission, confirmation, and what happens if it fails silently
   - Click-to-call/text: test on actual mobile devices, not just simulated
   - Cross-browser/cross-device: at minimum, latest Chrome + Safari, iOS + Android
+  - Above-the-fold layout: check against a small reference viewport (iPhone SE, 375×667) in addition to whatever device is in hand — see the CTA-visibility rule in Section 4
 - **No feature is "done" until it survives someone other than the builder trying to break it.**
 
 ---
