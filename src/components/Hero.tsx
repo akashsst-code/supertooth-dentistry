@@ -33,12 +33,12 @@ import { CheckIcon, GoogleGIcon, StarIcon } from "./icons";
  */
 export function Hero() {
   return (
-    <section className="flex flex-col md:flex-row-reverse md:min-h-[560px]">
-      <div className="w-full md:w-3/5 h-[34svh] min-h-[160px] md:h-auto overflow-hidden">
+    <section className="flex-1 min-h-0 flex flex-col md:flex-row-reverse md:min-h-[560px]">
+      <div className="w-full flex-1 min-h-[160px] md:w-3/5 md:flex-none md:h-auto overflow-hidden">
         <ClinicVideo />
       </div>
 
-      <div className="w-full md:w-2/5 bg-espresso text-warm-ivory flex flex-col justify-center px-6 py-4 sm:px-10 sm:py-16">
+      <div className="w-full shrink-0 md:w-2/5 bg-espresso text-warm-ivory flex flex-col justify-center px-6 py-4 sm:px-10 sm:py-16">
         <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70 mb-2">
           Accepting new patients
         </span>

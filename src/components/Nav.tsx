@@ -19,7 +19,7 @@ export function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-warm-ivory/95 backdrop-blur border-b border-sand">
+    <header className="sticky top-0 z-50 shrink-0 bg-warm-ivory/95 backdrop-blur border-b border-sand">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 min-h-16 py-2 flex items-center justify-between">
         <Logo />
 
