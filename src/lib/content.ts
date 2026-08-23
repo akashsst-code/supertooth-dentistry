@@ -77,7 +77,7 @@ export const officePhotos = [
  * phone alongside the "In-network:" label and "+ more", so this trims
  * to the colloquial short names Akash used in chat. Full/proper names
  * still live in insuranceCarriers above for every other section
- * (InsuranceOfferBlock, the /services carrier chips) — this is a
+ * (InsuranceBlock, the /services carrier chips) — this is a
  * presentation-only abbreviation for one tight space, not a separate
  * source of truth.
  */
@@ -88,6 +88,77 @@ export const team = [
   { name: "Hygienist name", role: "Hygienist", real: false },
   { name: "Hygienist name", role: "Hygienist", real: false },
   { name: "Staff name", role: "Front Desk", real: false },
+]; // no longer rendered on the homepage (moved off per Akash's call, see
+// TrustBlock.tsx) — kept here for the future dedicated /about page in
+// docs/supertooth-webflow-build-spec.md Section 2.
+
+// Brief "about our office" copy for the homepage, directly under the
+// office-photo carousel — Akash's explicit placement call. Tone copy
+// (like the hero/Archana-bio copy), not a factual claim needing
+// Placeholder treatment; only references already-real differentiators
+// (same-day crowns) rather than unconfirmed physical specifics.
+export const officeBlurb =
+  "Step inside and it feels less like a dental office and more like a quiet reset — comfortable treatment rooms, same-day crown technology on-site, and a team that walks you through every step before it happens.";
+
+// "What patients are saying" — real Google rating/count already exist
+// above (reviews). These quote slots are structural placeholders only:
+// real patient testimonials cannot be invented (HIPAA / no-unverifiable-
+// claims, docs/supertooth-webflow-build-spec.md Section 7) — render each
+// through <Placeholder> until Akash supplies real reviews in first-name +
+// last-initial format.
+export const testimonials = [
+  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
+  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
+  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
+];
+
+// Dr. Archana's professional affiliations/certifications — distinct from
+// the archana.badges credential chips above (those are already-confirmed
+// bio facts). This is the smilemakersfortworth.com-inspired "credential
+// logos" row (ADA / AGD / state-society style membership badges) — real
+// org names not yet confirmed, so every entry is a placeholder pending
+// Akash.
+export const credentials = [
+  "Professional association membership — pending confirmation",
+  "Professional association membership — pending confirmation",
+  "Continuing-education / certification — pending confirmation",
+];
+
+// Homepage services teaser — same-day crowns and same-day appointments
+// are already-locked real differentiators (see differentiators above);
+// the rest are common general-dentistry categories used as a structural
+// placeholder until Akash confirms the practice's actual service list
+// (still an open content item, build-spec Section 8).
+export const services = [
+  {
+    title: "General & preventive care",
+    detail: "Cleanings, exams, and same-day appointments when you need them.",
+    real: true,
+  },
+  {
+    title: "Same-day crowns",
+    detail: "In-house technology — no second visit, no temporary crown.",
+    real: true,
+  },
+  { title: "Cosmetic dentistry", detail: "Veneers, whitening, and smile design.", real: false },
+  { title: "Invisalign", detail: "Straighten your smile discreetly.", real: false },
+  { title: "Restorative care", detail: "Crowns, bridges, and implant restorations.", real: false },
+  { title: "Emergency care", detail: "Same-day help when something's wrong.", real: false },
+];
+
+// Neighborhoods served, for the map section — modeled on
+// smilemakersfortworth.com's "Proudly Serving Fort Worth & Surrounding
+// Areas" pattern. Only the practice's own neighborhood is confirmed real;
+// the rest are plausible-by-proximity Seattle neighborhoods, held as
+// placeholders until Akash confirms the actual service-area list (an
+// unverifiable-claims risk per build-spec Section 7 if stated as fact).
+export const serviceAreas = [
+  practice.neighborhood, // real
+  "Magnolia",
+  "Belltown",
+  "South Lake Union",
+  "Fremont",
+  "Ballard",
 ];
 
 export const nav = [

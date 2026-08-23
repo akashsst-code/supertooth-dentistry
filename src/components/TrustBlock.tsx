@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { ClockIcon, CrownIcon, GoogleGIcon, ShieldCheckIcon, StarIcon } from "./icons";
+import { ClockIcon, CrownIcon, ShieldCheckIcon } from "./icons";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
-import { differentiators, reviews, team } from "@/lib/content";
+import { differentiators, officeBlurb } from "@/lib/content";
 
 /**
  * Icon per differentiator, keyed by array position rather than added to
@@ -28,13 +28,15 @@ function TrustBadge({ children }: { children: React.ReactNode }) {
  * — leading with the price offer risks reading as a discount clinic for
  * the routine/proactive primary persona).
  *
- * Internal order (Archana -> office photos -> reviews -> team) is Akash's
- * explicit call, not the doc's originally proposed Archana -> team ->
- * office -> reviews sequence: office photography is real content now (see
- * OfficeCarousel.tsx / content.ts officePhotos), so it moves up to sit
- * right after Archana; team is still placeholder-only and deferred lower
- * until real staff photos exist, rather than blocking on the doc's exact
- * proposed order.
+ * Internal order (differentiators -> Archana -> office photos -> office
+ * blurb) trimmed per Akash's explicit call on the post-office-scroll
+ * homepage flow: the flow through the office carousel stays as-is, but
+ * the Google-reviews card and the "Meet the team" grid that used to sit
+ * below it are gone from here — reviews moved into the new, more visual
+ * TestimonialsSection (see page.tsx), and team is dropped entirely from
+ * the homepage (still kept in content.ts for a future dedicated /about
+ * page, not deleted). A one-line "about our office" blurb was added
+ * right under the carousel per the same conversation.
  */
 export function TrustBlock() {
   return (
@@ -95,59 +97,12 @@ export function TrustBlock() {
         </div>
 
         {/* Office photos — real photography, right after Archana */}
-        <div className="mb-16">
+        <div>
           <OfficeCarousel />
         </div>
 
-        {/* Reviews */}
-        <div className="max-w-xl mx-auto rounded-2xl bg-warm-ivory p-8 border border-sand mb-16">
-          <div className="flex items-center gap-2 text-espresso/60 text-sm font-medium">
-            <GoogleGIcon /> Google Reviews
-          </div>
-          <div className="mt-3 flex items-center gap-3">
-            <div className="flex gap-0.5 text-terracotta">
-              <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
-            </div>
-            <span className="font-display text-xl font-semibold text-espresso">
-              <Placeholder>{reviews.rating}</Placeholder>
-            </span>
-          </div>
-          <p className="mt-2 text-sm text-espresso/70">
-            <Placeholder>{reviews.count} reviews</Placeholder> — verify against live Google
-            Business Profile before launch
-          </p>
-          <p className="mt-3 text-sm font-medium text-terracotta">
-            <Placeholder>Read our reviews on Google →</Placeholder>
-          </p>
-        </div>
-
-        {/* Team grid — still placeholder photography, deferred to last */}
-        <div>
-          <h3 className="font-display text-xl font-semibold text-espresso mb-6">Meet the team</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-            {team.map((member, i) => (
-              <div key={i} className="rounded-2xl bg-warm-ivory p-6 border border-sand text-center">
-                {member.photo ? (
-                  <Image
-                    src={member.photo}
-                    alt={member.name}
-                    width={80}
-                    height={80}
-                    className="mx-auto h-20 w-20 rounded-full object-cover mb-4"
-                  />
-                ) : (
-                  <div className="mx-auto h-20 w-20 rounded-full bg-sand mb-4 flex items-center justify-center text-xs text-espresso/60">
-                    {member.real ? "Photo" : <Placeholder>photo</Placeholder>}
-                  </div>
-                )}
-                <p className="font-medium text-espresso">
-                  {member.real ? member.name : <Placeholder>{member.name}</Placeholder>}
-                </p>
-                <p className="text-sm text-espresso/60">{member.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Brief "about our office" blurb, directly under the carousel */}
+        <p className="mt-6 max-w-2xl mx-auto text-center text-espresso/70">{officeBlurb}</p>
       </div>
     </section>
   );

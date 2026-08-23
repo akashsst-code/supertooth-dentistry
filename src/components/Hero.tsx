@@ -70,7 +70,7 @@ export function Hero() {
          * it — Akash flagged that as the same claim shown twice.
          *
          * Deliberately NOT wrapped in <Placeholder> here (unlike the fuller
-         * versions in TrustBlock/InsuranceOfferBlock below) — Akash asked
+         * versions in TrustBlock/InsuranceBlock below) — Akash asked
          * for the dashed-underline treatment removed from this strip
          * specifically since it read as broken rather than "unconfirmed" at
          * a glance. The compliance status hasn't changed: reviews.rating/
@@ -84,7 +84,7 @@ export function Hero() {
          * a tap-to-expand "+more" instead, but skipped it: hover doesn't
          * exist on mobile (touch-only, and this is a mobile-first site),
          * and the full carrier list already has a proper home one scroll
-         * down in InsuranceOfferBlock — an interactive popover here would
+         * down in InsuranceBlock — an interactive popover here would
          * just duplicate that for one line of hero real estate.
          */}
         <div className="mt-3 flex flex-col gap-1 text-xs text-warm-ivory/70">

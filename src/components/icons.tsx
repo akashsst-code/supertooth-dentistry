@@ -1,6 +1,6 @@
 /**
  * Small shared icons used across trust-signal UI (Hero, TrustBlock,
- * InsuranceOfferBlock) — pulled out once these were needed in more than
+ * InsuranceBlock) — pulled out once these were needed in more than
  * one place, so the SVG paths have a single source of truth.
  */
 
@@ -155,6 +155,95 @@ export function ChevronRightIcon({ className }: { className?: string }) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
       <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Big decorative quote mark — TestimonialsSection cards. */
+export function QuoteIcon({ className }: { className?: string }) {
+  return (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M9.5 6C6.5 7.5 5 10 5 13c0 2.2 1.6 3.8 3.6 3.8 1.8 0 3.2-1.4 3.2-3.1 0-1.6-1.1-2.9-2.7-3.1.4-1.4 1.6-2.7 3.1-3.4L9.5 6zm9 0C15.5 7.5 14 10 14 13c0 2.2 1.6 3.8 3.6 3.8 1.8 0 3.2-1.4 3.2-3.1 0-1.6-1.1-2.9-2.7-3.1.4-1.4 1.6-2.7 3.1-3.4L18.5 6z" />
+    </svg>
+  );
+}
+
+/** Cosmetic dentistry — ServicesSection. */
+export function SparkleIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Invisalign / orthodontics — ServicesSection. */
+export function AlignIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M4 9c2.5 2 5 3 8 3s5.5-1 8-3M4 15c2.5 2 5 3 8 3s5.5-1 8-3"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Restorative care / implants — ServicesSection. */
+export function ImplantIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path d="M12 3l6 3v2H6V6l6-3z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M12 8v13M9 21l1-4M15 21l-1-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Emergency care — ServicesSection. */
+export function AlertIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M12 3l9 16H3l9-16z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path d="M12 10v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="12" cy="17" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Professional-affiliation credential badge — CredentialsSection. */
+export function BadgeIcon({ className }: { className?: string }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <circle cx="12" cy="9" r="5" stroke="currentColor" strokeWidth="2" />
+      <path d="M9 13.5L7.5 21l4.5-2.5 4.5 2.5-1.5-7.5" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Location pin — LocationMapSection service-area list. */
+export function PinDotIcon({ className }: { className?: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M12 21s6.5-6 6.5-11a6.5 6.5 0 1 0-13 0c0 5 6.5 11 6.5 11z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="10" r="2" fill="currentColor" />
     </svg>
   );
 }
