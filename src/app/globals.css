@@ -81,19 +81,24 @@ p {
   }
 }
 
-/* Office-photo carousel — continuous right-to-left scroll. The track
-   renders the photo list twice back-to-back and translates exactly -50%
-   (one full copy's width), so the loop point is seamless regardless of
-   photo count/size. See TrustBlock.tsx. */
-@keyframes marquee-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+/* Office-photo carousel — real native horizontal scroll (touch swipe,
+   trackpad, scrollbar-drag), auto-advanced by JS (see OfficeCarousel.tsx)
+   rather than a CSS transform, so user scroll input isn't fought by a
+   competing animation. This just gives the scrollbar itself a styled,
+   on-brand look instead of the bare OS default, on browsers that support
+   scrollbar styling. */
+.office-scroll {
+  scrollbar-color: var(--color-terracotta) transparent;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
-.animate-marquee {
-  animation: marquee-left 32s linear infinite;
+.office-scroll::-webkit-scrollbar {
+  height: 6px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-    animation: none;
-  }
+.office-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-terracotta);
+  border-radius: 9999px;
+}
+.office-scroll::-webkit-scrollbar-track {
+  background: transparent;
 }
