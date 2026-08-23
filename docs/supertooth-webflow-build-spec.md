@@ -128,7 +128,27 @@ Staged rollout via Webflow staging/preview before publishing live. Webflow versi
 
 ---
 
-## Status: Webflow build in progress
+## Status: Next.js build (current — see `supertooth-platform-pivot.md`)
+
+Deployed on Vercel, connected to `github.com/akashsst-code/supertooth-dentistry`. Production: https://supertooth-dentistry.vercel.app (default Vercel subdomain — no custom domain pointed yet).
+
+**Homepage v1 — merged to `main` 2026-08-22, reviewed and approved by Akash:**
+- [x] Hero — eyebrow badges, headline, body, Book your visit + Call CTAs
+- [x] Trust block — differentiators, Dr. Archana bio card (real photo + trust badges), team grid, office photo grid, Google reviews badge
+- [x] Insurance/offer block — carrier chips (placeholder), $149 new-patient offer card, Invisalign $500-off line
+- [ ] Booking block — **blocked** on Tab32 service-layer sub-decisions (Section 6)
+- [ ] Secondary urgent-path widget ("need to be seen today?")
+- [x] Footer — hours/address/parking (placeholder), phone, Book CTA
+
+**Real content landed:** Dr. Archana's headshot (`public/team/archana.webp`) replaces her bio-card and team-grid placeholders — first real content item off the blocker list in Section 8. Everything else in that section (rest of team/office photography, practice details, Tab32 sub-questions) is still open.
+
+**Mobile fix:** the team and office-photo grids used `sm:grid-cols-3` with no mobile column count set, so both collapsed to a single column below 640px — roughly 4 screens of near-empty scroll before the booking CTA on an actual phone. Fixed to `grid-cols-2 sm:grid-cols-3`.
+
+**Remaining before this is launch-ready:** urgent-path widget, booking block (needs Tab32 decisions resolved), CMS/content-editability decision (see platform-pivot doc), replacing remaining placeholders (rest of team/office photos, carrier names, address, hours, credentials copy) with real content, custom domain, and the compliance/accessibility checklist pass (Section 7).
+
+---
+
+## Status: Webflow build (historical — superseded by the Next.js build above)
 
 Site: "Akash's Fantastic Site" (Webflow site ID `690d3dd0ad47f133f942dcb4`)
 
