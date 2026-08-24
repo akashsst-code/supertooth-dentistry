@@ -118,36 +118,18 @@ export const officePhotos = [
 // portrait below was matched to her, not a guess. The other people
 // pictured don't have confirmed names/roles yet — same gap as the
 // "Hygienist name" / "Staff name" placeholders in `team` below — so
-// their captions describe the moment/role instead of inventing an
+// their `alt` text describes the moment/role instead of inventing an
 // identity (would violate the no-unverifiable-claims rule in
-// docs/supertooth-build-principles.md Section 8). Swap in real
-// names once Akash confirms them.
+// docs/supertooth-build-principles.md Section 8). Update once Akash
+// confirms real names. No visible caption in the carousel itself
+// (Akash's call — see HeroCarousel.tsx) so `alt` is the only place
+// these distinctions need to live now.
 export const heroPhotos = [
-  {
-    src: "/team/archana.webp",
-    alt: "Dr. Archana Dubey at Super Tooth Dentistry",
-    caption: "Dr. Archana Dubey, DDS",
-  },
-  {
-    src: "/team/team-group.jpg",
-    alt: "The Super Tooth Dentistry team together in the office",
-    caption: "Our team",
-  },
-  {
-    src: "/team/front-desk.jpg",
-    alt: "A team member at the front desk",
-    caption: "Front desk",
-  },
-  {
-    src: "/team/archana-candid.jpg",
-    alt: "Dr. Archana Dubey in the office",
-    caption: "Dr. Archana Dubey, DDS",
-  },
-  {
-    src: "/team/team-itero-scan.jpg",
-    alt: "Reviewing a digital scan on-screen",
-    caption: "Digital scanning technology",
-  },
+  { src: "/team/archana.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry" },
+  { src: "/team/team-group.jpg", alt: "The Super Tooth Dentistry team together in the office" },
+  { src: "/team/front-desk.jpg", alt: "A team member at the front desk" },
+  { src: "/team/archana-candid.jpg", alt: "Dr. Archana Dubey in the office" },
+  { src: "/team/team-itero-scan.jpg", alt: "Reviewing a digital scan on-screen" },
 ];
 
 /**
