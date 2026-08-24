@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckIcon, ShieldCheckIcon } from "./icons";
-import { Placeholder } from "./Placeholder";
+import { ShieldCheckIcon } from "./icons";
 import { insuranceCarriers } from "@/lib/content";
 
 /**
@@ -15,10 +14,16 @@ import { insuranceCarriers } from "@/lib/content";
  * client-side, since it's the only one of the three differentiator
  * cards that needs interactivity.
  *
- * Carrier names reuse `insuranceCarriers` (same source as
- * InsuranceBlock) and stay wrapped in <Placeholder> — that list is
- * still unconfirmed against the practice's real network status per
- * content.ts, so it can't be shown as verified fact here either.
+ * First pass wrapped each name in <Placeholder> (dashed underline) —
+ * Akash flagged that as visually unappealing and reading like broken
+ * links. Swapped for the same typographic "wordmark badge" language
+ * already established in InsuranceBlock.tsx (display-italic name +
+ * soft accent circle, no underline) at a more compact scale, plus one
+ * plain-text disclaimer line instead of per-name brackets. Compliance
+ * intent is unchanged — insuranceCarriers is still unconfirmed against
+ * the practice's real network status (see content.ts) — the
+ * disclaimer line carries that instead of the dashed-underline
+ * treatment, same tradeoff Akash already made for the Hero teaser.
  */
 export function InsuranceExpandCard({ title, detail }: { title: string; detail: string }) {
   const [open, setOpen] = useState(false);
@@ -39,26 +44,61 @@ export function InsuranceExpandCard({ title, detail }: { title: string; detail: 
           <p className="text-sm text-espresso/70">{detail}</p>
         </span>
         <span
-          className="shrink-0 text-lg font-semibold leading-none text-terracotta mt-1.5 w-5 text-center"
+          className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-terracotta/10 text-terracotta mt-0.5"
           aria-hidden="true"
         >
-          {open ? "−" : "+"}
+          <PlusMinusIcon open={open} />
         </span>
       </button>
 
-      {open && (
-        <div className="px-5 pb-5 pl-[4.75rem] flex flex-col gap-2 border-t border-sand pt-4 -mt-px">
-          <p className="text-xs font-semibold uppercase tracking-wide text-espresso/60 mb-1">
-            We take most major insurances, including:
-          </p>
-          {insuranceCarriers.map((c) => (
-            <span key={c} className="inline-flex items-center gap-2 text-sm text-espresso/80">
-              <CheckIcon className="shrink-0 text-terracotta" />
-              <Placeholder>{c}</Placeholder>
-            </span>
-          ))}
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="px-5 pb-5 pt-1 border-t border-sand">
+            <p className="mt-4 mb-3 text-[11px] font-semibold uppercase tracking-wide text-espresso/50">
+              Accepted plans include
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {insuranceCarriers.map((c) => (
+                <div
+                  key={c}
+                  className="group relative overflow-hidden rounded-xl bg-sand/40 px-3 py-3"
+                >
+                  <span
+                    className="absolute -right-3 -top-3 h-9 w-9 rounded-full bg-terracotta/10 transition-transform group-hover:scale-110"
+                    aria-hidden="true"
+                  />
+                  <span className="relative block font-display text-sm font-semibold italic text-espresso leading-tight">
+                    {c}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-xs text-espresso/60">
+              Don&apos;t see your plan? Call us and we&apos;ll verify.
+            </p>
+          </div>
         </div>
-      )}
+      </div>
     </div>
+  );
+}
+
+/** Plus that morphs into a minus on open — vertical stroke rotates/fades away. */
+function PlusMinusIcon({ open }: { open: boolean }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 5v14"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        className={`origin-center transition-all duration-300 ${open ? "scale-y-0 opacity-0" : "scale-y-100 opacity-100"}`}
+      />
+      <path d="M5 12h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
   );
 }
