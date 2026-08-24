@@ -14,12 +14,15 @@ import { contact, hours, nav } from "@/lib/content";
  * at the bottom. "Open now" live status is deliberately not implemented
  * — the doc calls a static hours list an acceptable lower-cost v1.
  *
- * Mobile header's CTA reads "Appt" rather than the full "Book
+ * Mobile header's CTA reads "Schedule" rather than the full "Book
  * Appointment" — that pill sits between a phone-icon circle and the
  * hamburger circle in a ~375px header alongside the full logo lockup;
- * there isn't room for the full label there. Desktop nav and the
- * full-screen mobile menu (both far less cramped) use the full
- * "Book Appointment" label.
+ * there isn't room for the full label there. "Schedule" was chosen
+ * over an abbreviation like "Appt" per a competitor-site scan
+ * (southlakeuniondentistoffice.com uses the same single-word pattern
+ * in its own tight header nav) — a real word reads better than a
+ * truncation. Desktop nav and the full-screen mobile menu (both far
+ * less cramped) use the full "Book Appointment" label.
  *
  * `fixed` rather than `sticky`: this used to render nested inside
  * ViewportHero's one-screen-tall wrapper alongside Hero. A sticky
@@ -73,7 +76,7 @@ export function Nav() {
               href="/contact"
               className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-4 text-sm font-semibold text-warm-ivory whitespace-nowrap"
             >
-              Appt
+              Schedule
             </Link>
             <button
               type="button"
