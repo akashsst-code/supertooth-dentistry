@@ -136,6 +136,7 @@ export function TrustBlock() {
               ))}
             </div>
             <p className="mt-4 text-xs text-espresso/50">{archana.certifications}</p>
+            <p className="mt-2 text-xs text-espresso/50">{archana.botoxNote}</p>
 
             {/* Training & affiliations — kept with the bio, not a separate
                 section (see the top-of-file comment). Real org names not

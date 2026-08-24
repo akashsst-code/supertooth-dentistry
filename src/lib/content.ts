@@ -160,6 +160,12 @@ export const archana = {
   badges: ["15+ years experience", "University of Colorado", "Invisalign certified"],
   certifications:
     "Certified Invisalign Provider · Certified Botox Provider · Nationally recognized scientific research",
+  // One-line pairing for her "Certified Botox Provider" credential above —
+  // resolves the "where does Botox belong" follow-up flagged near
+  // `services` below. No before/after photo exists in the repo for this
+  // yet (see that comment), so this is text-only, same source (the
+  // practice's existing site) as the rest of `archana`.
+  botoxNote: "Also offering Botox for TMJ and facial pain relief.",
 };
 
 export const team = [
@@ -235,9 +241,14 @@ export const credentials = [
 //
 // Two other supplied images (Invisalign Gold Provider badge, Masseter
 // Botox before/after) don't map to any of these 4 categories and aren't
-// used here — worth a follow-up on where those belong (e.g. Botox next
-// to Dr. Archana's "Certified Botox Provider" credential, Invisalign
-// alongside the existing $500-off offer).
+// used here. Resolved: Botox now gets its own line next to Dr. Archana's
+// "Certified Botox Provider" credential (see `archana.botoxNote` and
+// TrustBlock.tsx), and Invisalign already had its own placement in the
+// existing $500-off offer card (NewPatientOffersBlock, `offers.invisalign`
+// above) — both now also appear as entries in `serviceCategories` below.
+// Neither original supplied image file ever actually landed in
+// public/services/ or public/team/, so both placements stay
+// text/stock-photo only until Akash provides the files.
 export const services = [
   {
     title: "General & preventive care",
@@ -286,6 +297,101 @@ export const services = [
     },
   },
 ];
+
+// Full service catalog for the dedicated /services page — the "Services"
+// nav link has pointed at /services since the nav was built, but no page
+// ever existed there (404). Sourced from the practice's existing site
+// (gray-rail-265889.hostingersite.com/services), the same trusted source
+// already used above for contact/hours/archana, and grouped to match
+// that site's own category filters (General / Cosmetic / Restorative /
+// Orthodontics / Other). This is intentionally separate from the
+// homepage's 4-item `services` teaser above, which stays locked exactly
+// as-is (Akash's smilemakersfortworth.com-pattern call, no links) — this
+// list is the fuller catalog living behind the nav link instead.
+//
+// Real marketing photography already in public/services/ (see `services`
+// above) is reused here for the 3 categories it covers. The remaining
+// items have no photo in the repo yet, so they render text-only rather
+// than a stock-photo or generic-icon stand-in.
+export const serviceCategories = [
+  {
+    category: "General Dentistry",
+    items: [
+      { title: "Dental exams & cleanings", detail: "Preventive care for the whole family.", real: true },
+      { title: "Tooth-colored fillings", detail: "Mercury-free, natural-looking restorations.", real: true },
+      { title: "Gum disease treatment", detail: "Deep cleanings and ongoing care.", real: true },
+    ],
+  },
+  {
+    category: "Cosmetic Dentistry",
+    items: [
+      {
+        title: "Teeth whitening",
+        detail: "Professional results, in one visit.",
+        real: true,
+        image: {
+          src: "/services/teeth-whitening-crop.jpg",
+          alt: "In-office Zoom teeth whitening, before and after",
+          width: 1200,
+          height: 1137,
+        },
+      },
+    ],
+  },
+  {
+    category: "Restorative Dentistry",
+    items: [
+      {
+        title: "Same-day crowns",
+        detail: "Advanced CEREC technology — no second visit.",
+        real: true,
+        image: {
+          src: "/services/same-day-crown-onlay-crop.jpg",
+          alt: "Same-day onlay, before and after",
+          width: 1320,
+          height: 730,
+        },
+      },
+      {
+        title: "Dental implants",
+        detail: "Permanent, natural-looking replacements.",
+        real: true,
+        image: {
+          src: "/services/implant-dentistry-crop.jpg",
+          alt: "Dental implant, before and after x-ray",
+          width: 1251,
+          height: 670,
+        },
+      },
+    ],
+  },
+  {
+    category: "Orthodontics",
+    items: [{ title: "Invisalign clear aligners", detail: "Straighter teeth, no metal brackets.", real: true }],
+  },
+  {
+    category: "Other Treatments",
+    items: [{ title: "Botox for TMJ & facial pain", detail: "Relief for jaw tension and headaches.", real: true }],
+  },
+];
+
+// Emergency dentistry — deliberately kept out of `serviceCategories`
+// above and off the normal booking flow. Akash pulled the dedicated
+// emergency phone line off this site on purpose (fix/emergency-phone-
+// number); this does not reverse that. Per Akash's call, this still
+// needs its own listing (the practice's existing site advertises it),
+// but with its own path — "we'll code it to have a different scheduling
+// path later." Until that dedicated flow is built, this renders as its
+// own callout on /services that calls the practice's main line
+// (`contact.phone`, already public everywhere else on the site) instead
+// of routing into the standard /contact booking link, so an urgent
+// patient isn't funneled into the same form-and-wait flow as a routine
+// cleaning.
+export const emergencyService = {
+  title: "Emergency dentistry",
+  detail: "Same-day care when you need it most.",
+  note: "For dental emergencies, call the office directly rather than booking online.",
+};
 
 // Neighborhoods served, for the map section — modeled on
 // smilemakersfortworth.com's "Proudly Serving Fort Worth & Surrounding
