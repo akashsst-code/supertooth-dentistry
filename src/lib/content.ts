@@ -21,14 +21,29 @@ export const practice = {
 };
 
 export const contact = {
-  phone: "(206) 555-0148", // placeholder — real number needed
-  address: "133 Queen Anne Ave N, Seattle", // real — confirmed by Akash; state omitted, not needed for local patients
-  parkingNote: "Parking / transit note", // placeholder
+  // Main line, full address, and hours below are real — sourced from the
+  // practice's existing site (gray-rail-265889.hostingersite.com), the
+  // same source already trusted for Dr. Archana's bio (see `archana`
+  // below and docs/supertooth-webflow-build-spec.md Status section).
+  phone: "(206) 687-7571",
+  address: "133 Queen Anne Ave N, Suite A, Seattle, WA 98109",
+  // Akash's exact wording (given directly in chat), not scraped.
+  parkingNote: "Bus stop on the same block. Street parking available on nearby streets.",
+  // Real, same source as above — but that source shows TWO different
+  // numbers for the emergency line (a top-banner CTA reads
+  // "(206) 593-3131", the footer's "current patients call Dr. Dubey
+  // directly" box reads "(206) 555-0199"). Using the footer-box number
+  // here since it's the one tied specifically to reaching the doctor
+  // directly; flagging the discrepancy for Akash to confirm which is
+  // correct before launch — kept behind <Placeholder> for that reason,
+  // unlike phone/address/hours above.
+  emergencyPhone: "(206) 555-0199",
+  emergencyContact: "Dr. Dubey", // matches archana.name's surname below
 };
 
 export const hours = [
-  { days: "Mon–Thu", time: "hours" }, // placeholder
-  { days: "Fri", time: "hours" }, // placeholder
+  { days: "Mon–Fri", time: "8:00 AM – 5:00 PM" },
+  { days: "Sat–Sun", time: "Closed" },
 ];
 
 export const differentiators = [
@@ -42,10 +57,29 @@ export const reviews = {
   count: "487", // unconfirmed per prior Webflow-build audit — verify before launch
 };
 
+// Each offer is one line of text + a half-card photo (per Akash's
+// "half page picture and 1 line text offer" call). Offer text is still
+// unconfirmed pricing, so it renders through <Placeholder>. Images are
+// stock photos pulled from Unsplash as a temporary stand-in ("bring from
+// internet for now, i'll change later" — Akash) — swap `image.src` for
+// real practice photography once available, same pattern as `services`
+// above.
 export const offers = {
-  newPatient: "$149 new-patient offer (exam + cleaning + x-rays)", // unconfirmed, verify before launch
-  invisalign: "$500 off Invisalign", // unconfirmed, verify before launch
-};
+  newPatient: {
+    text: "$149 new-patient offer — exam, cleaning, and x-rays included.",
+    image: {
+      src: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80",
+      alt: "Dentist examining a patient's smile",
+    },
+  },
+  invisalign: {
+    text: "$500 off Invisalign clear aligners.",
+    image: {
+      src: "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=800&q=80",
+      alt: "Clear aligner tray held up against a smile",
+    },
+  },
+}; // pricing unconfirmed, verify before launch
 
 export const insuranceCarriers = [
   "Delta Dental",
@@ -163,8 +197,23 @@ export const credentials = [
 // Zoom whitening before/after) — matched by content to the closest of
 // the 4 categories (same-day onlay -> same-day crowns; implant ->
 // restorative care; whitening -> cosmetic dentistry). No photo was
-// supplied for general/preventive care, so that card falls back to the
-// icon-tile treatment in ServicesSection.tsx rather than inventing one.
+// supplied for general/preventive care, so that card uses a temporary
+// Unsplash stand-in instead (per Akash's "bring images where we don't
+// have" call) — swap for real photography later, same as the other 3;
+// ServicesSection.tsx's icon-tile fallback still exists for any future
+// service entry that ships with no `image` at all.
+//
+// The 3 supplied files are full Instagram-post-style graphics (a big
+// title, our own logo, a brand/product badge, all above the actual
+// before/after photos) — cropping those into a small `aspect-[4/5]`
+// card via `object-cover` read as "elongated"/unnatural (Akash) since
+// it either cut the photos off mid-frame or squeezed a whole poster
+// into a thumbnail. `*-crop.jpg` variants below are cropped to just the
+// labeled before/after photos (title/logo/badge removed) — same source
+// photography, not new/different images. `width`/`height` are set so
+// ServicesSection.tsx can render them at their natural aspect ratio
+// instead of force-cropping again.
+//
 // Two other supplied images (Invisalign Gold Provider badge, Masseter
 // Botox before/after) don't map to any of these 4 categories and aren't
 // used here — worth a follow-up on where those belong (e.g. Botox next
@@ -175,24 +224,47 @@ export const services = [
     title: "General & preventive care",
     detail: "Cleanings, exams, and same-day appointments when you need them.",
     real: true,
+    // No real photo supplied yet for this category (see comment above) —
+    // temporary Unsplash stand-in per Akash's "bring images where we
+    // don't have" call, same pattern as the NewPatientOffersBlock photos.
+    // Swap for real practice photography once available.
+    image: {
+      src: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80",
+      alt: "Dental cleaning and checkup",
+    },
   },
   {
     title: "Same-day crowns",
     detail: "In-house technology — no second visit, no temporary crown.",
     real: true,
-    image: { src: "/services/same-day-crown-onlay.jpg", alt: "Same-day onlay, before and after" },
+    image: {
+      src: "/services/same-day-crown-onlay-crop.jpg",
+      alt: "Same-day onlay, before and after",
+      width: 1320,
+      height: 730,
+    },
   },
   {
     title: "Cosmetic dentistry",
     detail: "Veneers, whitening, and smile design.",
     real: false,
-    image: { src: "/services/teeth-whitening.jpg", alt: "In-office Zoom teeth whitening, before and after" },
+    image: {
+      src: "/services/teeth-whitening-crop.jpg",
+      alt: "In-office Zoom teeth whitening, before and after",
+      width: 1200,
+      height: 1137,
+    },
   },
   {
     title: "Restorative care",
     detail: "Crowns, bridges, and implant restorations.",
     real: false,
-    image: { src: "/services/implant-dentistry.jpg", alt: "Dental implant, before and after x-ray" },
+    image: {
+      src: "/services/implant-dentistry-crop.jpg",
+      alt: "Dental implant, before and after x-ray",
+      width: 1251,
+      height: 670,
+    },
   },
 ];
 

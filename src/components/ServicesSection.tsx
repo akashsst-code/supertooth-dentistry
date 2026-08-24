@@ -7,13 +7,19 @@ import { services } from "@/lib/content";
  * Services teaser — positioned after Testimonials. Rebuilt again per
  * this round of feedback: real marketing photography (before/after
  * shots Akash supplied — see content.ts) now stands in for the earlier
- * icon-tile placeholders on 3 of the 4 cards, sized with the same
- * `aspect-[4/5]` large-image treatment introduced on Dr. Archana's bio
- * card in TrustBlock ("bring this as element across our items") — full-
- * width photo taking roughly half the mobile screen, compact text below.
- * No photo exists yet for "General & preventive care", so that one card
- * keeps the icon-tile fallback at the same aspect ratio rather than
- * inventing a photo.
+ * icon-tile placeholders on 3 of the 4 cards, full-width photo above
+ * compact text below. No photo exists yet for "General & preventive
+ * care" (a temporary Unsplash stand-in fills that gap — see content.ts),
+ * so that one still gets a fixed `aspect-[4/5]` `object-cover` treatment,
+ * same as the icon-tile fallback below it — both are plain photos/icons
+ * with no fixed aspect of their own, so cropping to a set ratio is safe.
+ *
+ * The 3 real photos are different: they carry their own `width`/`height`
+ * (see content.ts) because they're pre-cropped to a specific before/after
+ * framing — forcing those into the same `aspect-[4/5]` box either cut
+ * the photos off or squeezed a whole poster into a small tile ("elongated
+ * / doesn't look natural" — Akash). Rendering `image.width`/`image.height`
+ * lets each of those 3 keep its own natural aspect ratio instead.
  *
  * Still: exactly 4 items, no links (no click-throughs for now), and the
  * vertical connecting thread + node dot down the stack from the prior
@@ -43,7 +49,16 @@ export function ServicesSection() {
                   aria-hidden="true"
                 />
                 <div className="rounded-2xl overflow-hidden border border-sand bg-warm-ivory">
-                  {s.image ? (
+                  {s.image && s.image.width && s.image.height ? (
+                    <Image
+                      src={s.image.src}
+                      alt={s.image.alt}
+                      width={s.image.width}
+                      height={s.image.height}
+                      sizes="(min-width: 640px) 40rem, 100vw"
+                      className="w-full h-auto"
+                    />
+                  ) : s.image ? (
                     <div className="relative aspect-[4/5]">
                       <Image
                         src={s.image.src}

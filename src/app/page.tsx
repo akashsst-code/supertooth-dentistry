@@ -3,7 +3,6 @@ import { Hero } from "@/components/Hero";
 import { ViewportHero } from "@/components/ViewportHero";
 import { TrustBlock } from "@/components/TrustBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
-import { InsuranceBlock } from "@/components/InsuranceBlock";
 import { ServicesSection } from "@/components/ServicesSection";
 import { LocationMapSection } from "@/components/LocationMapSection";
 import { NewPatientOffersBlock } from "@/components/NewPatientOffersBlock";
@@ -11,13 +10,17 @@ import { BookingBlock } from "@/components/BookingBlock";
 import { Footer } from "@/components/Footer";
 
 /**
- * Homepage — single-page-led funnel. Section order below the office
- * carousel was reworked per Akash's explicit calls across two rounds of
- * feedback (see PR description): the flow through Trust's office-photo
- * scroll is unchanged, then — Testimonials (right after the office blurb,
- * per the second round) -> Insurance (redesigned, stays in its original
- * earlier position) -> Services -> Location/map -> New-patient offers
- * (kept last on purpose) -> Booking -> Footer.
+ * Homepage — single-page-led funnel. Current order: Trust (differentiators
+ * -> office-photo carousel, moved above Dr. Archana's bio per Akash's
+ * later call -> bio) -> Testimonials (right after the office blurb) ->
+ * Services -> Location/map -> New-patient offers (kept last on purpose)
+ * -> Booking -> Footer.
+ *
+ * Insurance block removed from the homepage entirely per Akash's explicit
+ * call — the component (`InsuranceBlock.tsx`) and its content
+ * (`insuranceCarriers` in content.ts) are kept, not deleted, as the
+ * natural fit for the dedicated `/insurance-new-patients` page once that
+ * gets built (see Section 2 below).
  *
  * "Meet the team" was removed from the homepage entirely (still in
  * content.ts for a future /about page). Dr. Archana's training/
@@ -42,7 +45,6 @@ export default function Home() {
       <main>
         <TrustBlock />
         <TestimonialsSection />
-        <InsuranceBlock />
         <ServicesSection />
         <LocationMapSection />
         <NewPatientOffersBlock />
