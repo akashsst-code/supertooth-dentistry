@@ -19,56 +19,79 @@ import { contact, hours } from "@/lib/content";
  * (CTAs + one vague "need to be seen today?" line, no address/hours) is
  * now a two-column layout — copy + CTAs + real hours/address on the
  * left, a real office photo on the right (existing photography, not a
- * new stock image — trust matters more here than elsewhere). A single
- * emergency-line banner up top replaces the old vague "need to be seen
- * today?" sentence with the actual number.
+ * new stock image — trust matters more here than elsewhere).
+ *
+ * Emergency line was removed entirely per Akash's call (no longer a
+ * confirmed real number/contact) rather than left as a placeholder line.
+ *
+ * Info below the CTAs is organized into named groups by what a reader
+ * does with it, not just laid out as a row of icon pills: "Quick
+ * actions" (book/call — something to do right now), "Office hours"
+ * and "Location" (reference info — something to check). A flat row
+ * blurred those together; a small uppercase label over each group
+ * makes the distinction visible at a glance. Only open hours are
+ * shown here (the "Closed" row still exists in `hours` for Nav's full
+ * listing) since a closed day isn't actionable next to a booking CTA.
  */
 export function BookingBlock() {
+  const openHours = hours.find((h) => h.time !== "Closed");
+
   return (
     <section id="booking" className="bg-espresso text-warm-ivory">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
-        <div className="mb-10 sm:mb-14 rounded-2xl border border-terracotta/40 bg-terracotta/10 px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-sm sm:text-base">
-            <span className="font-semibold text-terracotta">Dental emergency?</span>{" "}
-            Current patients can reach {contact.emergencyContact} directly.
-          </p>
-          <a
-            href={`tel:${contact.emergencyPhone.replace(/[^\d+]/g, "")}`}
-            className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors whitespace-nowrap"
-          >
-            Call emergency line: {contact.emergencyPhone}
-          </a>
-        </div>
-
         <div className="grid lg:grid-cols-5 gap-10 lg:gap-12 items-center">
           <div className="lg:col-span-3 text-center lg:text-left">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+              Visit us
+            </p>
             <h2 className="font-display text-2xl sm:text-3xl font-semibold mb-4">
               Ready to book your visit?
             </h2>
             <p className="text-warm-ivory/80 max-w-xl mx-auto lg:mx-0 mb-8">
               Reach out and we&apos;ll find a time that works — same-day slots are often available.
             </p>
-            <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-6">
-              <a
-                href="/contact"
-                className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-7 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
-              >
-                Book Now
-              </a>
-              <a
-                href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-                className="tap-target inline-flex items-center justify-center rounded-full border border-warm-ivory/30 px-7 py-3.5 text-base font-semibold text-warm-ivory hover:border-warm-ivory/60 transition-colors"
-              >
-                Call {contact.phone}
-              </a>
+
+            <div className="mb-8">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                Quick actions
+              </p>
+              <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+                <a
+                  href="/contact"
+                  className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-7 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+                >
+                  Book Now
+                </a>
+                <a
+                  href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
+                  className="tap-target inline-flex items-center justify-center rounded-full border border-warm-ivory/30 px-7 py-3.5 text-base font-semibold text-warm-ivory hover:border-warm-ivory/60 transition-colors"
+                >
+                  Call {contact.phone}
+                </a>
+              </div>
             </div>
-            <div className="flex flex-col sm:flex-row sm:flex-wrap items-center lg:items-start justify-center lg:justify-start gap-x-6 gap-y-1 text-sm text-warm-ivory/60">
-              {hours.map((h) => (
-                <span key={h.days}>
-                  {h.days}: {h.time}
+
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-x-10 gap-y-5">
+              {openHours && (
+                <div>
+                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                    Office hours
+                  </p>
+                  <span className="flex items-center justify-center lg:justify-start gap-2 text-sm text-warm-ivory/80">
+                    <ClockIcon />
+                    {openHours.days} · {openHours.time}
+                  </span>
+                </div>
+              )}
+              <div>
+                <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                  Location
+                </p>
+                <span className="flex items-start justify-center lg:justify-start gap-2 text-sm text-warm-ivory/80 max-w-[16rem] mx-auto lg:mx-0">
+                  <PinIcon className="mt-0.5 shrink-0" />
+                  {contact.address}
                 </span>
-              ))}
-              <span>{contact.address}</span>
+              </div>
             </div>
           </div>
 
@@ -86,5 +109,28 @@ export function BookingBlock() {
         </div>
       </div>
     </section>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M12 7v5l3.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function PinIcon({ className }: { className?: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+      <path
+        d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="9.5" r="2.2" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
   );
 }

@@ -29,17 +29,11 @@ export const contact = {
   address: "133 Queen Anne Ave N, Suite A, Seattle, WA 98109",
   // Akash's exact wording (given directly in chat), not scraped.
   parkingNote: "Bus stop on the same block. Street parking available on nearby streets.",
-  // Real, confirmed by Akash directly — the source site showed two
-  // different numbers for the emergency line (this top-banner one, and
-  // a footer-box "(206) 555-0199" that turned out to be wrong); this is
-  // the correct one, no longer behind <Placeholder>.
-  emergencyPhone: "(206) 593-3131",
-  emergencyContact: "Dr. Dubey", // matches archana.name's surname below
 };
 
 export const hours = [
-  { days: "Mon–Fri", time: "8:00 AM – 5:00 PM" },
-  { days: "Sat–Sun", time: "Closed" },
+  { days: "Tue–Fri", time: "7:00 AM – 4:30 PM" },
+  { days: "Sat–Mon", time: "Closed" },
 ];
 
 export const differentiators = [
@@ -99,6 +93,33 @@ export const officePhotos = [
   { src: "/office/office-3.webp", alt: "Hallway inside the practice" },
   { src: "/office/office-4.jpg", alt: "Framed art near a treatment room entrance" },
   { src: "/office/office-5.jpg", alt: "Waiting area seating" },
+];
+
+// Hero photo carousel — replaces the single "video-styled" hero photo
+// (previously ClinicVideo.tsx, now HeroCarousel.tsx) with a rotating set
+// of real photos so the hero reads as "this is a real team and a real
+// place," not just the lead dentist. Source photos supplied by Akash
+// 2026-08-23. archana.webp is the same portrait the hero already used —
+// kept first so the opening frame is unchanged.
+//
+// Only Dr. Archana Dubey is a confirmed identity here: her named photos
+// elsewhere in this file (archana.webp / archana-profile.jpg) both show
+// "Archana Dubey" embroidered on her coat, which is how the candid
+// portrait below was matched to her, not a guess. The other people
+// pictured don't have confirmed names/roles yet — same gap as the
+// "Hygienist name" / "Staff name" placeholders in `team` below — so
+// their `alt` text describes the moment/role instead of inventing an
+// identity (would violate the no-unverifiable-claims rule in
+// docs/supertooth-build-principles.md Section 8). Update once Akash
+// confirms real names. No visible caption in the carousel itself
+// (Akash's call — see HeroCarousel.tsx) so `alt` is the only place
+// these distinctions need to live now.
+export const heroPhotos = [
+  { src: "/team/archana.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry" },
+  { src: "/team/team-group.jpg", alt: "The Super Tooth Dentistry team together in the office" },
+  { src: "/team/front-desk.jpg", alt: "A team member at the front desk" },
+  { src: "/team/archana-candid.jpg", alt: "Dr. Archana Dubey in the office" },
+  { src: "/team/team-itero-scan.jpg", alt: "Reviewing a digital scan on-screen" },
 ];
 
 /**

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { contact, insuranceCarriersHeroTeaser, practice, reviews } from "@/lib/content";
-import { ClinicVideo } from "./ClinicVideo";
+import { HeroCarousel } from "./HeroCarousel";
 import { CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
 
 /**
@@ -46,7 +46,7 @@ export function Hero() {
   return (
     <section className="flex-1 min-h-0 flex flex-col md:flex-row-reverse md:min-h-[560px]">
       <div className="w-full flex-1 min-h-[160px] md:w-3/5 md:flex-none md:h-auto overflow-hidden">
-        <ClinicVideo />
+        <HeroCarousel />
       </div>
 
       <div className="w-full shrink-0 md:w-2/5 bg-espresso text-warm-ivory flex flex-col justify-center px-6 py-4 sm:px-10 sm:py-16">

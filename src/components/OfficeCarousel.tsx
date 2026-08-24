@@ -54,7 +54,7 @@ const DRAG_CLICK_THRESHOLD_PX = 6; // movement past this = a drag, not a tap
  * requires a way to stop auto-moving content that runs longer than 5
  * seconds, and this site's compliance checklist (build-spec Section 7)
  * treats WCAG AA as build-blocking. The reel also never starts at all
- * for prefers-reduced-motion, matching the ClinicVideo.tsx pattern.
+ * for prefers-reduced-motion, matching the HeroCarousel.tsx pattern.
  */
 export function OfficeCarousel() {
   const trackRef = useRef<HTMLDivElement>(null);
