@@ -111,13 +111,21 @@ export function Nav() {
             ))}
           </nav>
 
-          {/* Hours/location shown inline, zero extra taps — locked requirement */}
+          {/* Hours/location shown inline, zero extra taps — locked requirement.
+              Rows (bold day label left, time right, hairline between) instead
+              of one run-on "days · time" line per Akash's competitor scan
+              (southlakeuniondentistoffice.com's "Business Hours" panel) —
+              a label/value row reads as a quick lookup, a sentence doesn't. */}
           <div className="px-6 py-6 border-t border-sand bg-sand/40">
             <p className="font-display text-base font-semibold text-espresso mb-2">Hours</p>
-            <ul className="text-sm text-espresso/80 space-y-1 mb-4">
+            <ul className="text-sm mb-4">
               {hours.map((h) => (
-                <li key={h.days}>
-                  {h.days} · {h.time}
+                <li
+                  key={h.days}
+                  className="flex items-baseline justify-between gap-4 py-1.5 border-b border-espresso/10 last:border-0"
+                >
+                  <span className="font-medium text-espresso">{h.days}</span>
+                  <span className={h.time === "Closed" ? "text-espresso/45" : "text-espresso/80"}>{h.time}</span>
                 </li>
               ))}
             </ul>
