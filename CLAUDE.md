@@ -15,7 +15,7 @@ Planning docs + the actual Super Tooth Dentistry website itself: a Next.js app d
 Full detail in `docs/supertooth-development-workflow.md`. Summary:
 - **Never commit directly to the main/master branch.** Create a feature branch for every change, however small.
 - Commit messages state the *decision*, not just "update file" (e.g., `Lock trust-first homepage ordering`, not `edits`).
-- Push the branch and check its Vercel preview deployment before merging — this is the new "staging" step, replacing Webflow's branch-publish-to-staging.
+- Push the branch, open a PR, and **show Akash the actual Vercel preview URL as soon as it's ready to review** (not just a claim that a preview exists) — this is the new "staging" step, replacing Webflow's branch-publish-to-staging. Check it before merging.
 - Merge to main only after review. Akash is the sole approval gate until a developer is formally on the project.
 - Update `docs/supertooth-webflow-build-spec.md`'s status section (or `docs/supertooth-platform-pivot.md` for architecture-level changes) whenever something new is actually built/locked — keep it truthful, not aspirational.
 
