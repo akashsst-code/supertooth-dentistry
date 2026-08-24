@@ -202,6 +202,18 @@ export const credentials = [
 // have" call) — swap for real photography later, same as the other 3;
 // ServicesSection.tsx's icon-tile fallback still exists for any future
 // service entry that ships with no `image` at all.
+//
+// The 3 supplied files are full Instagram-post-style graphics (a big
+// title, our own logo, a brand/product badge, all above the actual
+// before/after photos) — cropping those into a small `aspect-[4/5]`
+// card via `object-cover` read as "elongated"/unnatural (Akash) since
+// it either cut the photos off mid-frame or squeezed a whole poster
+// into a thumbnail. `*-crop.jpg` variants below are cropped to just the
+// labeled before/after photos (title/logo/badge removed) — same source
+// photography, not new/different images. `width`/`height` are set so
+// ServicesSection.tsx can render them at their natural aspect ratio
+// instead of force-cropping again.
+//
 // Two other supplied images (Invisalign Gold Provider badge, Masseter
 // Botox before/after) don't map to any of these 4 categories and aren't
 // used here — worth a follow-up on where those belong (e.g. Botox next
@@ -225,19 +237,34 @@ export const services = [
     title: "Same-day crowns",
     detail: "In-house technology — no second visit, no temporary crown.",
     real: true,
-    image: { src: "/services/same-day-crown-onlay.jpg", alt: "Same-day onlay, before and after" },
+    image: {
+      src: "/services/same-day-crown-onlay-crop.jpg",
+      alt: "Same-day onlay, before and after",
+      width: 1320,
+      height: 730,
+    },
   },
   {
     title: "Cosmetic dentistry",
     detail: "Veneers, whitening, and smile design.",
     real: false,
-    image: { src: "/services/teeth-whitening.jpg", alt: "In-office Zoom teeth whitening, before and after" },
+    image: {
+      src: "/services/teeth-whitening-crop.jpg",
+      alt: "In-office Zoom teeth whitening, before and after",
+      width: 1200,
+      height: 1137,
+    },
   },
   {
     title: "Restorative care",
     detail: "Crowns, bridges, and implant restorations.",
     real: false,
-    image: { src: "/services/implant-dentistry.jpg", alt: "Dental implant, before and after x-ray" },
+    image: {
+      src: "/services/implant-dentistry-crop.jpg",
+      alt: "Dental implant, before and after x-ray",
+      width: 1251,
+      height: 670,
+    },
   },
 ];
 
