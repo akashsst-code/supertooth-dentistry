@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Placeholder } from "./Placeholder";
 import { contact, hours, practice } from "@/lib/content";
 
 /**
@@ -53,7 +52,7 @@ function MobileFooter() {
         <p className="text-xs text-warm-ivory/60">
           <span className="font-semibold text-terracotta">Dental emergency?</span> Current patients call{" "}
           <a href={`tel:${contact.emergencyPhone.replace(/[^\d+]/g, "")}`} className="underline underline-offset-2">
-            <Placeholder tone="dark">{contact.emergencyPhone}</Placeholder>
+            {contact.emergencyPhone}
           </a>
         </p>
 
@@ -116,7 +115,7 @@ function DesktopFooter() {
               href={`tel:${contact.emergencyPhone.replace(/[^\d+]/g, "")}`}
               className="underline underline-offset-2 hover:text-terracotta"
             >
-              <Placeholder>{contact.emergencyPhone}</Placeholder>
+              {contact.emergencyPhone}
             </a>
           </p>
           <div className="mt-4">

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Placeholder } from "./Placeholder";
 import { contact, hours } from "@/lib/content";
 
 /**
@@ -37,7 +36,7 @@ export function BookingBlock() {
             href={`tel:${contact.emergencyPhone.replace(/[^\d+]/g, "")}`}
             className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors whitespace-nowrap"
           >
-            Call emergency line: <Placeholder tone="dark">{contact.emergencyPhone}</Placeholder>
+            Call emergency line: {contact.emergencyPhone}
           </a>
         </div>
 
