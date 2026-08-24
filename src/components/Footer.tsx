@@ -1,13 +1,18 @@
 import { contact, practice } from "@/lib/content";
+import { CalendarIcon } from "./icons";
 
 /**
  * This is a reference footer, not a second booking section: BookingBlock
- * immediately above already covers the ask (CTAs) and hours. Repeating
- * hours/CTAs here (previous version did) read as a second stacked copy
- * of the same section. So this footer keeps only what BookingBlock
- * doesn't already say: brand, address, parking, phone, copyright.
+ * immediately above already covers the hours/location grid, so this
+ * footer doesn't repeat those. It does still carry both CTAs (Book
+ * Appointment + phone) — per Akash's call, the very last thing on the
+ * page should give a reader who scrolled all the way down something to
+ * act on immediately, not just brand/legal info. Kept to exactly two
+ * buttons + brand/address/copyright, spacing tightened (py-8 vs the
+ * prior py-10, no extra gap under the CTAs) so re-adding the buttons
+ * doesn't reopen the "too much space, no clear last action" problem.
  *
- * Mobile now matches desktop's light (Warm Ivory) theme instead of
+ * Mobile matches desktop's light (Warm Ivory) theme instead of
  * repeating BookingBlock's dark Espresso background directly below it —
  * two dark sections back-to-back with no visual break was part of why
  * the bottom of the page read as one long flat wall of text. A terracotta
@@ -26,17 +31,26 @@ export function Footer() {
 function MobileFooter() {
   return (
     <div className="md:hidden bg-warm-ivory text-espresso border-t border-sand">
-      <div className="px-6 py-10 flex flex-col items-center gap-3 text-center">
+      <div className="px-6 py-8 flex flex-col items-center gap-2 text-center">
         <p className="font-display text-xl font-semibold">{practice.name}</p>
         <span className="h-0.5 w-8 rounded-full bg-terracotta" />
         <p className="text-sm text-espresso/70">{contact.address}</p>
-        <a
-          href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-          className="tap-target mt-2 inline-flex items-center gap-2 rounded-full border border-espresso/15 px-5 py-2.5 text-sm font-semibold text-espresso hover:border-terracotta hover:text-terracotta transition-colors"
-        >
-          <PhoneIcon />
-          {contact.phone}
-        </a>
+        <div className="mt-2 flex flex-wrap justify-center gap-3">
+          <a
+            href="/contact"
+            className="tap-target inline-flex items-center justify-center gap-2 rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+          >
+            <CalendarIcon />
+            Book Appointment
+          </a>
+          <a
+            href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
+            className="tap-target inline-flex items-center gap-2 rounded-full border border-espresso/15 px-5 py-2.5 text-sm font-semibold text-espresso hover:border-terracotta hover:text-terracotta transition-colors"
+          >
+            <PhoneIcon />
+            {contact.phone}
+          </a>
+        </div>
       </div>
 
       <div className="border-t border-sand px-6 py-4 text-center text-xs text-espresso/50">
@@ -49,7 +63,7 @@ function MobileFooter() {
 function DesktopFooter() {
   return (
     <div className="hidden md:block border-t border-sand bg-warm-ivory">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 flex items-center justify-between gap-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 flex items-center justify-between gap-8">
         <div>
           <p className="font-display text-lg font-semibold text-espresso">{practice.name}</p>
           <span className="mt-2 mb-2 block h-0.5 w-8 rounded-full bg-terracotta" />
@@ -58,17 +72,26 @@ function DesktopFooter() {
           </p>
         </div>
 
-        <a
-          href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-          className="tap-target inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-espresso/15 px-5 py-2.5 text-sm font-semibold text-espresso hover:border-terracotta hover:text-terracotta transition-colors"
-        >
-          <PhoneIcon />
-          {contact.phone}
-        </a>
+        <div className="flex items-center gap-3">
+          <a
+            href="/contact"
+            className="tap-target inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+          >
+            <CalendarIcon />
+            Book Appointment
+          </a>
+          <a
+            href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
+            className="tap-target inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-espresso/15 px-5 py-2.5 text-sm font-semibold text-espresso hover:border-terracotta hover:text-terracotta transition-colors"
+          >
+            <PhoneIcon />
+            {contact.phone}
+          </a>
+        </div>
       </div>
 
       <div className="border-t border-sand">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-6 text-xs text-espresso/50">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-5 text-xs text-espresso/50">
           © {new Date().getFullYear()} {practice.name}. All rights reserved.
         </div>
       </div>

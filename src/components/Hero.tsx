@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { contact, insuranceCarriersHeroTeaser, practice, reviews } from "@/lib/content";
 import { HeroCarousel } from "./HeroCarousel";
-import { CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
+import { CalendarIcon, CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
 
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
@@ -16,20 +16,13 @@ import { CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
  *
  * CTA row is side-by-side at every width, not just sm: up — a mobile
  * screenshot showed the stacked layout pushing Call below the fold on
- * real devices. Book stays the wide/primary pill (flex-1); Call is a
- * compact secondary pill (icon + short "Call" label, matching the
- * nav's mobile call button) so the pair reliably fits one row.
- *
- * Deliberately NOT expanding to "Call {practice.name}" at a wider
- * viewport breakpoint (an earlier version did this via sm:) — this
- * panel is a 40%-width column on desktop (md:w-2/5), not the full
- * viewport, so a global sm:/md: breakpoint doesn't track the actual
- * space available here and squeezed Book into a mid-word wrap at
- * common desktop widths. flex-wrap on the row is the safety net if
- * some future change ever tightens this further: Call drops to its
- * own line instead of forcing an ugly in-button wrap. No other hero
- * spacing changed. Call CTA uses a real tel: link (it previously
- * routed to /contact instead of dialing).
+ * real devices. Book stays the wide/primary pill (flex-1); the phone
+ * button shows the actual number (not the word "Call") per Akash's
+ * call to be explicit about what tapping it does, matching the
+ * booking section and footer's phone buttons. flex-wrap on the row is
+ * the safety net if that ever overflows: the phone button drops to
+ * its own line instead of forcing an ugly in-button wrap. Uses a real
+ * tel: link (it previously routed to /contact instead of dialing).
  *
  * Body copy trimmed from 4 lines to 3 on mobile — dropped "dental" and
  * "in {neighborhood}" (already stated in the nav subtitle and the
@@ -113,8 +106,9 @@ export function Hero() {
         <div className="mt-4 flex flex-row flex-wrap gap-3">
           <Link
             href="#booking"
-            className="tap-target min-w-[140px] flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-full bg-terracotta px-6 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+            className="tap-target min-w-[140px] flex-1 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-terracotta px-6 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
           >
+            <CalendarIcon />
             Book your visit
           </Link>
           <a
@@ -122,7 +116,7 @@ export function Hero() {
             className="tap-target inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-warm-ivory/40 px-5 py-3.5 text-base font-semibold text-warm-ivory hover:border-warm-ivory/70 transition-colors"
           >
             <PhoneIcon />
-            Call
+            {contact.phone}
           </a>
         </div>
       </div>

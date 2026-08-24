@@ -32,8 +32,8 @@ export const contact = {
 };
 
 export const hours = [
-  { days: "Tue–Fri", time: "7:00 AM – 4:30 PM" },
-  { days: "Sat–Mon", time: "Closed" },
+  { days: "Tuesday – Friday", time: "7:00 AM – 4:30 PM" },
+  { days: "Saturday – Monday", time: "Closed" },
 ];
 
 export const differentiators = [

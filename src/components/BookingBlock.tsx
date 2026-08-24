@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { contact, hours } from "@/lib/content";
+import { CalendarIcon, ClockIcon, MapPinIcon } from "./icons";
 
 /**
  * Booking block — docs/supertooth-ux-flow.md Section 4 / build-spec
@@ -24,14 +25,21 @@ import { contact, hours } from "@/lib/content";
  * Emergency line was removed entirely per Akash's call (no longer a
  * confirmed real number/contact) rather than left as a placeholder line.
  *
- * Info below the CTAs is organized into named groups by what a reader
- * does with it, not just laid out as a row of icon pills: "Quick
- * actions" (book/call — something to do right now), "Office hours"
- * and "Location" (reference info — something to check). A flat row
- * blurred those together; a small uppercase label over each group
- * makes the distinction visible at a glance. Only open hours are
- * shown here (the "Closed" row still exists in `hours` for Nav's full
- * listing) since a closed day isn't actionable next to a booking CTA.
+ * Everything here is left-aligned, never centered — Akash flagged that
+ * centered text on mobile made the eye jump around instead of scanning
+ * down a single edge. "Office hours" and "Location" sit in a genuine
+ * two-column grid (not a wrapped row) so they read as a small scannable
+ * spec sheet next to the CTAs, same pattern as the labeled "Quick
+ * actions" group above them. Only open hours are shown here (the
+ * "Closed" row still exists in `hours` for Nav's full listing) since a
+ * closed day isn't actionable next to a booking CTA.
+ *
+ * Phone button shows the number itself, not the word "Call" — same
+ * "be explicit" call Akash made for the Hero CTA — and both CTAs share
+ * an icon now (calendar / phone) instead of just the phone one, so the
+ * pair reads as two parallel actions rather than one plain button and
+ * one decorated one. Primary CTA is labeled "Book Appointment" (was
+ * "Book Now") to match the renamed CTA everywhere else on the site.
  */
 export function BookingBlock() {
   const openHours = hours.find((h) => h.time !== "Closed");
@@ -40,14 +48,14 @@ export function BookingBlock() {
     <section id="booking" className="bg-espresso text-warm-ivory">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
         <div className="grid lg:grid-cols-5 gap-10 lg:gap-12 items-center">
-          <div className="lg:col-span-3 text-center lg:text-left">
+          <div className="lg:col-span-3 text-left">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
               Visit us
             </p>
             <h2 className="font-display text-2xl sm:text-3xl font-semibold mb-4">
               Ready to book your visit?
             </h2>
-            <p className="text-warm-ivory/80 max-w-xl mx-auto lg:mx-0 mb-8">
+            <p className="text-warm-ivory/80 max-w-xl mb-8">
               Reach out and we&apos;ll find a time that works — same-day slots are often available.
             </p>
 
@@ -55,30 +63,32 @@ export function BookingBlock() {
               <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                 Quick actions
               </p>
-              <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+              <div className="flex flex-wrap gap-4">
                 <a
                   href="/contact"
-                  className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-7 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+                  className="tap-target inline-flex items-center justify-center gap-2 rounded-full bg-terracotta px-7 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
                 >
-                  Book Now
+                  <CalendarIcon />
+                  Book Appointment
                 </a>
                 <a
                   href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-                  className="tap-target inline-flex items-center justify-center rounded-full border border-warm-ivory/30 px-7 py-3.5 text-base font-semibold text-warm-ivory hover:border-warm-ivory/60 transition-colors"
+                  className="tap-target inline-flex items-center justify-center gap-2 rounded-full border border-warm-ivory/30 px-7 py-3.5 text-base font-semibold text-warm-ivory hover:border-warm-ivory/60 transition-colors"
                 >
-                  Call {contact.phone}
+                  <PhoneIcon />
+                  {contact.phone}
                 </a>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-x-10 gap-y-5">
+            <div className="grid grid-cols-2 gap-6 max-w-sm">
               {openHours && (
                 <div>
                   <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                     Office hours
                   </p>
-                  <span className="flex items-center justify-center lg:justify-start gap-2 text-sm text-warm-ivory/80">
-                    <ClockIcon />
+                  <span className="flex items-start gap-2 text-sm text-warm-ivory/80">
+                    <ClockIcon className="mt-0.5 shrink-0" />
                     {openHours.days} · {openHours.time}
                   </span>
                 </div>
@@ -87,8 +97,8 @@ export function BookingBlock() {
                 <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                   Location
                 </p>
-                <span className="flex items-start justify-center lg:justify-start gap-2 text-sm text-warm-ivory/80 max-w-[16rem] mx-auto lg:mx-0">
-                  <PinIcon className="mt-0.5 shrink-0" />
+                <span className="flex items-start gap-2 text-sm text-warm-ivory/80">
+                  <MapPinIcon className="mt-0.5 shrink-0" />
                   {contact.address}
                 </span>
               </div>
@@ -112,25 +122,15 @@ export function BookingBlock() {
   );
 }
 
-function ClockIcon() {
+function PhoneIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M12 7v5l3.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function PinIcon({ className }: { className?: string }) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21z"
+        d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.8c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1L6.6 10.8z"
         stroke="currentColor"
         strokeWidth="1.6"
         strokeLinejoin="round"
       />
-      <circle cx="12" cy="9.5" r="2.2" stroke="currentColor" strokeWidth="1.6" />
     </svg>
   );
 }
