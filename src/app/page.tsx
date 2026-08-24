@@ -6,6 +6,7 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { ServicesSection } from "@/components/ServicesSection";
 import { LocationMapSection } from "@/components/LocationMapSection";
 import { NewPatientOffersBlock } from "@/components/NewPatientOffersBlock";
+import { FAQSection } from "@/components/FAQSection";
 import { BookingBlock } from "@/components/BookingBlock";
 import { Footer } from "@/components/Footer";
 
@@ -15,6 +16,11 @@ import { Footer } from "@/components/Footer";
  * later call -> bio) -> Testimonials (right after the office blurb) ->
  * Services -> Location/map -> New-patient offers (kept last on purpose)
  * -> Booking -> Footer.
+ *
+ * FAQ (AEO/SEO requirement, docs/supertooth-webflow-build-spec.md Section
+ * 7) sits right before Booking — resolves last-minute objections
+ * (insurance, cost, cancellation, emergencies) right before the booking
+ * ask, without reordering anything else already locked above it.
  *
  * Insurance block removed from the homepage entirely per Akash's explicit
  * call — the component (`InsuranceBlock.tsx`) and its content
@@ -48,6 +54,7 @@ export default function Home() {
         <ServicesSection />
         <LocationMapSection />
         <NewPatientOffersBlock />
+        <FAQSection />
         <BookingBlock />
       </main>
       <Footer />

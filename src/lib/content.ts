@@ -302,6 +302,85 @@ export const serviceAreas = [
   "Ballard",
 ];
 
+// Homepage FAQ — AEO/SEO-required per docs/supertooth-webflow-build-spec.md
+// Section 7 ("FAQ content structured as direct Q&A pairs") and Section 2's
+// service-page spec; landing it on the homepage first since /services and
+// the other content pages (nav array below) aren't built yet, and a
+// general-practice FAQ still serves the same AEO goal today. Sourced from
+// the practice's own live site (www.supertoothdentistry.com's "frequently
+// asked questions" section) — same trust tier as `contact`/`archana`
+// above, which cite "the practice's existing site" as their source; this
+// is that same site's current domain. Rewritten (not copy-pasted) into
+// concise direct-answer form for AEO, and trimmed against the
+// no-unverifiable-claims rule (build-principles Section 8):
+//  - Dropped the site's stated 10% senior discount and its SMS privacy
+//    policy blurb — neither could be re-verified word-for-word on a second
+//    pass, and the SMS policy is a legal-disclosure item that belongs with
+//    the "Privacy policy and required disclosures" launch checklist item
+//    (build-spec Section 7), not an FAQ answer improvised from a summary.
+//  - Dropped the specific new-patient/Invisalign offer amounts and
+//    insurance carrier names here rather than repeating them a second
+//    time — those already live in `offers`/`insuranceCarriers` above,
+//    each flagged unconfirmed and rendered through <Placeholder> at its
+//    one real display site; this FAQ points to that section instead of
+//    restating the numbers.
+//  - The emergency-visit answer deliberately doesn't hardcode a phone
+//    number — the source site shows two different numbers for its
+//    emergency line (see the dropped `contact.emergencyPhone` history,
+//    build-spec Status section), which is exactly why that field was
+//    removed from `contact` above. FAQSection.tsx interpolates the one
+//    confirmed real number (`contact.phone`) instead, so there's a single
+//    source of truth and no second, possibly-conflicting number.
+export const faqs = [
+  {
+    question: "Do you accept my dental insurance?",
+    answer:
+      "We're in-network with most major dental insurance plans and handle the paperwork for you. We also offer interest-free financing for any treatment cost insurance doesn't cover.",
+  },
+  {
+    question: "What should I bring to my first appointment?",
+    answer:
+      "Bring your insurance card and a photo ID, and come ready to share your health history and any medications you're taking. We'll also have you fill out some brief new-patient paperwork when you arrive.",
+  },
+  {
+    question: "What happens during a comprehensive exam?",
+    answer:
+      "We review your dental history, do a thorough exam of your teeth, gums, and jaw, and walk you through any treatment options we find — so you leave with a clear picture of your oral health, not just a cleaning.",
+  },
+  {
+    question: "When should my child have their first dental visit?",
+    answer:
+      "We recommend bringing your child in for their first visit between ages 2 and 3, or sooner if you have questions about brushing, flossing, or habits like thumb-sucking.",
+  },
+  {
+    question: "What sedation or pain-management options do you offer?",
+    answer:
+      "We use local anesthesia for all treatments to keep you comfortable. Let us know if you feel anxious about a procedure and we'll talk through what will help.",
+  },
+  {
+    question: "How much will my treatment cost, and how does billing work?",
+    answer:
+      "Cost depends on the treatment, so after your exam we'll give you a detailed plan and cost estimate before any work begins. Payment is due at the time of service — we accept major credit cards, checks, cash, and offer interest-free financing.",
+  },
+  {
+    question: "What's your cancellation policy?",
+    answer:
+      "We ask for at least 48 hours' notice if you need to cancel or reschedule, so we can offer that appointment time to another patient.",
+  },
+  {
+    question: "What should I do if I have a dental emergency?",
+    // Deliberately no phone number baked in here — see the file-level
+    // comment above. FAQSection.tsx prepends the one confirmed real
+    // number (`contact.phone`) when it renders this specific answer.
+    answer: "In most cases, we can accommodate emergency visits the same day you call.",
+  },
+  {
+    question: "Do you have a referral program?",
+    answer:
+      "Yes — refer a friend or family member and we'll thank you with a $50 gift card or account credit once they complete their first visit.",
+  },
+];
+
 export const nav = [
   { label: "Services", href: "/services" },
   { label: "About", href: "/about" },
