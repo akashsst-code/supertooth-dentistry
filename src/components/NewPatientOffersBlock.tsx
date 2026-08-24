@@ -1,6 +1,12 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { Placeholder } from "./Placeholder";
 import { offers } from "@/lib/content";
+import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
+
+const cards = [offers.newPatient, offers.invisalign];
 
 /**
  * New-patient offers — split out of the old InsuranceOfferBlock and
@@ -10,41 +16,127 @@ import { offers } from "@/lib/content";
  * reinforcement right before the ask, not competing with trust-building
  * earlier in the page.
  *
- * Cards rebuilt per Akash's "half page picture and 1 line text offer"
- * call: photo fills half the card (full-bleed on mobile, side-by-side
- * ~50/50 from sm: up — same split pattern as Dr. Archana's bio card in
- * TrustBlock), offer text trimmed to a single line, no links. Images are
- * a temporary internet stand-in — see content.ts `offers` comment.
+ * Rebuilt as a swipeable card carousel (Akash's reference: a specials
+ * section with one big rounded card in view and the next peeking at the
+ * edge). Native `overflow-x-auto` + `snap-x` drives the swipe itself —
+ * touch/trackpad scrolling works for free, no hand-rolled pointer-drag
+ * logic needed (unlike OfficeCarousel.tsx, which needs that because it's
+ * a continuously-animating reel; this is a plain user-driven scroller,
+ * so there's nothing to fight over). Chevron buttons + dots are there
+ * for mouse-only desktop users and to show position — `scrollIntoView`
+ * on the target card, not manual scrollLeft math. Active card is tracked
+ * via IntersectionObserver against the scroll container so the dots/
+ * chevrons stay in sync however the user got there (swipe, drag, or
+ * button). No autoplay, so none of the WCAG 2.2.2 pause-control
+ * machinery OfficeCarousel.tsx needs applies here.
+ *
+ * Cards keep the "half page picture and 1 line text offer" content call
+ * (offer copy stays a single line, no separate headline/subhead
+ * invented) but restyled as a standalone rounded card — sand surface,
+ * eyebrow label, and the photo as a circular portrait rather than a
+ * half-card rectangle, closer to the reference look. Images are a
+ * temporary internet stand-in — see content.ts `offers` comment.
  */
 export function NewPatientOffersBlock() {
-  const cards = [offers.newPatient, offers.invisalign];
+  const trackRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const mostVisible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!mostVisible) return;
+        const index = cardRefs.current.findIndex((el) => el === mostVisible.target);
+        if (index !== -1) setActive(index);
+      },
+      { root: track, threshold: [0.6] },
+    );
+    cardRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  function scrollToIndex(index: number) {
+    cardRefs.current[index]?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }
 
   return (
     <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
-      <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso mb-8">
-        New-patient offers
-      </h2>
-      <div className="grid sm:grid-cols-2 gap-6">
-        {cards.map((offer) => (
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso">New-patient offers</h2>
+        <div className="hidden sm:flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => scrollToIndex(active - 1)}
+            disabled={active === 0}
+            aria-label="Previous offer"
+            className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/15 text-espresso/70 hover:text-espresso hover:border-terracotta/50 disabled:opacity-30 disabled:hover:border-espresso/15 transition-colors"
+          >
+            <ChevronLeftIcon />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollToIndex(active + 1)}
+            disabled={active === cards.length - 1}
+            aria-label="Next offer"
+            className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/15 text-espresso/70 hover:text-espresso hover:border-terracotta/50 disabled:opacity-30 disabled:hover:border-espresso/15 transition-colors"
+          >
+            <ChevronRightIcon />
+          </button>
+        </div>
+      </div>
+
+      <div
+        ref={trackRef}
+        className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-4 px-4 sm:-mx-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {cards.map((offer, i) => (
           <div
             key={offer.text}
-            className="rounded-2xl overflow-hidden border border-terracotta/30 bg-terracotta/10 flex flex-col sm:flex-row sm:items-stretch"
+            ref={(el) => {
+              cardRefs.current[i] = el;
+            }}
+            className="relative shrink-0 snap-center w-[85%] sm:w-[62%] md:w-[46%] rounded-3xl bg-sand p-8 sm:p-10 flex flex-col"
           >
-            <div className="relative aspect-[4/3] sm:aspect-auto sm:w-1/2 sm:shrink-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta mb-4">{offer.label}</p>
+            <p className="font-display text-2xl sm:text-3xl font-semibold text-espresso leading-snug mb-6">
+              <Placeholder>{offer.text}</Placeholder>
+            </p>
+            <a
+              href="/contact"
+              className="inline-flex w-fit items-center font-semibold text-terracotta hover:text-terracotta-dark underline underline-offset-4 decoration-2 mb-8"
+            >
+              Schedule this offer
+            </a>
+            <div className="relative mt-auto mx-auto w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden border-4 border-warm-ivory shadow-md">
               <Image
                 src={offer.image.src}
                 alt={offer.image.alt}
                 fill
-                sizes="(min-width: 640px) 24rem, 100vw"
+                sizes="(min-width: 640px) 12rem, 10rem"
                 className="object-cover"
               />
             </div>
-            <div className="flex items-center p-6 sm:w-1/2">
-              <p className="font-display text-lg font-semibold text-espresso">
-                <Placeholder>{offer.text}</Placeholder>
-              </p>
-            </div>
           </div>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-center gap-2 mt-6">
+        {cards.map((offer, i) => (
+          <button
+            key={offer.text}
+            type="button"
+            onClick={() => scrollToIndex(i)}
+            aria-label={`Go to offer ${i + 1}: ${offer.label}`}
+            aria-current={active === i ? "true" : undefined}
+            className="tap-target flex items-center justify-center"
+          >
+            <span className={`h-2 rounded-full transition-all ${active === i ? "w-6 bg-terracotta" : "w-2 bg-terracotta/30"}`} />
+          </button>
         ))}
       </div>
     </section>

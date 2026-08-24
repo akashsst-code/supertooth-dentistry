@@ -56,6 +56,7 @@ export const reviews = {
 // above.
 export const offers = {
   newPatient: {
+    label: "New patients",
     text: "$149 new-patient offer — exam, cleaning, and x-rays included.",
     image: {
       src: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80",
@@ -63,6 +64,7 @@ export const offers = {
     },
   },
   invisalign: {
+    label: "Invisalign",
     text: "$500 off Invisalign clear aligners.",
     image: {
       src: "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=800&q=80",
