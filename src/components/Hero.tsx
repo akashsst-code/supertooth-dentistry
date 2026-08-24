@@ -126,7 +126,7 @@ export function Hero() {
 
         <div className="mt-4 flex flex-row flex-wrap gap-1.5">
           <Link
-            href="#booking"
+            href="/contact"
             className="tap-target grow shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-terracotta px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
           >
             <CalendarIcon />
