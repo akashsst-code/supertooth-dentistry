@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { BadgeIcon, ClockIcon, CrownIcon, ShieldCheckIcon } from "./icons";
+import { InsuranceExpandCard } from "./InsuranceExpandCard";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
 import { archana, credentials, differentiators, officeBlurb } from "@/lib/content";
@@ -57,9 +58,17 @@ export function TrustBlock() {
          * the gap before the next section on mobile, Dr. Archana's card
          * now starts to show on the same screen instead of requiring a
          * full extra scroll.
+         *
+         * The "In-network with most plans" card renders as
+         * InsuranceExpandCard instead of a plain card — Akash asked for a
+         * +/- accordion there (see that file) so the full carrier list
+         * expands in place rather than just linking further down the page.
          */}
         <div className="grid sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-16">
           {differentiators.map((d, i) => {
+            if (d.title === "In-network with most plans") {
+              return <InsuranceExpandCard key={d.title} title={d.title} detail={d.detail} />;
+            }
             const Icon = differentiatorIcons[i];
             return (
               <div
