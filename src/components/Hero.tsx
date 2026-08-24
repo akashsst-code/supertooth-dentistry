@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { contact, insuranceCarriersHeroTeaser, practice, reviews } from "@/lib/content";
+import { contact, practice, reviews } from "@/lib/content";
 import { HeroCarousel } from "./HeroCarousel";
+import { InsuranceTeaser } from "./InsuranceTeaser";
 import { CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
 
 /**
@@ -80,12 +81,10 @@ export function Hero() {
          *
          * In-network line uses insuranceCarriersHeroTeaser (short names:
          * "Delta, Premera, Aetna"), not the full-name insuranceCarriers
-         * list — the full names wrapped to 2 lines on mobile. Considered
-         * a tap-to-expand "+more" instead, but skipped it: hover doesn't
-         * exist on mobile (touch-only, and this is a mobile-first site),
-         * and the full carrier list already has a proper home one scroll
-         * down in InsuranceBlock — an interactive popover here would
-         * just duplicate that for one line of hero real estate.
+         * list — the full names wrapped to 2 lines on mobile. "+ more"
+         * is now tap-to-expand (Akash's explicit call, referencing a
+         * competitor site's pattern) — a tap, not a hover popover, so it
+         * still works touch-only; see InsuranceTeaser.tsx.
          */}
         <div className="mt-3 flex flex-col gap-1 text-xs text-warm-ivory/70">
           <span className="inline-flex items-center gap-1.5">
@@ -100,9 +99,9 @@ export function Hero() {
             <strong className="text-warm-ivory font-semibold">{reviews.rating}</strong>({reviews.count}{" "}
             reviews)
           </span>
-          <span className="inline-flex items-center gap-1.5">
+          <span className="inline-flex items-center gap-1.5 flex-wrap">
             <CheckIcon className="shrink-0 text-terracotta" />
-            In-network: {insuranceCarriersHeroTeaser.join(", ")} + more
+            <InsuranceTeaser />
           </span>
           <span className="inline-flex items-center gap-1.5">
             <MapPinIcon className="shrink-0 text-terracotta" />
