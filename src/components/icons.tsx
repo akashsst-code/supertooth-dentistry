@@ -178,6 +178,16 @@ export function BadgeIcon({ className }: { className?: string }) {
   );
 }
 
+/** Book/schedule CTA icon — Hero primary button. */
+export function CalendarIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" strokeWidth="2" />
+      <path d="M3.5 9.5h17M8 3v3.5M16 3v3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 /** Location pin — LocationMapSection service-area list. */
 export function PinDotIcon({ className }: { className?: string }) {
   return (
