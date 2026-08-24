@@ -29,21 +29,11 @@ export const contact = {
   address: "133 Queen Anne Ave N, Suite A, Seattle, WA 98109",
   // Akash's exact wording (given directly in chat), not scraped.
   parkingNote: "Bus stop on the same block. Street parking available on nearby streets.",
-  // Real, same source as above — but that source shows TWO different
-  // numbers for the emergency line (a top-banner CTA reads
-  // "(206) 593-3131", the footer's "current patients call Dr. Dubey
-  // directly" box reads "(206) 555-0199"). Using the footer-box number
-  // here since it's the one tied specifically to reaching the doctor
-  // directly; flagging the discrepancy for Akash to confirm which is
-  // correct before launch — kept behind <Placeholder> for that reason,
-  // unlike phone/address/hours above.
-  emergencyPhone: "(206) 555-0199",
-  emergencyContact: "Dr. Dubey", // matches archana.name's surname below
 };
 
 export const hours = [
-  { days: "Mon–Fri", time: "8:00 AM – 5:00 PM" },
-  { days: "Sat–Sun", time: "Closed" },
+  { days: "Tue–Fri", time: "7:00 AM – 4:30 PM" },
+  { days: "Sat–Mon", time: "Closed" },
 ];
 
 export const differentiators = [
