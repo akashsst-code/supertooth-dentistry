@@ -35,17 +35,17 @@ function MobileFooter() {
         <p className="font-display text-xl font-semibold">{practice.name}</p>
         <span className="h-0.5 w-8 rounded-full bg-terracotta" />
         <p className="text-sm text-espresso/70">{contact.address}</p>
-        <div className="mt-2 flex flex-wrap justify-center gap-3">
+        <div className="mt-2 flex flex-wrap justify-center gap-1.5">
           <a
             href="/contact"
-            className="tap-target inline-flex items-center justify-center gap-2 rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+            className="tap-target inline-flex items-center justify-center gap-1 rounded-full bg-terracotta px-3 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
           >
             <CalendarIcon />
             Book Appointment
           </a>
           <a
             href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-            className="tap-target inline-flex items-center gap-2 rounded-full border border-espresso/15 px-5 py-2.5 text-sm font-semibold text-espresso hover:border-terracotta hover:text-terracotta transition-colors"
+            className="tap-target inline-flex items-center gap-1 rounded-full border border-espresso/15 px-3 py-2.5 text-sm font-semibold text-espresso hover:border-terracotta hover:text-terracotta transition-colors"
           >
             <PhoneIcon />
             {contact.phone}

@@ -40,6 +40,12 @@ import { CalendarIcon, ClockIcon, MapPinIcon } from "./icons";
  * pair reads as two parallel actions rather than one plain button and
  * one decorated one. Primary CTA is labeled "Book Appointment" (was
  * "Book Now") to match the renamed CTA everywhere else on the site.
+ *
+ * Padding/gap/text size on both CTAs (px-7→px-4, gap-2→gap-1.5,
+ * text-base→text-sm, row gap-4→gap-2) were trimmed to keep them on
+ * one line at mobile widths — same fix as Hero's CTA row, applied
+ * here once "Book Appointment" (longer than the old "Book Now")
+ * pushed this row past one line too.
  */
 export function BookingBlock() {
   const openHours = hours.find((h) => h.time !== "Closed");
@@ -63,17 +69,17 @@ export function BookingBlock() {
               <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                 Quick actions
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-1.5">
                 <a
                   href="/contact"
-                  className="tap-target inline-flex items-center justify-center gap-2 rounded-full bg-terracotta px-7 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+                  className="tap-target inline-flex items-center justify-center gap-1 rounded-full bg-terracotta px-3.5 py-3.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
                 >
                   <CalendarIcon />
                   Book Appointment
                 </a>
                 <a
                   href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-                  className="tap-target inline-flex items-center justify-center gap-2 rounded-full border border-warm-ivory/30 px-7 py-3.5 text-base font-semibold text-warm-ivory hover:border-warm-ivory/60 transition-colors"
+                  className="tap-target inline-flex items-center justify-center gap-1 rounded-full border border-warm-ivory/30 px-3.5 py-3.5 text-sm font-semibold text-warm-ivory hover:border-warm-ivory/60 transition-colors"
                 >
                   <PhoneIcon />
                   {contact.phone}

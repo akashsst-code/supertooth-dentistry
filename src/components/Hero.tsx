@@ -38,6 +38,14 @@ import { CalendarIcon, CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./ic
  * forcing an ugly in-button wrap. Uses a real tel: link (it previously
  * routed to /contact instead of dialing).
  *
+ * Padding/gap/text size on both CTAs were trimmed (px-6→px-3.5,
+ * gap-2→gap-1.5, text-base→text-sm, row gap-3→gap-2) specifically so
+ * "Book Appointment" + the full phone number both fit on one line at
+ * 375px — Akash's call after seeing the flex-wrap safety net actually
+ * trigger and push them onto two lines. Verified in a real 375px
+ * layout (not just computed/isolated widths) that this leaves a
+ * little slack, not an exact-pixel fit.
+ *
  * Body copy trimmed from 4 lines to 3 on mobile — dropped "dental" and
  * "in {neighborhood}" (already stated in the nav subtitle and the
  * headline right above, a third mention here was pure repetition) to
@@ -117,17 +125,17 @@ export function Hero() {
           </span>
         </div>
 
-        <div className="mt-4 flex flex-row flex-wrap gap-3">
+        <div className="mt-4 flex flex-row flex-wrap gap-1.5">
           <Link
             href="#booking"
-            className="tap-target grow shrink-0 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-terracotta px-6 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+            className="tap-target grow shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-terracotta px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
           >
             <CalendarIcon />
             Book Appointment
           </Link>
           <a
             href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-            className="tap-target shrink-0 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-warm-ivory/40 px-5 py-3.5 text-base font-semibold text-warm-ivory hover:border-warm-ivory/70 transition-colors"
+            className="tap-target shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full border border-warm-ivory/40 px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:border-warm-ivory/70 transition-colors"
           >
             <PhoneIcon />
             {contact.phone}
