@@ -105,6 +105,51 @@ export const officePhotos = [
   { src: "/office/office-5.jpg", alt: "Waiting area seating" },
 ];
 
+// Hero photo carousel — replaces the single "video-styled" hero photo
+// (previously ClinicVideo.tsx, now HeroCarousel.tsx) with a rotating set
+// of real photos so the hero reads as "this is a real team and a real
+// place," not just the lead dentist. Source photos supplied by Akash
+// 2026-08-23. archana.webp is the same portrait the hero already used —
+// kept first so the opening frame is unchanged.
+//
+// Only Dr. Archana Dubey is a confirmed identity here: her named photos
+// elsewhere in this file (archana.webp / archana-profile.jpg) both show
+// "Archana Dubey" embroidered on her coat, which is how the candid
+// portrait below was matched to her, not a guess. The other people
+// pictured don't have confirmed names/roles yet — same gap as the
+// "Hygienist name" / "Staff name" placeholders in `team` below — so
+// their captions describe the moment/role instead of inventing an
+// identity (would violate the no-unverifiable-claims rule in
+// docs/supertooth-build-principles.md Section 8). Swap in real
+// names once Akash confirms them.
+export const heroPhotos = [
+  {
+    src: "/team/archana.webp",
+    alt: "Dr. Archana Dubey at Super Tooth Dentistry",
+    caption: "Dr. Archana Dubey, DDS",
+  },
+  {
+    src: "/team/team-group.jpg",
+    alt: "The Super Tooth Dentistry team together in the office",
+    caption: "Our team",
+  },
+  {
+    src: "/team/front-desk.jpg",
+    alt: "A team member at the front desk",
+    caption: "Front desk",
+  },
+  {
+    src: "/team/archana-candid.jpg",
+    alt: "Dr. Archana Dubey in the office",
+    caption: "Dr. Archana Dubey, DDS",
+  },
+  {
+    src: "/team/team-itero-scan.jpg",
+    alt: "Reviewing a digital scan on-screen",
+    caption: "Digital scanning technology",
+  },
+];
+
 /**
  * Short-name teaser for the hero's one-line trust strip specifically —
  * "Delta Dental, Premera Blue Cross, Aetna" doesn't fit one line on a
