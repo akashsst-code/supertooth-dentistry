@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { contact, hours, nav } from "@/lib/content";
@@ -34,15 +34,62 @@ import { contact, hours, nav } from "@/lib/content";
  * ViewportHero.tsx must stay in sync with this header's rendered height
  * (h-16 below) since Nav is now out of normal flow and everything after
  * it has to reserve that space itself.
+ *
+ * `floating` (added 2026-08-29, single-bleed pass): while the page is
+ * still scrolled to the very top (still over Hero's full-bleed photo),
+ * the header goes fully transparent (plus its own top scrim + mono
+ * Logo, both below) instead of a solid white bar sitting on top of the
+ * photo — Akash's "make it one clean bleed, not white/photo/white
+ * stacked bands" call. Driven by a plain `window.scrollY` check, not an
+ * IntersectionObserver against a sentinel at Hero's exact bottom edge —
+ * that was tried first and was flaky: Hero is deliberately sized to
+ * exactly one screen height, so a sentinel marking "Hero has ended"
+ * necessarily sits right at the fold, and sub-pixel rounding in that
+ * height (mobile browser chrome resizing the viewport, the JS/CSS
+ * height reconciliation in ViewportHero.tsx) made it flicker between
+ * both states. A scroll-position check sidesteps that entirely: since
+ * Hero fills exactly one screen, ANY scroll at all already means
+ * TrustBlock is starting to show beneath it, so solidifying on the
+ * first few pixels of scroll is correct, not premature. Structure/
+ * links/hamburger/CTA are all unchanged from the locked Pattern A spec
+ * (docs/supertooth-navigation-requirements.md) — this is a visual-only
+ * treatment, nothing here is hidden or removed while floating.
  */
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const [floating, setFloating] = useState(true);
+
+  useEffect(() => {
+    const onScroll = () => setFloating(window.scrollY < 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const linkColor = floating
+    ? "text-warm-ivory hover:text-warm-ivory/70"
+    : "text-espresso hover:text-terracotta";
+  const iconButtonColor = floating
+    ? "border-warm-ivory/40 text-warm-ivory"
+    : "border-espresso/20 text-espresso";
 
   return (
     <>
-      <header className="fixed top-0 inset-x-0 z-50 bg-warm-ivory/95 backdrop-blur border-b border-sand">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Logo />
+      <header
+        className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
+          floating ? "bg-transparent" : "bg-warm-ivory/95 backdrop-blur border-b border-sand"
+        }`}
+      >
+        {/* Nav's own top scrim — only needed (rendered) while floating over
+            the photo; once solid, the header's own opaque background
+            covers this same space, so leaving it mounted would just be a
+            lingering dark band under later sections as the page scrolls. */}
+        {floating && (
+          <div className="photo-text-scrim-top absolute inset-x-0 top-0 h-32" aria-hidden="true" />
+        )}
+
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Logo mono={floating} />
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
@@ -50,7 +97,7 @@ export function Nav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-espresso hover:text-terracotta transition-colors"
+                className={`text-sm font-medium transition-colors ${linkColor}`}
               >
                 {item.label}
               </Link>
@@ -68,7 +115,7 @@ export function Nav() {
             <a
               href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
               aria-label="Call the practice"
-              className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/20 text-espresso"
+              className={`tap-target inline-flex items-center justify-center rounded-full border transition-colors ${iconButtonColor}`}
             >
               <PhoneIcon />
             </a>
@@ -83,7 +130,7 @@ export function Nav() {
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/20 text-espresso"
+              className={`tap-target inline-flex items-center justify-center rounded-full border transition-colors ${iconButtonColor}`}
             >
               {open ? <CloseIcon /> : <MenuIcon />}
             </button>

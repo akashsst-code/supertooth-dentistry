@@ -39,7 +39,10 @@ import { Footer } from "@/components/Footer";
  * outside ViewportHero. Hero still fills exactly one screen height on
  * mobile below it — handled by ViewportHero, which reserves Nav's
  * height; see that file for why a plain h-[100svh] div wasn't enough
- * (in-app browsers like WhatsApp's often don't support svh).
+ * (in-app browsers like WhatsApp's often don't support svh). Nav also
+ * floats transparently over Hero's photo until the page scrolls at all
+ * (single-bleed pass, 2026-08-29) — see the `floating` comment in
+ * Nav.tsx for why that's a plain scroll check, not a sentinel here.
  */
 export default function Home() {
   return (

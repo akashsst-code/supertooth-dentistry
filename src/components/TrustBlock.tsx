@@ -43,10 +43,24 @@ function TrustBadge({ children }: { children: React.ReactNode }) {
  * Dr. Archana's training/affiliation badges live inside her bio card
  * (below) rather than a separate section further down the page — "bring
  * archana's training affiliations along with her bio space" (Akash).
+ *
+ * Top seam fade (2026-08-29, single-bleed pass, mobile only): Hero's
+ * bottom edge is a solid Espresso plateau (needed for the CTA row's own
+ * contrast, see Hero.tsx's scrim), and this section starts in a much
+ * lighter Sand tint right below it — an instant flat-color cut Akash
+ * flagged as looking like stacked bands rather than one clean page. A
+ * short Espresso-to-transparent fade laid over this section's own top
+ * edge graduates that handoff instead of requiring Hero to compromise
+ * its CTA contrast to soften it. Desktop doesn't need this — Hero isn't
+ * full-bleed there, so there's no dark-photo-panel edge to blend from.
  */
 export function TrustBlock() {
   return (
-    <section className="bg-sand/40">
+    <section className="relative bg-sand/40">
+      <div
+        className="photo-text-scrim-top md:hidden absolute inset-x-0 top-0 h-16"
+        aria-hidden="true"
+      />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
         {/*
          * Differentiators — icon-left row cards (icon beside title/detail,

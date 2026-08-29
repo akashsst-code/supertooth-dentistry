@@ -147,10 +147,20 @@ export const officePhotos = [
 // frame (looking right at a screen), so its focal point stays left —
 // applying the same up-right bias there would crop her face out of the
 // frame entirely rather than protecting it.
+//
+// Archana's 4 photos were pushed further up (and pulled back toward
+// center from the first pass) 2026-08-29 after Akash's real-device
+// test — a real phone's in-app-browser chrome (WhatsApp's, specifically)
+// eats into the available height in a way the emulated-browser testing
+// that produced the first `focal` values didn't hit, leaving less clear
+// space above the text than expected. Pushing the crop window higher is
+// a real mitigation, but has a ceiling: it doesn't touch the amount of
+// vertical space the text block itself needs, so a short enough real
+// viewport can still bring them close regardless of focal point.
 export const heroPhotos = [
-  { src: "/team/archana.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry", focal: "68% 20%" },
-  { src: "/team/archana-candid-crop.jpg", alt: "Dr. Archana Dubey in the office", focal: "62% 15%" },
-  { src: "/team/archana-candid-outdoor.jpg", alt: "Dr. Archana Dubey", focal: "62% 25%" },
+  { src: "/team/archana.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry", focal: "60% 10%" },
+  { src: "/team/archana-candid-crop.jpg", alt: "Dr. Archana Dubey in the office", focal: "58% 6%" },
+  { src: "/team/archana-candid-outdoor.jpg", alt: "Dr. Archana Dubey", focal: "58% 12%" },
   {
     src: "/team/team-group.jpg",
     alt: "The Super Tooth Dentistry team together in the office",
@@ -162,7 +172,7 @@ export const heroPhotos = [
     alt: "A team member reviewing a digital scan on-screen",
     focal: "22% 30%",
   },
-  { src: "/team/archana-profile.jpg", alt: "Dr. Archana Dubey, DDS, MDS", focal: "55% 20%" },
+  { src: "/team/archana-profile.jpg", alt: "Dr. Archana Dubey, DDS, MDS", focal: "52% 8%" },
 ];
 
 /**
