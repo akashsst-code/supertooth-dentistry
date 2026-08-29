@@ -49,83 +49,51 @@ export function TrustBlock() {
     <section className="bg-sand/40">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
         {/*
-         * Differentiators — two different renderings of the same content,
-         * per breakpoint (same split pattern as Hero.tsx's mobile/desktop
-         * markup): plain icon-left row cards stayed for sm+ (unchanged,
-         * roomy stacked cards Akash preferred over a compact grid — see
-         * history below), but mobile gets its own photo-card carousel
-         * (2026-08-29) — the icon-only cards read as empty/no-visuals on
-         * mobile with no photography anywhere before the office carousel
-         * further down, right after the Hero picked up the same
-         * real-photo, overlay-text treatment. A horizontal snap-scroll
-         * row (not 3 stacked photo cards) keeps the section's mobile
-         * height to one card instead of ~doubling the scroll — same
-         * "peek the next card" pattern already used for
-         * NewPatientOffersBlock, just without that component's JS
-         * dot/chevron tracking since 3 items don't need it; the partial
-         * next-card peek is enough to signal there's more to swipe.
+         * Differentiators — a single vertical fold-open list at every
+         * breakpoint (Akash's explicit call, after comparing it against a
+         * horizontal photo-card carousel): all 3 titles are visible with
+         * zero interaction instead of 2 of them being a swipe away, which
+         * matters more for the time-scarce/pain-driven visitors this
+         * section exists for than the carousel's bigger up-front photo
+         * did. Rows are collapsed icon+title+one-line-detail bars —
+         * reusing the same accordion pattern already shipped for
+         * FAQSection and the insurance card below — and only reveal their
+         * real photo once expanded, alongside a longer note and the
+         * shared "Book Appointment" CTA (see ExpandCard/BookingCtaRow in
+         * InsuranceExpandCard.tsx).
          *
-         * The "In-network with most plans" card still renders as
-         * InsuranceExpandCard (+/- accordion, Akash's call — see that
-         * file) in both renderings; its `image` prop switches it into
-         * the same photo-card look as the other two on mobile.
+         * Card styling (dark espresso surface, warm-ivory text,
+         * translucent terracotta-on-ivory icon badges) deliberately
+         * echoes Hero.tsx's dark panel rather than the light warm-ivory
+         * cards used elsewhere on the page — Akash asked for "a nicer
+         * feel like page 1" here specifically, and this section is the
+         * next thing a visitor sees right after that panel.
          *
-         * All 3 cards now share the same tap-to-expand `ExpandCard`
-         * shell (2026-08-29) — "Same-day appointments" and "Same-day
-         * crowns" used to be plain non-interactive divs styled
-         * identically to the insurance card, which reads as broken on a
-         * touch device: same look, no response to a tap, right where
-         * someone scrolling with intent to book is most likely to try.
-         * Their expanded panel is a one-line placeholder answer to
-         * "what happens next" plus the same "Book Appointment" CTA
-         * every expanded card ends with (see BookingCtaRow) — routing
-         * to the one real appointment path already used everywhere else
-         * on the site, not a new/fake booking widget (the real Tab32
-         * integration still isn't built — see BookingBlock.tsx).
+         * All 3 rows share the same tap-to-expand `ExpandCard` shell —
+         * "Same-day appointments" and "Same-day crowns" used to be plain
+         * non-interactive divs, which read as broken once they looked
+         * identical to the (already tappable) insurance card next to
+         * them. The "In-network" row still renders as InsuranceExpandCard
+         * specifically for its carrier-grid expanded content.
          */}
-        <div className="sm:hidden -mx-4 px-4 mb-8 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {differentiators.map((d, i) => {
-            if (d.title === "In-network with most plans") {
+        <div className="mb-12 sm:mb-16">
+          <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso text-center mb-6 sm:mb-8">
+            Why Choose Us
+          </h2>
+          <div className="flex flex-col gap-3 sm:gap-4 max-w-2xl mx-auto">
+            {differentiators.map((d, i) => {
+              if (d.title === "In-network with most plans") {
+                return <InsuranceExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image} />;
+              }
+              const Icon = differentiatorIcons[i];
               return (
-                <InsuranceExpandCard
-                  key={d.title}
-                  title={d.title}
-                  detail={d.detail}
-                  image={d.image}
-                  className="snap-center shrink-0 w-[82%]"
-                />
+                <ExpandCard key={d.title} title={d.title} detail={d.detail} icon={<Icon />} image={d.image}>
+                  <p className="text-sm text-warm-ivory/70">{d.expandedNote}</p>
+                  <BookingCtaRow />
+                </ExpandCard>
               );
-            }
-            const Icon = differentiatorIcons[i];
-            return (
-              <ExpandCard
-                key={d.title}
-                title={d.title}
-                detail={d.detail}
-                icon={<Icon />}
-                image={d.image}
-                className="snap-center shrink-0 w-[82%]"
-              >
-                <p className="pt-4 text-sm text-espresso/70">{d.expandedNote}</p>
-                <BookingCtaRow />
-              </ExpandCard>
-            );
-          })}
-        </div>
-
-        <div className="hidden sm:grid sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-16">
-          {differentiators.map((d, i) => {
-            if (d.title === "In-network with most plans") {
-              return <InsuranceExpandCard key={d.title} title={d.title} detail={d.detail} />;
-            }
-            const Icon = differentiatorIcons[i];
-            return (
-              <ExpandCard key={d.title} title={d.title} detail={d.detail} icon={<Icon />}>
-                <p className="pt-4 text-sm text-espresso/70">{d.expandedNote}</p>
-                <BookingCtaRow />
-              </ExpandCard>
-            );
-          })}
+            })}
+          </div>
         </div>
 
         {/* Office photos — real photography, now leads (moved above the

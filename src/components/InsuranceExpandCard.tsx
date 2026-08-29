@@ -6,17 +6,19 @@ import { CalendarIcon, PhoneIcon, ShieldCheckIcon } from "./icons";
 import { contact, insuranceCarriers } from "@/lib/content";
 
 /**
- * Generic tap-to-expand differentiator-card shell — icon+text row on
- * desktop, photo card (image + gradient + overlaid title/detail) on
- * mobile when `image` is passed. Extracted 2026-08-29 from what used to
- * be an insurance-only component (see `InsuranceExpandCard` below) once
- * "Same-day appointments" and "Same-day crowns" needed the exact same
- * tap-to-expand affordance: on mobile all 3 differentiator cards render
- * as identical-looking photo cards (TrustBlock's carousel), so leaving
- * two of them as plain non-interactive divs meant they looked tappable
- * but did nothing — a scroll-vs-tap mismatch Akash flagged. Sharing one
- * shell keeps all 3 cards' interaction and photo-card styling from
- * drifting apart.
+ * Generic tap-to-expand differentiator-card row, styled to match the
+ * Hero's dark espresso panel (Akash's call, comparing an earlier
+ * light-card version to "page 1" — the hero's dark panel + terracotta
+ * accents read as the nicer, more premium treatment). Collapsed rows
+ * are compact (icon + title + one-line detail + a +/- toggle, all 3
+ * visible at once, no swiping needed to see what's on offer); the real
+ * photo only appears once a row is expanded, alongside a longer note
+ * and the shared booking CTA.
+ *
+ * Extracted 2026-08-29 from what used to be an insurance-only component
+ * (see `InsuranceExpandCard` below) once "Same-day appointments" and
+ * "Same-day crowns" needed the same tap-to-expand affordance — sharing
+ * one shell keeps all 3 cards' interaction from drifting apart.
  */
 export function ExpandCard({
   title,
@@ -36,52 +38,27 @@ export function ExpandCard({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={`rounded-2xl bg-warm-ivory border border-sand overflow-hidden ${className}`}>
-      {image ? (
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          aria-expanded={open}
-          className="tap-target relative block w-full aspect-[4/3] text-left"
+    <div className={`rounded-2xl bg-espresso border border-warm-ivory/10 overflow-hidden ${className}`}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="tap-target w-full flex items-center gap-4 p-5 text-left"
+      >
+        <span className="shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-full bg-warm-ivory/10 text-terracotta">
+          {icon}
+        </span>
+        <span className="flex-1 min-w-0">
+          <h3 className="font-display text-base sm:text-lg font-semibold text-warm-ivory mb-0.5">{title}</h3>
+          <p className="text-sm text-warm-ivory/60">{detail}</p>
+        </span>
+        <span
+          className="shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-full bg-warm-ivory/10 text-terracotta"
+          aria-hidden="true"
         >
-          <Image src={image.src} alt={image.alt} fill sizes="82vw" className="object-cover" />
-          <span
-            className="absolute inset-0 bg-gradient-to-t from-espresso/90 from-15% via-espresso/25 via-50% to-transparent"
-            aria-hidden="true"
-          />
-          <span className="absolute top-3 left-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-warm-ivory/90 text-terracotta">
-            {icon}
-          </span>
-          <span className="absolute top-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-warm-ivory/90 text-terracotta">
-            <PlusMinusIcon open={open} />
-          </span>
-          <span className="absolute inset-x-0 bottom-0 p-4">
-            <span className="block font-display text-lg font-semibold text-warm-ivory mb-1">{title}</span>
-            <span className="block text-sm text-warm-ivory/85">{detail}</span>
-          </span>
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          aria-expanded={open}
-          className="tap-target w-full flex items-start gap-4 p-5 text-left"
-        >
-          <span className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-terracotta/10 text-terracotta">
-            {icon}
-          </span>
-          <span className="flex-1">
-            <h3 className="font-display text-lg font-semibold text-espresso mb-1">{title}</h3>
-            <p className="text-sm text-espresso/70">{detail}</p>
-          </span>
-          <span
-            className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-terracotta/10 text-terracotta mt-0.5"
-            aria-hidden="true"
-          >
-            <PlusMinusIcon open={open} />
-          </span>
-        </button>
-      )}
+          <PlusMinusIcon open={open} />
+        </span>
+      </button>
 
       <div
         className={`grid transition-[grid-template-rows] duration-300 ease-out ${
@@ -89,7 +66,20 @@ export function ExpandCard({
         }`}
       >
         <div className="overflow-hidden">
-          <div className={`px-5 pb-5 pt-1 ${image ? "" : "border-t border-sand"}`}>{children}</div>
+          <div className="px-5 pb-5 pt-1 border-t border-warm-ivory/10">
+            {image && (
+              <div className="relative mt-4 mb-4 aspect-[16/10] rounded-xl overflow-hidden">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes="(min-width: 640px) 40rem, 90vw"
+                  className="object-cover"
+                />
+              </div>
+            )}
+            {children}
+          </div>
         </div>
       </div>
     </div>
@@ -103,7 +93,8 @@ export function ExpandCard({
  * so this doesn't fake a live-availability widget; it routes to the one
  * real, working appointment path already used site-wide (Nav, Hero,
  * BookingBlock, Footer) rather than inventing a second, competing CTA
- * destination.
+ * destination. Styled for the dark espresso card surface above — same
+ * primary/secondary CTA pairing as Hero.tsx's own CTA row.
  */
 export function BookingCtaRow() {
   return (
@@ -117,7 +108,7 @@ export function BookingCtaRow() {
       </a>
       <a
         href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-        className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full border border-sand px-4 py-2.5 text-sm font-semibold text-espresso hover:border-terracotta/40 transition-colors"
+        className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full border border-warm-ivory/30 px-4 py-2.5 text-sm font-semibold text-warm-ivory hover:border-warm-ivory/60 transition-colors"
       >
         <PhoneIcon />
         {contact.phone}
@@ -144,10 +135,11 @@ export function BookingCtaRow() {
  * disclaimer line carries that instead of the dashed-underline
  * treatment, same tradeoff Akash already made for the Hero teaser.
  *
- * Now a thin wrapper around the generic `ExpandCard` shell above (see
- * that comment for why) — this component only owns the insurance-
- * specific expanded content (carrier grid + disclaimer + the shared
- * booking CTA row every expanded differentiator card ends with).
+ * A thin wrapper around the generic `ExpandCard` shell above (see that
+ * comment for why) — this component only owns the insurance-specific
+ * expanded content (carrier grid + disclaimer + the shared booking CTA
+ * row every expanded differentiator card ends with), restyled for the
+ * dark card surface.
  */
 export function InsuranceExpandCard({
   title,
@@ -162,23 +154,23 @@ export function InsuranceExpandCard({
 }) {
   return (
     <ExpandCard title={title} detail={detail} icon={<ShieldCheckIcon />} image={image} className={className}>
-      <p className="mt-4 mb-3 text-[11px] font-semibold uppercase tracking-wide text-espresso/50">
+      <p className="mt-4 mb-3 text-[11px] font-semibold uppercase tracking-wide text-warm-ivory/50">
         Accepted plans include
       </p>
       <div className="grid grid-cols-2 gap-2">
         {insuranceCarriers.map((c) => (
-          <div key={c} className="group relative overflow-hidden rounded-xl bg-sand/40 px-3 py-3">
+          <div key={c} className="group relative overflow-hidden rounded-xl bg-warm-ivory/10 px-3 py-3">
             <span
-              className="absolute -right-3 -top-3 h-9 w-9 rounded-full bg-terracotta/10 transition-transform group-hover:scale-110"
+              className="absolute -right-3 -top-3 h-9 w-9 rounded-full bg-terracotta/20 transition-transform group-hover:scale-110"
               aria-hidden="true"
             />
-            <span className="relative block font-display text-sm font-semibold italic text-espresso leading-tight">
+            <span className="relative block font-display text-sm font-semibold italic text-warm-ivory leading-tight">
               {c}
             </span>
           </div>
         ))}
       </div>
-      <p className="mt-4 text-xs text-espresso/60">Don&apos;t see your plan? Call us and we&apos;ll verify.</p>
+      <p className="mt-4 text-xs text-warm-ivory/60">Don&apos;t see your plan? Call us and we&apos;ll verify.</p>
       <BookingCtaRow />
     </ExpandCard>
   );
