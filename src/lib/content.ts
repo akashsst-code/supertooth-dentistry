@@ -111,6 +111,12 @@ export const officePhotos = [
 // bio card) and archana-candid-outdoor.jpg (new photo Akash supplied
 // 2026-08-29) are both added here for that reason.
 //
+// archana-candid-crop.jpg is a tighter crop of archana-candid.jpg (same
+// source photo, original kept as-is) — the uncropped version left her
+// small in frame next to a large floor lamp; cropping out most of the
+// lamp on the left brings her to the visual center per Akash's "zoom in
+// on the doctor" follow-up.
+//
 // No real patient photos exist yet to satisfy the "show patients" half
 // of that feedback — HIPAA/no-unverifiable-claims rules out staging or
 // mislabeling a staff member as a patient, so this still only rotates
@@ -131,7 +137,7 @@ export const officePhotos = [
 // these distinctions need to live now.
 export const heroPhotos = [
   { src: "/team/archana.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry" },
-  { src: "/team/archana-candid.jpg", alt: "Dr. Archana Dubey in the office" },
+  { src: "/team/archana-candid-crop.jpg", alt: "Dr. Archana Dubey in the office" },
   { src: "/team/archana-candid-outdoor.jpg", alt: "Dr. Archana Dubey" },
   { src: "/team/team-group.jpg", alt: "The Super Tooth Dentistry team together in the office" },
   { src: "/team/front-desk.jpg", alt: "A team member at the front desk" },
