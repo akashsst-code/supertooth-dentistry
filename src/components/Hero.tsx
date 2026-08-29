@@ -2,7 +2,7 @@ import Link from "next/link";
 import { contact, practice, reviews } from "@/lib/content";
 import { HeroCarousel } from "./HeroCarousel";
 import { InsuranceTeaser } from "./InsuranceTeaser";
-import { CalendarIcon, CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
+import { CalendarIcon, CheckIcon, GoogleGIcon, StarIcon } from "./icons";
 
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
@@ -60,12 +60,40 @@ import { CalendarIcon, CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./ic
  */
 export function Hero() {
   return (
-    <section className="flex-1 min-h-0 flex flex-col md:flex-row-reverse md:min-h-[560px]">
-      <div className="w-full flex-1 min-h-[160px] md:w-3/5 md:flex-none md:h-auto overflow-hidden">
+    <section className="relative flex-1 min-h-0 md:flex md:flex-row-reverse md:min-h-[560px]">
+      {/*
+       * Photo layer — full-bleed behind the text on mobile (absolute
+       * inset-0) instead of its own stacked block above a solid-color
+       * text panel. Desktop keeps the original 60/40 side-by-side split
+       * (md:static reverts out of the absolute overlay entirely) — the
+       * "feels cluttered" feedback was mobile-specific, desktop's
+       * side-by-side layout wasn't part of that complaint and is
+       * untouched here.
+       */}
+      <div className="absolute inset-0 md:static md:w-3/5 md:flex-none md:h-auto overflow-hidden">
         <HeroCarousel />
       </div>
 
-      <div className="w-full shrink-0 md:w-2/5 bg-espresso text-warm-ivory flex flex-col justify-center px-6 py-4 sm:px-10 sm:py-16">
+      {/*
+       * Mobile-only scrim, independent of HeroCarousel's own built-in
+       * gradient (which exists for general depth, not guaranteed text
+       * contrast). This one is sized and weighted specifically so the
+       * text block below stays WCAG AA-legible against whichever of the
+       * rotating team/office photos happens to be showing, not just
+       * Dr. Archana's — build-principles.md Section 4 accessibility
+       * requirement, not just a style preference.
+       */}
+      <div
+        className="md:hidden pointer-events-none absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-espresso from-35% via-espresso/70 to-transparent"
+        aria-hidden="true"
+      />
+
+      {/*
+       * Text content — overlaid at the bottom of the photo on mobile
+       * (absolute + justify-end), reverts to the original solid-espresso
+       * side panel on desktop (md:static md:bg-espresso md:justify-center).
+       */}
+      <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end px-6 pb-6 pt-24 sm:px-8 md:static md:w-2/5 md:flex-none md:bg-espresso md:justify-center md:px-10 md:py-16 text-warm-ivory">
         <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70 mb-2">
           Accepting new patients
         </span>
@@ -100,8 +128,22 @@ export function Hero() {
          * is now tap-to-expand (Akash's explicit call, referencing a
          * competitor site's pattern) — a tap, not a hover popover, so it
          * still works touch-only; see InsuranceTeaser.tsx.
+         *
+         * Address line dropped from this strip entirely (Akash's call,
+         * 2026-08-29 declutter pass) — it answered "where," not "is this
+         * legit"/"do you take my plan," was already implied by
+         * practice.headline's "Queen Anne," and repeats verbatim in both
+         * BookingBlock and Footer below. Insurance itself stays (the
+         * insurance-driven half of the locked persona needs it, and its
+         * specific carrier names are themselves a deliberate, separate
+         * earlier decision — see above), but restyled from its own
+         * full-width icon+text row into a compact pill, matching the
+         * "Accepting new patients" badge's visual language — same
+         * information and the same tap-to-expand mechanic, lighter
+         * visual footprint now that it has to share a photo instead of
+         * a dedicated solid panel.
          */}
-        <div className="mt-3 flex flex-col gap-1 text-xs text-warm-ivory/70">
+        <div className="mt-3 flex flex-col gap-1.5 text-xs text-warm-ivory/70">
           <span className="inline-flex items-center gap-1.5">
             <GoogleGIcon />
             <span className="flex gap-px text-terracotta">
@@ -114,13 +156,9 @@ export function Hero() {
             <strong className="text-warm-ivory font-semibold">{reviews.rating}</strong>({reviews.count}{" "}
             reviews)
           </span>
-          <span className="inline-flex items-center gap-1.5 flex-wrap">
-            <CheckIcon className="shrink-0 text-terracotta" />
+          <span className="inline-flex w-fit items-center gap-1.5 flex-wrap rounded-full bg-warm-ivory/10 px-2.5 py-1">
+            <CheckIcon className="shrink-0 text-terracotta h-3 w-3" />
             <InsuranceTeaser />
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <MapPinIcon className="shrink-0 text-terracotta" />
-            {contact.address}
           </span>
         </div>
 
