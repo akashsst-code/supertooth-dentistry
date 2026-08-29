@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { BadgeIcon, ClockIcon, CrownIcon, ShieldCheckIcon } from "./icons";
-import { InsuranceExpandCard } from "./InsuranceExpandCard";
+import { BookingCtaRow, ExpandCard, InsuranceExpandCard } from "./InsuranceExpandCard";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
 import { archana, credentials, differentiators, officeBlurb } from "@/lib/content";
@@ -49,40 +49,81 @@ export function TrustBlock() {
     <section className="bg-sand/40">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
         {/*
-         * Differentiators — icon-left row cards (icon beside title/detail,
-         * not stacked above it) rather than a denser multi-column grid.
-         * Akash preferred keeping the roomy full-width stacked cards over
-         * a compact 2-up grid, so the row layout does the space-saving
-         * work instead: same padding-driven roominess, but the icon no
-         * longer adds its own line of height. Combined with tightening
-         * the gap before the next section on mobile, Dr. Archana's card
-         * now starts to show on the same screen instead of requiring a
-         * full extra scroll.
+         * Differentiators — two different renderings of the same content,
+         * per breakpoint (same split pattern as Hero.tsx's mobile/desktop
+         * markup): plain icon-left row cards stayed for sm+ (unchanged,
+         * roomy stacked cards Akash preferred over a compact grid — see
+         * history below), but mobile gets its own photo-card carousel
+         * (2026-08-29) — the icon-only cards read as empty/no-visuals on
+         * mobile with no photography anywhere before the office carousel
+         * further down, right after the Hero picked up the same
+         * real-photo, overlay-text treatment. A horizontal snap-scroll
+         * row (not 3 stacked photo cards) keeps the section's mobile
+         * height to one card instead of ~doubling the scroll — same
+         * "peek the next card" pattern already used for
+         * NewPatientOffersBlock, just without that component's JS
+         * dot/chevron tracking since 3 items don't need it; the partial
+         * next-card peek is enough to signal there's more to swipe.
          *
-         * The "In-network with most plans" card renders as
-         * InsuranceExpandCard instead of a plain card — Akash asked for a
-         * +/- accordion there (see that file) so the full carrier list
-         * expands in place rather than just linking further down the page.
+         * The "In-network with most plans" card still renders as
+         * InsuranceExpandCard (+/- accordion, Akash's call — see that
+         * file) in both renderings; its `image` prop switches it into
+         * the same photo-card look as the other two on mobile.
+         *
+         * All 3 cards now share the same tap-to-expand `ExpandCard`
+         * shell (2026-08-29) — "Same-day appointments" and "Same-day
+         * crowns" used to be plain non-interactive divs styled
+         * identically to the insurance card, which reads as broken on a
+         * touch device: same look, no response to a tap, right where
+         * someone scrolling with intent to book is most likely to try.
+         * Their expanded panel is a one-line placeholder answer to
+         * "what happens next" plus the same "Book Appointment" CTA
+         * every expanded card ends with (see BookingCtaRow) — routing
+         * to the one real appointment path already used everywhere else
+         * on the site, not a new/fake booking widget (the real Tab32
+         * integration still isn't built — see BookingBlock.tsx).
          */}
-        <div className="grid sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-16">
+        <div className="sm:hidden -mx-4 px-4 mb-8 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {differentiators.map((d, i) => {
+            if (d.title === "In-network with most plans") {
+              return (
+                <InsuranceExpandCard
+                  key={d.title}
+                  title={d.title}
+                  detail={d.detail}
+                  image={d.image}
+                  className="snap-center shrink-0 w-[82%]"
+                />
+              );
+            }
+            const Icon = differentiatorIcons[i];
+            return (
+              <ExpandCard
+                key={d.title}
+                title={d.title}
+                detail={d.detail}
+                icon={<Icon />}
+                image={d.image}
+                className="snap-center shrink-0 w-[82%]"
+              >
+                <p className="pt-4 text-sm text-espresso/70">{d.expandedNote}</p>
+                <BookingCtaRow />
+              </ExpandCard>
+            );
+          })}
+        </div>
+
+        <div className="hidden sm:grid sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-16">
           {differentiators.map((d, i) => {
             if (d.title === "In-network with most plans") {
               return <InsuranceExpandCard key={d.title} title={d.title} detail={d.detail} />;
             }
             const Icon = differentiatorIcons[i];
             return (
-              <div
-                key={d.title}
-                className="rounded-2xl bg-warm-ivory p-5 border border-sand flex items-start gap-4"
-              >
-                <span className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-terracotta/10 text-terracotta">
-                  <Icon />
-                </span>
-                <div>
-                  <h3 className="font-display text-lg font-semibold text-espresso mb-1">{d.title}</h3>
-                  <p className="text-sm text-espresso/70">{d.detail}</p>
-                </div>
-              </div>
+              <ExpandCard key={d.title} title={d.title} detail={d.detail} icon={<Icon />}>
+                <p className="pt-4 text-sm text-espresso/70">{d.expandedNote}</p>
+                <BookingCtaRow />
+              </ExpandCard>
             );
           })}
         </div>
