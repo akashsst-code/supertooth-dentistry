@@ -38,22 +38,24 @@ export function ExpandCard({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={`rounded-2xl bg-espresso border border-warm-ivory/10 overflow-hidden ${className}`}>
+    <div
+      className={`rounded-2xl bg-espresso bg-[radial-gradient(130%_140%_at_12%_0%,rgba(250,248,244,0.07),transparent_50%),radial-gradient(120%_120%_at_100%_100%,rgba(193,99,62,0.18),transparent_55%)] border border-warm-ivory/10 overflow-hidden ${className}`}
+    >
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="tap-target w-full flex items-center gap-4 p-5 text-left"
+        className="tap-target w-full flex items-center gap-3 p-4 text-left"
       >
-        <span className="shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-full bg-warm-ivory/10 text-terracotta">
+        <span className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-warm-ivory/10 text-terracotta">
           {icon}
         </span>
         <span className="flex-1 min-w-0">
-          <h3 className="font-display text-base sm:text-lg font-semibold text-warm-ivory mb-0.5">{title}</h3>
-          <p className="text-sm text-warm-ivory/60">{detail}</p>
+          <h3 className="font-display text-base font-semibold text-warm-ivory leading-tight">{title}</h3>
+          <span className="block text-sm text-warm-ivory/55 leading-snug">{detail}</span>
         </span>
         <span
-          className="shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-full bg-warm-ivory/10 text-terracotta"
+          className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-warm-ivory/10 text-terracotta"
           aria-hidden="true"
         >
           <PlusMinusIcon open={open} />
@@ -66,9 +68,9 @@ export function ExpandCard({
         }`}
       >
         <div className="overflow-hidden">
-          <div className="px-5 pb-5 pt-1 border-t border-warm-ivory/10">
+          <div className="px-4 pb-4 pt-1 border-t border-warm-ivory/10">
             {image && (
-              <div className="relative mt-4 mb-4 aspect-[16/10] rounded-xl overflow-hidden">
+              <div className="relative mt-3 mb-3 aspect-[16/10] rounded-xl overflow-hidden">
                 <Image
                   src={image.src}
                   alt={image.alt}
@@ -98,7 +100,7 @@ export function ExpandCard({
  */
 export function BookingCtaRow() {
   return (
-    <div className="mt-4 flex flex-wrap gap-2">
+    <div className="mt-3 flex flex-wrap gap-2">
       <a
         href="/contact"
         className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full bg-terracotta px-4 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
@@ -154,7 +156,7 @@ export function InsuranceExpandCard({
 }) {
   return (
     <ExpandCard title={title} detail={detail} icon={<ShieldCheckIcon />} image={image} className={className}>
-      <p className="mt-4 mb-3 text-[11px] font-semibold uppercase tracking-wide text-warm-ivory/50">
+      <p className="mt-3 mb-2 text-[11px] font-semibold uppercase tracking-wide text-warm-ivory/50">
         Accepted plans include
       </p>
       <div className="grid grid-cols-2 gap-2">
@@ -170,7 +172,7 @@ export function InsuranceExpandCard({
           </div>
         ))}
       </div>
-      <p className="mt-4 text-xs text-warm-ivory/60">Don&apos;t see your plan? Call us and we&apos;ll verify.</p>
+      <p className="mt-3 mb-0 text-xs text-warm-ivory/60">Don&apos;t see your plan? Call us and we&apos;ll verify.</p>
       <BookingCtaRow />
     </ExpandCard>
   );

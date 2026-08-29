@@ -77,10 +77,10 @@ export function TrustBlock() {
          * specifically for its carrier-grid expanded content.
          */}
         <div className="mb-12 sm:mb-16">
-          <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso text-center mb-6 sm:mb-8">
+          <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso text-center mb-4 sm:mb-5">
             Why Choose Us
           </h2>
-          <div className="flex flex-col gap-3 sm:gap-4 max-w-2xl mx-auto">
+          <div className="flex flex-col gap-2 sm:gap-3 max-w-2xl mx-auto">
             {differentiators.map((d, i) => {
               if (d.title === "In-network with most plans") {
                 return <InsuranceExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image} />;
@@ -88,7 +88,7 @@ export function TrustBlock() {
               const Icon = differentiatorIcons[i];
               return (
                 <ExpandCard key={d.title} title={d.title} detail={d.detail} icon={<Icon />} image={d.image}>
-                  <p className="text-sm text-warm-ivory/70">{d.expandedNote}</p>
+                  <p className="mb-0 text-sm text-warm-ivory/70">{d.expandedNote}</p>
                   <BookingCtaRow />
                 </ExpandCard>
               );
