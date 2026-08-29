@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { heroPhotos } from "@/lib/content";
 
-const SLIDE_DURATION_MS = 2200;
+const SLIDE_DURATION_MS = 4500;
+const CROSSFADE_MS = 1200;
 
 /**
  * Hero photo carousel — replaces the old single-photo ClinicVideo panel.
@@ -15,6 +16,17 @@ const SLIDE_DURATION_MS = 2200;
  * docs/supertooth-priority-dimensions.md content checklist); once it has,
  * this can be swapped for a real <video> the same way ClinicVideo.tsx's
  * header comment described.
+ *
+ * Timing slowed 2026-08-29 (2200ms/600ms -> 4500ms/1200ms hold/crossfade)
+ * per Akash's feedback that the original pace read as "too fast" and
+ * didn't let Dr. Archana's photos register before moving on.
+ *
+ * Always opens on heroPhotos[0] (Dr. Archana's studio headshot) and
+ * plays the fixed order in content.ts, rather than the previous
+ * random-start behavior — also part of that same feedback ("start the
+ * first photo with [the] most trustworthy doc photo"). See the
+ * heroPhotos comment in content.ts for how the rest of the sequence is
+ * ordered.
  *
  * Deliberately no interactive controls — no dots, no pause/play, no
  * click-to-jump (Akash's explicit call: "just have photos run... this is
@@ -27,11 +39,11 @@ const SLIDE_DURATION_MS = 2200;
  * respected (freezes on whichever photo is showing) since that's a
  * passive system preference, not a user-facing control being asked for.
  *
- * All 5 <Image>s are always mounted and stacked, crossfading via opacity
+ * All <Image>s are always mounted and stacked, crossfading via opacity
  * — not swapped in/out — so the Ken Burns zoom (applied to all of them
  * continuously) never restarts/pops mid-transition. Only index 0 gets
- * `priority` (it's whichever photo paints first, before the post-mount
- * randomization below runs — see that effect's comment).
+ * `priority` (it's the photo that paints first, and now also the one
+ * always shown first).
  */
 export function HeroCarousel() {
   const [index, setIndex] = useState(0);
@@ -42,12 +54,6 @@ export function HeroCarousel() {
 
   useEffect(() => {
     setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    // Open on a different photo each visit (Akash's call) instead of
-    // always archana.webp — done post-mount, not as the initial useState
-    // value, so server-rendered/first-paint markup still matches (index
-    // 0) and this doesn't trigger a hydration mismatch; it just swaps
-    // within the same paint cycle right after.
-    setIndex(Math.floor(Math.random() * heroPhotos.length));
   }, []);
 
   useEffect(() => {
@@ -75,7 +81,8 @@ export function HeroCarousel() {
           priority={i === 0}
           aria-hidden
           sizes="(min-width: 768px) 60vw, 100vw"
-          className={`object-cover object-top animate-slow-zoom transition-opacity duration-[600ms] ease-in-out ${
+          style={{ transitionDuration: `${CROSSFADE_MS}ms` }}
+          className={`object-cover object-top animate-slow-zoom transition-opacity ease-in-out ${
             i === index ? "opacity-100" : "opacity-0"
           }`}
         />

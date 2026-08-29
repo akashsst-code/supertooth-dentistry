@@ -101,13 +101,26 @@ export const officePhotos = [
 // (previously ClinicVideo.tsx, now HeroCarousel.tsx) with a rotating set
 // of real photos so the hero reads as "this is a real team and a real
 // place," not just the lead dentist. Source photos supplied by Akash
-// 2026-08-23. archana.webp is the same portrait the hero already used —
-// kept first so the opening frame is unchanged.
+// 2026-08-23; reordered and extended 2026-08-29 per Akash's feedback
+// that the doctor wasn't reading as prominent enough. Fixed order now
+// (see HeroCarousel.tsx — no more random start index): opens and closes
+// on Dr. Archana so she's never more than 2 slides away, with the
+// team/staff photos grouped in the middle rather than scattered — "keep
+// the doc in focus" while still showing the office isn't a one-person
+// operation. archana-profile.jpg (previously only used in TrustBlock's
+// bio card) and archana-candid-outdoor.jpg (new photo Akash supplied
+// 2026-08-29) are both added here for that reason.
+//
+// No real patient photos exist yet to satisfy the "show patients" half
+// of that feedback — HIPAA/no-unverifiable-claims rules out staging or
+// mislabeling a staff member as a patient, so this still only rotates
+// through confirmed staff. Revisit once real, consented patient photos
+// exist.
 //
 // Only Dr. Archana Dubey is a confirmed identity here: her named photos
 // elsewhere in this file (archana.webp / archana-profile.jpg) both show
 // "Archana Dubey" embroidered on her coat, which is how the candid
-// portrait below was matched to her, not a guess. The other people
+// portraits below were matched to her, not a guess. The other people
 // pictured don't have confirmed names/roles yet — same gap as the
 // "Hygienist name" / "Staff name" placeholders in `team` below — so
 // their `alt` text describes the moment/role instead of inventing an
@@ -118,10 +131,12 @@ export const officePhotos = [
 // these distinctions need to live now.
 export const heroPhotos = [
   { src: "/team/archana.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry" },
+  { src: "/team/archana-candid.jpg", alt: "Dr. Archana Dubey in the office" },
+  { src: "/team/archana-candid-outdoor.jpg", alt: "Dr. Archana Dubey" },
   { src: "/team/team-group.jpg", alt: "The Super Tooth Dentistry team together in the office" },
   { src: "/team/front-desk.jpg", alt: "A team member at the front desk" },
-  { src: "/team/archana-candid.jpg", alt: "Dr. Archana Dubey in the office" },
-  { src: "/team/team-itero-scan.jpg", alt: "Reviewing a digital scan on-screen" },
+  { src: "/team/team-itero-scan.jpg", alt: "A team member reviewing a digital scan on-screen" },
+  { src: "/team/archana-profile.jpg", alt: "Dr. Archana Dubey, DDS, MDS" },
 ];
 
 /**
