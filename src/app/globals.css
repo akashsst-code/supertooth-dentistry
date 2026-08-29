@@ -80,3 +80,31 @@ p {
     animation: none;
   }
 }
+
+/* ============================================================
+ * PHOTO-TEXT SCRIM — the site's "color bleed" pattern: a full-bleed
+ * photo doubling as a section's background, with text sitting directly
+ * on top of it instead of in its own solid-color block. First used in
+ * Hero.tsx's mobile layout (2026-08-29 declutter pass); reuse this same
+ * class anywhere else the pattern applies rather than re-deriving the
+ * gradient per section. Full spec — when to use this pattern, the
+ * photo-focal-point requirement, contrast rule — lives in
+ * docs/supertooth-ux-flow.md, "Photo Overlay Pattern — Locked".
+ *
+ * Single source of truth for the recipe: solid Espresso at the bottom
+ * edge (every current use anchors text to the bottom), fading to fully
+ * transparent, so the real photo shows through everywhere text doesn't
+ * need to sit. Built from the locked --color-espresso token (see the
+ * LOCKED DESIGN TOKENS block above), not a new color — this pattern
+ * reuses the palette, it doesn't extend it.
+ */
+.photo-text-scrim {
+  pointer-events: none;
+  background-image: linear-gradient(
+    to top,
+    var(--color-espresso) 0%,
+    var(--color-espresso) 35%,
+    color-mix(in srgb, var(--color-espresso) 65%, transparent) 55%,
+    transparent 100%
+  );
+}

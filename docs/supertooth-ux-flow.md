@@ -106,6 +106,17 @@ Rationale: matches the padding/gap values already used across every mockup built
 
 **Build fix flagged:** the call icon and hamburger icon in the locked nav mockup (`supertooth-nav-option-a.html`) were sized ~34×34px — below the 44×44px standard. Icon can stay visually small, but its tappable hit area needs to expand to 44×44px minimum before build.
 
+## Photo Overlay Pattern ("Color Bleed") — Locked
+
+**Decision (LOCKED): full-bleed photo doubling as a section's background, text sitting directly on top via a gradient scrim — the site's shared pattern for any section where a real photo should read as clean/minimalist (photo IS the surface) rather than "photo block next to/above a solid-color text panel."**
+
+First used in Hero.tsx's mobile layout (2026-08-29), replacing a stacked photo-block + solid-Espresso-panel layout that read as cluttered/two-screens-stacked on review. Desktop's side-by-side split is a separate, already-working pattern and isn't affected by this one.
+
+- **Recipe:** `.photo-text-scrim` in `globals.css` — solid Espresso at the text-anchored edge fading to fully transparent, built from the locked `--color-espresso` token (not a new color). Apply this class to a positioned div behind the text rather than hand-deriving a gradient per section, so every use gets an identical scrim.
+- **Contrast requirement:** the scrim must be sized/weighted so overlaid text stays WCAG AA-legible against the *worst-case* photo it could be shown over — if the photo rotates (carousel) or could be swapped later (CMS-editable), don't tune the scrim against just one photo you happened to be looking at.
+- **Focal-point requirement:** every photo used this way needs its own object-position ("focal point" in code — see `heroPhotos` in `content.ts`), not one blanket crop rule. Where the subject's face sits varies per photo — a generic "shift toward the corner opposite the text" rule can crop a face out of frame entirely if that photo's subject wasn't centered to begin with (see the `team-itero-scan.jpg` exception documented in `content.ts` — she's in profile on the left third of her own frame, so hers stays left instead of following the others' bias). Set focal points by looking at the actual photo, not by applying a formula blind.
+- **When to use it vs. the solid-panel pattern:** use the overlay when the photo itself is the trust signal being led with (a hero, a section whose whole point is "here's the real space/person"). Keep the solid-panel pattern (TrustBlock's Archana bio card, BookingBlock's photo, etc.) where the photo is supporting evidence next to independently-important text/data — those sections aren't cluttered in the same way the old hero was, and don't need converting just for consistency's sake.
+
 ## Not Yet Decided
 
 - [ ] **Team/office photography** — not yet scheduled or shot. Needs a plan: who's coordinating (Akash vs. Archana's staff), professional photographer vs. high-quality phone photos, and timeline relative to launch (blocks the Trust block section from being finished, though the rest of the site can proceed in parallel).

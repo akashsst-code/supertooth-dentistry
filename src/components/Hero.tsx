@@ -77,16 +77,17 @@ export function Hero() {
       {/*
        * Mobile-only scrim, independent of HeroCarousel's own built-in
        * gradient (which exists for general depth, not guaranteed text
-       * contrast). This one is sized and weighted specifically so the
-       * text block below stays WCAG AA-legible against whichever of the
-       * rotating team/office photos happens to be showing, not just
-       * Dr. Archana's — build-principles.md Section 4 accessibility
+       * contrast). Uses the site's shared .photo-text-scrim pattern
+       * (globals.css) rather than a one-off gradient here — see
+       * docs/supertooth-ux-flow.md "Photo Overlay Pattern — Locked" —
+       * so any future full-bleed-photo section reuses this exact
+       * recipe instead of re-deriving it. Sized to cover the text
+       * block below at WCAG AA contrast against whichever rotating
+       * team/office photo happens to be showing, not just Dr.
+       * Archana's — build-principles.md Section 4 accessibility
        * requirement, not just a style preference.
        */}
-      <div
-        className="md:hidden pointer-events-none absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-espresso from-35% via-espresso/70 to-transparent"
-        aria-hidden="true"
-      />
+      <div className="photo-text-scrim md:hidden absolute inset-x-0 bottom-0 h-4/5" aria-hidden="true" />
 
       {/*
        * Text content — overlaid at the bottom of the photo on mobile

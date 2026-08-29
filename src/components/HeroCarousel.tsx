@@ -44,6 +44,15 @@ const CROSSFADE_MS = 1200;
  * continuously) never restarts/pops mid-transition. Only index 0 gets
  * `priority` (it's the photo that paints first, and now also the one
  * always shown first).
+ *
+ * Each photo's crop is driven by its own `focal` (CSS object-position)
+ * value from content.ts rather than one blanket `object-top` — added
+ * 2026-08-29 when Hero.tsx started overlaying text at the bottom of
+ * this carousel on mobile. Faces sit at different positions per source
+ * photo, so a single rule can't clear the text block for all of them
+ * (team-itero-scan.jpg's subject is in the LEFT third of her frame —
+ * see the `focal` comment in content.ts for why that one stays left
+ * instead of following the others' up-right bias).
  */
 export function HeroCarousel() {
   const [index, setIndex] = useState(0);
@@ -81,8 +90,8 @@ export function HeroCarousel() {
           priority={i === 0}
           aria-hidden
           sizes="(min-width: 768px) 60vw, 100vw"
-          style={{ transitionDuration: `${CROSSFADE_MS}ms` }}
-          className={`object-cover object-top animate-slow-zoom transition-opacity ease-in-out ${
+          style={{ transitionDuration: `${CROSSFADE_MS}ms`, objectPosition: photo.focal }}
+          className={`object-cover animate-slow-zoom transition-opacity ease-in-out ${
             i === index ? "opacity-100" : "opacity-0"
           }`}
         />

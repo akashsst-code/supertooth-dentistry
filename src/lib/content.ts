@@ -135,14 +135,34 @@ export const officePhotos = [
 // confirms real names. No visible caption in the carousel itself
 // (Akash's call — see HeroCarousel.tsx) so `alt` is the only place
 // these distinctions need to live now.
+//
+// `focal` (added 2026-08-29, full-bleed hero redesign): a CSS
+// object-position value keeping each photo's face clear of the bottom
+// text overlay (see docs/supertooth-ux-flow.md "Photo Overlay Pattern —
+// Locked" and HeroCarousel.tsx). Set per-photo, not as one blanket
+// value, because face position varies by source photo — most faces here
+// sit near center, so nudging up-and-right clears the bottom-left text
+// block without cropping anything important. team-itero-scan.jpg is the
+// deliberate exception: she's in profile on the LEFT third of that
+// frame (looking right at a screen), so its focal point stays left —
+// applying the same up-right bias there would crop her face out of the
+// frame entirely rather than protecting it.
 export const heroPhotos = [
-  { src: "/team/archana.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry" },
-  { src: "/team/archana-candid-crop.jpg", alt: "Dr. Archana Dubey in the office" },
-  { src: "/team/archana-candid-outdoor.jpg", alt: "Dr. Archana Dubey" },
-  { src: "/team/team-group.jpg", alt: "The Super Tooth Dentistry team together in the office" },
-  { src: "/team/front-desk.jpg", alt: "A team member at the front desk" },
-  { src: "/team/team-itero-scan.jpg", alt: "A team member reviewing a digital scan on-screen" },
-  { src: "/team/archana-profile.jpg", alt: "Dr. Archana Dubey, DDS, MDS" },
+  { src: "/team/archana.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry", focal: "68% 20%" },
+  { src: "/team/archana-candid-crop.jpg", alt: "Dr. Archana Dubey in the office", focal: "62% 15%" },
+  { src: "/team/archana-candid-outdoor.jpg", alt: "Dr. Archana Dubey", focal: "62% 25%" },
+  {
+    src: "/team/team-group.jpg",
+    alt: "The Super Tooth Dentistry team together in the office",
+    focal: "55% 25%",
+  },
+  { src: "/team/front-desk.jpg", alt: "A team member at the front desk", focal: "58% 25%" },
+  {
+    src: "/team/team-itero-scan.jpg",
+    alt: "A team member reviewing a digital scan on-screen",
+    focal: "22% 30%",
+  },
+  { src: "/team/archana-profile.jpg", alt: "Dr. Archana Dubey, DDS, MDS", focal: "55% 20%" },
 ];
 
 /**
