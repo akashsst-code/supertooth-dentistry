@@ -35,35 +35,54 @@ import { contact, hours, nav } from "@/lib/content";
  * (h-16 below) since Nav is now out of normal flow and everything after
  * it has to reserve that space itself.
  *
- * `floating` (added 2026-08-29, single-bleed pass): while the page is
- * still scrolled to the very top (still over Hero's full-bleed photo),
- * the header goes fully transparent (plus its own top scrim + mono
- * Logo, both below) instead of a solid white bar sitting on top of the
- * photo — Akash's "make it one clean bleed, not white/photo/white
- * stacked bands" call. Driven by a plain `window.scrollY` check, not an
- * IntersectionObserver against a sentinel at Hero's exact bottom edge —
- * that was tried first and was flaky: Hero is deliberately sized to
- * exactly one screen height, so a sentinel marking "Hero has ended"
- * necessarily sits right at the fold, and sub-pixel rounding in that
- * height (mobile browser chrome resizing the viewport, the JS/CSS
- * height reconciliation in ViewportHero.tsx) made it flicker between
- * both states. A scroll-position check sidesteps that entirely: since
- * Hero fills exactly one screen, ANY scroll at all already means
- * TrustBlock is starting to show beneath it, so solidifying on the
- * first few pixels of scroll is correct, not premature. Structure/
- * links/hamburger/CTA are all unchanged from the locked Pattern A spec
+ * `floating` (added 2026-08-29, single-bleed pass): while Hero's
+ * full-bleed photo is still substantially visible, the header goes
+ * fully transparent (plus its own top scrim + mono Logo, both below)
+ * instead of a solid white bar sitting on top of the photo — Akash's
+ * "make it one clean bleed, not white/photo/white stacked bands" call.
+ *
+ * Two earlier approaches were tried and replaced:
+ * 1. An IntersectionObserver against a sentinel placed exactly at
+ *    Hero's bottom edge — flaky, since that edge sits right at the
+ *    fold (Hero is deliberately one full screen tall) and sub-pixel
+ *    rounding in mobile browser chrome made it flicker.
+ * 2. `window.scrollY < 8` — solidified after essentially the first
+ *    scroll tick, which is wrong: Hero fills the *entire* viewport
+ *    height, so 8px of scroll leaves nearly all of the photo still
+ *    showing beneath an already-solid white bar — reintroducing the
+ *    exact stacked-band problem this was built to fix, just delayed a
+ *    few pixels and now hit on every scroll instead of never.
+ *
+ * Current approach: read #hero-wrapper's real getBoundingClientRect()
+ * on every scroll tick and stay floating as long as a meaningful chunk
+ * of it (more than FLOAT_UNTIL_PX) is still below the header. This
+ * tracks Hero's actual rendered height directly — already correct
+ * across breakpoints and in-app-browser chrome quirks, since
+ * ViewportHero.tsx solves exactly that — rather than Nav trying to
+ * duplicate that math from scroll position alone. Structure/links/
+ * hamburger/CTA are all unchanged from the locked Pattern A spec
  * (docs/supertooth-navigation-requirements.md) — this is a visual-only
  * treatment, nothing here is hidden or removed while floating.
  */
+const FLOAT_UNTIL_PX = 120;
+
 export function Nav() {
   const [open, setOpen] = useState(false);
   const [floating, setFloating] = useState(true);
 
   useEffect(() => {
-    const onScroll = () => setFloating(window.scrollY < 8);
+    const onScroll = () => {
+      const hero = document.getElementById("hero-wrapper");
+      const bottom = hero?.getBoundingClientRect().bottom ?? 0;
+      setFloating(bottom > FLOAT_UNTIL_PX);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   const linkColor = floating
@@ -85,7 +104,7 @@ export function Nav() {
             covers this same space, so leaving it mounted would just be a
             lingering dark band under later sections as the page scrolls. */}
         {floating && (
-          <div className="photo-text-scrim-top absolute inset-x-0 top-0 h-32" aria-hidden="true" />
+          <div className="photo-text-scrim-top absolute inset-x-0 top-0 h-56" aria-hidden="true" />
         )}
 
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">

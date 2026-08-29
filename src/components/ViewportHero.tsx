@@ -31,6 +31,14 @@ export const NAV_HEIGHT_PX = 64;
  * the wrapper were a plain div with the original classes. mt-16
  * applies at every width though, since Nav is fixed/out of flow at
  * every width and this wrapper always needs to clear it.
+ *
+ * id="hero-wrapper" (2026-08-29, single-bleed pass): Nav.tsx reads this
+ * element's real getBoundingClientRect().bottom on scroll to know how
+ * much of Hero's photo is still visible, rather than guessing at a
+ * scroll-position threshold. Measuring the actual rendered element
+ * (this wrapper already accounts for every height quirk documented
+ * above — svh fallback, in-app-browser chrome, JS override) is more
+ * reliable than Nav trying to duplicate that math independently.
  */
 export function ViewportHero({ children }: { children: React.ReactNode }) {
   const [mobileHeight, setMobileHeight] = useState<number | null>(null);
@@ -55,6 +63,7 @@ export function ViewportHero({ children }: { children: React.ReactNode }) {
 
   return (
     <div
+      id="hero-wrapper"
       className="mt-16 flex flex-col h-[calc(100svh-4rem)] md:h-auto md:block"
       style={mobileHeight ? { height: mobileHeight } : undefined}
     >

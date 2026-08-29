@@ -49,16 +49,20 @@ function TrustBadge({ children }: { children: React.ReactNode }) {
  * contrast, see Hero.tsx's scrim), and this section starts in a much
  * lighter Sand tint right below it — an instant flat-color cut Akash
  * flagged as looking like stacked bands rather than one clean page. A
- * short Espresso-to-transparent fade laid over this section's own top
+ * gradual Espresso-to-transparent fade laid over this section's own top
  * edge graduates that handoff instead of requiring Hero to compromise
- * its CTA contrast to soften it. Desktop doesn't need this — Hero isn't
- * full-bleed there, so there's no dark-photo-panel edge to blend from.
+ * its CTA contrast to soften it. Sized generously (h-40, not just
+ * enough to cover the literal seam) after Akash's follow-up that a
+ * shorter version still read as two flat zones with a thin blended
+ * line, not a genuinely gradual transition. Desktop doesn't need this —
+ * Hero isn't full-bleed there, so there's no dark-photo-panel edge to
+ * blend from.
  */
 export function TrustBlock() {
   return (
     <section className="relative bg-sand/40">
       <div
-        className="photo-text-scrim-top md:hidden absolute inset-x-0 top-0 h-16"
+        className="photo-text-scrim-top md:hidden absolute inset-x-0 top-0 h-40"
         aria-hidden="true"
       />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
