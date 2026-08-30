@@ -41,8 +41,8 @@ export function Hero() {
         <HeroCarousel />
       </div>
 
-      {/* Legibility scrim — solid espresso (the old panel's background color) low in the frame, blending into the photo above it */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-espresso from-0% via-espresso/90 via-60% to-transparent" />
+      {/* Legibility scrim — solid espresso (the old panel's background color) confined to roughly where the text content actually sits (from the "Accepting new patients" badge down), blending into the clear photo above it. Akash's follow-up: the first pass's via-60%/to-100% stops darkened photo well above the text too. */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-espresso from-0% via-espresso/85 via-38% to-transparent to-52%" />
 
       <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-8 pt-4 sm:px-10 sm:pb-12 text-warm-ivory">
         <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/15 backdrop-blur-sm px-3 py-1 text-xs font-medium text-warm-ivory/80 mb-3">
