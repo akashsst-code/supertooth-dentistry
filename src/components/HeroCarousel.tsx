@@ -80,14 +80,13 @@ export function HeroCarousel() {
           fill
           priority={i === 0}
           aria-hidden
-          sizes="(min-width: 768px) 60vw, 100vw"
+          sizes="100vw"
           style={{ transitionDuration: `${CROSSFADE_MS}ms` }}
           className={`object-cover object-top animate-slow-zoom transition-opacity ease-in-out ${
             i === index ? "opacity-100" : "opacity-0"
           }`}
         />
       ))}
-      <div className="absolute inset-0 bg-gradient-to-t from-espresso/80 via-espresso/5 to-transparent" />
     </div>
   );
 }
