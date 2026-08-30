@@ -4,63 +4,32 @@
 export const NAV_HEIGHT_PX = 64;
 
 /**
- * Small safety margin beyond the viewport, so Hero's photo always fully
- * covers the visible screen at first paint even if `dvh` (below) is off
- * by a pixel or two on some device. Hero.tsx's scrim and text overlay
- * both offset by this same amount (`bottom: HERO_OVERSHOOT_PX` instead
- * of `bottom: 0`) so the CTA row still lands exactly at the true
- * viewport edge — only the photo extends the extra amount, invisible
- * until the reader scrolls.
- */
-export const HERO_OVERSHOOT_PX = 16;
-
-/**
- * Hero fills the visible screen's height on mobile, below the fixed
- * nav, via `100dvh` ("dynamic viewport height" — CSS's own live-
- * updating answer to "how tall is the screen right now," tracking a
- * mobile browser's address bar/toolbar as it shows or hides). This file
- * used to compute that height in JS instead (reading
- * `visualViewport.height` on mount and on resize), because `dvh` used
- * to have patchy support and because in-app browsers (WhatsApp,
- * Instagram) sometimes don't report viewport size the way regular
- * mobile Safari/Chrome do.
+ * Historically this wrapper forced Hero to exactly one viewport-height
+ * tall on mobile (first via a JS `visualViewport.height` read, later via
+ * CSS `100dvh`), so the photo would read as a genuine full-bleed first
+ * screen. Removed entirely 2026-08-29 after that approach caused four
+ * separate real-device bugs in a row — a load-timing race, a WebKit
+ * text-rendering quirk, a `min-height` fallback silently overriding the
+ * real height on every render, and Safari vs. Chrome on the same phone
+ * measuring the viewport differently enough to hide the CTA row on one
+ * but not the other. None of these ever reproduced in this repo's
+ * testing tooling, which is exactly what made them unfixable with any
+ * confidence — every fix was a best guess pending a real device
+ * confirming it, and one already broke on the very next report.
  *
- * Dropped that JS approach 2026-08-29 after it caused three separate
- * real-device bugs across two features (Nav's now-reverted floating
- * state, and this file's own height calc) — all timing/race issues
- * around exactly when the JS override lands relative to first paint,
- * none reproducible in this repo's testing tooling. `dvh` sidesteps the
- * whole category: it's the browser's own value, always current, no
- * JS/timing/race involved. Modern support (Safari 15.4+, Chrome 108+)
- * covers effectively all real traffic this site gets.
+ * Hero.tsx no longer needs an exact-viewport-height container to look
+ * right or to keep its CTA reachable: mobile now sizes the photo with a
+ * plain `vh` unit (approximate is fine, it doesn't need pixel
+ * precision) and lets the text block that follows it sit in normal
+ * document flow instead of being pinned to this wrapper's computed
+ * height. That's what actually guarantees the nav bar and the CTA row
+ * are always on the page and always reachable — not a height
+ * calculation someone has to get exactly right on every browser, but
+ * how browsers lay out real content by default. See Hero.tsx.
  *
- * `min-h-[calc(100vh-4rem)]` stays as the pure-CSS fallback floor for
- * the rare case `dvh` itself isn't supported — if that happens the
- * whole `h-[calc(100dvh...)]` declaration is dropped by the CSS spec
- * (invalid values don't partially apply), and this min-height is what
- * stops the wrapper from collapsing to near-zero height in that case.
- * Has to subtract NAV_HEIGHT_PX itself, same as the main height calc —
- * a bare `min-h-screen` (100vh, no subtraction) was tried first and was
- * a real bug, not just an odd-looking fallback: CSS `min-height` wins
- * whenever it's larger than the computed `height`, and 100vh is *always*
- * larger than `100dvh - 4rem`, so that version silently overrode the
- * correct nav-aware height on every normal render, not just the rare
- * dvh-unsupported case it was meant for — pushing Hero, and the CTA row
- * pinned to its bottom, exactly NAV_HEIGHT_PX too far down on every
- * single load. Caught by a real device report of the "Book Appointment"
- * button running off the bottom of the screen.
- *
- * Desktop (md:+) is untouched — `md:min-h-0 md:h-auto md:block` resets
- * all of this back to a plain content-sized block at that breakpoint.
- * mt-16 applies at every width though, since Nav is fixed/out of flow
- * at every width and this wrapper always needs to clear it.
+ * All this wrapper does now is clear Nav's fixed height, which every
+ * width needs since Nav is out of normal flow.
  */
 export function ViewportHero({ children }: { children: React.ReactNode }) {
-  return (
-    // The `+1rem` here is HERO_OVERSHOOT_PX (16px) — keep the two in
-    // sync, same as `4rem` already has to match NAV_HEIGHT_PX.
-    <div className="mt-16 flex flex-col min-h-[calc(100vh-4rem)] h-[calc(100dvh-4rem+1rem)] md:min-h-0 md:h-auto md:block">
-      {children}
-    </div>
-  );
+  return <div className="mt-16">{children}</div>;
 }

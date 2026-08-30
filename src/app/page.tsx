@@ -35,14 +35,15 @@ import { Footer } from "@/components/Footer";
  * (docs/supertooth-webflow-build-spec.md Section 2) still need to be
  * built at /services, /about, /insurance-new-patients, /contact.
  *
- * Nav is fixed (pinned for the whole page, see Nav.tsx) and rendered
- * outside ViewportHero. Hero still fills exactly one screen height on
- * mobile below it — handled by ViewportHero, which reserves Nav's
- * height; see that file for why a plain h-[100svh] div wasn't enough
- * (in-app browsers like WhatsApp's often don't support svh). Nav also
- * floats transparently over Hero's photo until the page scrolls at all
- * (single-bleed pass, 2026-08-29) — see the `floating` comment in
- * Nav.tsx for why that's a plain scroll check, not a sentinel here.
+ * Nav is fixed (pinned for the whole page, always solid — an earlier
+ * transparent-over-Hero state was tried and reverted, see Nav.tsx) and
+ * rendered outside ViewportHero, which now does nothing but clear Nav's
+ * height (mt-16) — Hero used to be forced to exactly one viewport-height
+ * tall on mobile, which caused a string of real-device bugs across
+ * several different implementations of that height calc. See the
+ * comment in ViewportHero.tsx for the full history and why Hero.tsx now
+ * sizes its own photo block with a plain `vh` unit and lets its text
+ * block sit in normal document flow instead.
  */
 export default function Home() {
   return (

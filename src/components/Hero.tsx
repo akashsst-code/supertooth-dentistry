@@ -3,7 +3,6 @@ import { contact, practice, reviews } from "@/lib/content";
 import { HeroCarousel } from "./HeroCarousel";
 import { InsuranceTeaser } from "./InsuranceTeaser";
 import { CalendarIcon, CheckIcon, GoogleGIcon, StarIcon } from "./icons";
-import { HERO_OVERSHOOT_PX } from "./ViewportHero";
 
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
@@ -61,86 +60,68 @@ import { HERO_OVERSHOOT_PX } from "./ViewportHero";
  */
 export function Hero() {
   return (
-    <section className="relative flex-1 min-h-0 md:flex md:flex-row-reverse md:min-h-[560px]">
+    <section className="relative md:flex md:flex-row-reverse md:min-h-[560px]">
       {/*
-       * Photo layer — full-bleed behind the text on mobile (absolute
-       * inset-0) instead of its own stacked block above a solid-color
-       * text panel. Desktop keeps the original 60/40 side-by-side split
-       * (md:static reverts out of the absolute overlay entirely) — the
-       * "feels cluttered" feedback was mobile-specific, desktop's
-       * side-by-side layout wasn't part of that complaint and is
-       * untouched here.
+       * Photo block — mobile: a normal-flow block with a real, plain-CSS
+       * height (`vh`, not a viewport-exact calc — see the 2026-08-29
+       * note in ViewportHero.tsx for why exact-height was abandoned).
+       * Desktop keeps the original 60/40 side-by-side split completely
+       * unchanged: md:static makes this a plain flex item sitting next
+       * to the text block (see below), same as it always has.
        */}
-      <div className="absolute inset-0 md:static md:w-3/5 md:flex-none md:h-auto overflow-hidden">
+      <div className="relative h-[62vh] min-h-[380px] max-h-[640px] w-full overflow-hidden md:static md:h-auto md:max-h-none md:min-h-0 md:w-3/5 md:flex-none">
         <HeroCarousel />
+
+        {/*
+         * Mobile-only scrim, independent of HeroCarousel's own built-in
+         * gradient (which exists for general depth, not guaranteed text
+         * contrast). Uses the site's shared .photo-text-scrim pattern
+         * (globals.css) rather than a one-off gradient here — see
+         * docs/supertooth-ux-flow.md "Photo Overlay Pattern — Locked".
+         * Bottom-anchored to *this* block's own real, CSS-native height
+         * (no viewport math, no separate overshoot constant needed) —
+         * covers the portion the text block below overlaps into via its
+         * negative top margin, at WCAG AA contrast against whichever
+         * rotating team/office photo happens to be showing, not just
+         * Dr. Archana's (build-principles.md Section 4).
+         */}
+        <div className="photo-text-scrim md:hidden absolute inset-x-0 bottom-0 h-2/3" aria-hidden="true" />
       </div>
 
       {/*
-       * Mobile-only scrim, independent of HeroCarousel's own built-in
-       * gradient (which exists for general depth, not guaranteed text
-       * contrast). Uses the site's shared .photo-text-scrim pattern
-       * (globals.css) rather than a one-off gradient here — see
-       * docs/supertooth-ux-flow.md "Photo Overlay Pattern — Locked" —
-       * so any future full-bleed-photo section reuses this exact
-       * recipe instead of re-deriving it. Sized to cover the text
-       * block below at WCAG AA contrast against whichever rotating
-       * team/office photo happens to be showing, not just Dr.
-       * Archana's — build-principles.md Section 4 accessibility
-       * requirement, not just a style preference. `bottom: HERO_OVERSHOOT_PX`
-       * instead of the container's true bottom-0 — this container is now
-       * HERO_OVERSHOOT_PX taller than the viewport (see ViewportHero.tsx),
-       * so anchoring to its real bottom edge would push the scrim (and
-       * the text below) that same amount below the visible fold.
+       * Text block — mobile: normal document flow, overlapping the
+       * photo's bottom portion by a modest negative top margin instead
+       * of being absolutely pinned to a computed viewport height. This
+       * is the actual fix for the CTA-row-invisible-on-some-phones bug
+       * (Akash's reports, 2026-08-29): a bottom-pinned absolute box
+       * depends on getting a container height exactly right to keep its
+       * bottom edge on-screen, and that computation kept being wrong on
+       * some real device/browser combination no matter how it was
+       * derived (JS, svh, dvh — see ViewportHero.tsx's history). Normal
+       * flow can't have that failure mode: the browser lays the block
+       * out after the photo, full stop, so the CTA row is always in the
+       * document and always reachable, even if that means a few pixels
+       * of scroll on an unusually short screen instead of a computed
+       * height silently pushing it off-screen entirely.
        *
-       * h-full, not a fraction (2026-08-29): different mobile browsers
-       * (confirmed: Safari vs. Chrome on the same phone) measure the
-       * visible viewport differently, so exactly how much of the photo
-       * ends up covered by this scrim varies slightly device to device.
-       * A shorter, fixed fraction (this used to be h-4/5) risked leaving
-       * a thin strip of un-scrimmed, oddly-cropped photo visible right
-       * above the text on whichever browser measures shortest. Covering
-       * the full height removes that risk — the gradient itself still
-       * fades to transparent well before the top (see .photo-text-scrim
-       * in globals.css), so this doesn't darken the upper photo, it just
-       * gives the covered portion more margin for device variance.
-       */}
-      <div
-        className="photo-text-scrim md:hidden absolute inset-x-0 h-full"
-        style={{ bottom: HERO_OVERSHOOT_PX }}
-        aria-hidden="true"
-      />
-
-      {/*
-       * Text content — overlaid at the bottom of the photo on mobile
-       * (absolute + justify-end), reverts to the original solid-espresso
-       * side panel on desktop (md:static md:bg-espresso md:justify-center).
-       * Bottom offset by HERO_OVERSHOOT_PX on mobile for the same reason
-       * as the scrim above — keeps the CTA row flush with the true
-       * viewport edge despite the taller container; inert on desktop
-       * (md:static ignores `bottom` entirely).
+       * bg-espresso is unconditional now (not just md:), and the
+       * overlap (-mt-20) is deliberately modest rather than tuned to
+       * exactly match the content's height — first attempt tried a much
+       * bigger overlap (-mt-56) with no background of its own, betting
+       * the text would always be short enough to stay within the
+       * photo's scrim. It wasn't: on a real short screen the trust-strip
+       * and CTA extended past the overlap onto the plain page
+       * background, rendering warm-ivory text on warm-ivory page —
+       * invisible, not just uncontrasted. A solid background makes the
+       * text block correct regardless of exactly how tall its content
+       * turns out to be, which is the entire point of this rewrite.
        *
-       * pb-[calc(2rem+env(safe-area-inset-bottom))] (found 2026-08-29,
-       * real device reports): the CTA row was getting hidden behind an
-       * in-app browser's own bottom toolbar (that toolbar overlays the
-       * page instead of shrinking the viewport around it, and isn't part
-       * of iOS's safe-area system — env(safe-area-inset-bottom) alone
-       * only covers the home-indicator on notched devices, which
-       * layout.tsx's viewportFit: "cover" is what makes that env() value
-       * non-zero at all). A first attempt at fixing this used a much
-       * bigger fixed floor (56px) — too big: it fixed Safari but pushed
-       * the CTA row below the fold on Chrome on the same phone, which
-       * measures the viewport shorter. Pulled back to a more moderate
-       * 32px now that ViewportHero.tsx uses `100dvh` instead of a JS
-       * viewport calculation — dvh should already report each browser's
-       * real visible height correctly, so this padding only needs to be
-       * "comfortable safety margin," not "compensate for a wrong
-       * height." md:py-16 still overrides this on desktop, same as
-       * pb-6 did originally.
+       * Desktop (md:) is completely unchanged from the original
+       * side-by-side layout: md:static reverts this back to a plain
+       * flex item (the solid-Espresso side panel), same as it always
+       * has been — md:mt-0 cancels the mobile-only negative margin.
        */}
-      <div
-        className="absolute inset-x-0 flex flex-col justify-end px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-24 sm:px-8 md:static md:w-2/5 md:flex-none md:bg-espresso md:justify-center md:px-10 md:py-16 text-warm-ivory"
-        style={{ bottom: HERO_OVERSHOOT_PX }}
-      >
+      <div className="relative z-10 -mt-20 flex flex-col bg-espresso px-6 pb-8 pt-10 sm:px-8 md:static md:mt-0 md:w-2/5 md:flex-none md:justify-center md:px-10 md:py-16 text-warm-ivory">
         <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70 mb-2">
           Accepting new patients
         </span>
