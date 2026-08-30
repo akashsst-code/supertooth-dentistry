@@ -14,11 +14,17 @@ import { CalendarIcon, CheckIcon, GoogleGIcon, StarIcon } from "./icons";
  * anchored, over a bottom-up scrim (from-espresso/95) for AA contrast
  * against whatever photo is showing.
  *
- * "Bleed the bottom in": a second, shorter gradient (to-warm-ivory)
- * sits below the content in the section's own bottom padding, fading
- * the photo into the page background so TrustBlock reads as a
- * continuation of the hero rather than a hard-edged next section. It
- * sits entirely below the CTA row so it never washes out the buttons.
+ * Legibility fix (per Akash's feedback on the first pass): the initial
+ * thin all-over gradient left text sitting directly on busy photo
+ * detail. Brought back the old panel's actual espresso background
+ * color as the scrim, sized to cover most of the lower section (not a
+ * flat rectangle) and blended into the photo via the gradient's own
+ * fade at the top edge — reads as "the old solid panel, blended into
+ * the photo" rather than "text pasted on an image."
+ *
+ * Bottom edge is a clean, sharp cut straight into TrustBlock (no
+ * fade-to-ivory band) per the same feedback — the soft gradient there
+ * read as a hazy smear rather than a deliberate transition.
  *
  * Locked requirement (docs/supertooth-webflow-build-spec.md Section 1)
  * still holds — insurance signal + both CTAs stay visible on load, just
@@ -35,13 +41,10 @@ export function Hero() {
         <HeroCarousel />
       </div>
 
-      {/* Legibility scrim so overlaid text stays AA-contrast over any photo */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-espresso/95 via-espresso/35 to-transparent" />
+      {/* Legibility scrim — solid espresso (the old panel's background color) low in the frame, blending into the photo above it */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-espresso from-0% via-espresso/90 via-60% to-transparent" />
 
-      {/* Bleed transition: fades the photo into the page background below the content */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 sm:h-24 bg-gradient-to-t from-warm-ivory to-transparent" />
-
-      <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-20 pt-4 sm:px-10 sm:pb-28 text-warm-ivory">
+      <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-8 pt-4 sm:px-10 sm:pb-12 text-warm-ivory">
         <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/15 backdrop-blur-sm px-3 py-1 text-xs font-medium text-warm-ivory/80 mb-3">
           Accepting new patients
         </span>
