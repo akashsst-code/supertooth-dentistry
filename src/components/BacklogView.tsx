@@ -20,6 +20,7 @@ import {
   type Priority,
   type Viewport,
 } from "@/lib/backlog";
+import { harnessById } from "@/lib/test-harness";
 
 /**
  * Renders the backlog from src/lib/backlog.ts.
@@ -89,7 +90,7 @@ const VIEWPORT_LABELS: Record<Viewport, string> = {
   any: "any width",
 };
 
-type Filter = "all" | Priority | "blocked" | "moved";
+type Filter = "all" | Priority | "blocked" | "moved" | "conflict" | "blueprint";
 type Sort = "wave" | "score";
 
 // Mobile-first coverage, computed from the data so the headline numbers
@@ -102,6 +103,8 @@ const mobileStepCount = allRenderingSteps.filter((s) => viewportOf(s) === "375")
 const desktopStepCount = allRenderingSteps.filter((s) => viewportOf(s) === "1280").length;
 const mobileGateCount = backlog.reduce((n, i) => n + i.test.mobileFirst.length, 0);
 const mobileRefCount = backlog.reduce((n, i) => n + i.references.length, 0);
+const conflictCount = backlog.filter((i) => i.conflict).length;
+const blueprintCount = backlog.filter((i) => i.source !== "original").length;
 
 export function BacklogView() {
   const [filter, setFilter] = useState<Filter>("all");
@@ -114,6 +117,8 @@ export function BacklogView() {
         if (filter === "all") return true;
         if (filter === "blocked") return item.status === "blocked";
         if (filter === "moved") return item.priority !== item.originalPriority;
+        if (filter === "conflict") return Boolean(item.conflict);
+        if (filter === "blueprint") return item.source !== "original";
         return item.priority === filter;
       }),
     [filter],
@@ -150,6 +155,8 @@ export function BacklogView() {
     { key: "P2", label: "P2 — Later", count: counts.P2 },
     { key: "blocked", label: "Blocked on Akash", count: counts.blocked },
     { key: "moved", label: "Re-prioritised", count: counts.moved },
+    { key: "blueprint", label: "From blueprint", count: blueprintCount },
+    { key: "conflict", label: "Needs your call", count: conflictCount },
   ];
 
   return (
@@ -180,8 +187,17 @@ export function BacklogView() {
             </h1>
             <p className="text-espresso/75 max-w-2xl !mb-4">
               Every item scored against this project&apos;s actual goals and patient base, then
-              re-prioritised from that score — with what good looks like elsewhere, and a test
-              scenario an agent can run to prove it&apos;s done.
+              re-prioritised from that score — with what good looks like elsewhere, and a
+              mobile-first test scenario an agent can run to prove it&apos;s done.
+            </p>
+            <p className="text-espresso/75 max-w-2xl !mb-4">
+              Now merged with the Downtown Seattle family-dental blueprint:{" "}
+              <span className="font-medium text-espresso">{blueprintCount} new or enriched items</span>,
+              a {Object.keys(harnessById).length}-check global test harness, and{" "}
+              <span className="font-medium text-terracotta">
+                {conflictCount} conflicts with locked decisions
+              </span>{" "}
+              surfaced rather than silently applied.
             </p>
             <p className="text-sm text-espresso/60 max-w-2xl !mb-6">
               Reasoning and sources:{" "}
@@ -275,6 +291,32 @@ export function BacklogView() {
             </p>
           </div>
         </div>
+
+        {/* Conflicts — the things only Akash can resolve */}
+        {conflictCount > 0 && (
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 pt-6">
+            <div className="rounded-2xl border-2 border-terracotta bg-terracotta/[0.08] p-5 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta !mb-2">
+                {conflictCount} decisions only you can make
+              </p>
+              <p className="text-espresso !mb-3 leading-relaxed">
+                The blueprint contradicts a locked decision in {conflictCount} places. Nothing has
+                been changed — each is logged with what&apos;s locked, what the blueprint argues, and
+                the question you actually have to answer.
+              </p>
+              <ul className="flex flex-col gap-1.5">
+                {backlog
+                  .filter((i) => i.conflict)
+                  .map((i) => (
+                    <li key={i.id} className="text-sm text-espresso/85 leading-relaxed">
+                      <span className="font-semibold">#{i.id}</span>{" "}
+                      {i.title.replace(/^CONFLICT — /, "")}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+        )}
 
         {/* Controls */}
         <div className="mx-auto max-w-4xl px-4 sm:px-6 pt-8">
@@ -517,6 +559,16 @@ function ItemCard({
                 </span>
               )}
               {item.pin && <PinBadge pin={item.pin} />}
+              {item.conflict && (
+                <span className="inline-flex items-center rounded-full bg-terracotta text-warm-ivory px-2 py-0.5 text-[0.6875rem] font-semibold">
+                  Needs your call
+                </span>
+              )}
+              {item.source !== "original" && (
+                <span className="inline-flex items-center rounded-full border border-espresso/25 px-2 py-0.5 text-[0.6875rem] text-espresso/55">
+                  {item.source === "blueprint" ? "New — blueprint" : "Enriched"}
+                </span>
+              )}
               <span
                 className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs ${STATUS_STYLES[item.status]}`}
               >
@@ -550,6 +602,25 @@ function ItemCard({
       >
         <div className="overflow-hidden">
           <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-espresso/10 mt-1">
+            {item.conflict && (
+              <div className="mt-4 rounded-xl border-2 border-terracotta bg-terracotta/[0.08] px-4 py-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-terracotta !mb-2">
+                  Conflicts with a locked decision — do not build until you rule
+                </p>
+                <p className="text-sm leading-relaxed text-espresso/85 !mb-2">
+                  <span className="font-semibold text-espresso">Locked:</span> {item.conflict.locked}
+                </p>
+                <p className="text-sm leading-relaxed text-espresso/85 !mb-3">
+                  <span className="font-semibold text-espresso">Blueprint says:</span>{" "}
+                  {item.conflict.blueprint}
+                </p>
+                <p className="text-sm leading-relaxed text-espresso !mb-0">
+                  <span className="font-semibold text-terracotta">Your call:</span>{" "}
+                  {item.conflict.question}
+                </p>
+              </div>
+            )}
+
             {item.repriorityNote && (
               <div className="mt-4 rounded-xl border border-terracotta/30 bg-terracotta/[0.06] px-4 py-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-terracotta !mb-1">
@@ -718,6 +789,29 @@ function ItemCard({
                 </>
               )}
             </div>
+
+            <div className="mt-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-espresso/45 !mb-1.5">
+                Harness checks ({item.harness.length})
+              </p>
+              <ul className="flex flex-wrap gap-1.5">
+                {item.harness.map((h) => (
+                  <li
+                    key={h}
+                    title={harnessById[h]?.title ?? h}
+                    className="inline-flex items-center rounded bg-espresso/[0.07] px-1.5 py-0.5 text-[0.625rem] font-semibold text-espresso/60"
+                  >
+                    {h}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {item.blueprintRef && (
+              <Field label="Blueprint source">
+                <span className="font-mono text-[0.92em]">{item.blueprintRef}</span>
+              </Field>
+            )}
 
             <Field label="Evidence">{item.evidence}</Field>
             <Field label="Out of scope">{item.outOfScope}</Field>
