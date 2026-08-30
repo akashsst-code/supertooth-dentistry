@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { contact, practice, reviews } from "@/lib/content";
+import { HeroAddressMap } from "./HeroAddressMap";
 import { HeroCarousel } from "./HeroCarousel";
 import { InsuranceTeaser } from "./InsuranceTeaser";
-import { CalendarIcon, CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
+import { CalendarIcon, CheckIcon, GoogleGIcon, StarIcon } from "./icons";
 
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
@@ -54,9 +55,10 @@ import { CalendarIcon, CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./ic
  *
  * Address line: previously shown as plain text on Akash's explicit
  * call (state omitted; neighborhood/city already established via nav
- * + headline). Reversed per Akash's follow-up annotation — now links
- * out to Google Maps so a visitor can see the office location, opened
- * in a new tab so the hero isn't navigated away from.
+ * + headline), then briefly a Google Maps link that opened in a new
+ * tab. Akash asked for that to instead expand a map preview in place
+ * (same embed as LocationMapSection further down the page) so the
+ * visitor never leaves the hero — see HeroAddressMap.tsx.
  */
 export function Hero() {
   return (
@@ -118,17 +120,7 @@ export function Hero() {
             <CheckIcon className="shrink-0 text-terracotta" />
             <InsuranceTeaser />
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <MapPinIcon className="shrink-0 text-terracotta" />
-            <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.address)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-warm-ivory transition-colors"
-            >
-              {contact.address}
-            </a>
-          </span>
+          <HeroAddressMap />
         </div>
 
         <div className="mt-4 flex flex-row flex-wrap gap-1.5">
