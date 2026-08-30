@@ -6,16 +6,17 @@ import { contact, practice, serviceAreas } from "@/lib/content";
  * Map + "areas we serve" — new section, positioned after Services per
  * Akash's locked homepage-flow order, modeled on
  * smilemakersfortworth.com's map-plus-neighborhood-list pattern near the
- * bottom of their homepage. Standard Google Maps embed (no API key/
- * billing needed) built from the real, Akash-confirmed practice address
- * in content.ts — the address itself is not a placeholder. The
- * neighborhood list is: only `practice.neighborhood` is confirmed, the
- * rest are plausible-by-proximity placeholders pending Akash's actual
+ * bottom of their homepage. Uses contact.mapEmbedSrc — Google's own
+ * lightweight "Embed a map" output for the practice's actual Business
+ * Profile listing (no API key/billing needed) — same embed as
+ * HeroAddressMap, see the comment there for why (native place card on
+ * marker click, no "open in Maps app" chip, lighter than the informal
+ * `?q=...&output=embed` trick this replaced). The neighborhood list is:
+ * only `practice.neighborhood` is confirmed, the rest are
+ * plausible-by-proximity placeholders pending Akash's actual
  * service-area confirmation (see content.ts serviceAreas comment).
  */
 export function LocationMapSection() {
-  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(contact.address)}&output=embed`;
-
   return (
     <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
       <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso mb-2">
@@ -28,10 +29,12 @@ export function LocationMapSection() {
       <div className="grid lg:grid-cols-5 gap-8 items-start">
         <div className="lg:col-span-3 rounded-2xl overflow-hidden border border-sand">
           <iframe
-            src={mapSrc}
+            src={contact.mapEmbedSrc}
             title={`Map showing ${practice.name}'s location`}
             loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
+            referrerPolicy="strict-origin-when-cross-origin"
+            sandbox="allow-scripts allow-same-origin"
+            allowFullScreen
             className="w-full h-72 sm:h-96 border-0"
           />
         </div>

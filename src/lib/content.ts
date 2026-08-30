@@ -29,6 +29,17 @@ export const contact = {
   address: "133 Queen Anne Ave N, Suite A, Seattle, WA 98109",
   // Akash's exact wording (given directly in chat), not scraped.
   parkingNote: "Bus stop on the same block. Street parking available on nearby streets.",
+  // Real embed src from Google Maps' own Share -> "Embed a map", grabbed
+  // by Akash directly against the practice's actual Business Profile
+  // listing (searched by name, so it's place-linked via place_id, not a
+  // bare address geocode). This is Google's lightweight embed made for
+  // iframes — unlike the informal `/maps?q=...&output=embed` trick this
+  // replaced, it has no "open in Maps app" chip, loads lighter (fixes
+  // the slow Safari load), and clicking the marker shows Google's real
+  // place card (name, rating, reviews) since it resolves to the actual
+  // listing. Re-grab this the same way if the office ever moves.
+  mapEmbedSrc:
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2689.3360303923164!2d-122.35969792320054!3d47.61959897119115!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x549015452bd2ce89%3A0x924ad9078701e7fa!2sSupertooth%20Dentistry!5e0!3m2!1sen!2sus!4v1788069595923!5m2!1sen!2sus",
 };
 
 export const hours = [
