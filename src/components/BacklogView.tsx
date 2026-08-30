@@ -9,6 +9,7 @@ import {
   waves,
   waveNotes,
   scoreOf,
+  viewportOf,
   WEIGHTS,
   MAX_SCORE,
   FACTOR_LABELS,
@@ -17,6 +18,7 @@ import {
   PATIENT_READY_AFTER_ITEM,
   type BacklogItem,
   type Priority,
+  type Viewport,
 } from "@/lib/backlog";
 
 /**
@@ -72,8 +74,34 @@ const TOOL_STYLES: Record<string, string> = {
   manual: "bg-sand text-espresso/70",
 };
 
+/** Mobile is the default and is styled to stand out; desktop is the follow-up. */
+const VIEWPORT_STYLES: Record<Viewport, string> = {
+  "375": "bg-terracotta/15 text-terracotta",
+  "768": "bg-espresso/10 text-espresso/60",
+  "1280": "bg-espresso/10 text-espresso/50",
+  any: "bg-espresso/[0.06] text-espresso/40",
+};
+
+const VIEWPORT_LABELS: Record<Viewport, string> = {
+  "375": "375px",
+  "768": "768px",
+  "1280": "1280px",
+  any: "any width",
+};
+
 type Filter = "all" | Priority | "blocked" | "moved";
 type Sort = "wave" | "score";
+
+// Mobile-first coverage, computed from the data so the headline numbers
+// can't drift from what the items actually say. Mirrors the same counts
+// scripts/check-backlog.ts enforces.
+const allRenderingSteps = backlog
+  .flatMap((i) => i.test.steps)
+  .filter((s) => s.tool === "browser" || s.tool === "manual");
+const mobileStepCount = allRenderingSteps.filter((s) => viewportOf(s) === "375").length;
+const desktopStepCount = allRenderingSteps.filter((s) => viewportOf(s) === "1280").length;
+const mobileGateCount = backlog.reduce((n, i) => n + i.test.mobileFirst.length, 0);
+const mobileRefCount = backlog.reduce((n, i) => n + i.references.length, 0);
 
 export function BacklogView() {
   const [filter, setFilter] = useState<Filter>("all");
@@ -202,6 +230,33 @@ export function BacklogView() {
               <PinBadge pin="legal" /> and <PinBadge pin="dependency" /> items are pinned to P0
               regardless. {counts.moved} items moved as a result; {counts.pinned} carry a pin.
             </p>
+          </div>
+        </section>
+
+        {/* Mobile-first convention */}
+        <section className="border-b border-sand bg-terracotta/[0.05]">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
+            <h2 className="font-display text-lg font-semibold text-espresso !mb-1">
+              Every test is mobile-first
+            </h2>
+            <p className="text-sm text-espresso/75 !mb-3 max-w-2xl">
+              Steps run at <strong>375×812 by default</strong> — a step with no width tag is a mobile
+              step. Desktop is a confirmation pass that only runs after mobile passes, never the
+              primary one. Each item carries a <strong>mobile gate</strong>: if those criteria fail
+              at 375px, the item fails, and a desktop pass cannot rescue it.
+            </p>
+            <p className="text-sm text-espresso/70 !mb-3 max-w-2xl">
+              Every one of the {mobileRefCount} references also carries an{" "}
+              <span className="text-terracotta font-medium">On mobile</span> note — what the example
+              does on a small screen, or where it falls down. Several are excellent on desktop and
+              genuinely poor on a phone, and those are called out rather than quietly copied.
+            </p>
+            <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <Stat label="Steps at 375px" value={mobileStepCount} accent />
+              <Stat label="Steps at 1280px" value={desktopStepCount} />
+              <Stat label="Mobile gate criteria" value={mobileGateCount} accent />
+              <Stat label="Items with a gate" value={backlog.length} />
+            </dl>
           </div>
         </section>
 
@@ -545,9 +600,12 @@ function ItemCard({
                     <p className="text-sm leading-relaxed text-espresso/80 mt-0.5 !mb-2">
                       {r.whatGood}
                     </p>
-                    <p className="text-sm leading-relaxed text-espresso/65 !mb-0">
+                    <p className="text-sm leading-relaxed text-espresso/65 !mb-2">
                       <span className="font-medium text-espresso/80">Take / avoid:</span>{" "}
                       {r.takeaway}
+                    </p>
+                    <p className="text-sm leading-relaxed text-terracotta/90 !mb-0">
+                      <span className="font-medium">On mobile:</span> {r.mobile}
                     </p>
                   </li>
                 ))}
@@ -574,6 +632,24 @@ function ItemCard({
                 ))}
               </ul>
 
+              {/* The mobile gate comes before the steps on purpose: if these
+                  don't hold at 375px, the item fails regardless of desktop. */}
+              <div className="rounded-lg border border-terracotta/30 bg-terracotta/[0.06] px-3 py-3 mb-4">
+                <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-terracotta !mb-1.5">
+                  Mobile gate — must hold at 375×812 before desktop counts
+                </p>
+                <ul className="flex flex-col gap-1.5">
+                  {item.test.mobileFirst.map((m) => (
+                    <li key={m} className="flex gap-2.5 text-sm text-espresso/85 leading-relaxed">
+                      <span className="text-terracotta shrink-0 mt-0.5" aria-hidden="true">
+                        <CheckIcon />
+                      </span>
+                      <span>{m}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-espresso/40 !mb-2">
                 Steps
               </p>
@@ -589,6 +665,11 @@ function ItemCard({
                           className={`inline-flex items-center rounded px-1.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide ${TOOL_STYLES[s.tool]}`}
                         >
                           {s.tool}
+                        </span>
+                        <span
+                          className={`inline-flex items-center rounded px-1.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide ${VIEWPORT_STYLES[viewportOf(s)]}`}
+                        >
+                          {VIEWPORT_LABELS[viewportOf(s)]}
                         </span>
                       </span>
                       <span className="block text-sm text-espresso/85 leading-relaxed">

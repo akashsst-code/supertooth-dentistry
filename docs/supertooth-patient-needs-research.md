@@ -533,8 +533,44 @@ Each item scores 1–5 on five factors, weighted and summed out of 50. The weigh
 ### Per-item additions
 
 Every item now also carries:
-- **2–3 references** — real examples of what good looks like, each with a link, what is specifically good about it, and what to copy versus deliberately avoid. 60 references total, deepest on P0. Sources span dental practices, health systems, government design systems (GOV.UK, NHS), standards bodies (W3C, Schema.org) and regulators (ADA, HHS, CMS, ICO).
-- **An agent-executable test scenario** — preconditions, numbered steps each tagged with the tool to use (`browser` / `shell` / `validator` / `manual`) and its expected result, explicit pass criteria, and gotchas that would otherwise produce false passes. Written so an LLM with browser and shell tools can run it unattended and loop until green.
+- **2–3 references** — real examples of what good looks like, each with a link, what is specifically good about it, what to copy versus deliberately avoid, and **what it does on a small screen**. 60 references total, deepest on P0. Sources span dental practices, health systems, government design systems (GOV.UK, NHS), standards bodies (W3C, Schema.org) and regulators (ADA, HHS, CMS, ICO).
+- **An agent-executable, mobile-first test scenario** — preconditions, numbered steps each tagged with the tool to use (`browser` / `shell` / `validator` / `manual`) and the viewport it runs at, explicit pass criteria, a mobile gate, and gotchas that would otherwise produce false passes. Written so an LLM with browser and shell tools can run it unattended and loop until green.
+
+---
+
+## 19b. Mobile-first correction
+
+Section 19a's first pass was written desktop-first without noticing. An audit on 2026-08-30 measured it:
+
+| Measure | Before | After |
+|---|---|---|
+| Test steps mentioning mobile at all | **9 of 129** | — |
+| Rendering steps at 375px | — | **101 of 148** |
+| Rendering steps at 1280px | — | 18 |
+| Items with zero mobile-aware steps | **13 of 26** (incl. 5 P0s) | **0** |
+| References considering mobile | **3 of 26 items** | **60 of 60 references** |
+
+That is desktop-first work with mobile bolted on, on a project whose own build principles require the mobile experience to be complete rather than a reduced desktop version. The fix is structural, not cosmetic.
+
+**Mobile is now the default, by construction.** A test step with no viewport tag runs at **375×812**. Desktop is a confirmation pass tagged explicitly, and it only runs after mobile passes. `any` marks steps with no rendered surface at all (schema parsing, provenance sign-off).
+
+**Every item carries a mobile gate** — criteria that must hold at 375px *before any desktop check counts*. If mobile fails, the item fails; a desktop pass cannot rescue it. 98 gate criteria across 26 items.
+
+**Every reference carries a mobile assessment.** This is where the audit was most useful, because several references are genuinely good on desktop and poor on a phone — and saying so is more valuable than the original praise:
+
+- **MedStar's wayfinding** — the content model is right, but their floorplan PDFs and wide diagrams are near-unusable on a phone, which is exactly where arrival instructions get read. Copy the model, reject the delivery.
+- **Humana's plain-language policy** — excellent register, but at 375px the length buries the key distinction below the fold. Take the register, reject the length.
+- **CMS price transparency** — the machine-readable files it produced are technically transparent and practically unusable on a phone. Transparency a patient can't read at 375px isn't transparency.
+- **Bedford Dentistry's triage guide** — the tiering is the thing that works on mobile; their long intro paragraph is what pushes Tier 1 below the fold.
+
+**The guard now enforces all of it.** `scripts/check-backlog.ts` fails if any item lacks a mobile gate, if any reference lacks a substantive mobile note, if an item with a rendered surface has no 375px step, if desktop steps outnumber mobile ones, or if the first viewport-bound step isn't mobile. Desktop-first work can no longer pass the check regardless of what the prose claims.
+
+**Findings this surfaced that would otherwise have been missed**, now written into the relevant items:
+- **Item 7 (emergency)** — a three-column tier layout puts everything above the fold at 1280px and pushes Tier 1 detail below it at 375px. A red flag below the fold on a phone is a patient-safety failure, and desktop-first testing would never have caught it.
+- **Item 14 (WCAG)** — WCAG 2.2's genuinely new criteria are mostly touch concerns: Target Size, Dragging Movements, Focus Not Obscured. Our two carousels drag and our nav is a fixed overlay, so 2.2 is precisely where our mobile risk sits. Running axe only at desktop width is a false pass.
+- **Item 15 (booking)** — a calendar grid at mobile width produces sub-30px targets. It's the single most common place a booking flow breaks on a phone.
+- **Item 9 (forms)** — a resized desktop window does not reproduce the on-screen keyboard, so keyboard-obscuring bugs need a real device.
+- **Item 5 (PageShell)** — the fixed-nav overlap bug is invisible on a tall desktop viewport and eats most of the screen at 375×812.
 
 ### Guarding the model
 

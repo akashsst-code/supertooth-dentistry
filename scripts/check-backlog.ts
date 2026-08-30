@@ -24,6 +24,7 @@ import {
   scoreOf,
   bandFor,
   counts,
+  viewportOf,
   MAX_SCORE,
   WEIGHTS,
   type BacklogItem,
@@ -93,6 +94,13 @@ for (const item of backlog) {
     check(/^https?:\/\//.test(r.url), `${tag}: reference "${r.name}" has a non-http url`);
     check(r.whatGood.length > 40, `${tag}: reference "${r.name}" whatGood is too thin to be useful`);
     check(r.takeaway.length > 20, `${tag}: reference "${r.name}" takeaway is too thin to be useful`);
+    // MOBILE-FIRST: every reference must have been considered on a small
+    // screen. A reference we only ever looked at on a 1280px window is not
+    // evidence for a mobile-first build.
+    check(
+      r.mobile != null && r.mobile.length > 40,
+      `${tag}: reference "${r.name}" has no substantive mobile assessment`,
+    );
   }
 
   check(item.test.steps.length >= 2, `${tag}: test has ${item.test.steps.length} step(s), expected ≥2`);
@@ -100,6 +108,50 @@ for (const item of backlog) {
   check(item.test.preconditions.length >= 1, `${tag}: test has no preconditions`);
   for (const s of item.test.steps) {
     check(s.expect.length > 15, `${tag}: a test step has no meaningful expected result`);
+  }
+
+  // ── MOBILE-FIRST ENFORCEMENT ───────────────────────────────────────
+  // The project is mobile-first, so the backlog has to be too. An audit
+  // on 2026-08-30 found only 9 of 129 test steps mentioned mobile at all
+  // and 13 of 26 items had zero mobile-aware steps — desktop-first work
+  // with mobile bolted on. These checks make the regression impossible.
+
+  check(
+    Array.isArray(item.test.mobileFirst) && item.test.mobileFirst.length >= 1,
+    `${tag}: test has no mobileFirst gate — every item needs mobile acceptance that must hold before desktop counts`,
+  );
+
+  // Only steps that actually render at a width count here. `any` marks
+  // steps with no rendered surface (schema parsing, provenance sign-off,
+  // documentation review) — they're viewport-independent by definition
+  // and must not be read as desktop-first.
+  const viewportSteps = item.test.steps.filter(
+    (s) => (s.tool === "browser" || s.tool === "manual") && viewportOf(s) !== "any",
+  );
+  const mobileSteps = viewportSteps.filter((s) => viewportOf(s) === "375");
+  const desktopSteps = viewportSteps.filter((s) => viewportOf(s) === "1280");
+
+  // Every item with any rendered surface must exercise it at 375 first.
+  check(
+    viewportSteps.length === 0 || mobileSteps.length >= 1,
+    `${tag}: has ${viewportSteps.length} viewport-bound step(s) but none at 375px`,
+  );
+
+  // Desktop must never outnumber mobile — that is the definition of
+  // desktop-first, whatever the prose claims.
+  check(
+    desktopSteps.length <= mobileSteps.length,
+    `${tag}: ${desktopSteps.length} desktop step(s) vs ${mobileSteps.length} mobile — desktop must not outnumber mobile`,
+  );
+
+  // Ordering: the first viewport-bound step must be a mobile one. A
+  // desktop check that runs first is a desktop-first test no matter what
+  // the later steps say.
+  if (viewportSteps.length > 0) {
+    check(
+      viewportOf(viewportSteps[0]) === "375",
+      `${tag}: first viewport-bound step is at ${viewportOf(viewportSteps[0])}px — mobile must come first`,
+    );
   }
 
   check(item.acceptance.length >= 2, `${tag}: fewer than 2 acceptance criteria`);
@@ -125,6 +177,18 @@ console.log("-".repeat(width));
 console.log(
   `  ${backlog.length} items · P0 ${counts.P0} / P1 ${counts.P1} / P2 ${counts.P2} · ` +
     `${counts.moved} moved · ${counts.pinned} pinned · ${counts.blocked} blocked`,
+);
+
+// Mobile-first coverage, reported so it can't quietly slide.
+const allSteps = backlog.flatMap((i) => i.test.steps);
+const allRendering = allSteps.filter((s) => s.tool === "browser" || s.tool === "manual");
+const mobile = allRendering.filter((s) => viewportOf(s) === "375").length;
+const desktop = allRendering.filter((s) => viewportOf(s) === "1280").length;
+const gates = backlog.reduce((n, i) => n + i.test.mobileFirst.length, 0);
+console.log(
+  `  mobile-first: ${mobile}/${allRendering.length} rendering steps at 375px · ` +
+    `${desktop} at 1280px · ${gates} mobile gate criteria · ` +
+    `${backlog.length}/${backlog.length} items with a mobile gate`,
 );
 console.log("-".repeat(width));
 
