@@ -116,20 +116,3 @@ p {
     transparent 100%
   );
 }
-
-/* ============================================================
- * TEXT SHADOW — for the handful of light-on-photo text elements that
- * don't warrant a background panel of their own (Nav's floating logo
- * wordmark, link text — see Nav.tsx/Logo.tsx). A shadow lets the photo
- * show through completely undimmed everywhere except directly behind
- * each glyph, instead of a rectangular scrim block. SVG icon buttons
- * and the logo mark use Tailwind's own `drop-shadow-[...]` utility
- * directly in each component instead of a class here — Tailwind's
- * filter utilities compose into one `filter` value via CSS variables
- * (so `drop-shadow-[...]` stacks correctly with the logo's `brightness-0
- * invert`), which a hand-written `filter` rule in this file would just
- * overwrite rather than combine with.
- */
-.text-shadow-photo {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 1px 10px rgba(0, 0, 0, 0.6);
-}

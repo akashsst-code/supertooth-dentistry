@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { contact, hours, nav } from "@/lib/content";
@@ -35,117 +35,27 @@ import { contact, hours, nav } from "@/lib/content";
  * (h-16 below) since Nav is now out of normal flow and everything after
  * it has to reserve that space itself.
  *
- * `floating` (added 2026-08-29, single-bleed pass): while Hero's
- * full-bleed photo is still substantially visible, the header goes
- * fully transparent (plus mono Logo and drop-shadowed icons/links,
- * both below) instead of a solid white bar sitting on top of the photo
- * — Akash's "make it one clean bleed, not white/photo/white stacked
- * bands" call. An earlier version of this also rendered a dark top-scrim
- * panel behind the header (same recipe as Hero's own text scrim) for
- * guaranteed contrast — dropped per Akash's follow-up that it read as a
- * stark band sitting on the photo rather than merging into it. Per-
- * element drop-shadow/text-shadow (see Logo.tsx, iconButtonColor below)
- * replaces it: the photo now shows completely undimmed everywhere
- * except right behind each glyph.
- *
- * Two earlier approaches were tried and replaced:
- * 1. An IntersectionObserver against a sentinel placed exactly at
- *    Hero's bottom edge — flaky, since that edge sits right at the
- *    fold (Hero is deliberately one full screen tall) and sub-pixel
- *    rounding in mobile browser chrome made it flicker.
- * 2. `window.scrollY < 8` — solidified after essentially the first
- *    scroll tick, which is wrong: Hero fills the *entire* viewport
- *    height, so 8px of scroll leaves nearly all of the photo still
- *    showing beneath an already-solid white bar — reintroducing the
- *    exact stacked-band problem this was built to fix, just delayed a
- *    few pixels and now hit on every scroll instead of never.
- *
- * Current approach: read #hero-wrapper's real getBoundingClientRect()
- * on every scroll tick and stay floating as long as a meaningful chunk
- * of it (more than FLOAT_UNTIL_PX) is still below the header. This
- * tracks Hero's actual rendered height directly — already correct
- * across breakpoints and in-app-browser chrome quirks, since
- * ViewportHero.tsx solves exactly that — rather than Nav trying to
- * duplicate that math from scroll position alone. Structure/links/
- * hamburger/CTA are all unchanged from the locked Pattern A spec
- * (docs/supertooth-navigation-requirements.md) — this is a visual-only
- * treatment, nothing here is hidden or removed while floating.
- *
- * Real bug found 2026-08-29 (reproduced on Akash's phone across three
- * iOS browsers, never in this repo's Chromium-based testing tooling —
- * that mismatch is what pointed at a timing/engine difference rather
- * than styling): this effect used to call onScroll() synchronously on
- * mount. #hero-wrapper's *precise* pixel height is set by a separate
- * effect in ViewportHero.tsx (JS reads visualViewport.height, since
- * the CSS-only svh fallback isn't reliable in in-app/mobile browser
- * chrome — see that file). Effects for sibling components can commit
- * in either order, so Nav's synchronous first measurement could run
- * *before* ViewportHero's had applied the real height, sometimes
- * catching #hero-wrapper still at a too-short fallback size — reading
- * "Hero has basically already scrolled past" on a page that had never
- * scrolled at all, and latching the solid white bar over the photo
- * from the very first frame. Deferring the first measurement to
- * requestAnimationFrame (after the mount commit, not synchronously
- * inside it) lets ViewportHero's own effect land first.
+ * Single-bleed pass (2026-08-29): tried a transparent-while-over-Hero
+ * floating state here (mono Logo, drop-shadowed icons/links, several
+ * different contrast/scrim approaches, several different fixes for the
+ * mechanism that decides when to switch). Reverted — three real rounds
+ * of device-only bugs (a stark scrim panel, a solid-until-scroll flash,
+ * a load-timing race) that never reproduced in this repo's Chromium-
+ * based testing tooling, and Akash's explicit call after that was to
+ * stop chasing it and just use the one reliable solid header everywhere
+ * — same treatment this already had on every other section, now used
+ * for Hero too instead of a second, fancier state. If a transparent-
+ * over-photo header gets revisited later, budget real device testing
+ * time for it up front; it wasn't reproducible any other way.
  */
-const FLOAT_UNTIL_PX = 120;
-
 export function Nav() {
   const [open, setOpen] = useState(false);
-  const [floating, setFloating] = useState(true);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const hero = document.getElementById("hero-wrapper");
-      const bottom = hero?.getBoundingClientRect().bottom ?? 0;
-      setFloating(bottom > FLOAT_UNTIL_PX);
-    };
-    // Deferred, not called synchronously here — see the `floating`
-    // comment above for why the first measurement has to wait for
-    // ViewportHero's own sizing effect to land first.
-    const raf = requestAnimationFrame(onScroll);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  const linkColor = floating
-    ? "text-warm-ivory hover:text-warm-ivory/70 text-shadow-photo"
-    : "text-espresso hover:text-terracotta";
-  const iconButtonColor = floating
-    ? "border-warm-ivory/40 text-warm-ivory drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]"
-    : "border-espresso/20 text-espresso";
 
   return (
     <>
-      {/*
-       * `transform: translateZ(0)` (2026-08-29): a `position: fixed`
-       * element in Safari/WebKit can render its text noticeably thinner
-       * and lower-contrast than the exact same CSS renders in Chromium —
-       * a known WebKit quirk where fixed-position content doesn't always
-       * get its own GPU compositing layer, and text-shadow/filter-based
-       * contrast (see linkColor/iconButtonColor above, Logo.tsx's `mono`)
-       * degrades as a result. Forcing layer promotion this way is the
-       * standard fix. Couldn't verify this directly myself — the
-       * testing tooling available here is Chromium-based and never
-       * reproduced the washed-out look Akash saw on his iPhone across
-       * three different iOS browsers (Safari/Chrome/Firefox — all
-       * WebKit under the hood on iOS, which is what pointed at a WebKit-
-       * specific cause rather than a caching issue). Confirm on a real
-       * iOS device before treating this as resolved.
-       */}
-      <header
-        style={{ transform: "translateZ(0)" }}
-        className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
-          floating ? "bg-transparent" : "bg-warm-ivory/95 backdrop-blur border-b border-sand"
-        }`}
-      >
+      <header className="fixed top-0 inset-x-0 z-50 bg-warm-ivory/95 backdrop-blur border-b border-sand">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Logo mono={floating} />
+          <Logo />
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
@@ -153,7 +63,7 @@ export function Nav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition-colors ${linkColor}`}
+                className="text-sm font-medium text-espresso hover:text-terracotta transition-colors"
               >
                 {item.label}
               </Link>
@@ -171,7 +81,7 @@ export function Nav() {
             <a
               href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
               aria-label="Call the practice"
-              className={`tap-target inline-flex items-center justify-center rounded-full border transition-colors ${iconButtonColor}`}
+              className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/20 text-espresso"
             >
               <PhoneIcon />
             </a>
@@ -186,7 +96,7 @@ export function Nav() {
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className={`tap-target inline-flex items-center justify-center rounded-full border transition-colors ${iconButtonColor}`}
+              className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/20 text-espresso"
             >
               {open ? <CloseIcon /> : <MenuIcon />}
             </button>

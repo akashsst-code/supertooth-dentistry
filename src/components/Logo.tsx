@@ -19,44 +19,14 @@ import toothMark from "../../public/logo/tooth-mark-bold.png";
  * used everywhere else (CTAs, meta, etc.), unchanged. aria-label carries
  * the canonical name so screen readers get "Super Tooth Dentistry"
  * rather than the two stacked spans read as one run-on word.
- *
- * `mono` (added 2026-08-29, Nav's floating-over-hero state): the mark
- * is a fixed raster asset (Espresso tooth + Terracotta sparkle baked
- * into the PNG, not recolorable per-pixel via CSS), so there's no way
- * to keep its normal two-color look AND guarantee contrast against
- * whichever photo happens to be behind Nav. `mono` forces it to a flat
- * white silhouette via a CSS filter and swaps the wordmark to
- * warm-ivory — trading the sparkle's terracotta color for legibility
- * while floating. Reverts to the normal colored mark the moment Nav
- * goes solid.
- *
- * A drop-shadow (image) / text-shadow (wordmark) rides along with
- * `mono` rather than a background panel behind the whole lockup — Nav
- * tried a scrim panel here first and Akash flagged it as a stark band
- * sitting on the photo instead of merging into it. Per-glyph shadows
- * let the photo itself stay fully visible right up to the mark's edges.
  */
-export function Logo({ mono = false }: { mono?: boolean }) {
+export function Logo() {
   return (
     <Link href="/" className="tap-target flex items-center gap-2.5" aria-label={`${practice.name}, home`}>
-      <Image
-        src={toothMark}
-        alt=""
-        width={32}
-        height={33}
-        className={`h-8 w-auto transition-[filter] duration-300 ${mono ? "brightness-0 invert drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]" : ""}`}
-        priority
-        aria-hidden="true"
-      />
+      <Image src={toothMark} alt="" width={32} height={33} className="h-8 w-auto" priority aria-hidden="true" />
       <span className="flex flex-col leading-tight" aria-hidden="true">
-        <span
-          className={`font-display text-xl font-normal transition-colors duration-300 ${mono ? "text-warm-ivory text-shadow-photo" : "text-espresso"}`}
-        >
-          Supertooth
-        </span>
-        <span
-          className={`text-[10px] font-medium tracking-widest uppercase transition-colors duration-300 ${mono ? "text-warm-ivory/70 text-shadow-photo" : "text-espresso/60"}`}
-        >
+        <span className="font-display text-xl font-normal text-espresso">Supertooth</span>
+        <span className="text-[10px] font-medium tracking-widest text-espresso/60 uppercase">
           Dentistry
         </span>
       </span>
