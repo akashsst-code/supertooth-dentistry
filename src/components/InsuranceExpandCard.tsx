@@ -6,20 +6,22 @@ import { CalendarIcon, PhoneIcon, ShieldCheckIcon } from "./icons";
 import { contact, insuranceCarriers } from "@/lib/content";
 
 /**
- * Generic tap-to-expand differentiator-card row. Went through two visual
- * passes: a dark espresso-panel treatment (echoing Hero.tsx) landed
- * first, but Akash flagged it back as "the pills look like dark design"
- * with icons that "are not aesthetic" and asked for a lighter option —
- * reverted to a light warm-ivory surface, but not just back to the
- * original flat sand card: the icon badge is now a solid terracotta
- * circle (bolder, more finished than the earlier faint terracotta/10
- * tint that prompted the complaint) and the card itself carries a soft
- * shadow + a barely-there sand-tinted corner wash instead of a hard flat
- * border, so it reads as a raised card rather than a plain box. Collapsed
- * rows stay compact (icon + title + one-line detail + a +/- toggle, all
- * 3 visible at once, no swiping needed); the real photo only appears
- * once a row is expanded, alongside a longer note and the shared
- * booking CTA.
+ * Generic tap-to-expand differentiator-card row. Went through three
+ * visual passes: a dark espresso-panel treatment (echoing Hero.tsx)
+ * landed first, but Akash flagged it back as "the pills look like dark
+ * design" with icons that "are not aesthetic" — reverted to a light
+ * warm-ivory surface with a solid terracotta icon badge and a soft
+ * ambient shadow/gradient wash. Akash liked that direction but asked for
+ * "more clear design," so the soft/ambient cues (a barely-there radial
+ * gradient wash) were swapped for crisper, more deliberate ones: a solid
+ * 3px terracotta top accent bar, a stronger drop shadow, a bigger icon
+ * badge with a ring "cutout" against the card, a bordered (not just
+ * tinted) +/- toggle, and a clearer type scale (larger title, more
+ * muted detail line) — definition through clean edges and contrast
+ * rather than soft blur. Collapsed rows stay compact (icon + title +
+ * one-line detail + a +/- toggle, all 3 visible at once, no swiping
+ * needed); the real photo only appears once a row is expanded, alongside
+ * a longer note and the shared booking CTA.
  *
  * Extracted 2026-08-29 from what used to be an insurance-only component
  * (see `InsuranceExpandCard` below) once "Same-day appointments" and
@@ -45,23 +47,24 @@ export function ExpandCard({
 
   return (
     <div
-      className={`rounded-2xl bg-warm-ivory bg-[radial-gradient(130%_140%_at_12%_0%,rgba(238,231,216,0.7),transparent_55%)] border border-sand shadow-[0_1px_2px_rgba(61,50,38,0.04),0_10px_24px_-16px_rgba(61,50,38,0.35)] overflow-hidden ${className}`}
+      className={`rounded-2xl bg-warm-ivory border border-sand shadow-[0_1px_2px_rgba(61,50,38,0.05),0_14px_28px_-16px_rgba(61,50,38,0.45)] overflow-hidden ${className}`}
     >
+      <div className="h-[3px] bg-terracotta" aria-hidden="true" />
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="tap-target w-full flex items-center gap-3 p-4 text-left"
+        className="tap-target w-full flex items-center gap-3.5 p-4 text-left"
       >
-        <span className="shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-full bg-terracotta text-warm-ivory shadow-[0_3px_8px_rgba(193,99,62,0.35)]">
+        <span className="shrink-0 inline-flex h-11 w-11 items-center justify-center rounded-full bg-terracotta text-warm-ivory ring-4 ring-warm-ivory shadow-[0_3px_8px_rgba(193,99,62,0.35)]">
           {icon}
         </span>
         <span className="flex-1 min-w-0">
-          <h3 className="font-display text-base font-semibold text-espresso leading-tight">{title}</h3>
-          <span className="block text-sm text-espresso/55 leading-snug">{detail}</span>
+          <h3 className="font-display text-lg font-semibold text-espresso leading-tight">{title}</h3>
+          <span className="block text-sm text-espresso/50 leading-snug">{detail}</span>
         </span>
         <span
-          className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-terracotta/10 text-terracotta"
+          className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full border border-terracotta/25 bg-terracotta/10 text-terracotta"
           aria-hidden="true"
         >
           <PlusMinusIcon open={open} />
