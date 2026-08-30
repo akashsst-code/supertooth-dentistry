@@ -141,38 +141,51 @@ export const officePhotos = [
 // text overlay (see docs/supertooth-ux-flow.md "Photo Overlay Pattern —
 // Locked" and HeroCarousel.tsx). Set per-photo, not as one blanket
 // value, because face position varies by source photo — most faces here
-// sit near center, so nudging up-and-right clears the bottom-left text
-// block without cropping anything important. team-itero-scan.jpg is the
-// deliberate exception: she's in profile on the LEFT third of that
-// frame (looking right at a screen), so its focal point stays left —
-// applying the same up-right bias there would crop her face out of the
-// frame entirely rather than protecting it.
+// sit near center. team-itero-scan.jpg is a deliberate exception on X:
+// she's in profile on the LEFT third of that frame (looking right at a
+// screen), so its focal point stays left instead of following the
+// others' rightward bias — shifting right there would crop her face out
+// of the frame entirely rather than protect it.
 //
-// Archana's 4 photos were pushed further up (and pulled back toward
-// center from the first pass) 2026-08-29 after Akash's real-device
-// test — a real phone's in-app-browser chrome (WhatsApp's, specifically)
-// eats into the available height in a way the emulated-browser testing
-// that produced the first `focal` values didn't hit, leaving less clear
-// space above the text than expected. Pushing the crop window higher is
-// a real mitigation, but has a ceiling: it doesn't touch the amount of
-// vertical space the text block itself needs, so a short enough real
-// viewport can still bring them close regardless of focal point.
+// IMPORTANT, learned the hard way 2026-08-29: the focal point's Y axis
+// only has any visible effect on photos where the source image is
+// *taller* than this hero box's own extreme aspect ratio (~0.5, i.e.
+// noticeably taller than it is wide — most ordinary portrait photos
+// aren't). Every photo here is squarish or wider-than-tall, which means
+// object-fit: cover is always height-constrained against this box — the
+// entire image height maps to the full box height with zero vertical
+// crop room, so no Y value changes what's shown, only X does. (Verified
+// directly: setting a test photo's Y from 10% to 50% produced a
+// pixel-identical render.) The 3 Archana photos that had real empty
+// headroom above her hair as shipped from the camera (archana.webp,
+// archana-candid-outdoor.jpg, archana-profile.jpg — the fourth,
+// archana-candid-crop.jpg, already didn't) got pre-cropped source
+// variants instead (archana-crop.webp,
+// archana-candid-outdoor-crop.jpg, archana-profile-crop.jpg) so her
+// hair starts close to the top of the frame regardless of Y. That's the
+// only real lever for this — Y in the values below is left at a neutral
+// 50% on every entry now rather than implying a precision it doesn't
+// have.
 export const heroPhotos = [
-  { src: "/team/archana.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry", focal: "60% 10%" },
-  { src: "/team/archana-candid-crop.jpg", alt: "Dr. Archana Dubey in the office", focal: "58% 6%" },
-  { src: "/team/archana-candid-outdoor.jpg", alt: "Dr. Archana Dubey", focal: "58% 12%" },
+  { src: "/team/archana-crop.webp", alt: "Dr. Archana Dubey at Super Tooth Dentistry", focal: "60% 50%" },
+  { src: "/team/archana-candid-crop.jpg", alt: "Dr. Archana Dubey in the office", focal: "58% 50%" },
+  {
+    src: "/team/archana-candid-outdoor-crop.jpg",
+    alt: "Dr. Archana Dubey",
+    focal: "58% 50%",
+  },
   {
     src: "/team/team-group.jpg",
     alt: "The Super Tooth Dentistry team together in the office",
-    focal: "55% 25%",
+    focal: "55% 50%",
   },
-  { src: "/team/front-desk.jpg", alt: "A team member at the front desk", focal: "58% 25%" },
+  { src: "/team/front-desk.jpg", alt: "A team member at the front desk", focal: "58% 50%" },
   {
     src: "/team/team-itero-scan.jpg",
     alt: "A team member reviewing a digital scan on-screen",
-    focal: "22% 30%",
+    focal: "22% 50%",
   },
-  { src: "/team/archana-profile.jpg", alt: "Dr. Archana Dubey, DDS, MDS", focal: "52% 8%" },
+  { src: "/team/archana-profile-crop.jpg", alt: "Dr. Archana Dubey, DDS, MDS", focal: "52% 50%" },
 ];
 
 /**

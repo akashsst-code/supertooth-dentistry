@@ -44,27 +44,18 @@ function TrustBadge({ children }: { children: React.ReactNode }) {
  * (below) rather than a separate section further down the page — "bring
  * archana's training affiliations along with her bio space" (Akash).
  *
- * Top seam fade (2026-08-29, single-bleed pass, mobile only): Hero's
- * bottom edge is a solid Espresso plateau (needed for the CTA row's own
- * contrast, see Hero.tsx's scrim), and this section starts in a much
- * lighter Sand tint right below it — an instant flat-color cut Akash
- * flagged as looking like stacked bands rather than one clean page. A
- * gradual Espresso-to-transparent fade laid over this section's own top
- * edge graduates that handoff instead of requiring Hero to compromise
- * its CTA contrast to soften it. Sized generously (h-40, not just
- * enough to cover the literal seam) after Akash's follow-up that a
- * shorter version still read as two flat zones with a thin blended
- * line, not a genuinely gradual transition. Desktop doesn't need this —
- * Hero isn't full-bleed there, so there's no dark-photo-panel edge to
- * blend from.
+ * Top seam (2026-08-29, single-bleed pass): a gradual Espresso-to-
+ * transparent fade was tried here to soften the handoff from Hero's
+ * solid bottom edge into this section's lighter Sand tint — reverted
+ * per Akash's explicit follow-up ("I don't like the transition, make a
+ * clean split"). A crisp flat-color boundary between two intentional
+ * colors reads as a deliberate section break; the gradient read as a
+ * muddy, indecisive one instead. Leave this alone — it's been through
+ * two rounds of feedback in opposite directions already.
  */
 export function TrustBlock() {
   return (
-    <section className="relative bg-sand/40">
-      <div
-        className="photo-text-scrim-top md:hidden absolute inset-x-0 top-0 h-40"
-        aria-hidden="true"
-      />
+    <section className="bg-sand/40">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
         {/*
          * Differentiators — icon-left row cards (icon beside title/detail,
