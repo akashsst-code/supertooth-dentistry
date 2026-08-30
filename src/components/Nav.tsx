@@ -70,6 +70,23 @@ import { contact, hours, nav } from "@/lib/content";
  * hamburger/CTA are all unchanged from the locked Pattern A spec
  * (docs/supertooth-navigation-requirements.md) — this is a visual-only
  * treatment, nothing here is hidden or removed while floating.
+ *
+ * Real bug found 2026-08-29 (reproduced on Akash's phone across three
+ * iOS browsers, never in this repo's Chromium-based testing tooling —
+ * that mismatch is what pointed at a timing/engine difference rather
+ * than styling): this effect used to call onScroll() synchronously on
+ * mount. #hero-wrapper's *precise* pixel height is set by a separate
+ * effect in ViewportHero.tsx (JS reads visualViewport.height, since
+ * the CSS-only svh fallback isn't reliable in in-app/mobile browser
+ * chrome — see that file). Effects for sibling components can commit
+ * in either order, so Nav's synchronous first measurement could run
+ * *before* ViewportHero's had applied the real height, sometimes
+ * catching #hero-wrapper still at a too-short fallback size — reading
+ * "Hero has basically already scrolled past" on a page that had never
+ * scrolled at all, and latching the solid white bar over the photo
+ * from the very first frame. Deferring the first measurement to
+ * requestAnimationFrame (after the mount commit, not synchronously
+ * inside it) lets ViewportHero's own effect land first.
  */
 const FLOAT_UNTIL_PX = 120;
 
@@ -83,10 +100,14 @@ export function Nav() {
       const bottom = hero?.getBoundingClientRect().bottom ?? 0;
       setFloating(bottom > FLOAT_UNTIL_PX);
     };
-    onScroll();
+    // Deferred, not called synchronously here — see the `floating`
+    // comment above for why the first measurement has to wait for
+    // ViewportHero's own sizing effect to land first.
+    const raf = requestAnimationFrame(onScroll);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
@@ -96,12 +117,29 @@ export function Nav() {
     ? "text-warm-ivory hover:text-warm-ivory/70 text-shadow-photo"
     : "text-espresso hover:text-terracotta";
   const iconButtonColor = floating
-    ? "border-warm-ivory/40 text-warm-ivory drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)]"
+    ? "border-warm-ivory/40 text-warm-ivory drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]"
     : "border-espresso/20 text-espresso";
 
   return (
     <>
+      {/*
+       * `transform: translateZ(0)` (2026-08-29): a `position: fixed`
+       * element in Safari/WebKit can render its text noticeably thinner
+       * and lower-contrast than the exact same CSS renders in Chromium —
+       * a known WebKit quirk where fixed-position content doesn't always
+       * get its own GPU compositing layer, and text-shadow/filter-based
+       * contrast (see linkColor/iconButtonColor above, Logo.tsx's `mono`)
+       * degrades as a result. Forcing layer promotion this way is the
+       * standard fix. Couldn't verify this directly myself — the
+       * testing tooling available here is Chromium-based and never
+       * reproduced the washed-out look Akash saw on his iPhone across
+       * three different iOS browsers (Safari/Chrome/Firefox — all
+       * WebKit under the hood on iOS, which is what pointed at a WebKit-
+       * specific cause rather than a caching issue). Confirm on a real
+       * iOS device before treating this as resolved.
+       */}
       <header
+        style={{ transform: "translateZ(0)" }}
         className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
           floating ? "bg-transparent" : "bg-warm-ivory/95 backdrop-blur border-b border-sand"
         }`}

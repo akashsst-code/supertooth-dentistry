@@ -44,7 +44,7 @@ export function Logo({ mono = false }: { mono?: boolean }) {
         alt=""
         width={32}
         height={33}
-        className={`h-8 w-auto transition-[filter] duration-300 ${mono ? "brightness-0 invert drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)]" : ""}`}
+        className={`h-8 w-auto transition-[filter] duration-300 ${mono ? "brightness-0 invert drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]" : ""}`}
         priority
         aria-hidden="true"
       />
