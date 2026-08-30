@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { contact, practice, reviews } from "@/lib/content";
+import { HeroAddressMap } from "./HeroAddressMap";
 import { HeroCarousel } from "./HeroCarousel";
 import { InsuranceTeaser } from "./InsuranceTeaser";
-import { CalendarIcon, CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./icons";
+import { CalendarIcon, CheckIcon, GoogleGIcon, StarIcon } from "./icons";
 
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
@@ -52,11 +53,12 @@ import { CalendarIcon, CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./ic
  * headline right above, a third mention here was pure repetition) to
  * make room without losing meaning.
  *
- * Address line shows contact.address as plain text, not a link —
- * Akash confirmed the real address and asked for it shown bare
- * (state omitted; neighborhood/city are already established via nav
- * + headline, so the street address alone is the bare minimum that
- * adds new information here), not as a tappable/underlined map link.
+ * Address line: previously shown as plain text on Akash's explicit
+ * call (state omitted; neighborhood/city already established via nav
+ * + headline), then briefly a Google Maps link that opened in a new
+ * tab. Akash asked for that to instead expand a map preview in place
+ * (same embed as LocationMapSection further down the page) so the
+ * visitor never leaves the hero — see HeroAddressMap.tsx.
  */
 export function Hero() {
   return (
@@ -118,10 +120,7 @@ export function Hero() {
             <CheckIcon className="shrink-0 text-terracotta" />
             <InsuranceTeaser />
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <MapPinIcon className="shrink-0 text-terracotta" />
-            {contact.address}
-          </span>
+          <HeroAddressMap />
         </div>
 
         <div className="mt-4 flex flex-row flex-wrap gap-1.5">
