@@ -6,77 +6,51 @@ import { InsuranceTeaser } from "./InsuranceTeaser";
 import { CalendarIcon, CheckIcon, GoogleGIcon, StarIcon } from "./icons";
 
 /**
- * Hero — split video/text layout, adapted from smilemakersfortworth.com's
- * pattern (real office video as the lead trust signal, video-first on
- * mobile / text-first on desktop) rather than the previous single-column
- * text hero. Section order still follows docs/supertooth-ux-flow.md
- * Section 1: "accepting new patients" + insurance signal, then headline,
- * then primary CTA book / secondary CTA call — but the eyebrow badges and
- * body copy are visually de-emphasized (lighter weight/opacity) so the
- * video and the two CTAs carry the visual weight instead of competing
- * with them.
+ * Hero — photo-first redesign (per Akash, referencing 2thstudio.com's
+ * clean full-bleed pattern), replacing the old split video/text layout.
+ * HeroCarousel now fills the entire section edge-to-edge instead of a
+ * 60% side panel, so the photo — not a solid espresso panel — carries
+ * the section. Text/CTAs are overlaid directly on the photo, bottom-
+ * anchored, over a bottom-up scrim (from-espresso/95) for AA contrast
+ * against whatever photo is showing.
  *
- * CTA row is side-by-side at every width, not just sm: up — a mobile
- * screenshot showed the stacked layout pushing Call below the fold on
- * real devices. Book is `grow shrink-0` (not `flex-1`, and not this
- * component's old `min-w-[140px]`) so it fills any leftover row width
- * but never shrinks below its own content — `flex-1` is `flex: 1 1 0%`,
- * which starts an item's hypothetical size at 0 and grows it from
- * there, so once "Book your visit" was renamed to the wider "Book
- * Appointment" the button grew to less than its text needed and the
- * label overflowed the pill into the phone button next to it. `grow`
- * alone leaves flex-basis at its default `auto` (content-sized), so
- * combined with `shrink-0` the button can only ever grow from its
- * natural size, never shrink below it. (A `min-w-[…]` utility would
- * have worked too, but it and `.tap-target`'s own `min-width: 44px`
- * have equal CSS specificity — whichever rule lands later in the
- * generated stylesheet wins regardless of source order, and here that
- * silently capped the floor at 44px.) The phone button shows the
- * actual number (not the word "Call") per Akash's call to be explicit
- * about what tapping it does, matching the booking section and
- * footer's phone buttons. flex-wrap on the row is still the safety
- * net if content ever outgrows the available width at some size no
- * one's tested: the phone button drops to its own line instead of
- * forcing an ugly in-button wrap. Uses a real tel: link (it previously
- * routed to /contact instead of dialing).
+ * "Bleed the bottom in": a second, shorter gradient (to-warm-ivory)
+ * sits below the content in the section's own bottom padding, fading
+ * the photo into the page background so TrustBlock reads as a
+ * continuation of the hero rather than a hard-edged next section. It
+ * sits entirely below the CTA row so it never washes out the buttons.
  *
- * Padding/gap/text size on both CTAs were trimmed (px-6→px-3.5,
- * gap-2→gap-1.5, text-base→text-sm, row gap-3→gap-2) specifically so
- * "Book Appointment" + the full phone number both fit on one line at
- * 375px — Akash's call after seeing the flex-wrap safety net actually
- * trigger and push them onto two lines. Verified in a real 375px
- * layout (not just computed/isolated widths) that this leaves a
- * little slack, not an exact-pixel fit.
+ * Locked requirement (docs/supertooth-webflow-build-spec.md Section 1)
+ * still holds — insurance signal + both CTAs stay visible on load, just
+ * overlaid on the photo instead of living in a separate side panel.
  *
- * Body copy trimmed from 4 lines to 3 on mobile — dropped "dental" and
- * "in {neighborhood}" (already stated in the nav subtitle and the
- * headline right above, a third mention here was pure repetition) to
- * make room without losing meaning.
- *
- * Address line: previously shown as plain text on Akash's explicit
- * call (state omitted; neighborhood/city already established via nav
- * + headline), then briefly a Google Maps link that opened in a new
- * tab. Akash asked for that to instead expand a map preview in place
- * (same embed as LocationMapSection further down the page) so the
- * visitor never leaves the hero — see HeroAddressMap.tsx.
+ * CTA row, trust strip, and address/insurance sub-components are
+ * unchanged from the previous layout (still real content, same
+ * tap-to-expand behavior) — only the container around them changed.
  */
 export function Hero() {
   return (
-    <section className="flex-1 min-h-0 flex flex-col md:flex-row-reverse md:min-h-[560px]">
-      <div className="w-full flex-1 min-h-[160px] md:w-3/5 md:flex-none md:h-auto overflow-hidden">
+    <section className="relative flex-1 min-h-0 w-full overflow-hidden md:h-[88vh] md:min-h-[640px] md:flex-none">
+      <div className="absolute inset-0">
         <HeroCarousel />
       </div>
 
-      <div className="w-full shrink-0 md:w-2/5 bg-espresso text-warm-ivory flex flex-col justify-center px-6 py-4 sm:px-10 sm:py-16">
-        <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70 mb-2">
+      {/* Legibility scrim so overlaid text stays AA-contrast over any photo */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-espresso/95 via-espresso/35 to-transparent" />
+
+      {/* Bleed transition: fades the photo into the page background below the content */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 sm:h-24 bg-gradient-to-t from-warm-ivory to-transparent" />
+
+      <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-20 pt-4 sm:px-10 sm:pb-28 text-warm-ivory">
+        <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/15 backdrop-blur-sm px-3 py-1 text-xs font-medium text-warm-ivory/80 mb-3">
           Accepting new patients
         </span>
 
-        <h1 className="font-display text-2xl sm:text-5xl font-semibold leading-[1.15]">
+        <h1 className="font-display text-3xl sm:text-6xl font-semibold leading-[1.1] drop-shadow-sm max-w-2xl">
           {practice.headline}
         </h1>
 
-        <p className="mt-2 max-w-md text-sm text-warm-ivory/60">
+        <p className="mt-3 max-w-md text-sm sm:text-base text-warm-ivory/80">
           Trusted, judgment-free care for people who want one dentist for the long run — not
           another appointment squeezed into a workday.
         </p>
@@ -103,7 +77,7 @@ export function Hero() {
          * competitor site's pattern) — a tap, not a hover popover, so it
          * still works touch-only; see InsuranceTeaser.tsx.
          */}
-        <div className="mt-3 flex flex-col gap-1 text-xs text-warm-ivory/70">
+        <div className="mt-4 flex flex-col gap-1 text-xs sm:text-sm text-warm-ivory/85">
           <span className="inline-flex items-center gap-1.5">
             <GoogleGIcon />
             <span className="flex gap-px text-terracotta">
@@ -123,17 +97,17 @@ export function Hero() {
           <HeroAddressMap />
         </div>
 
-        <div className="mt-4 flex flex-row flex-wrap gap-1.5">
+        <div className="mt-5 flex flex-row flex-wrap gap-1.5 sm:gap-2">
           <Link
             href="/contact"
-            className="tap-target grow shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-terracotta px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+            className="tap-target grow shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-terracotta px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors sm:px-6"
           >
             <CalendarIcon />
             Book Appointment
           </Link>
           <a
             href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-            className="tap-target shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full border border-warm-ivory/40 px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:border-warm-ivory/70 transition-colors"
+            className="tap-target shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full border border-warm-ivory/40 px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:border-warm-ivory/70 transition-colors sm:px-6"
           >
             <PhoneIcon />
             {contact.phone}
