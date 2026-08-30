@@ -45,7 +45,7 @@ export function Nav() {
           <Logo />
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
+          <nav className="hidden md:flex items-center gap-6 lg:gap-8" aria-label="Primary">
             {nav.map((item) => (
               <Link
                 key={item.href}
@@ -55,6 +55,46 @@ export function Nav() {
                 {item.label}
               </Link>
             ))}
+
+            {/* Internal working link — Akash asked for it in the desktop top
+                bar too (it was mobile-menu-only). Still deliberately NOT in
+                the `nav` array in content.ts: that array is the patient-facing
+                wayfinding surface locked in
+                docs/supertooth-navigation-requirements.md, and mapping over it
+                would make this look like a fifth patient nav item. Rendered
+                separately and de-emphasized instead — hairline divider, muted
+                weight/color, "internal" marker — so it reads as a utility
+                link, not part of the patient journey. The page itself stays
+                noindex (see src/app/backlog/page.tsx).
+
+                Shown from lg only, and this is measured rather than guessed.
+                The desktop nav switches on at md (768px), but it's already
+                tight there on `main` today: around 768–790px the link *text*
+                wraps to two lines ("Insurance & New Patients" and the Book
+                Appointment pill both go to 40–60px tall inside a 64px header).
+                The flex row itself does not break — every item stays on one
+                row, centered — so this is cosmetic crowding, not a layout bug,
+                but adding a sixth item at md would make it worse. Gated to lg
+                instead, where the whole row sits on one line at 20px tall with
+                64px of clearance from the logo (measured at 1024 and 1280).
+
+                Trade-off: no Backlog link between 768–1023px, where the
+                hamburger is also hidden. Acceptable — review happens on a
+                laptop, and the hamburger covers phones.
+
+                `gap-6 lg:gap-8` keeps lg+ pixel-identical to before and buys
+                back a little room in that md band. */}
+            <span className="hidden lg:block h-5 w-px bg-espresso/15" aria-hidden="true" />
+            <Link
+              href="/backlog"
+              className="group hidden lg:inline-flex items-baseline gap-1.5 text-sm text-espresso/45 hover:text-terracotta transition-colors -ml-4"
+            >
+              Backlog
+              <span className="text-[0.6875rem] text-espresso/30 group-hover:text-terracotta/60 transition-colors">
+                internal
+              </span>
+            </Link>
+
             <Link
               href="/contact"
               className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
