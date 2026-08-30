@@ -209,7 +209,7 @@ export const waves: Record<number, string> = {
 };
 
 export const waveNotes: Record<number, string> = {
-  1: "No new content needed from the practice. All Small. Could ship this week.",
+  1: "No new content needed from the practice. Could ship this week.",
   2: "Needs verified answers from Akash/Dr. Dubey before the copy can be written.",
   3: "Everything required before the site can honestly be called launch-ready.",
   4: "Where the measurable new-patient gain actually comes from.",
@@ -221,6 +221,170 @@ export const PATIENT_READY_AFTER_ITEM = 14;
 
 export const backlog: BacklogItem[] = [
   // ─────────────────────────── WAVE 1 ───────────────────────────
+  {
+    id: 27,
+    title: "Walk the homepage mobile flow section by section",
+    priority: "P0",
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 5, reach: 5, risk: 3, effort: 3, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 1,
+    job: "Evaluate, decide and book — the whole journey, on a phone",
+    story:
+      "As a patient on my phone, I can go from landing to booked without losing the thread, hitting a dead stretch, or mis-tapping a control.",
+    problem:
+      "Every other item in this backlog tests one page or one feature. Nothing tests the homepage as a continuous mobile journey — which is the gap, because the build spec says the homepage carries the full conversion journey and the site is single-page-led. A page can pass every per-feature test and still fail as a sequence: too long, badly paced, repetitive, or with the primary action stranded. Measured on production 2026-08-30 at 375×812, the homepage is 12.4 screens tall and already carries five tap targets below the locked 44px minimum.",
+    where: "src/app/page.tsx and every homepage section component",
+    scope: [
+      "Measure the real thing first: total scroll depth, per-section height, and where each CTA sits — in screenfuls, not pixels",
+      "Fix the five confirmed sub-44px targets found on production: '+ more' (40×16) and the hero address button (288×16) in Hero; both 'Schedule this offer' links (146×24) in NewPatientOffersBlock; the phone link (102×17) in BookingBlock",
+      "Check section rhythm when everything stacks — no single section should dominate, and the order locked for desktop still has to read as a sequence on mobile",
+      "Check for redundancy: the same CTA, photo or claim repeating within a screen or two",
+      "Confirm a booking path is reachable at every scroll depth (the fixed nav currently provides this — verify it genuinely persists, don't assume)",
+      "Measure Core Web Vitals on a throttled mobile connection, not on localhost",
+      "Produce a per-section findings list; fix what's cheap, log the rest as new backlog items",
+    ],
+    acceptance: [
+      "Zero interactive elements below 44×44px anywhere on the homepage at 375px",
+      "A booking or call action is reachable at every scroll depth without scrolling back up",
+      "Total scroll depth is recorded, and any section taller than ~2.5 screens is justified or trimmed",
+      "LCP, CLS and INP measured at 375px on a throttled connection and recorded",
+      "Every finding is either fixed or logged as its own backlog item with an owner",
+    ],
+    evidence:
+      "Internal — build spec Section 2 makes the homepage the full conversion journey, and Section 1 names conversion as the project's goal. Usability tier: NN/g eyetracking finds ~57% of viewing time above the fold and ~74% within the first two screenfuls, so a 12.4-screen page needs deliberate pacing rather than assumed scrolling. The five sub-44px targets were measured directly on production, not inferred.",
+    dependsOn: null,
+    outOfScope:
+      "Redesigning the homepage or reordering locked sections. This is a review-and-repair pass against the existing locked order — any reordering proposal comes back as a separate item with its own rationale.",
+    references: [
+      {
+        name: "NN/g — Scrolling and Attention (original eyetracking study)",
+        url: "https://www.nngroup.com/articles/scrolling-and-attention-original-research/",
+        whatGood:
+          "Actual eyetracking data rather than folklore: roughly 57% of viewing time is spent above the fold and about 74% within the first two screenfuls, and that distribution holds regardless of how long the page is. It gives a measurable way to argue about section order instead of taste.",
+        takeaway:
+          "Copy the method — judge the page by where attention actually lands, not by whether content 'exists somewhere'. Don't take it as 'nobody scrolls'; the same research shows long single pages beat pagination.",
+        mobile:
+          "The attention drop-off is steeper on mobile because a screenful is smaller — our 12.4 screens means everything past roughly screen 2 is competing hard for attention. That is the argument for auditing section heights and for the persistent header CTA, and it's why this review is measured in screenfuls rather than pixels.",
+      },
+      {
+        name: "web.dev — Web Vitals",
+        url: "https://web.dev/articles/vitals",
+        whatGood:
+          "Defines the three user-centred metrics and their thresholds (LCP ≤2.5s, INP ≤200ms, CLS ≤0.1) at the 75th percentile — an objective bar for 'does this page actually feel usable' rather than a subjective read.",
+        takeaway:
+          "Copy the thresholds as acceptance criteria. Measure field-realistic conditions, not a warm localhost load, or the numbers are meaningless.",
+        mobile:
+          "Explicitly segmented by device, and mobile is where sites fail — LCP is the metric most mobile pages miss. Our homepage carries 29 images including two carousels, which is exactly the LCP and CLS risk profile. Measure at 375px on a throttled connection.",
+      },
+      {
+        name: "GOV.UK Service Manual — end-to-end service assessment",
+        url: "https://www.gov.uk/service-manual/service-assessments",
+        whatGood:
+          "Assesses the whole journey a user takes rather than individual screens, on the principle that a service can pass every component review and still fail as an experience. That is precisely the gap this item fills.",
+        takeaway:
+          "Copy the end-to-end framing and the practice of walking the journey as a real user with a real goal. Ignore the governance apparatus — we need one careful pass, not a formal panel.",
+        mobile:
+          "Their assessments require testing on the devices users actually have, including low-end phones on poor connections. Copy that: this review is done on a real phone, and a resized desktop window does not count as having done it.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "Deployed at $BASE",
+        "Browser viewport set to 375×812 — this entire item is a mobile review; a desktop pass is not a substitute",
+        "A real phone available for the touch and scroll-feel portion",
+        "Network throttling available for the Core Web Vitals measurement",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, measure total scroll depth and each section's height in screenfuls: for each child of <main>, record (top / innerHeight) and (height / innerHeight).",
+          tool: "browser",
+          expect:
+            "A recorded per-section table. Flag any section over ~2.5 screens. Baseline on 2026-08-30 was 12.4 screens total, with the trust block at 2.8 and services at 2.5.",
+        },
+        {
+          action:
+            "At 375px, measure every interactive element on the page: `document.querySelectorAll('a, button')`, recording any with width or height below 44px.",
+          tool: "browser",
+          expect:
+            "Zero results. Five were found on production on 2026-08-30 — '+ more' (40×16), the hero address button (288×16), two 'Schedule this offer' links (146×24) and a phone link (102×17). All must be fixed.",
+        },
+        {
+          action:
+            "At 375px, scroll from top to bottom and record the scroll position of every booking/call control, then identify the largest gap between consecutive controls.",
+          tool: "browser",
+          expect:
+            "No stretch where a patient cannot act. In-content CTAs currently cluster at screens 0–2.1 and resume at 8.7 — a 6.6-screen gap — so the persistent header is doing the work in between. Verify that explicitly.",
+        },
+        {
+          action:
+            "At 375px, scroll to several depths (screens 3, 5, 8, 11) and confirm the fixed header is still pinned with its Schedule and call controls at ≥44px.",
+          tool: "browser",
+          expect:
+            "Header top === 0 and both controls ≥44px at every depth. If the header ever detaches, the CTA gap above becomes a real dead stretch rather than a mitigated one.",
+        },
+        {
+          action:
+            "At 375px, walk the page section by section and note redundancy: the same CTA label, photo or claim repeating within two screens.",
+          tool: "manual",
+          expect:
+            "Repetition is deliberate (a closing CTA) rather than accidental (the same photo used twice in adjacent sections).",
+        },
+        {
+          action:
+            "On a real phone, scroll the full page and interact with both carousels by finger-swipe, then complete the path from landing to the /contact form.",
+          tool: "manual",
+          expect:
+            "Scrolling never gets trapped by a carousel, both respond to touch, and the journey completes without backtracking. A resized desktop window does not reproduce this.",
+        },
+        {
+          action:
+            "Measure LCP, CLS and INP at 375px on a throttled connection (Slow 4G, CPU 4× slowdown).",
+          tool: "validator",
+          expect:
+            "LCP ≤2.5s, CLS ≤0.1, INP ≤200ms. The homepage carries 29 images and two carousels, so LCP and CLS are the likely failures.",
+        },
+        {
+          action:
+            "At 375px, confirm no horizontal overflow at any scroll depth, and repeat at 320px.",
+          tool: "browser",
+          expect: "documentElement.scrollWidth === clientWidth throughout at both widths.",
+        },
+        {
+          action:
+            "Only after the mobile pass is complete, repeat the section-height and CTA-position measurements at 1280px.",
+          tool: "browser",
+          viewport: "1280",
+          expect:
+            "Desktop pacing is sane too — but any conflict is resolved in mobile's favour, per the locked mobile-first principle.",
+        },
+      ],
+      mobileFirst: [
+        "Zero interactive elements below 44×44px anywhere on the homepage at 375px",
+        "A booking or call action is reachable at every scroll depth, with the fixed header verified as genuinely persistent",
+        "Per-section heights recorded in screenfuls, with any section over ~2.5 screens justified or trimmed",
+        "LCP ≤2.5s, CLS ≤0.1, INP ≤200ms measured at 375px on a throttled connection",
+        "No horizontal overflow at 375px or 320px at any scroll depth",
+        "Full journey completed by touch on a real phone, including both carousels",
+      ],
+      pass: [
+        "Zero sub-44px interactive elements on the homepage",
+        "No scroll stretch without a reachable booking or call action",
+        "Scroll depth and per-section heights recorded, with outliers justified",
+        "Core Web Vitals measured on mobile and within thresholds, or failures logged with an owner",
+        "Every finding fixed or logged as its own backlog item",
+      ],
+      gotchas: [
+        "This item is a review, so it fails quietly: producing no findings almost certainly means the pass wasn't done properly, not that the page is perfect. The 2026-08-30 baseline already found five real defects in ten minutes.",
+        "Measuring on localhost gives meaningless Core Web Vitals. Use the deployed preview with throttling.",
+        "Backgrounded browser tabs suspend scroll repaint and CSS transitions in this repo's tooling — verified previously. Run the scroll and carousel checks in a foregrounded tab, or assert on DOM geometry rather than screenshots.",
+        "Do not use this item as cover for reordering locked homepage sections. Findings that imply a reorder come back as their own item with their own rationale.",
+      ],
+    },
+  },
   {
     id: 1,
     title: "Fix the three 404 primary-nav routes",

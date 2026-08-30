@@ -565,7 +565,24 @@ That is desktop-first work with mobile bolted on, on a project whose own build p
 
 **The guard now enforces all of it.** `scripts/check-backlog.ts` fails if any item lacks a mobile gate, if any reference lacks a substantive mobile note, if an item with a rendered surface has no 375px step, if desktop steps outnumber mobile ones, or if the first viewport-bound step isn't mobile. Desktop-first work can no longer pass the check regardless of what the prose claims.
 
-**Findings this surfaced that would otherwise have been missed**, now written into the relevant items:
+### 19c. The gap the mobile pass itself had — item 27
+
+Even after the mobile-first correction, one gap remained, found by asking a simple question: *is there an item that walks the homepage flow on mobile, section by section?* There wasn't.
+
+Every item tested one page or one feature. Items 16, 17 and 19 *add sections to* the homepage; item 14 is a sitewide accessibility audit. **Nothing tested the homepage as a continuous mobile journey** — which is the gap, because the build spec makes the homepage the full conversion journey and the site is single-page-led. A page can pass every per-feature test and still fail as a sequence.
+
+**Item 27 — "Walk the homepage mobile flow section by section" — scores 42.0/50, third-highest in the backlog**, and is unblocked. A ten-minute measurement of production at 375×812 on 2026-08-30 seeded it with real findings:
+
+| Finding | Detail |
+|---|---|
+| **Page length** | 12.4 screenfuls at 375×812. Trust block 2.8 screens, services 2.5. |
+| **Five sub-44px tap targets, live** | `+ more` 40×16 · hero address button 288×**16** · two `Schedule this offer` links 146×**24** · phone link 102×**17**. All breach the locked 44px rule. |
+| **In-content CTA gap** | Booking CTAs cluster at screens 0–2.1, then nothing until 8.7 — a 6.6-screen stretch. |
+| **Mitigation verified, not assumed** | The fixed header genuinely persists: measured `top: 0` with a 44px Schedule control at screen 5. So the gap is covered — but by the header, not by the page. |
+
+The last row matters methodologically: the CTA gap looked alarming until the header was actually measured mid-scroll. Reporting it as a dead stretch would have been wrong. NN/g eyetracking (~57% of viewing time above the fold, ~74% in the first two screenfuls) is what makes 12.4 screens worth auditing rather than assuming.
+
+**Findings the mobile-first correction surfaced**, now written into the relevant items:
 - **Item 7 (emergency)** — a three-column tier layout puts everything above the fold at 1280px and pushes Tier 1 detail below it at 375px. A red flag below the fold on a phone is a patient-safety failure, and desktop-first testing would never have caught it.
 - **Item 14 (WCAG)** — WCAG 2.2's genuinely new criteria are mostly touch concerns: Target Size, Dragging Movements, Focus Not Obscured. Our two carousels drag and our nav is a fixed overlay, so 2.2 is precisely where our mobile risk sits. Running axe only at desktop width is a false pass.
 - **Item 15 (booking)** — a calendar grid at mobile width produces sub-30px targets. It's the single most common place a booking flow breaks on a phone.
