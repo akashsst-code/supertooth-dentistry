@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { BadgeIcon } from "./icons";
-import { BookingCtaRow, ExpandCard, InsuranceExpandCard } from "./InsuranceExpandCard";
+import { BookingCtaRow, CallFirstCtaRow, ExpandCard, InsuranceExpandCard } from "./InsuranceExpandCard";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
 import { archana, credentials, differentiators, officeBlurb } from "@/lib/content";
@@ -63,12 +63,26 @@ export function TrustBlock() {
          * trust images more" better than a line icon (see the fuller
          * comment on ExpandCard).
          *
-         * All 3 rows share the same tap-to-expand `ExpandCard` shell —
-         * "Same-day appointments" and "Same-day crowns" used to be plain
-         * non-interactive divs, which read as broken once they looked
-         * identical to the (already tappable) insurance card next to
-         * them. The "In-network" row still renders as InsuranceExpandCard
-         * specifically for its carrier-grid expanded content.
+         * All 3 rows share the same tap-to-expand `ExpandCard` shell, but
+         * their expanded content is no longer identical — Akash's next
+         * round asked to work backward from what each card is actually
+         * for, rather than repeating the same photo+note+CTA shape 3
+         * times:
+         *  - Same-day appointments: no photo (there's nothing useful to
+         *    photograph for "we have an opening today"); leads with
+         *    `CallFirstCtaRow` — a real same-day answer needs a real
+         *    person on the phone, not a web form, per the phone-first
+         *    same-day rule already locked in
+         *    docs/supertooth-ux-flow.md.
+         *  - Same-day crowns: keeps its photo — a before/after result is
+         *    exactly the proof this specific claim needs — but framed
+         *    (border/shadow) and captioned for authenticity so it reads
+         *    as a curated result rather than a raw clinical photo.
+         *  - In-network: no photo; the "we handle the insurance
+         *    paperwork" line is promoted to a bold standalone callout at
+         *    the top of the panel instead of only the collapsed
+         *    subtitle, ahead of the carrier grid (see
+         *    InsuranceExpandCard.tsx for both).
          */}
         <div className="mb-12 sm:mb-16">
           <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso text-center mb-4 sm:mb-5">
@@ -79,9 +93,20 @@ export function TrustBlock() {
               if (d.title === "In-network with most plans") {
                 return <InsuranceExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image} />;
               }
+              if (d.title === "Same-day appointments") {
+                return (
+                  <ExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image}>
+                    <p className="mb-0 text-sm text-espresso/70">{d.expandedNote}</p>
+                    <CallFirstCtaRow />
+                  </ExpandCard>
+                );
+              }
               return (
-                <ExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image}>
-                  <p className="mb-0 text-sm text-espresso/70">{d.expandedNote}</p>
+                <ExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image} photo={d.image}>
+                  <p className="mb-1.5 text-sm text-espresso/70">{d.expandedNote}</p>
+                  <p className="mb-0 text-xs italic text-espresso/45">
+                    Real same-day crown, milled in our office — not a stock photo.
+                  </p>
                   <BookingCtaRow />
                 </ExpandCard>
               );

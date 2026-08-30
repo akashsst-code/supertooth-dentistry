@@ -17,12 +17,22 @@ import { contact, insuranceCarriers } from "@/lib/content";
  * a stronger drop shadow, a bordered (not just tinted) +/- toggle, and a
  * clearer type scale. Akash then asked whether the generic clock/crown/
  * shield line icons were even needed, or if there's a more aesthetic
- * render — the badge is now a small circular crop of the same real
- * photo shown large in the expanded panel, not an abstract icon,
- * consistent with "people trust images more" (Akash's stated reason for
- * the Archana bio card and office-carousel treatments elsewhere on this
- * page). `image` is required now rather than optional since every
- * differentiator has real photography backing it (see content.ts).
+ * render — the badge (`image`, required) is now a small circular crop
+ * of a real photo, not an abstract icon, consistent with "people trust
+ * images more" (Akash's stated reason for the Archana bio card and
+ * office-carousel treatments elsewhere on this page).
+ *
+ * `photo` (optional, separate from `image`) is the larger photo shown
+ * in the expanded panel — Akash's next round asked to work backward
+ * from what each card's expanded content is actually for, rather than
+ * repeating the same photo+note+CTA shape 3 times: same-day
+ * appointments and in-network don't need a big photo at all (see
+ * `CallFirstCtaRow` and `InsuranceExpandCard` below), so only the
+ * same-day-crowns card passes `photo` — and that one specifically
+ * because a before/after clinical macro shot is exactly the kind of
+ * proof patients want to see for that claim, framed with a border/
+ * shadow and an authenticity caption so it reads as a curated result
+ * photo rather than a raw clinical snapshot.
  *
  * Extracted 2026-08-29 from what used to be an insurance-only component
  * (see `InsuranceExpandCard` below) once "Same-day appointments" and
@@ -33,12 +43,14 @@ export function ExpandCard({
   title,
   detail,
   image,
+  photo,
   className = "",
   children,
 }: {
   title: string;
   detail: string;
   image: { src: string; alt: string };
+  photo?: { src: string; alt: string };
   className?: string;
   children: ReactNode;
 }) {
@@ -77,15 +89,17 @@ export function ExpandCard({
       >
         <div className="overflow-hidden">
           <div className="px-4 pb-4 pt-1 border-t border-sand">
-            <div className="relative mt-3 mb-3 aspect-[16/10] rounded-xl overflow-hidden">
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                sizes="(min-width: 640px) 40rem, 90vw"
-                className="object-cover"
-              />
-            </div>
+            {photo && (
+              <div className="relative mt-3 mb-3 aspect-[16/10] rounded-xl overflow-hidden border border-sand shadow-sm">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  sizes="(min-width: 640px) 40rem, 90vw"
+                  className="object-cover"
+                />
+              </div>
+            )}
             {children}
           </div>
         </div>
@@ -125,6 +139,38 @@ export function BookingCtaRow() {
 }
 
 /**
+ * Phone-first CTA for the "Same-day appointments" card specifically —
+ * docs/supertooth-ux-flow.md locks phone as the primary same-day path
+ * ("phone-first, live triage for same-day slotting" during office
+ * hours, booking form as fallback). There's no real-time availability
+ * data to show (the Tab32 integration this would need isn't built —
+ * see BookingBlock.tsx — and inventing open slots would violate the
+ * no-unverifiable-claims rule), so the honest version of "give the user
+ * a 1-click same-day path" is flipping the usual Book/Call pairing:
+ * calling gets a real same-day answer immediately from a real person;
+ * the web form is a fallback, not the fast path, for this one card.
+ */
+export function CallFirstCtaRow() {
+  return (
+    <div className="mt-3">
+      <a
+        href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
+        className="tap-target w-full flex items-center justify-center gap-2 rounded-full bg-terracotta px-5 py-3.5 text-base font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+      >
+        <PhoneIcon />
+        Call {contact.phone}
+      </a>
+      <a
+        href="/contact"
+        className="tap-target mt-2 flex items-center justify-center text-sm font-medium text-espresso/60 underline underline-offset-2 hover:text-terracotta transition-colors"
+      >
+        Or request an appointment online
+      </a>
+    </div>
+  );
+}
+
+/**
  * The "In-network with most plans" differentiator card in TrustBlock,
  * made expandable — Akash asked for a +/- accordion here (referencing
  * a competitor site's INSURANCE FAQ pattern) so the full carrier list
@@ -144,8 +190,13 @@ export function BookingCtaRow() {
  *
  * A thin wrapper around the generic `ExpandCard` shell above (see that
  * comment for why) — this component only owns the insurance-specific
- * expanded content (carrier grid + disclaimer + the shared booking CTA
- * row every expanded differentiator card ends with).
+ * expanded content. No `photo` here (Akash's call — this card should
+ * "focus on the insurance list and the key tagline," not a picture):
+ * the `detail` line ("We handle the insurance paperwork") is repeated
+ * as a bolder standalone callout right at the top of the expanded
+ * panel instead of only living in the small collapsed-row subtitle,
+ * then the carrier grid + disclaimer + the shared booking CTA row every
+ * expanded differentiator card ends with.
  */
 export function InsuranceExpandCard({
   title,
@@ -160,7 +211,8 @@ export function InsuranceExpandCard({
 }) {
   return (
     <ExpandCard title={title} detail={detail} image={image} className={className}>
-      <p className="mt-3 mb-2 text-[11px] font-semibold uppercase tracking-wide text-espresso/50">
+      <p className="mb-3 rounded-xl bg-terracotta/10 px-3.5 py-3 text-sm font-semibold text-espresso">{detail}</p>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-espresso/50">
         Accepted plans include
       </p>
       <div className="grid grid-cols-2 gap-2">
