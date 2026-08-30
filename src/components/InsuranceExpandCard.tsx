@@ -6,14 +6,20 @@ import { CalendarIcon, PhoneIcon, ShieldCheckIcon } from "./icons";
 import { contact, insuranceCarriers } from "@/lib/content";
 
 /**
- * Generic tap-to-expand differentiator-card row, styled to match the
- * Hero's dark espresso panel (Akash's call, comparing an earlier
- * light-card version to "page 1" — the hero's dark panel + terracotta
- * accents read as the nicer, more premium treatment). Collapsed rows
- * are compact (icon + title + one-line detail + a +/- toggle, all 3
- * visible at once, no swiping needed to see what's on offer); the real
- * photo only appears once a row is expanded, alongside a longer note
- * and the shared booking CTA.
+ * Generic tap-to-expand differentiator-card row. Went through two visual
+ * passes: a dark espresso-panel treatment (echoing Hero.tsx) landed
+ * first, but Akash flagged it back as "the pills look like dark design"
+ * with icons that "are not aesthetic" and asked for a lighter option —
+ * reverted to a light warm-ivory surface, but not just back to the
+ * original flat sand card: the icon badge is now a solid terracotta
+ * circle (bolder, more finished than the earlier faint terracotta/10
+ * tint that prompted the complaint) and the card itself carries a soft
+ * shadow + a barely-there sand-tinted corner wash instead of a hard flat
+ * border, so it reads as a raised card rather than a plain box. Collapsed
+ * rows stay compact (icon + title + one-line detail + a +/- toggle, all
+ * 3 visible at once, no swiping needed); the real photo only appears
+ * once a row is expanded, alongside a longer note and the shared
+ * booking CTA.
  *
  * Extracted 2026-08-29 from what used to be an insurance-only component
  * (see `InsuranceExpandCard` below) once "Same-day appointments" and
@@ -39,7 +45,7 @@ export function ExpandCard({
 
   return (
     <div
-      className={`rounded-2xl bg-espresso bg-[radial-gradient(130%_140%_at_12%_0%,rgba(250,248,244,0.07),transparent_50%),radial-gradient(120%_120%_at_100%_100%,rgba(193,99,62,0.18),transparent_55%)] border border-warm-ivory/10 overflow-hidden ${className}`}
+      className={`rounded-2xl bg-warm-ivory bg-[radial-gradient(130%_140%_at_12%_0%,rgba(238,231,216,0.7),transparent_55%)] border border-sand shadow-[0_1px_2px_rgba(61,50,38,0.04),0_10px_24px_-16px_rgba(61,50,38,0.35)] overflow-hidden ${className}`}
     >
       <button
         type="button"
@@ -47,15 +53,15 @@ export function ExpandCard({
         aria-expanded={open}
         className="tap-target w-full flex items-center gap-3 p-4 text-left"
       >
-        <span className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-warm-ivory/10 text-terracotta">
+        <span className="shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-full bg-terracotta text-warm-ivory shadow-[0_3px_8px_rgba(193,99,62,0.35)]">
           {icon}
         </span>
         <span className="flex-1 min-w-0">
-          <h3 className="font-display text-base font-semibold text-warm-ivory leading-tight">{title}</h3>
-          <span className="block text-sm text-warm-ivory/55 leading-snug">{detail}</span>
+          <h3 className="font-display text-base font-semibold text-espresso leading-tight">{title}</h3>
+          <span className="block text-sm text-espresso/55 leading-snug">{detail}</span>
         </span>
         <span
-          className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-warm-ivory/10 text-terracotta"
+          className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-terracotta/10 text-terracotta"
           aria-hidden="true"
         >
           <PlusMinusIcon open={open} />
@@ -68,7 +74,7 @@ export function ExpandCard({
         }`}
       >
         <div className="overflow-hidden">
-          <div className="px-4 pb-4 pt-1 border-t border-warm-ivory/10">
+          <div className="px-4 pb-4 pt-1 border-t border-sand">
             {image && (
               <div className="relative mt-3 mb-3 aspect-[16/10] rounded-xl overflow-hidden">
                 <Image
@@ -95,8 +101,7 @@ export function ExpandCard({
  * so this doesn't fake a live-availability widget; it routes to the one
  * real, working appointment path already used site-wide (Nav, Hero,
  * BookingBlock, Footer) rather than inventing a second, competing CTA
- * destination. Styled for the dark espresso card surface above — same
- * primary/secondary CTA pairing as Hero.tsx's own CTA row.
+ * destination.
  */
 export function BookingCtaRow() {
   return (
@@ -110,7 +115,7 @@ export function BookingCtaRow() {
       </a>
       <a
         href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-        className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full border border-warm-ivory/30 px-4 py-2.5 text-sm font-semibold text-warm-ivory hover:border-warm-ivory/60 transition-colors"
+        className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full border border-sand px-4 py-2.5 text-sm font-semibold text-espresso hover:border-terracotta/40 transition-colors"
       >
         <PhoneIcon />
         {contact.phone}
@@ -140,8 +145,7 @@ export function BookingCtaRow() {
  * A thin wrapper around the generic `ExpandCard` shell above (see that
  * comment for why) — this component only owns the insurance-specific
  * expanded content (carrier grid + disclaimer + the shared booking CTA
- * row every expanded differentiator card ends with), restyled for the
- * dark card surface.
+ * row every expanded differentiator card ends with).
  */
 export function InsuranceExpandCard({
   title,
@@ -156,23 +160,23 @@ export function InsuranceExpandCard({
 }) {
   return (
     <ExpandCard title={title} detail={detail} icon={<ShieldCheckIcon />} image={image} className={className}>
-      <p className="mt-3 mb-2 text-[11px] font-semibold uppercase tracking-wide text-warm-ivory/50">
+      <p className="mt-3 mb-2 text-[11px] font-semibold uppercase tracking-wide text-espresso/50">
         Accepted plans include
       </p>
       <div className="grid grid-cols-2 gap-2">
         {insuranceCarriers.map((c) => (
-          <div key={c} className="group relative overflow-hidden rounded-xl bg-warm-ivory/10 px-3 py-3">
+          <div key={c} className="group relative overflow-hidden rounded-xl bg-sand/40 px-3 py-3">
             <span
-              className="absolute -right-3 -top-3 h-9 w-9 rounded-full bg-terracotta/20 transition-transform group-hover:scale-110"
+              className="absolute -right-3 -top-3 h-9 w-9 rounded-full bg-terracotta/10 transition-transform group-hover:scale-110"
               aria-hidden="true"
             />
-            <span className="relative block font-display text-sm font-semibold italic text-warm-ivory leading-tight">
+            <span className="relative block font-display text-sm font-semibold italic text-espresso leading-tight">
               {c}
             </span>
           </div>
         ))}
       </div>
-      <p className="mt-3 mb-0 text-xs text-warm-ivory/60">Don&apos;t see your plan? Call us and we&apos;ll verify.</p>
+      <p className="mt-3 mb-0 text-xs text-espresso/60">Don&apos;t see your plan? Call us and we&apos;ll verify.</p>
       <BookingCtaRow />
     </ExpandCard>
   );

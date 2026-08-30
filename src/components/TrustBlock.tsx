@@ -62,12 +62,14 @@ export function TrustBlock() {
          * shared "Book Appointment" CTA (see ExpandCard/BookingCtaRow in
          * InsuranceExpandCard.tsx).
          *
-         * Card styling (dark espresso surface, warm-ivory text,
-         * translucent terracotta-on-ivory icon badges) deliberately
-         * echoes Hero.tsx's dark panel rather than the light warm-ivory
-         * cards used elsewhere on the page — Akash asked for "a nicer
-         * feel like page 1" here specifically, and this section is the
-         * next thing a visitor sees right after that panel.
+         * Card styling went through a dark espresso-panel pass (echoing
+         * Hero.tsx) first, then back to a light warm-ivory surface after
+         * Akash flagged the dark cards and their icon badges as not
+         * reading as aesthetic — the light version keeps the same
+         * accordion mechanics but adds a solid terracotta icon badge, a
+         * soft shadow, and a barely-there sand-tinted corner wash instead
+         * of a flat border, so it reads as a raised card rather than a
+         * plain box (see the fuller comment on ExpandCard).
          *
          * All 3 rows share the same tap-to-expand `ExpandCard` shell —
          * "Same-day appointments" and "Same-day crowns" used to be plain
@@ -88,7 +90,7 @@ export function TrustBlock() {
               const Icon = differentiatorIcons[i];
               return (
                 <ExpandCard key={d.title} title={d.title} detail={d.detail} icon={<Icon />} image={d.image}>
-                  <p className="mb-0 text-sm text-warm-ivory/70">{d.expandedNote}</p>
+                  <p className="mb-0 text-sm text-espresso/70">{d.expandedNote}</p>
                   <BookingCtaRow />
                 </ExpandCard>
               );
