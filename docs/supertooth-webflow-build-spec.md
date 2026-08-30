@@ -130,6 +130,18 @@ Staged rollout via Webflow staging/preview before publishing live. Webflow versi
 
 ## Status: Next.js build (current — see `supertooth-platform-pivot.md`)
 
+**Homepage mobile-flow review added as item 27 — PR open, not yet merged:** Akash asked whether anything in the backlog checks the mobile homepage flow page-by-page, feature-by-feature. Audited: nothing did. Items 16/17/19 *add sections to* the homepage and item 14 is a sitewide accessibility audit, but no item tested the homepage as a continuous mobile journey — the gap that matters most, since Section 2 above makes the homepage the full conversion journey and the site is single-page-led. A page can pass every per-feature test and still fail as a sequence.
+
+Item 27 scores **42.0/50 — third-highest in the backlog**, P0, Wave 1, and unblocked. A ten-minute measurement of production at 375×812 (2026-08-30) seeded it with real findings rather than guesses:
+
+- **12.4 screenfuls** of scroll at 375×812 (trust block 2.8 screens, services 2.5).
+- **Five interactive elements below the locked 44px minimum, live in production**: `+ more` (40×16) and the hero address button (288×**16**) in `Hero.tsx`; both `Schedule this offer` links (146×**24**) in `NewPatientOffersBlock.tsx`; the phone link (102×**17**) in `BookingBlock.tsx`. The hero address button is the Google Maps link added in PR #36.
+- **In-content booking CTAs cluster at screens 0–2.1, then nothing until 8.7** — a 6.6-screen gap spanning testimonials, services and location.
+- **That gap is covered, and this was verified rather than assumed**: the fixed header genuinely persists, measured at `top: 0` with a 44px Schedule control at screen 5. Reporting the gap as a dead stretch would have been wrong.
+
+The five tap-target defects are the direct answer to why this item was needed: item 14 would eventually catch them, but item 14 is gated behind items 1–13, so they sit in production meanwhile. Item 27 is unblocked today.
+
+
 **Backlog scored, re-prioritized, referenced and made testable — PR open, not yet merged:** the backlog merged in PR #39 asserted its P0/P1/P2 bands from the research. This pass replaces assertion with a model, per Akash's ask.
 
 Every one of the 26 items now carries a **weighted 5-factor score** out of 50 — new-patient conversion (×3, the locked project goal), risk if skipped (×2.5, because healthcare failure modes are surprise bills and unsafe guidance), patient reach across the 12 researched scenarios (×2), cheapness (×1.5, a tiebreaker not a driver) and readiness (×1, so being blocked lowers sequence rather than importance). Bands are re-derived from the score (P0 ≥ 33, P1 ≥ 26), with two pin types that can only ever promote: `legal` for the non-negotiable items (2, 6, 7, 12, 13, 14) and `dependency` for pure enablers (item 5 alone).
