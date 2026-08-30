@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { CalendarIcon, PhoneIcon } from "./icons";
 import { contact, insuranceCarriers } from "@/lib/content";
 
@@ -134,6 +134,99 @@ export function BookingCtaRow() {
         <PhoneIcon />
         {contact.phone}
       </a>
+    </div>
+  );
+}
+
+/**
+ * Practice hours the same-day slot preview below treats as "open" days
+ * — mirrors `hours` in content.ts ("Tuesday – Friday" open,
+ * "Saturday – Monday" closed). Kept as a small local day-of-week set
+ * rather than parsing the display string in `hours`, but update this
+ * alongside `hours` if the real schedule ever changes.
+ */
+const CLOSED_WEEKDAYS = [0, 1, 6]; // Sun, Mon, Sat (JS Date#getDay())
+
+function buildOpenDays() {
+  const days: { key: string; label: string; sublabel: string }[] = [];
+  const today = new Date();
+  for (let offset = 0; offset < 10 && days.length < 4; offset++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + offset);
+    if (CLOSED_WEEKDAYS.includes(d.getDay())) continue;
+    days.push({
+      key: d.toDateString(),
+      label: offset === 0 ? "Today" : offset === 1 ? "Tomorrow" : d.toLocaleDateString("en-US", { weekday: "short" }),
+      sublabel: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    });
+  }
+  return days;
+}
+
+/**
+ * Preview of what an online same-day scheduler will feel like once the
+ * real Tab32 integration exists — Akash asked to show "the experience"
+ * (a scrollable day picker + a few open-looking time slots) rather than
+ * just a phone number. The day tabs are real (computed from today's
+ * date, skipping the actual days the practice is closed — see
+ * CLOSED_WEEKDAYS above), but the time slots themselves are NOT live
+ * data — there's no booking backend yet (see BookingBlock.tsx), so
+ * presenting specific times as real, tappable-and-it-books slots would
+ * be exactly the unverifiable-availability claim
+ * docs/supertooth-build-principles.md Section 8 rules out. Labeled
+ * "example openings" and deliberately not clickable/bookable — the
+ * actual action is `CallFirstCtaRow` directly below this, same as
+ * before. Swap the static `exampleTimes` for real Tab32 data once that
+ * integration exists, and this becomes the real thing rather than a
+ * preview.
+ */
+export function SameDaySlotPreview() {
+  const [days, setDays] = useState<ReturnType<typeof buildOpenDays>>([]);
+  const [selected, setSelected] = useState(0);
+
+  useEffect(() => {
+    setDays(buildOpenDays());
+  }, []);
+
+  if (days.length === 0) return null;
+
+  const exampleTimes = ["9:00 AM", "11:30 AM", "2:15 PM"];
+
+  return (
+    <div className="mb-3 rounded-xl border border-sand bg-sand/30 p-3">
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-espresso/50">
+        A look at typical same-day openings
+      </p>
+      <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1 snap-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {days.map((d, i) => (
+          <button
+            key={d.key}
+            type="button"
+            onClick={() => setSelected(i)}
+            aria-current={selected === i ? "true" : undefined}
+            className={`tap-target shrink-0 snap-start rounded-lg px-3 py-1.5 text-center transition-colors ${
+              selected === i ? "bg-terracotta text-warm-ivory" : "bg-warm-ivory text-espresso/70 border border-sand"
+            }`}
+          >
+            <span className="block text-[10px] font-semibold uppercase tracking-wide">{d.label}</span>
+            <span className="block text-xs">{d.sublabel}</span>
+          </button>
+        ))}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {exampleTimes.map((t) => (
+          <span
+            key={t}
+            className="rounded-full border border-sand bg-warm-ivory px-3 py-1.5 text-sm font-medium text-espresso/70"
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+      <p className="mt-2 mb-0 text-[11px] leading-snug text-espresso/45 italic">
+        Example openings, not live availability — call or request below and we&apos;ll confirm today&apos;s actual
+        times.
+      </p>
     </div>
   );
 }

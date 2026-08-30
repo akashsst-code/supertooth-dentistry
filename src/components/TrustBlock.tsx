@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { BadgeIcon } from "./icons";
-import { BookingCtaRow, CallFirstCtaRow, ExpandCard, InsuranceExpandCard } from "./InsuranceExpandCard";
+import { BookingCtaRow, CallFirstCtaRow, ExpandCard, InsuranceExpandCard, SameDaySlotPreview } from "./InsuranceExpandCard";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
 import { archana, credentials, differentiators, officeBlurb } from "@/lib/content";
@@ -69,10 +69,13 @@ export function TrustBlock() {
          * for, rather than repeating the same photo+note+CTA shape 3
          * times:
          *  - Same-day appointments: no photo (there's nothing useful to
-         *    photograph for "we have an opening today"); leads with
-         *    `CallFirstCtaRow` — a real same-day answer needs a real
-         *    person on the phone, not a web form, per the phone-first
-         *    same-day rule already locked in
+         *    photograph for "we have an opening today"). Shows
+         *    `SameDaySlotPreview` — a scrollable day picker + example
+         *    time pills previewing what online scheduling will feel
+         *    like — then `CallFirstCtaRow`, since the preview's times
+         *    aren't live data (no Tab32 integration yet) and a real
+         *    same-day answer still needs a real person on the phone, per
+         *    the phone-first same-day rule already locked in
          *    docs/supertooth-ux-flow.md.
          *  - Same-day crowns: keeps its photo — a before/after result is
          *    exactly the proof this specific claim needs — but framed
@@ -96,7 +99,8 @@ export function TrustBlock() {
               if (d.title === "Same-day appointments") {
                 return (
                   <ExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image}>
-                    <p className="mb-0 text-sm text-espresso/70">{d.expandedNote}</p>
+                    <p className="mb-3 text-sm text-espresso/70">{d.expandedNote}</p>
+                    <SameDaySlotPreview />
                     <CallFirstCtaRow />
                   </ExpandCard>
                 );
