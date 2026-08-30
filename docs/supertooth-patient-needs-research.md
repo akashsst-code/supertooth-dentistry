@@ -476,7 +476,9 @@ Existing components cover most of this. New components are marked ➕ — and th
 
 ## 19. P0 / P1 / P2 prioritized backlog
 
-The authoritative, structured version — with per-item scope, acceptance criteria, and dependencies — is `src/lib/backlog.ts`, rendered at **`/backlog`**. Summary:
+> **Superseded by the scoring pass (2026-08-30).** The bands below were the *first* cut, asserted from the research. Every item has since been scored against a weighted 5-factor model and the bands re-derived from that score — see **Section 19a**. The authoritative version is `src/lib/backlog.ts`, rendered at **`/backlog`**, and verified by `npx tsx scripts/check-backlog.ts`.
+
+Original summary, kept for the audit trail:
 
 **P0 — patient-ready foundation (items 1–14).** Fix the dead nav routes · verify-or-remove every unverifiable claim · resolve the phone/NAP conflict · LocalBusiness schema + robots + sitemap · extract a `PageShell` · `/insurance-new-patients` · `/emergency` · arrival & transit detail · form confirmation and error states · `/about` · `/services` minimum · privacy & accessibility pages · real testimonials · WCAG 2.2 AA and mobile QA pass.
 
@@ -485,6 +487,64 @@ The authoritative, structured version — with per-item scope, acceptance criter
 **P2 — differentiation and optimization (4 items).** Language support signal and key-page translation · pre-visit digital forms · neighborhood content · analytics dashboard beyond baseline instrumentation.
 
 **Explicitly deferred, with reasons.** Symptom checker (clinical risk, no supporting evidence). Cost calculator (can't be accurate without plan data; inaccuracy is worse than silence). Patient portal (operational maturity Tab32 should own). Chatbot (adds a channel before the existing ones work). Personalization (locked principle: not before basic content and navigation work). Live "open now" status (a static hours list is the accepted lower-cost v1 per `supertooth-navigation-requirements.md`).
+
+---
+
+## 19a. Scoring model and re-prioritization
+
+Section 19's bands were argued from the research but ultimately asserted. This section replaces assertion with a model.
+
+### The model
+
+Each item scores 1–5 on five factors, weighted and summed out of 50. The weights encode *this* project's situation, not a generic template:
+
+| Factor | Weight | What it measures | Why this weight |
+|---|---|---|---|
+| New-patient conversion | **×3.0** | How directly it moves someone from evaluating to booked | The locked goal is 10–15 → 52–69 new patients/month. This is the point of the site. |
+| Risk if skipped | **×2.5** | Legal, clinical, HIPAA, accessibility, trust harm | Healthcare. The failure modes are surprise medical bills, HIPAA exposure and unsafe urgent guidance — not a missed quarter. |
+| Patient reach | **×2.0** | How many of the 12 scenarios in Section 3 it serves | Items helping everyone should beat items helping one segment. |
+| Cheapness | **×1.5** | Inverted effort (5 = Small, 1 = Large) | A tiebreaker. Cheap should win ties, not outrank importance. |
+| Ready to start | **×1.0** | 5 = startable today, 1 = fully blocked | Lightest on purpose: being blocked lowers the *sequence*, not the *importance*. |
+
+**Bands:** P0 ≥ 33, P1 ≥ 26, P2 below. Thresholds come from the actual distribution — there are natural gaps at ~33 and ~26 — not from round numbers.
+
+**Two pin types can promote an item to P0 regardless of score. Nothing can demote.**
+- `legal` — legally or ethically non-negotiable (items 2, 6, 7, 12, 13, 14).
+- `dependency` — a pure enabler that P0 items need (item 5 only).
+
+### What moved, and why
+
+| # | Item | Score | Was | Now | Why |
+|---|---|---|---|---|---|
+| 16 | Dental anxiety content | **35.5** | P1 | **P0** | Best-evidenced patient need in the research, Small, effectively unblocked. Outscored five items already sitting in P0. |
+| 20 | Cost and financing explainer | **34.0** | P1 | **P0** | The publishable part — the process and the timing — needs no price verification at all. |
+| 11 | `/services` minimum | **29.5** | P0 | **P1** | The urgent part (a 404 nav link) is fully handled by item 1. What remains is ordinary content work with no compliance risk. |
+| 18 | Per-service pages | **22.0** | P1 | **P2** | Large, no compliance risk, depends on an item that is itself now P1. The AEO goal is already partly met by the homepage FAQ. |
+| 22 | Aftercare and records | **21.5** | P1 | **P2** | Serves existing patients rather than the new-patient goal driving this project. |
+
+**Result: 15 P0 / 5 P1 / 6 P2** (was 14 / 8 / 4).
+
+### Two results worth arguing about
+
+**Online booking (item 15) scores 32.5 and stays P1** — despite scoring the maximum on both conversion and reach. Large effort and being fully blocked on Tab32 pull it under the line. This is the model working as designed: it is the biggest prize in the backlog *and* it cannot start today. The moment Tab32 is unblocked, `readiness` goes 1 → 4 and it moves to P0 at 35.5. If Akash disagrees with anything in this pass, this is the item to disagree about.
+
+**PageShell (item 5) scores 22** — genuinely low value on its own, which is honest. It is pinned only because five P0 items depend on it. Recording that as a pin rather than inflating its score keeps the model trustworthy.
+
+### Per-item additions
+
+Every item now also carries:
+- **2–3 references** — real examples of what good looks like, each with a link, what is specifically good about it, and what to copy versus deliberately avoid. 60 references total, deepest on P0. Sources span dental practices, health systems, government design systems (GOV.UK, NHS), standards bodies (W3C, Schema.org) and regulators (ADA, HHS, CMS, ICO).
+- **An agent-executable test scenario** — preconditions, numbered steps each tagged with the tool to use (`browser` / `shell` / `validator` / `manual`) and its expected result, explicit pass criteria, and gotchas that would otherwise produce false passes. Written so an LLM with browser and shell tools can run it unattended and loop until green.
+
+### Guarding the model
+
+`priority` is hand-written but must equal `bandFor(scores, pin)`. Nothing enforces that at the type level, so `scripts/check-backlog.ts` re-derives every band and fails on drift. It also enforces structural invariants: unique ids, scores in range, effort consistent with the cheapness score, a rationale on every moved or pinned item, ≥2 references and ≥2 test steps and ≥2 pass criteria per item, and no test step with an empty expected result.
+
+```bash
+npx tsx scripts/check-backlog.ts
+```
+
+It caught six genuinely thin entries on first run — four test steps with non-assertions like "Passes." and two items with a single acceptance criterion — all since fixed.
 
 ---
 
