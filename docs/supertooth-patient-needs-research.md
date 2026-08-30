@@ -476,7 +476,9 @@ Existing components cover most of this. New components are marked ➕ — and th
 
 ## 19. P0 / P1 / P2 prioritized backlog
 
-The authoritative, structured version — with per-item scope, acceptance criteria, and dependencies — is `src/lib/backlog.ts`, rendered at **`/backlog`**. Summary:
+> **Superseded by the scoring pass (2026-08-30).** The bands below were the *first* cut, asserted from the research. Every item has since been scored against a weighted 5-factor model and the bands re-derived from that score — see **Section 19a**. The authoritative version is `src/lib/backlog.ts`, rendered at **`/backlog`**, and verified by `npx tsx scripts/check-backlog.ts`.
+
+Original summary, kept for the audit trail:
 
 **P0 — patient-ready foundation (items 1–14).** Fix the dead nav routes · verify-or-remove every unverifiable claim · resolve the phone/NAP conflict · LocalBusiness schema + robots + sitemap · extract a `PageShell` · `/insurance-new-patients` · `/emergency` · arrival & transit detail · form confirmation and error states · `/about` · `/services` minimum · privacy & accessibility pages · real testimonials · WCAG 2.2 AA and mobile QA pass.
 
@@ -485,6 +487,100 @@ The authoritative, structured version — with per-item scope, acceptance criter
 **P2 — differentiation and optimization (4 items).** Language support signal and key-page translation · pre-visit digital forms · neighborhood content · analytics dashboard beyond baseline instrumentation.
 
 **Explicitly deferred, with reasons.** Symptom checker (clinical risk, no supporting evidence). Cost calculator (can't be accurate without plan data; inaccuracy is worse than silence). Patient portal (operational maturity Tab32 should own). Chatbot (adds a channel before the existing ones work). Personalization (locked principle: not before basic content and navigation work). Live "open now" status (a static hours list is the accepted lower-cost v1 per `supertooth-navigation-requirements.md`).
+
+---
+
+## 19a. Scoring model and re-prioritization
+
+Section 19's bands were argued from the research but ultimately asserted. This section replaces assertion with a model.
+
+### The model
+
+Each item scores 1–5 on five factors, weighted and summed out of 50. The weights encode *this* project's situation, not a generic template:
+
+| Factor | Weight | What it measures | Why this weight |
+|---|---|---|---|
+| New-patient conversion | **×3.0** | How directly it moves someone from evaluating to booked | The locked goal is 10–15 → 52–69 new patients/month. This is the point of the site. |
+| Risk if skipped | **×2.5** | Legal, clinical, HIPAA, accessibility, trust harm | Healthcare. The failure modes are surprise medical bills, HIPAA exposure and unsafe urgent guidance — not a missed quarter. |
+| Patient reach | **×2.0** | How many of the 12 scenarios in Section 3 it serves | Items helping everyone should beat items helping one segment. |
+| Cheapness | **×1.5** | Inverted effort (5 = Small, 1 = Large) | A tiebreaker. Cheap should win ties, not outrank importance. |
+| Ready to start | **×1.0** | 5 = startable today, 1 = fully blocked | Lightest on purpose: being blocked lowers the *sequence*, not the *importance*. |
+
+**Bands:** P0 ≥ 33, P1 ≥ 26, P2 below. Thresholds come from the actual distribution — there are natural gaps at ~33 and ~26 — not from round numbers.
+
+**Two pin types can promote an item to P0 regardless of score. Nothing can demote.**
+- `legal` — legally or ethically non-negotiable (items 2, 6, 7, 12, 13, 14).
+- `dependency` — a pure enabler that P0 items need (item 5 only).
+
+### What moved, and why
+
+| # | Item | Score | Was | Now | Why |
+|---|---|---|---|---|---|
+| 16 | Dental anxiety content | **35.5** | P1 | **P0** | Best-evidenced patient need in the research, Small, effectively unblocked. Outscored five items already sitting in P0. |
+| 20 | Cost and financing explainer | **34.0** | P1 | **P0** | The publishable part — the process and the timing — needs no price verification at all. |
+| 11 | `/services` minimum | **29.5** | P0 | **P1** | The urgent part (a 404 nav link) is fully handled by item 1. What remains is ordinary content work with no compliance risk. |
+| 18 | Per-service pages | **22.0** | P1 | **P2** | Large, no compliance risk, depends on an item that is itself now P1. The AEO goal is already partly met by the homepage FAQ. |
+| 22 | Aftercare and records | **21.5** | P1 | **P2** | Serves existing patients rather than the new-patient goal driving this project. |
+
+**Result: 15 P0 / 5 P1 / 6 P2** (was 14 / 8 / 4).
+
+### Two results worth arguing about
+
+**Online booking (item 15) scores 32.5 and stays P1** — despite scoring the maximum on both conversion and reach. Large effort and being fully blocked on Tab32 pull it under the line. This is the model working as designed: it is the biggest prize in the backlog *and* it cannot start today. The moment Tab32 is unblocked, `readiness` goes 1 → 4 and it moves to P0 at 35.5. If Akash disagrees with anything in this pass, this is the item to disagree about.
+
+**PageShell (item 5) scores 22** — genuinely low value on its own, which is honest. It is pinned only because five P0 items depend on it. Recording that as a pin rather than inflating its score keeps the model trustworthy.
+
+### Per-item additions
+
+Every item now also carries:
+- **2–3 references** — real examples of what good looks like, each with a link, what is specifically good about it, what to copy versus deliberately avoid, and **what it does on a small screen**. 60 references total, deepest on P0. Sources span dental practices, health systems, government design systems (GOV.UK, NHS), standards bodies (W3C, Schema.org) and regulators (ADA, HHS, CMS, ICO).
+- **An agent-executable, mobile-first test scenario** — preconditions, numbered steps each tagged with the tool to use (`browser` / `shell` / `validator` / `manual`) and the viewport it runs at, explicit pass criteria, a mobile gate, and gotchas that would otherwise produce false passes. Written so an LLM with browser and shell tools can run it unattended and loop until green.
+
+---
+
+## 19b. Mobile-first correction
+
+Section 19a's first pass was written desktop-first without noticing. An audit on 2026-08-30 measured it:
+
+| Measure | Before | After |
+|---|---|---|
+| Test steps mentioning mobile at all | **9 of 129** | — |
+| Rendering steps at 375px | — | **101 of 148** |
+| Rendering steps at 1280px | — | 18 |
+| Items with zero mobile-aware steps | **13 of 26** (incl. 5 P0s) | **0** |
+| References considering mobile | **3 of 26 items** | **60 of 60 references** |
+
+That is desktop-first work with mobile bolted on, on a project whose own build principles require the mobile experience to be complete rather than a reduced desktop version. The fix is structural, not cosmetic.
+
+**Mobile is now the default, by construction.** A test step with no viewport tag runs at **375×812**. Desktop is a confirmation pass tagged explicitly, and it only runs after mobile passes. `any` marks steps with no rendered surface at all (schema parsing, provenance sign-off).
+
+**Every item carries a mobile gate** — criteria that must hold at 375px *before any desktop check counts*. If mobile fails, the item fails; a desktop pass cannot rescue it. 98 gate criteria across 26 items.
+
+**Every reference carries a mobile assessment.** This is where the audit was most useful, because several references are genuinely good on desktop and poor on a phone — and saying so is more valuable than the original praise:
+
+- **MedStar's wayfinding** — the content model is right, but their floorplan PDFs and wide diagrams are near-unusable on a phone, which is exactly where arrival instructions get read. Copy the model, reject the delivery.
+- **Humana's plain-language policy** — excellent register, but at 375px the length buries the key distinction below the fold. Take the register, reject the length.
+- **CMS price transparency** — the machine-readable files it produced are technically transparent and practically unusable on a phone. Transparency a patient can't read at 375px isn't transparency.
+- **Bedford Dentistry's triage guide** — the tiering is the thing that works on mobile; their long intro paragraph is what pushes Tier 1 below the fold.
+
+**The guard now enforces all of it.** `scripts/check-backlog.ts` fails if any item lacks a mobile gate, if any reference lacks a substantive mobile note, if an item with a rendered surface has no 375px step, if desktop steps outnumber mobile ones, or if the first viewport-bound step isn't mobile. Desktop-first work can no longer pass the check regardless of what the prose claims.
+
+**Findings this surfaced that would otherwise have been missed**, now written into the relevant items:
+- **Item 7 (emergency)** — a three-column tier layout puts everything above the fold at 1280px and pushes Tier 1 detail below it at 375px. A red flag below the fold on a phone is a patient-safety failure, and desktop-first testing would never have caught it.
+- **Item 14 (WCAG)** — WCAG 2.2's genuinely new criteria are mostly touch concerns: Target Size, Dragging Movements, Focus Not Obscured. Our two carousels drag and our nav is a fixed overlay, so 2.2 is precisely where our mobile risk sits. Running axe only at desktop width is a false pass.
+- **Item 15 (booking)** — a calendar grid at mobile width produces sub-30px targets. It's the single most common place a booking flow breaks on a phone.
+- **Item 9 (forms)** — a resized desktop window does not reproduce the on-screen keyboard, so keyboard-obscuring bugs need a real device.
+- **Item 5 (PageShell)** — the fixed-nav overlap bug is invisible on a tall desktop viewport and eats most of the screen at 375×812.
+
+### Guarding the model
+
+`priority` is hand-written but must equal `bandFor(scores, pin)`. Nothing enforces that at the type level, so `scripts/check-backlog.ts` re-derives every band and fails on drift. It also enforces structural invariants: unique ids, scores in range, effort consistent with the cheapness score, a rationale on every moved or pinned item, ≥2 references and ≥2 test steps and ≥2 pass criteria per item, and no test step with an empty expected result.
+
+```bash
+npx tsx scripts/check-backlog.ts
+```
+
+It caught six genuinely thin entries on first run — four test steps with non-assertions like "Passes." and two items with a single acceptance criterion — all since fixed.
 
 ---
 
