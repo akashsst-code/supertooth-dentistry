@@ -52,11 +52,11 @@ import { CalendarIcon, CheckIcon, GoogleGIcon, MapPinIcon, StarIcon } from "./ic
  * headline right above, a third mention here was pure repetition) to
  * make room without losing meaning.
  *
- * Address line shows contact.address as plain text, not a link —
- * Akash confirmed the real address and asked for it shown bare
- * (state omitted; neighborhood/city are already established via nav
- * + headline, so the street address alone is the bare minimum that
- * adds new information here), not as a tappable/underlined map link.
+ * Address line: previously shown as plain text on Akash's explicit
+ * call (state omitted; neighborhood/city already established via nav
+ * + headline). Reversed per Akash's follow-up annotation — now links
+ * out to Google Maps so a visitor can see the office location, opened
+ * in a new tab so the hero isn't navigated away from.
  */
 export function Hero() {
   return (
@@ -120,7 +120,14 @@ export function Hero() {
           </span>
           <span className="inline-flex items-center gap-1.5">
             <MapPinIcon className="shrink-0 text-terracotta" />
-            {contact.address}
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.address)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-warm-ivory transition-colors"
+            >
+              {contact.address}
+            </a>
           </span>
         </div>
 
