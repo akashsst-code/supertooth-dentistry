@@ -106,9 +106,23 @@ export function Hero() {
        * as the scrim above — keeps the CTA row flush with the true
        * viewport edge despite the taller container; inert on desktop
        * (md:static ignores `bottom` entirely).
+       *
+       * pb-[calc(3.5rem+env(safe-area-inset-bottom))] (found 2026-08-29,
+       * real device report): the CTA row was getting hidden behind an
+       * in-app browser's own bottom toolbar — that toolbar overlays the
+       * page instead of shrinking the viewport around it, and isn't part
+       * of iOS's safe-area system (env(safe-area-inset-bottom) alone only
+       * covers the home-indicator on notched devices, which layout.tsx's
+       * viewportFit: "cover" is what makes that env() value non-zero at
+       * all). No API reports a third-party in-app browser's own chrome
+       * height, so the fix is a deliberately generous fixed floor (56px,
+       * more than double the original pb-6) sized to comfortably clear
+       * typical in-app toolbars, with the real safe-area inset stacked on
+       * top for notched devices. md:py-16 still overrides this on
+       * desktop, same as pb-6 did before.
        */}
       <div
-        className="absolute inset-x-0 flex flex-col justify-end px-6 pb-6 pt-24 sm:px-8 md:static md:w-2/5 md:flex-none md:bg-espresso md:justify-center md:px-10 md:py-16 text-warm-ivory"
+        className="absolute inset-x-0 flex flex-col justify-end px-6 pb-[calc(3.5rem+env(safe-area-inset-bottom))] pt-24 sm:px-8 md:static md:w-2/5 md:flex-none md:bg-espresso md:justify-center md:px-10 md:py-16 text-warm-ivory"
         style={{ bottom: HERO_OVERSHOOT_PX }}
       >
         <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70 mb-2">
