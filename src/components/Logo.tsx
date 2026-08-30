@@ -29,6 +29,12 @@ import toothMark from "../../public/logo/tooth-mark-bold.png";
  * warm-ivory — trading the sparkle's terracotta color for legibility
  * while floating. Reverts to the normal colored mark the moment Nav
  * goes solid.
+ *
+ * A drop-shadow (image) / text-shadow (wordmark) rides along with
+ * `mono` rather than a background panel behind the whole lockup — Nav
+ * tried a scrim panel here first and Akash flagged it as a stark band
+ * sitting on the photo instead of merging into it. Per-glyph shadows
+ * let the photo itself stay fully visible right up to the mark's edges.
  */
 export function Logo({ mono = false }: { mono?: boolean }) {
   return (
@@ -38,18 +44,18 @@ export function Logo({ mono = false }: { mono?: boolean }) {
         alt=""
         width={32}
         height={33}
-        className={`h-8 w-auto transition-[filter] duration-300 ${mono ? "brightness-0 invert" : ""}`}
+        className={`h-8 w-auto transition-[filter] duration-300 ${mono ? "brightness-0 invert drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)]" : ""}`}
         priority
         aria-hidden="true"
       />
       <span className="flex flex-col leading-tight" aria-hidden="true">
         <span
-          className={`font-display text-xl font-normal transition-colors duration-300 ${mono ? "text-warm-ivory" : "text-espresso"}`}
+          className={`font-display text-xl font-normal transition-colors duration-300 ${mono ? "text-warm-ivory text-shadow-photo" : "text-espresso"}`}
         >
           Supertooth
         </span>
         <span
-          className={`text-[10px] font-medium tracking-widest uppercase transition-colors duration-300 ${mono ? "text-warm-ivory/70" : "text-espresso/60"}`}
+          className={`text-[10px] font-medium tracking-widest uppercase transition-colors duration-300 ${mono ? "text-warm-ivory/70 text-shadow-photo" : "text-espresso/60"}`}
         >
           Dentistry
         </span>

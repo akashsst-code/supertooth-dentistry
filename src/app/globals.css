@@ -83,20 +83,28 @@ p {
 
 /* ============================================================
  * PHOTO-TEXT SCRIM — the site's "color bleed" pattern: a full-bleed
- * photo doubling as a section's background, with text (or a fixed nav
- * bar) sitting directly on top of it instead of in its own solid-color
- * block. First used in Hero.tsx's mobile layout (2026-08-29 declutter
- * pass); `-top` added the same day for Nav.tsx's floating-over-hero
- * header. Reuse these classes anywhere else the pattern applies rather
- * than re-deriving the gradient per use. Full spec — when to use this
- * pattern, the photo-focal-point requirement, contrast rule — lives in
- * docs/supertooth-ux-flow.md, "Photo Overlay Pattern — Locked".
+ * photo doubling as a section's background, with text sitting directly
+ * on top of it instead of in its own solid-color block. First used
+ * (and, as of 2026-08-29, still only used) in Hero.tsx's mobile
+ * layout — a dense text block (headline/subhead/trust-strip/CTAs) needs
+ * a real background behind it to stay legible, not just per-element
+ * shadows. Full spec — when to use this pattern, the photo-focal-point
+ * requirement, contrast rule — lives in docs/supertooth-ux-flow.md,
+ * "Photo Overlay Pattern — Locked".
  *
  * Single source of truth for the recipe: solid Espresso at the anchored
  * edge, fading to fully transparent, so the real photo shows through
  * everywhere text doesn't need to sit. Built from the locked --color-
  * espresso token (see the LOCKED DESIGN TOKENS block above), not a new
  * color — this pattern reuses the palette, it doesn't extend it.
+ *
+ * Nav.tsx tried a `-top` variant of this same recipe for its
+ * floating-over-hero header and dropped it 2026-08-29 — a handful of
+ * short, sparse elements (a small logo, two icon buttons) don't need a
+ * background panel to stay legible, and Akash flagged that panel as
+ * reading like a stark band sitting on the photo rather than merging
+ * into it. See Logo.tsx and the icon-shadow class below for what Nav
+ * uses instead: a per-element drop-shadow, not a shared backdrop.
  */
 .photo-text-scrim {
   pointer-events: none;
@@ -108,12 +116,20 @@ p {
     transparent 100%
   );
 }
-.photo-text-scrim-top {
-  pointer-events: none;
-  background-image: linear-gradient(
-    to bottom,
-    var(--color-espresso) 0%,
-    color-mix(in srgb, var(--color-espresso) 55%, transparent) 55%,
-    transparent 100%
-  );
+
+/* ============================================================
+ * TEXT SHADOW — for the handful of light-on-photo text elements that
+ * don't warrant a background panel of their own (Nav's floating logo
+ * wordmark, link text — see Nav.tsx/Logo.tsx). A shadow lets the photo
+ * show through completely undimmed everywhere except directly behind
+ * each glyph, instead of a rectangular scrim block. SVG icon buttons
+ * and the logo mark use Tailwind's own `drop-shadow-[...]` utility
+ * directly in each component instead of a class here — Tailwind's
+ * filter utilities compose into one `filter` value via CSS variables
+ * (so `drop-shadow-[...]` stacks correctly with the logo's `brightness-0
+ * invert`), which a hand-written `filter` rule in this file would just
+ * overwrite rather than combine with.
+ */
+.text-shadow-photo {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 1px 8px rgba(0, 0, 0, 0.35);
 }

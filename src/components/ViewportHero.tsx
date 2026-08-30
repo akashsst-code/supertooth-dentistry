@@ -8,6 +8,21 @@ import { useEffect, useState } from "react";
 export const NAV_HEIGHT_PX = 64;
 
 /**
+ * Extra height beyond the true viewport, added 2026-08-29 (single-bleed
+ * pass) so Hero always fully covers the visible screen at first paint —
+ * even a few pixels of the height math below coming in short (viewport-
+ * height quirks are the whole reason this file exists, see the next
+ * comment) used to show as a sliver of TrustBlock's white/Sand
+ * background peeking in beneath the CTA row, breaking the "full photo
+ * bleed" first impression Akash asked for. Hero.tsx's scrim and text
+ * overlay both offset by this same amount (`bottom: HERO_OVERSHOOT_PX`
+ * instead of `bottom: 0`) so the CTA row still lands exactly at the true
+ * viewport edge, same as before — only the photo extends the extra
+ * amount, invisible until the reader scrolls.
+ */
+export const HERO_OVERSHOOT_PX = 32;
+
+/**
  * Hero fills exactly one screen's height on mobile, below the fixed
  * nav (see the previous comment in page.tsx, now here) via the
  * h-[calc(100svh-4rem)] class below. That CSS unit alone isn't enough
@@ -50,7 +65,7 @@ export function ViewportHero({ children }: { children: React.ReactNode }) {
         return;
       }
       const viewport = window.visualViewport?.height ?? window.innerHeight;
-      setMobileHeight(viewport - NAV_HEIGHT_PX);
+      setMobileHeight(viewport - NAV_HEIGHT_PX + HERO_OVERSHOOT_PX);
     };
     sync();
     window.addEventListener("resize", sync);
@@ -62,9 +77,12 @@ export function ViewportHero({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
+    // The `+2rem` in this fallback calc is HERO_OVERSHOOT_PX (32px) —
+    // keep the two in sync, same as `4rem` above already has to match
+    // NAV_HEIGHT_PX.
     <div
       id="hero-wrapper"
-      className="mt-16 flex flex-col h-[calc(100svh-4rem)] md:h-auto md:block"
+      className="mt-16 flex flex-col h-[calc(100svh-4rem+2rem)] md:h-auto md:block"
       style={mobileHeight ? { height: mobileHeight } : undefined}
     >
       {children}

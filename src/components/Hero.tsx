@@ -3,6 +3,7 @@ import { contact, practice, reviews } from "@/lib/content";
 import { HeroCarousel } from "./HeroCarousel";
 import { InsuranceTeaser } from "./InsuranceTeaser";
 import { CalendarIcon, CheckIcon, GoogleGIcon, StarIcon } from "./icons";
+import { HERO_OVERSHOOT_PX } from "./ViewportHero";
 
 /**
  * Hero — split video/text layout, adapted from smilemakersfortworth.com's
@@ -85,16 +86,31 @@ export function Hero() {
        * block below at WCAG AA contrast against whichever rotating
        * team/office photo happens to be showing, not just Dr.
        * Archana's — build-principles.md Section 4 accessibility
-       * requirement, not just a style preference.
+       * requirement, not just a style preference. `bottom: HERO_OVERSHOOT_PX`
+       * instead of the container's true bottom-0 — this container is now
+       * HERO_OVERSHOOT_PX taller than the viewport (see ViewportHero.tsx),
+       * so anchoring to its real bottom edge would push the scrim (and
+       * the text below) that same amount below the visible fold.
        */}
-      <div className="photo-text-scrim md:hidden absolute inset-x-0 bottom-0 h-4/5" aria-hidden="true" />
+      <div
+        className="photo-text-scrim md:hidden absolute inset-x-0 h-4/5"
+        style={{ bottom: HERO_OVERSHOOT_PX }}
+        aria-hidden="true"
+      />
 
       {/*
        * Text content — overlaid at the bottom of the photo on mobile
        * (absolute + justify-end), reverts to the original solid-espresso
        * side panel on desktop (md:static md:bg-espresso md:justify-center).
+       * Bottom offset by HERO_OVERSHOOT_PX on mobile for the same reason
+       * as the scrim above — keeps the CTA row flush with the true
+       * viewport edge despite the taller container; inert on desktop
+       * (md:static ignores `bottom` entirely).
        */}
-      <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end px-6 pb-6 pt-24 sm:px-8 md:static md:w-2/5 md:flex-none md:bg-espresso md:justify-center md:px-10 md:py-16 text-warm-ivory">
+      <div
+        className="absolute inset-x-0 flex flex-col justify-end px-6 pb-6 pt-24 sm:px-8 md:static md:w-2/5 md:flex-none md:bg-espresso md:justify-center md:px-10 md:py-16 text-warm-ivory"
+        style={{ bottom: HERO_OVERSHOOT_PX }}
+      >
         <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70 mb-2">
           Accepting new patients
         </span>

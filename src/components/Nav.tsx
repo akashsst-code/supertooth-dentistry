@@ -37,9 +37,16 @@ import { contact, hours, nav } from "@/lib/content";
  *
  * `floating` (added 2026-08-29, single-bleed pass): while Hero's
  * full-bleed photo is still substantially visible, the header goes
- * fully transparent (plus its own top scrim + mono Logo, both below)
- * instead of a solid white bar sitting on top of the photo — Akash's
- * "make it one clean bleed, not white/photo/white stacked bands" call.
+ * fully transparent (plus mono Logo and drop-shadowed icons/links,
+ * both below) instead of a solid white bar sitting on top of the photo
+ * — Akash's "make it one clean bleed, not white/photo/white stacked
+ * bands" call. An earlier version of this also rendered a dark top-scrim
+ * panel behind the header (same recipe as Hero's own text scrim) for
+ * guaranteed contrast — dropped per Akash's follow-up that it read as a
+ * stark band sitting on the photo rather than merging into it. Per-
+ * element drop-shadow/text-shadow (see Logo.tsx, iconButtonColor below)
+ * replaces it: the photo now shows completely undimmed everywhere
+ * except right behind each glyph.
  *
  * Two earlier approaches were tried and replaced:
  * 1. An IntersectionObserver against a sentinel placed exactly at
@@ -86,10 +93,10 @@ export function Nav() {
   }, []);
 
   const linkColor = floating
-    ? "text-warm-ivory hover:text-warm-ivory/70"
+    ? "text-warm-ivory hover:text-warm-ivory/70 text-shadow-photo"
     : "text-espresso hover:text-terracotta";
   const iconButtonColor = floating
-    ? "border-warm-ivory/40 text-warm-ivory"
+    ? "border-warm-ivory/40 text-warm-ivory drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)]"
     : "border-espresso/20 text-espresso";
 
   return (
@@ -99,15 +106,7 @@ export function Nav() {
           floating ? "bg-transparent" : "bg-warm-ivory/95 backdrop-blur border-b border-sand"
         }`}
       >
-        {/* Nav's own top scrim — only needed (rendered) while floating over
-            the photo; once solid, the header's own opaque background
-            covers this same space, so leaving it mounted would just be a
-            lingering dark band under later sections as the page scrolls. */}
-        {floating && (
-          <div className="photo-text-scrim-top absolute inset-x-0 top-0 h-56" aria-hidden="true" />
-        )}
-
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
           <Logo mono={floating} />
 
           {/* Desktop nav */}
