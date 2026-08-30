@@ -146,6 +146,24 @@ export function Nav() {
             >
               <PhoneIcon /> {contact.phone}
             </a>
+
+            {/* Internal working links — deliberately NOT in the `nav` array
+                in content.ts. That array is the patient-facing wayfinding
+                surface locked in docs/supertooth-navigation-requirements.md,
+                and it also feeds the desktop nav; putting /backlog there
+                would surface an internal artifact in the patient journey.
+                Kept here instead: one tap from the hamburger for Akash,
+                visually separated and de-emphasized, below the two patient
+                CTAs so it never competes with them. The page itself is
+                noindex (see src/app/backlog/page.tsx). */}
+            <Link
+              href="/backlog"
+              onClick={() => setOpen(false)}
+              className="tap-target inline-flex items-center justify-center gap-1.5 text-xs font-medium text-espresso/45 hover:text-terracotta transition-colors"
+            >
+              Backlog
+              <span className="text-espresso/30">· internal</span>
+            </Link>
           </div>
         </div>
       )}
