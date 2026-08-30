@@ -1,97 +1,65 @@
-"use client";
-
-import { useEffect, useState } from "react";
-
 /** Nav's rendered height (h-16 in Nav.tsx) — Nav is `fixed`, so this
  * wrapper has to reserve that space itself rather than sharing flex
  * space with it directly. Keep in sync with Nav.tsx's header height. */
 export const NAV_HEIGHT_PX = 64;
 
 /**
- * Extra height beyond the true viewport, added 2026-08-29 (single-bleed
- * pass) so Hero always fully covers the visible screen at first paint —
- * even a few pixels of the height math below coming in short (viewport-
- * height quirks are the whole reason this file exists, see the next
- * comment) used to show as a sliver of TrustBlock's white/Sand
- * background peeking in beneath the CTA row, breaking the "full photo
- * bleed" first impression Akash asked for. Hero.tsx's scrim and text
- * overlay both offset by this same amount (`bottom: HERO_OVERSHOOT_PX`
- * instead of `bottom: 0`) so the CTA row still lands exactly at the true
- * viewport edge, same as before — only the photo extends the extra
- * amount, invisible until the reader scrolls.
+ * Small safety margin beyond the viewport, so Hero's photo always fully
+ * covers the visible screen at first paint even if `dvh` (below) is off
+ * by a pixel or two on some device. Hero.tsx's scrim and text overlay
+ * both offset by this same amount (`bottom: HERO_OVERSHOOT_PX` instead
+ * of `bottom: 0`) so the CTA row still lands exactly at the true
+ * viewport edge — only the photo extends the extra amount, invisible
+ * until the reader scrolls.
  */
-export const HERO_OVERSHOOT_PX = 32;
+export const HERO_OVERSHOOT_PX = 16;
 
 /**
- * Hero fills exactly one screen's height on mobile, below the fixed
- * nav (see the previous comment in page.tsx, now here) via the
- * h-[calc(100svh-4rem)] class below. That CSS unit alone isn't enough
- * in practice: in-app browsers (WhatsApp, Instagram, Messenger — a
- * common way a shared link like this actually gets opened) often don't
- * support svh/dvh at all. When that happens the height rule is
- * silently dropped rather than falling back to something reasonable,
- * so Hero shrinks to its own natural content height instead of the
- * real screen — visible as a strip of the next section peeking in
- * below the CTA row.
+ * Hero fills the visible screen's height on mobile, below the fixed
+ * nav, via `100dvh` ("dynamic viewport height" — CSS's own live-
+ * updating answer to "how tall is the screen right now," tracking a
+ * mobile browser's address bar/toolbar as it shows or hides). This file
+ * used to compute that height in JS instead (reading
+ * `visualViewport.height` on mount and on resize), because `dvh` used
+ * to have patchy support and because in-app browsers (WhatsApp,
+ * Instagram) sometimes don't report viewport size the way regular
+ * mobile Safari/Chrome do.
  *
- * window.innerHeight (or visualViewport.height where available) is old
- * enough to be reliably supported everywhere, including those in-app
- * WebViews, so it's used here as the authoritative source once
- * mounted. The h-[calc(100svh-4rem)] class stays as the
- * pre-hydration/no-JS fallback for capable browsers, so there's no
- * flash of wrong height before this effect runs.
+ * Dropped that JS approach 2026-08-29 after it caused three separate
+ * real-device bugs across two features (Nav's now-reverted floating
+ * state, and this file's own height calc) — all timing/race issues
+ * around exactly when the JS override lands relative to first paint,
+ * none reproducible in this repo's testing tooling. `dvh` sidesteps the
+ * whole category: it's the browser's own value, always current, no
+ * JS/timing/race involved. Modern support (Safari 15.4+, Chrome 108+)
+ * covers effectively all real traffic this site gets.
  *
- * Desktop (md:+) is untouched — the inline height is only ever set
- * below the md breakpoint; at md and up this renders exactly as if
- * the wrapper were a plain div with the original classes. mt-16
- * applies at every width though, since Nav is fixed/out of flow at
- * every width and this wrapper always needs to clear it.
+ * `min-h-[calc(100vh-4rem)]` stays as the pure-CSS fallback floor for
+ * the rare case `dvh` itself isn't supported — if that happens the
+ * whole `h-[calc(100dvh...)]` declaration is dropped by the CSS spec
+ * (invalid values don't partially apply), and this min-height is what
+ * stops the wrapper from collapsing to near-zero height in that case.
+ * Has to subtract NAV_HEIGHT_PX itself, same as the main height calc —
+ * a bare `min-h-screen` (100vh, no subtraction) was tried first and was
+ * a real bug, not just an odd-looking fallback: CSS `min-height` wins
+ * whenever it's larger than the computed `height`, and 100vh is *always*
+ * larger than `100dvh - 4rem`, so that version silently overrode the
+ * correct nav-aware height on every normal render, not just the rare
+ * dvh-unsupported case it was meant for — pushing Hero, and the CTA row
+ * pinned to its bottom, exactly NAV_HEIGHT_PX too far down on every
+ * single load. Caught by a real device report of the "Book Appointment"
+ * button running off the bottom of the screen.
  *
- * min-h-screen (found 2026-08-29): if `100svh` is unsupported, the
- * *entire* `h-[calc(...)]` declaration is dropped by the CSS spec
- * (invalid values don't partially apply), not just the svh portion —
- * so before this was added, an unsupported-svh browser had genuinely
- * no fallback at all for the brief window between first paint and this
- * file's own useEffect correcting it with a real pixel height. On a
- * slow connection that window is long enough to see: the wrapper
- * collapses toward its content's natural (near-zero at first paint)
- * height, so HeroCarousel's own Espresso background has nothing to
- * fill yet, showing plain page background behind Hero until the photo
- * *and* the JS override both land. `min-h-screen` (100vh) is a
- * universally-supported CSS-only floor that doesn't need JS or svh
- * support to do its job — doesn't account for dynamic mobile toolbars
- * as precisely as svh does, but "slightly imprecise" beats "silently
- * zero."
+ * Desktop (md:+) is untouched — `md:min-h-0 md:h-auto md:block` resets
+ * all of this back to a plain content-sized block at that breakpoint.
+ * mt-16 applies at every width though, since Nav is fixed/out of flow
+ * at every width and this wrapper always needs to clear it.
  */
 export function ViewportHero({ children }: { children: React.ReactNode }) {
-  const [mobileHeight, setMobileHeight] = useState<number | null>(null);
-
-  useEffect(() => {
-    const sync = () => {
-      if (window.innerWidth >= 768) {
-        setMobileHeight(null);
-        return;
-      }
-      const viewport = window.visualViewport?.height ?? window.innerHeight;
-      setMobileHeight(viewport - NAV_HEIGHT_PX + HERO_OVERSHOOT_PX);
-    };
-    sync();
-    window.addEventListener("resize", sync);
-    window.visualViewport?.addEventListener("resize", sync);
-    return () => {
-      window.removeEventListener("resize", sync);
-      window.visualViewport?.removeEventListener("resize", sync);
-    };
-  }, []);
-
   return (
-    // The `+2rem` in this fallback calc is HERO_OVERSHOOT_PX (32px) —
-    // keep the two in sync, same as `4rem` above already has to match
-    // NAV_HEIGHT_PX.
-    <div
-      className="mt-16 flex flex-col min-h-screen h-[calc(100svh-4rem+2rem)] md:min-h-0 md:h-auto md:block"
-      style={mobileHeight ? { height: mobileHeight } : undefined}
-    >
+    // The `+1rem` here is HERO_OVERSHOOT_PX (16px) — keep the two in
+    // sync, same as `4rem` already has to match NAV_HEIGHT_PX.
+    <div className="mt-16 flex flex-col min-h-[calc(100vh-4rem)] h-[calc(100dvh-4rem+1rem)] md:min-h-0 md:h-auto md:block">
       {children}
     </div>
   );

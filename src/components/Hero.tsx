@@ -91,9 +91,21 @@ export function Hero() {
        * HERO_OVERSHOOT_PX taller than the viewport (see ViewportHero.tsx),
        * so anchoring to its real bottom edge would push the scrim (and
        * the text below) that same amount below the visible fold.
+       *
+       * h-full, not a fraction (2026-08-29): different mobile browsers
+       * (confirmed: Safari vs. Chrome on the same phone) measure the
+       * visible viewport differently, so exactly how much of the photo
+       * ends up covered by this scrim varies slightly device to device.
+       * A shorter, fixed fraction (this used to be h-4/5) risked leaving
+       * a thin strip of un-scrimmed, oddly-cropped photo visible right
+       * above the text on whichever browser measures shortest. Covering
+       * the full height removes that risk — the gradient itself still
+       * fades to transparent well before the top (see .photo-text-scrim
+       * in globals.css), so this doesn't darken the upper photo, it just
+       * gives the covered portion more margin for device variance.
        */}
       <div
-        className="photo-text-scrim md:hidden absolute inset-x-0 h-4/5"
+        className="photo-text-scrim md:hidden absolute inset-x-0 h-full"
         style={{ bottom: HERO_OVERSHOOT_PX }}
         aria-hidden="true"
       />
@@ -107,22 +119,26 @@ export function Hero() {
        * viewport edge despite the taller container; inert on desktop
        * (md:static ignores `bottom` entirely).
        *
-       * pb-[calc(3.5rem+env(safe-area-inset-bottom))] (found 2026-08-29,
-       * real device report): the CTA row was getting hidden behind an
-       * in-app browser's own bottom toolbar — that toolbar overlays the
+       * pb-[calc(2rem+env(safe-area-inset-bottom))] (found 2026-08-29,
+       * real device reports): the CTA row was getting hidden behind an
+       * in-app browser's own bottom toolbar (that toolbar overlays the
        * page instead of shrinking the viewport around it, and isn't part
-       * of iOS's safe-area system (env(safe-area-inset-bottom) alone only
-       * covers the home-indicator on notched devices, which layout.tsx's
-       * viewportFit: "cover" is what makes that env() value non-zero at
-       * all). No API reports a third-party in-app browser's own chrome
-       * height, so the fix is a deliberately generous fixed floor (56px,
-       * more than double the original pb-6) sized to comfortably clear
-       * typical in-app toolbars, with the real safe-area inset stacked on
-       * top for notched devices. md:py-16 still overrides this on
-       * desktop, same as pb-6 did before.
+       * of iOS's safe-area system — env(safe-area-inset-bottom) alone
+       * only covers the home-indicator on notched devices, which
+       * layout.tsx's viewportFit: "cover" is what makes that env() value
+       * non-zero at all). A first attempt at fixing this used a much
+       * bigger fixed floor (56px) — too big: it fixed Safari but pushed
+       * the CTA row below the fold on Chrome on the same phone, which
+       * measures the viewport shorter. Pulled back to a more moderate
+       * 32px now that ViewportHero.tsx uses `100dvh` instead of a JS
+       * viewport calculation — dvh should already report each browser's
+       * real visible height correctly, so this padding only needs to be
+       * "comfortable safety margin," not "compensate for a wrong
+       * height." md:py-16 still overrides this on desktop, same as
+       * pb-6 did originally.
        */}
       <div
-        className="absolute inset-x-0 flex flex-col justify-end px-6 pb-[calc(3.5rem+env(safe-area-inset-bottom))] pt-24 sm:px-8 md:static md:w-2/5 md:flex-none md:bg-espresso md:justify-center md:px-10 md:py-16 text-warm-ivory"
+        className="absolute inset-x-0 flex flex-col justify-end px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-24 sm:px-8 md:static md:w-2/5 md:flex-none md:bg-espresso md:justify-center md:px-10 md:py-16 text-warm-ivory"
         style={{ bottom: HERO_OVERSHOOT_PX }}
       >
         <span className="inline-flex items-center self-start rounded-full bg-warm-ivory/10 px-3 py-1 text-xs font-medium text-warm-ivory/70 mb-2">
