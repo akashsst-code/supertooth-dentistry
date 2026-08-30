@@ -18,22 +18,22 @@ const DEFAULT_ZOOM = 15;
  *
  * The embed is a cross-origin google.com iframe, so its own baked-in
  * chrome (the "View larger map" / "Maps" open-in-new-tab links) can't
- * be reached or removed with our JS. Instead the iframe is sandboxed
- * without allow-popups/allow-top-navigation so those links are inert —
- * clicking them can't open a tab or navigate the visitor away — and we
- * layer our own zoom/close controls on top, driving zoom via the
- * embed's `z` query param since we can't call into Google's script.
+ * be reached or removed with our JS. The iframe is sandboxed without
+ * allow-popups/allow-top-navigation so those links are inert — clicking
+ * them can't open a tab or navigate the visitor away — and we layer our
+ * own zoom/close controls on top, driving zoom via the embed's `z`
+ * query param since we can't call into Google's script.
  *
  * Pinch-to-zoom needs no extra wiring — it's Google's own interactive
  * map running inside the iframe, and nothing here sets `touch-action`
  * to block it.
  *
- * The "Maps" open-in-app chip Google renders in the embed's top-left
- * corner is inside that same cross-origin document, so it can't be
- * deleted — the div at the top-left corner below sits on top of it as
- * an opaque patch (matching the card's rounded corner) so it's covered
- * visually, on top of the sandbox already making a click on it do
- * nothing.
+ * TODO(akash): mapSrc below is the informal `/maps?q=...&output=embed`
+ * trick, which loads Google's full consumer Maps app in the iframe —
+ * that's both why the "Maps" chip is there and likely why it's slow on
+ * Safari. Swap in the real embed src from Maps → Share → "Embed a map"
+ * for this address (a `/maps/embed?pb=...` URL) — that's Google's
+ * actual lightweight embed, built for this, with no open-in-app chip.
  */
 export function HeroAddressMap() {
   const [expanded, setExpanded] = useState(false);
@@ -63,8 +63,6 @@ export function HeroAddressMap() {
             sandbox="allow-scripts allow-same-origin"
             className="h-72 w-full border-0 sm:h-96"
           />
-
-          <div className="pointer-events-none absolute left-0 top-0 h-11 w-24 rounded-tl-xl bg-warm-ivory" />
 
           <button
             type="button"
