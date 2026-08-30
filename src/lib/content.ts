@@ -36,10 +36,40 @@ export const hours = [
   { days: "Saturday – Monday", time: "Closed" },
 ];
 
+// `image` on each entry backs the mobile photo-card treatment in
+// TrustBlock (2026-08-29 declutter pass — the old icon-only cards read as
+// empty/no-visuals on mobile). Reuses real photography already sourced
+// elsewhere in this file rather than adding new stock images: office-1
+// (reception, already in officePhotos), the same-day-crown before/after
+// (already in services), and front-desk.jpg (already in heroPhotos) —
+// same photos, no new content-sourcing dependency.
+// `expandedNote` backs the tap-to-expand panel each differentiator card
+// opens to (see ExpandCard in InsuranceExpandCard.tsx) — one sentence
+// expanding on the already-real `detail` line above it, not a new claim:
+// same capability, same tone as `detail`/`officeBlurb`, deliberately
+// free of specific promises (no time windows, no "guaranteed") per the
+// no-unverifiable-claims rule. "In-network" doesn't need one — its
+// expanded panel is the real carrier list instead.
 export const differentiators = [
-  { title: "Same-day appointments", detail: "Real availability, not a form-and-wait." },
-  { title: "Same-day crowns", detail: "In-house technology, no second visit." },
-  { title: "In-network with most plans", detail: "We handle the insurance paperwork." },
+  {
+    title: "Same-day appointments",
+    detail: "Real availability, not a form-and-wait.",
+    image: { src: "/office/office-1.webp", alt: "Front desk and reception area" },
+    expandedNote:
+      "We hold same-day slots for urgent needs — a toothache, a chipped tooth, a lost filling. Call us or request an appointment and we'll find the next available time.",
+  },
+  {
+    title: "Same-day crowns",
+    detail: "In-house technology, no second visit.",
+    image: { src: "/services/same-day-crown-onlay-crop.jpg", alt: "Same-day crown, milled in-office" },
+    expandedNote:
+      "Crowns are designed and milled right here in one visit — no impressions sent to an outside lab, no temporary crown, no second appointment.",
+  },
+  {
+    title: "In-network with most plans",
+    detail: "We handle the insurance paperwork.",
+    image: { src: "/team/front-desk.jpg", alt: "A team member at the front desk" },
+  },
 ];
 
 export const reviews = {

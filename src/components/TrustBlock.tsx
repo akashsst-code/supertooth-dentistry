@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { BadgeIcon, ClockIcon, CrownIcon, ShieldCheckIcon } from "./icons";
-import { InsuranceExpandCard } from "./InsuranceExpandCard";
+import { BookingCtaRow, ExpandCard, InsuranceExpandCard } from "./InsuranceExpandCard";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
 import { archana, credentials, differentiators, officeBlurb } from "@/lib/content";
@@ -49,42 +49,51 @@ export function TrustBlock() {
     <section className="bg-sand/40">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
         {/*
-         * Differentiators — icon-left row cards (icon beside title/detail,
-         * not stacked above it) rather than a denser multi-column grid.
-         * Akash preferred keeping the roomy full-width stacked cards over
-         * a compact 2-up grid, so the row layout does the space-saving
-         * work instead: same padding-driven roominess, but the icon no
-         * longer adds its own line of height. Combined with tightening
-         * the gap before the next section on mobile, Dr. Archana's card
-         * now starts to show on the same screen instead of requiring a
-         * full extra scroll.
+         * Differentiators — a single vertical fold-open list at every
+         * breakpoint (Akash's explicit call, after comparing it against a
+         * horizontal photo-card carousel): all 3 titles are visible with
+         * zero interaction instead of 2 of them being a swipe away, which
+         * matters more for the time-scarce/pain-driven visitors this
+         * section exists for than the carousel's bigger up-front photo
+         * did. Rows are collapsed icon+title+one-line-detail bars —
+         * reusing the same accordion pattern already shipped for
+         * FAQSection and the insurance card below — and only reveal their
+         * real photo once expanded, alongside a longer note and the
+         * shared "Book Appointment" CTA (see ExpandCard/BookingCtaRow in
+         * InsuranceExpandCard.tsx).
          *
-         * The "In-network with most plans" card renders as
-         * InsuranceExpandCard instead of a plain card — Akash asked for a
-         * +/- accordion there (see that file) so the full carrier list
-         * expands in place rather than just linking further down the page.
+         * Card styling (dark espresso surface, warm-ivory text,
+         * translucent terracotta-on-ivory icon badges) deliberately
+         * echoes Hero.tsx's dark panel rather than the light warm-ivory
+         * cards used elsewhere on the page — Akash asked for "a nicer
+         * feel like page 1" here specifically, and this section is the
+         * next thing a visitor sees right after that panel.
+         *
+         * All 3 rows share the same tap-to-expand `ExpandCard` shell —
+         * "Same-day appointments" and "Same-day crowns" used to be plain
+         * non-interactive divs, which read as broken once they looked
+         * identical to the (already tappable) insurance card next to
+         * them. The "In-network" row still renders as InsuranceExpandCard
+         * specifically for its carrier-grid expanded content.
          */}
-        <div className="grid sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-16">
-          {differentiators.map((d, i) => {
-            if (d.title === "In-network with most plans") {
-              return <InsuranceExpandCard key={d.title} title={d.title} detail={d.detail} />;
-            }
-            const Icon = differentiatorIcons[i];
-            return (
-              <div
-                key={d.title}
-                className="rounded-2xl bg-warm-ivory p-5 border border-sand flex items-start gap-4"
-              >
-                <span className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-terracotta/10 text-terracotta">
-                  <Icon />
-                </span>
-                <div>
-                  <h3 className="font-display text-lg font-semibold text-espresso mb-1">{d.title}</h3>
-                  <p className="text-sm text-espresso/70">{d.detail}</p>
-                </div>
-              </div>
-            );
-          })}
+        <div className="mb-12 sm:mb-16">
+          <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso text-center mb-4 sm:mb-5">
+            Why Choose Us
+          </h2>
+          <div className="flex flex-col gap-2 sm:gap-3 max-w-2xl mx-auto">
+            {differentiators.map((d, i) => {
+              if (d.title === "In-network with most plans") {
+                return <InsuranceExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image} />;
+              }
+              const Icon = differentiatorIcons[i];
+              return (
+                <ExpandCard key={d.title} title={d.title} detail={d.detail} icon={<Icon />} image={d.image}>
+                  <p className="mb-0 text-sm text-warm-ivory/70">{d.expandedNote}</p>
+                  <BookingCtaRow />
+                </ExpandCard>
+              );
+            })}
+          </div>
         </div>
 
         {/* Office photos — real photography, now leads (moved above the
