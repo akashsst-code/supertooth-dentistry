@@ -1,19 +1,9 @@
 import Image from "next/image";
-import { BadgeIcon, ClockIcon, CrownIcon, ShieldCheckIcon } from "./icons";
+import { BadgeIcon } from "./icons";
 import { BookingCtaRow, ExpandCard, InsuranceExpandCard } from "./InsuranceExpandCard";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { Placeholder } from "./Placeholder";
 import { archana, credentials, differentiators, officeBlurb } from "@/lib/content";
-
-/**
- * Icon per differentiator, keyed by array position rather than added to
- * content.ts — icon choice is a presentation concern, not practice
- * content (docs/supertooth-build-principles.md Section 2, "content is
- * separable from presentation"). Order matches the locked
- * differentiators order in content.ts: same-day appointments, same-day
- * crowns, in-network.
- */
-const differentiatorIcons = [ClockIcon, CrownIcon, ShieldCheckIcon];
 
 function TrustBadge({ children }: { children: React.ReactNode }) {
   return (
@@ -62,14 +52,16 @@ export function TrustBlock() {
          * shared "Book Appointment" CTA (see ExpandCard/BookingCtaRow in
          * InsuranceExpandCard.tsx).
          *
-         * Card styling went through a dark espresso-panel pass (echoing
-         * Hero.tsx) first, then back to a light warm-ivory surface after
-         * Akash flagged the dark cards and their icon badges as not
-         * reading as aesthetic — the light version keeps the same
-         * accordion mechanics but adds a solid terracotta icon badge, a
-         * soft shadow, and a barely-there sand-tinted corner wash instead
-         * of a flat border, so it reads as a raised card rather than a
-         * plain box (see the fuller comment on ExpandCard).
+         * Card styling has gone through several rounds with Akash: a dark
+         * espresso-panel pass (echoing Hero.tsx), back to a light
+         * warm-ivory surface with a solid terracotta icon badge, then
+         * crisper edges (a terracotta top bar, a stronger shadow, a
+         * bordered +/- toggle). The icon badge itself is now a small
+         * circular crop of each card's real photo instead of an abstract
+         * clock/crown/shield glyph — Akash asked whether the generic
+         * icons were even needed, and a real-photo badge fits "people
+         * trust images more" better than a line icon (see the fuller
+         * comment on ExpandCard).
          *
          * All 3 rows share the same tap-to-expand `ExpandCard` shell —
          * "Same-day appointments" and "Same-day crowns" used to be plain
@@ -83,13 +75,12 @@ export function TrustBlock() {
             Why Choose Us
           </h2>
           <div className="flex flex-col gap-2 sm:gap-3 max-w-2xl mx-auto">
-            {differentiators.map((d, i) => {
+            {differentiators.map((d) => {
               if (d.title === "In-network with most plans") {
                 return <InsuranceExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image} />;
               }
-              const Icon = differentiatorIcons[i];
               return (
-                <ExpandCard key={d.title} title={d.title} detail={d.detail} icon={<Icon />} image={d.image}>
+                <ExpandCard key={d.title} title={d.title} detail={d.detail} image={d.image}>
                   <p className="mb-0 text-sm text-espresso/70">{d.expandedNote}</p>
                   <BookingCtaRow />
                 </ExpandCard>

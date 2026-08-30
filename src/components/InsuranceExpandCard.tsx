@@ -2,26 +2,27 @@
 
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
-import { CalendarIcon, PhoneIcon, ShieldCheckIcon } from "./icons";
+import { CalendarIcon, PhoneIcon } from "./icons";
 import { contact, insuranceCarriers } from "@/lib/content";
 
 /**
- * Generic tap-to-expand differentiator-card row. Went through three
+ * Generic tap-to-expand differentiator-card row. Went through four
  * visual passes: a dark espresso-panel treatment (echoing Hero.tsx)
  * landed first, but Akash flagged it back as "the pills look like dark
  * design" with icons that "are not aesthetic" — reverted to a light
  * warm-ivory surface with a solid terracotta icon badge and a soft
  * ambient shadow/gradient wash. Akash liked that direction but asked for
- * "more clear design," so the soft/ambient cues (a barely-there radial
- * gradient wash) were swapped for crisper, more deliberate ones: a solid
- * 3px terracotta top accent bar, a stronger drop shadow, a bigger icon
- * badge with a ring "cutout" against the card, a bordered (not just
- * tinted) +/- toggle, and a clearer type scale (larger title, more
- * muted detail line) — definition through clean edges and contrast
- * rather than soft blur. Collapsed rows stay compact (icon + title +
- * one-line detail + a +/- toggle, all 3 visible at once, no swiping
- * needed); the real photo only appears once a row is expanded, alongside
- * a longer note and the shared booking CTA.
+ * "more clear design," so the soft/ambient cues were swapped for
+ * crisper, more deliberate ones: a solid 3px terracotta top accent bar,
+ * a stronger drop shadow, a bordered (not just tinted) +/- toggle, and a
+ * clearer type scale. Akash then asked whether the generic clock/crown/
+ * shield line icons were even needed, or if there's a more aesthetic
+ * render — the badge is now a small circular crop of the same real
+ * photo shown large in the expanded panel, not an abstract icon,
+ * consistent with "people trust images more" (Akash's stated reason for
+ * the Archana bio card and office-carousel treatments elsewhere on this
+ * page). `image` is required now rather than optional since every
+ * differentiator has real photography backing it (see content.ts).
  *
  * Extracted 2026-08-29 from what used to be an insurance-only component
  * (see `InsuranceExpandCard` below) once "Same-day appointments" and
@@ -31,15 +32,13 @@ import { contact, insuranceCarriers } from "@/lib/content";
 export function ExpandCard({
   title,
   detail,
-  icon,
   image,
   className = "",
   children,
 }: {
   title: string;
   detail: string;
-  icon: ReactNode;
-  image?: { src: string; alt: string };
+  image: { src: string; alt: string };
   className?: string;
   children: ReactNode;
 }) {
@@ -56,8 +55,8 @@ export function ExpandCard({
         aria-expanded={open}
         className="tap-target w-full flex items-center gap-3.5 p-4 text-left"
       >
-        <span className="shrink-0 inline-flex h-11 w-11 items-center justify-center rounded-full bg-terracotta text-warm-ivory ring-4 ring-warm-ivory shadow-[0_3px_8px_rgba(193,99,62,0.35)]">
-          {icon}
+        <span className="shrink-0 relative inline-flex h-11 w-11 rounded-full overflow-hidden ring-4 ring-warm-ivory shadow-[0_3px_8px_rgba(61,50,38,0.3)]">
+          <Image src={image.src} alt="" fill sizes="44px" className="object-cover" />
         </span>
         <span className="flex-1 min-w-0">
           <h3 className="font-display text-lg font-semibold text-espresso leading-tight">{title}</h3>
@@ -78,17 +77,15 @@ export function ExpandCard({
       >
         <div className="overflow-hidden">
           <div className="px-4 pb-4 pt-1 border-t border-sand">
-            {image && (
-              <div className="relative mt-3 mb-3 aspect-[16/10] rounded-xl overflow-hidden">
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  sizes="(min-width: 640px) 40rem, 90vw"
-                  className="object-cover"
-                />
-              </div>
-            )}
+            <div className="relative mt-3 mb-3 aspect-[16/10] rounded-xl overflow-hidden">
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                sizes="(min-width: 640px) 40rem, 90vw"
+                className="object-cover"
+              />
+            </div>
             {children}
           </div>
         </div>
@@ -158,11 +155,11 @@ export function InsuranceExpandCard({
 }: {
   title: string;
   detail: string;
-  image?: { src: string; alt: string };
+  image: { src: string; alt: string };
   className?: string;
 }) {
   return (
-    <ExpandCard title={title} detail={detail} icon={<ShieldCheckIcon />} image={image} className={className}>
+    <ExpandCard title={title} detail={detail} image={image} className={className}>
       <p className="mt-3 mb-2 text-[11px] font-semibold uppercase tracking-wide text-espresso/50">
         Accepted plans include
       </p>
