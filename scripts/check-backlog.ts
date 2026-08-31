@@ -29,6 +29,7 @@ import {
   WEIGHTS,
   type BacklogItem,
 } from "../src/lib/backlog";
+import { harnessById, harness as harnessChecks } from "../src/lib/test-harness";
 
 const problems: string[] = [];
 const seen = new Set<number>();
@@ -156,6 +157,56 @@ for (const item of backlog) {
 
   check(item.acceptance.length >= 2, `${tag}: fewer than 2 acceptance criteria`);
   check(item.scope.length >= 1, `${tag}: empty scope`);
+
+  // ── BLUEPRINT INTAKE INVARIANTS ────────────────────────────────────
+  // Every item declares where it came from and which harness checks apply,
+  // so provenance and coverage can't quietly drift.
+  check(
+    ["original", "blueprint", "merged"].includes(item.source),
+    `${tag}: invalid source "${item.source}"`,
+  );
+  check(item.harness.length >= 1, `${tag}: no harness checks referenced`);
+  for (const h of item.harness) {
+    check(h in harnessById, `${tag}: references unknown harness check "${h}"`);
+  }
+  // Anything drawn from the blueprint must say which section, so a claim
+  // can be traced back rather than taken on trust.
+  check(
+    item.source === "original" || Boolean(item.blueprintRef),
+    `${tag}: source is "${item.source}" but no blueprintRef given`,
+  );
+  // A decision must record what was said and what changes as a result —
+  // otherwise "it was decided" becomes unauditable.
+  if (item.decision) {
+    check(
+      ["approved", "approved-with-constraint", "declined", "deferred"].includes(item.decision.ruling),
+      `${tag}: invalid decision.ruling "${item.decision.ruling}"`,
+    );
+    check(item.decision.said.length > 10, `${tag}: decision.said is empty`);
+    check(
+      item.decision.consequence.length > 60,
+      `${tag}: decision.consequence must say what actually changes, including what survives the ruling`,
+    );
+    check(
+      !item.conflict,
+      `${tag}: has both an open conflict and a decision — resolve the conflict field once ruled`,
+    );
+  }
+
+  // A conflict must state all three parts, or it isn't a decision Akash
+  // can actually make.
+  if (item.conflict) {
+    check(item.conflict.locked.length > 30, `${tag}: conflict.locked is too vague to act on`);
+    check(item.conflict.blueprint.length > 30, `${tag}: conflict.blueprint is too vague to act on`);
+    check(
+      item.conflict.question.length > 40 && item.conflict.question.includes("?"),
+      `${tag}: conflict.question must be an actual question Akash can answer`,
+    );
+    check(
+      item.status === "blocked" || item.status === "not-started",
+      `${tag}: has an unresolved conflict but status is "${item.status}" — it must not be in progress`,
+    );
+  }
 }
 
 // Report.
@@ -190,6 +241,29 @@ console.log(
     `${desktop} at 1280px · ${gates} mobile gate criteria · ` +
     `${backlog.length}/${backlog.length} items with a mobile gate`,
 );
+const bySource = (s: string) => backlog.filter((i) => i.source === s).length;
+console.log(
+  `  provenance: ${bySource("original")} original · ${bySource("blueprint")} from blueprint · ` +
+    `${bySource("merged")} enriched · ${harnessChecks.length} harness checks defined`,
+);
+
+const decided = backlog.filter((i) => i.decision);
+if (decided.length) {
+  console.log("-".repeat(width));
+  console.log(`  ${decided.length} decision(s) recorded:`);
+  for (const d of decided) {
+    console.log(`    #${d.id}  ${d.decision!.ruling.padEnd(24)} ${d.title.slice(0, 42)}`);
+  }
+}
+
+const conflicts = backlog.filter((i) => i.conflict);
+if (conflicts.length) {
+  console.log("-".repeat(width));
+  console.log(`  ${conflicts.length} CONFLICT(S) awaiting Akash's decision — not to be built:`);
+  for (const c of conflicts) {
+    console.log(`    #${c.id}  ${c.title.replace(/^CONFLICT — /, "")}`);
+  }
+}
 console.log("-".repeat(width));
 
 if (problems.length) {

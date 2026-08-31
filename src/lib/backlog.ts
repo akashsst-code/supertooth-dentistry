@@ -34,6 +34,8 @@
  * used as directional support for a qualitative theme, never as forecasts.
  */
 
+import { BASELINE_IDS, MOBILE_SUITE_IDS } from "./test-harness";
+
 export type Priority = "P0" | "P1" | "P2";
 export type Effort = "S" | "M" | "L";
 export type Status = "not-started" | "partial" | "blocked" | "done";
@@ -148,9 +150,55 @@ export function viewportOf(step: TestStep): Viewport {
   return step.viewport ?? DEFAULT_VIEWPORT;
 }
 
+/**
+ * Where an item came from.
+ * - `original`  — from the first patient-needs research pass (2026-08-30).
+ * - `blueprint` — new, from the Downtown Seattle blueprint intake.
+ * - `merged`    — existed already, materially enriched by the blueprint.
+ */
+export type Source = "original" | "blueprint" | "merged";
+
+/**
+ * A blueprint recommendation that contradicts a locked decision in this
+ * repo. These are surfaced for Akash to decide — NOT silently applied.
+ * Per CLAUDE.md, a locked decision changes only with a stated reason.
+ */
+export type Conflict = {
+  /** The locked decision being contradicted. */
+  locked: string;
+  /** What the blueprint recommends instead. */
+  blueprint: string;
+  /** The question Akash actually has to answer. */
+  question: string;
+};
+
+/**
+ * A ruling from Akash on a flagged conflict. Once present, the item is no
+ * longer "awaiting a decision" — it either proceeds under the ruling, is
+ * closed, or is explicitly deferred.
+ */
+export type Decision = {
+  date: string;
+  /** approved | approved-with-constraint | declined | deferred */
+  ruling: "approved" | "approved-with-constraint" | "declined" | "deferred";
+  /** Akash's words, paraphrased minimally. */
+  said: string;
+  /** What actually changes as a result — including anything that survives. */
+  consequence: string;
+};
+
 export type BacklogItem = {
   id: number;
   title: string;
+  source: Source;
+  /** Set once a flagged conflict has been ruled on. */
+  decision?: Decision;
+  /** Section(s) of the blueprint this draws on, for traceability. */
+  blueprintRef?: string;
+  /** Global Test Harness checks that apply — see src/lib/test-harness.ts. */
+  harness: string[];
+  /** Set only when this item contradicts a locked decision. */
+  conflict?: Conflict;
   /** Re-derived from `scores`, except where `pin` overrides. */
   priority: Priority;
   /** What it was before the scoring pass, for auditability. */
@@ -225,6 +273,8 @@ export const backlog: BacklogItem[] = [
     id: 27,
     title: "Walk the homepage mobile flow section by section",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 3, effort: 3, readiness: 5 },
@@ -389,6 +439,8 @@ export const backlog: BacklogItem[] = [
     id: 1,
     title: "Fix the three 404 primary-nav routes",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 4, effort: 5, readiness: 5 },
@@ -507,6 +559,8 @@ export const backlog: BacklogItem[] = [
     id: 2,
     title: "Verify-or-remove every unverifiable claim",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
     repriorityNote:
@@ -628,6 +682,8 @@ export const backlog: BacklogItem[] = [
     id: 3,
     title: "Resolve the phone-number conflict and make NAP consistent",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
     scores: { conversion: 4, reach: 5, risk: 4, effort: 5, readiness: 2 },
@@ -745,6 +801,8 @@ export const backlog: BacklogItem[] = [
     id: 4,
     title: "Add LocalBusiness schema, robots.ts, sitemap.ts and per-page metadata",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
     scores: { conversion: 3, reach: 4, risk: 2, effort: 5, readiness: 4 },
@@ -881,6 +939,8 @@ export const backlog: BacklogItem[] = [
     id: 5,
     title: "Extract a PageShell component",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "dependency",
     repriorityNote:
@@ -999,6 +1059,8 @@ export const backlog: BacklogItem[] = [
     id: 6,
     title: "Build /insurance-new-patients — the highest-risk content on the site",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
     repriorityNote:
@@ -1148,6 +1210,8 @@ export const backlog: BacklogItem[] = [
     id: 7,
     title: "Build /emergency — safe, non-diagnostic urgent guidance",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
     repriorityNote:
@@ -1314,6 +1378,8 @@ export const backlog: BacklogItem[] = [
     id: 8,
     title: "Expand arrival: transit, parking, entrance and Suite A",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 2, effort: 3, readiness: 3 },
@@ -1468,6 +1534,8 @@ export const backlog: BacklogItem[] = [
     id: 9,
     title: "Add form confirmation and error states",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
     scores: { conversion: 5, reach: 4, risk: 3, effort: 5, readiness: 3 },
@@ -1626,6 +1694,8 @@ export const backlog: BacklogItem[] = [
     id: 16,
     title: "Dental anxiety and comfort content",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
     repriorityNote:
@@ -1756,6 +1826,8 @@ export const backlog: BacklogItem[] = [
     id: 20,
     title: "Cost and financing explainer",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
     repriorityNote:
@@ -1877,6 +1949,8 @@ export const backlog: BacklogItem[] = [
     id: 10,
     title: "Build /about from Dr. Dubey's existing real bio",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
     scores: { conversion: 4, reach: 4, risk: 2, effort: 3, readiness: 4 },
@@ -2013,6 +2087,8 @@ export const backlog: BacklogItem[] = [
     id: 12,
     title: "Add /privacy and /accessibility",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
     repriorityNote:
@@ -2146,6 +2222,8 @@ export const backlog: BacklogItem[] = [
     id: 13,
     title: "Replace the three placeholder testimonials with real reviews",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
     repriorityNote:
@@ -2276,6 +2354,8 @@ export const backlog: BacklogItem[] = [
     id: 14,
     title: "WCAG 2.2 AA and mobile QA pass — the patient-ready line",
     priority: "P0",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
     repriorityNote:
@@ -2291,6 +2371,7 @@ export const backlog: BacklogItem[] = [
     where: "Sitewide",
     scope: [
       "Measure contrast on every locked token pairing in real use",
+      "KNOWN FINDING (measured 2026-08-30): ivory-on-terracotta is 3.87:1, and the primary CTA renders it at 14px semibold — which is not 'large text' under WCAG 1.4.3, so it needs 4.5:1 and misses. This affects every Book Appointment button on the site. Two options: enlarge/embolden the CTA label to reach the 18.66px-bold threshold where 3:1 applies, or darken the terracotta token — the latter is a locked-token change needing Akash's sign-off",
       "Verify ≥44×44px targets with ≥8px separation",
       "Keyboard-only pass on every interactive element; visible focus throughout",
       "Screen-reader pass on nav, mobile menu, forms, accordion, carousels",
@@ -2442,6 +2523,7 @@ export const backlog: BacklogItem[] = [
       ],
       gotchas: [
         "Automated tools catch roughly a third of real issues. A clean axe run with an untested keyboard path is a false pass.",
+        "The terracotta/ivory pairing at 3.87:1 already misses AA for normal-size text and affects every primary CTA. Do not close this item by quietly reclassifying the CTA label as large text — measure the rendered font-size and weight against the 18.66px-bold threshold.",
         "Backgrounded browser tabs suspend CSS transitions and pointer input — verified in this repo already. Run motion and interaction checks in a foregrounded tab or assert on class/ARIA state instead of measured animation values.",
         "Running axe only at desktop width is a false pass for this project specifically: target size, reflow and focus-obscured are the criteria most likely to fail here, and all three are viewport-dependent.",
         "A resized desktop browser does not reproduce touch behaviour, on-screen keyboards, or mobile screen-reader gestures. The manual steps genuinely need a phone.",
@@ -2454,6 +2536,8 @@ export const backlog: BacklogItem[] = [
     id: 15,
     title: "Online booking via the Tab32 service layer",
     priority: "P1",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
     repriorityNote:
@@ -2629,6 +2713,8 @@ export const backlog: BacklogItem[] = [
     id: 19,
     title: "Family and life-stage clarity",
     priority: "P1",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
     scores: { conversion: 3, reach: 4, risk: 1, effort: 5, readiness: 5 },
@@ -2741,6 +2827,8 @@ export const backlog: BacklogItem[] = [
     id: 17,
     title: "Concern-led service entry",
     priority: "P1",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
     scores: { conversion: 3, reach: 4, risk: 1, effort: 5, readiness: 4 },
@@ -2867,6 +2955,8 @@ export const backlog: BacklogItem[] = [
     id: 11,
     title: "Build /services — minimum version",
     priority: "P1",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
     repriorityNote:
@@ -2994,6 +3084,8 @@ export const backlog: BacklogItem[] = [
     id: 21,
     title: "Reviews fed by real Google Business Profile data",
     priority: "P1",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
     scores: { conversion: 3, reach: 4, risk: 2, effort: 3, readiness: 3 },
@@ -3122,6 +3214,8 @@ export const backlog: BacklogItem[] = [
     id: 23,
     title: "Language support signal and key-page translation",
     priority: "P2",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P2",
     pin: null,
     scores: { conversion: 2, reach: 2, risk: 3, effort: 3, readiness: 2 },
@@ -3224,6 +3318,8 @@ export const backlog: BacklogItem[] = [
     id: 18,
     title: "Per-service pages with FAQ pairs and schema",
     priority: "P2",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
     repriorityNote:
@@ -3342,6 +3438,8 @@ export const backlog: BacklogItem[] = [
     id: 24,
     title: "Pre-visit digital forms",
     priority: "P2",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P2",
     pin: null,
     scores: { conversion: 2, reach: 3, risk: 3, effort: 1, readiness: 1 },
@@ -3449,6 +3547,8 @@ export const backlog: BacklogItem[] = [
     id: 22,
     title: "Aftercare and records requests",
     priority: "P2",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
     repriorityNote:
@@ -3558,6 +3658,8 @@ export const backlog: BacklogItem[] = [
     id: 25,
     title: "Neighborhood and local content",
     priority: "P2",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P2",
     pin: null,
     scores: { conversion: 2, reach: 2, risk: 2, effort: 3, readiness: 2 },
@@ -3647,6 +3749,8 @@ export const backlog: BacklogItem[] = [
     id: 26,
     title: "Conversion instrumentation and analytics",
     priority: "P2",
+    source: "original",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P2",
     pin: null,
     scores: { conversion: 2, reach: 1, risk: 2, effort: 3, readiness: 3 },
@@ -3753,6 +3857,1954 @@ export const backlog: BacklogItem[] = [
       gotchas: [
         "tel: activation navigates away from the page, so a naive event can be lost before it sends — use a beacon/keepalive request.",
         "Click-to-call tracking cannot be verified at desktop width, where tel: links often do nothing. This event must be tested on mobile or a real device.",
+      ],
+    },
+  },
+  // ══════════════════════════════════════════════════════════════════
+  // BLUEPRINT INTAKE — 2026-08-30
+  // From docs/research/downtown-seattle-family-dental-website-blueprint.md
+  // ══════════════════════════════════════════════════════════════════
+  {
+    id: 28,
+    title: "Publish a conservative-care / anti-over-treatment statement",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§7 praise/abandon · §11 trust · P0-14",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 5, reach: 5, risk: 3, effort: 5, readiness: 3 },
+    effort: "S",
+    status: "blocked",
+    wave: 1,
+    job: "Trust that I won't be over-treated or overcharged",
+    story:
+      "As a patient who has been upsold before, I can see in the practice's own words that they recommend only what I need — before I book.",
+    problem:
+      "The single strongest patient-generated signal in the blueprint, and the site says nothing about it. Patients praise dentists who monitor instead of drilling, who show imaging and let the patient decide, and who respect a financial timeline. They abandon over feeling upsold — a treatment plan full of procedures they doubt. This is the #1 distrust in dentistry and it is a pure copy problem: a short, honest statement converts the profession's biggest trust liability into this practice's asset.",
+    where: "Homepage block + /about",
+    scope: [
+      "One short block, in the practice's own voice: we recommend only what you need",
+      "\"We'll show you what we see\" — imaging shown and explained before treatment is proposed",
+      "Written estimates before work begins",
+      "Second opinions explicitly welcome",
+      "Only claims Dr. Dubey will actually stand behind — this is a promise, not marketing",
+    ],
+    acceptance: [
+      "The statement appears on both the homepage and /about",
+      "Every clause is one Dr. Dubey has confirmed the practice actually does",
+      "No superlatives, no 'award-winning', no comparison to other practices",
+    ],
+    evidence:
+      "Blueprint §7: the strongest repeated patient-generated theme in the whole study, from r/Seattle and r/askdentists — conservative care praised, upselling abandoned over. Corroborates our own research's finding that vague trust language reads as noise while specifics earn trust.",
+    dependsOn: "Dr. Dubey confirming each clause is a genuine practice commitment",
+    outOfScope:
+      "Claiming a philosophy the practice doesn't practise. This is the one item where publishing something aspirational would be actively dishonest.",
+    references: [
+      {
+        name: "Chicago Loop Dentistry — the \"Pinky Promise\"",
+        url: "https://www.chicagoloopdentistry.com/",
+        whatGood:
+          "Names the over-treatment fear directly and commits to never pushing unneeded work, in plain first-person language. Turns the profession's biggest liability into a differentiator instead of ignoring it.",
+        takeaway:
+          "Copy the directness and the first-person voice. Don't copy the branded name for the promise — a cute label undercuts the sincerity we need.",
+        mobile:
+          "It works on a phone because it's three short sentences, not a values page. Copy that length: at 375px this must read as one glanceable block, since it sits in the first-impression scan where attention is scarcest.",
+      },
+      {
+        name: "Integrity Dental Boston — published values and bounded first-visit price",
+        url: "https://www.integritydentalboston.com/",
+        whatGood:
+          "Pairs the trust statement with a concrete financial commitment rather than leaving it as sentiment — the promise is backed by something checkable.",
+        takeaway:
+          "Copy the pairing of a values statement with a concrete commitment (see item 35). Avoid publishing a price we can't stand behind.",
+        mobile:
+          "Their statement stays above the fold on a phone rather than living on a buried About page. Worth copying: the trust claim has to reach the scanner, not reward the reader who scrolls furthest.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "Dr. Dubey has confirmed each clause",
+        "Browser viewport set to 375×812 before any rendering step",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, confirm the statement is present on the homepage and readable as one block without scrolling mid-sentence.",
+          tool: "browser",
+          expect:
+            "Reads as one glanceable block. It sits in the first-impression scan, so a statement split across a scroll boundary loses its force.",
+        },
+        {
+          action: "Confirm the same statement appears on /about.",
+          tool: "browser",
+          expect: "Present on both routes, consistent wording.",
+        },
+        {
+          action:
+            "Scan the statement for superlatives and comparative claims: /award|best|#1|top dentist|better than/i.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Zero matches. This is a commitment, not a boast.",
+        },
+        {
+          action: "Confirm each clause against Dr. Dubey's sign-off.",
+          tool: "manual",
+          viewport: "any",
+          expect: "Every clause is a genuine practice commitment, documented.",
+        },
+      ],
+      mobileFirst: [
+        "The statement reads as one block at 375×812 without splitting across a scroll",
+        "Present on both the homepage and /about at mobile width",
+        "Body text ≥16px with line-height ≥1.5",
+      ],
+      pass: [
+        "Statement live on homepage and /about",
+        "Every clause confirmed by Dr. Dubey",
+        "Zero superlatives or comparative claims",
+      ],
+      gotchas: [
+        "This is the one item where shipping aspirational copy is worse than shipping nothing — a promise the practice doesn't keep becomes the review that sinks it.",
+      ],
+    },
+  },
+  {
+    id: 29,
+    title: "Adopt the Global Test Harness (GTH-1 – GTH-22)",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§25(c) global test harness",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
+    originalPriority: "P0",
+    pin: "dependency",
+    repriorityNote:
+      "Scores 35.5 so it lands in P0 on merit, but it is also pinned as a dependency: every other item's test scenario references these checks, and adopting them late means re-testing everything already shipped.",
+    scores: { conversion: 2, reach: 5, risk: 4, effort: 3, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 1,
+    job: "(Team-facing — how we know any item is actually done)",
+    story:
+      "As whoever implements a backlog item, I run one named set of checks rather than re-deriving accessibility, overflow and performance assertions each time.",
+    problem:
+      "Every one of our 27 items restates its own accessibility, tap-target and overflow assertions — 27 copies of the same checks, which drift. The blueprint supplies a 22-check harness that replaces the duplication, and adds five things we were not checking at all: JS-disabled degradation, the 320/430 viewport ends, 200% text resize, landscape orientation, and mobile input correctness.",
+    where: "src/lib/test-harness.ts (added) · referenced by every item",
+    scope: [
+      "Adopt GTH-1–GTH-11 (baseline) and GTH-12–GTH-22 (mobile suite)",
+      "Keep this repo's stricter 44px rule rather than WCAG 2.5.8's 24px floor",
+      "Extend the viewport matrix from 375-only to 320 / 360 / 375 / 390 / 430 / landscape",
+      "Run the harness against every route already shipped, and log what fails",
+      "Do NOT add a test runner as part of this — every check runs via npx or the existing browser tools",
+    ],
+    acceptance: [
+      "Every backlog item references the harness ids that apply to it",
+      "The harness has been run once against all existing routes, with results recorded",
+      "Any failure is fixed or logged as its own item with an owner",
+      "No new dependency added to package.json",
+    ],
+    evidence:
+      "Blueprint §25(c). The five genuinely new checks are the value: we had no JS-disabled, landscape, 200%-resize, 320/430-width or mobile-input-correctness coverage at all.",
+    dependsOn: null,
+    outOfScope:
+      "Adding Playwright, a CI runner, or a test framework. That is a separate decision with its own cost — 'adopt the harness' is not 'adopt a toolchain'.",
+    references: [
+      {
+        name: "Deque — axe-core CLI",
+        url: "https://github.com/dequelabs/axe-core-npm/tree/develop/packages/cli",
+        whatGood:
+          "Runs the same engine as the browser extension from the command line against a URL, so the accessibility half of the harness is a one-line npx invocation with no project setup.",
+        takeaway:
+          "Use it for GTH-1. Don't treat a clean run as a pass — it covers roughly a third of real issues.",
+        mobile:
+          "Accepts a viewport size, which is the whole point here: run it at 375 and 320 first. Target-size and reflow findings simply do not appear at desktop width.",
+      },
+      {
+        name: "Google — Lighthouse CLI",
+        url: "https://github.com/GoogleChrome/lighthouse",
+        whatGood:
+          "Its mobile preset applies a Moto-G-class CPU throttle and simulated slow 4G by default — a realistic field profile rather than a warm localhost load.",
+        takeaway:
+          "Use the mobile preset for GTH-2 and GTH-19. Run against the deployed preview; localhost numbers are meaningless.",
+        mobile:
+          "The mobile preset IS the check. Running Lighthouse desktop and reporting the score would be the exact false pass this harness exists to prevent.",
+      },
+      {
+        name: "W3C — WCAG 2.2 Quick Reference",
+        url: "https://www.w3.org/WAI/WCAG22/quickref/",
+        whatGood:
+          "The normative source behind GTH-14 (target size), GTH-20 (reflow, text resize) and GTH-21 (orientation) — with techniques and documented failures per criterion.",
+        takeaway:
+          "Use it to adjudicate any harness dispute. Note we deliberately exceed 2.5.8: our locked rule is 44px, not 24px.",
+        mobile:
+          "2.2's new criteria are overwhelmingly touch and small-screen concerns, which is why the mobile suite is eleven of the twenty-two checks.",
+      },
+    ],
+    test: {
+      preconditions: ["src/lib/test-harness.ts merged", "Deployed preview available"],
+      steps: [
+        {
+          action:
+            "Run the full mobile suite (GTH-12 – GTH-22) against every existing route at 375×812 first, then the rest of the matrix.",
+          tool: "validator",
+          expect:
+            "A recorded result per check per route. Failures are expected on the first run — the point is to find them.",
+        },
+        {
+          action:
+            "Run GTH-7 (JS disabled) against the homepage and /contact specifically.",
+          tool: "browser",
+          expect:
+            "Core content, the phone number and emergency access still present. Our nav, menu, carousels and accordions are all client components, so this is the check most likely to surface something.",
+        },
+        {
+          action: "Run GTH-21 (landscape, 844×390) against the homepage.",
+          tool: "browser",
+          expect:
+            "Full function in landscape. The fixed 64px header eats a much larger share of a 390px-tall viewport — this is where that shows up.",
+        },
+        {
+          action: "Run the baseline checks (GTH-1 – GTH-11) against every route.",
+          tool: "validator",
+          viewport: "any",
+          expect: "Results recorded; every serious/critical finding fixed or logged with an owner.",
+        },
+        {
+          action: "Confirm package.json is unchanged.",
+          tool: "shell",
+          viewport: "any",
+          expect: "No new dependency. The harness is a checklist, not a framework.",
+        },
+      ],
+      mobileFirst: [
+        "Mobile suite run at 375 first, then 320 / 360 / 390 / 430 / landscape",
+        "GTH-7 (JS-disabled) run and its result recorded — new coverage for this repo",
+        "GTH-21 (landscape) run against the homepage — new coverage for this repo",
+      ],
+      pass: [
+        "Harness run once against all existing routes with recorded results",
+        "Every item references the harness ids that apply to it",
+        "Every failure fixed or logged with an owner",
+        "No new dependency in package.json",
+      ],
+      gotchas: [
+        "Adopting the harness will produce failures on already-merged work. That is the point, not a regression — log them honestly rather than quietly narrowing the checks.",
+      ],
+    },
+  },
+  {
+    id: 30,
+    title: "Global shell semantics: skip link, landmarks, focus order",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§17 accessibility baseline · §22 global header · P0-1",
+    harness: ["GTH-1", "GTH-3", "GTH-4", "GTH-9", "GTH-13", "GTH-14", "GTH-20", "GTH-21"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 2, reach: 5, risk: 4, effort: 5, readiness: 5 },
+    effort: "S",
+    status: "not-started",
+    wave: 1,
+    job: "Use the site at all, from the first keystroke",
+    story:
+      "As a keyboard or screen-reader user, I can skip the nav, land in the main content, and always know where focus is.",
+    problem:
+      "There is no skip-to-content link anywhere on the site, and landmark structure has never been verified. With a fixed 64px header on every page, a keyboard user tabs through the full nav on every single navigation. This is cheap, foundational, and blocks nothing.",
+    where: "src/app/layout.tsx · src/components/Nav.tsx · PageShell",
+    scope: [
+      "Skip-to-content link as the first focusable element on every page",
+      "One banner / one main / one contentinfo per page, verified",
+      "Visible focus ring on every interactive element, checked against the locked palette",
+      "Focus returns to the hamburger trigger when the mobile menu closes",
+      "html lang set correctly",
+    ],
+    acceptance: [
+      "Skip link is the first focusable element and moves focus into main",
+      "Exactly one banner, main and contentinfo per page",
+      "Focus is visible at every stop with no keyboard trap",
+    ],
+    evidence:
+      "Blueprint §17 lists skip link and landmarks as accessibility baseline, not enhancement. Our own item 14 assumed these existed; they were never verified.",
+    dependsOn: null,
+    outOfScope: "An accessibility overlay widget. Overlays don't fix markup.",
+    references: [
+      {
+        name: "WAI — skip navigation links",
+        url: "https://www.w3.org/WAI/WCAG22/Techniques/general/G1",
+        whatGood:
+          "The normative technique: a link that is the first focusable element and targets the main content, visible on focus even if hidden otherwise.",
+        takeaway:
+          "Copy the visible-on-focus pattern. A permanently hidden skip link is a common broken implementation that passes a casual check.",
+        mobile:
+          "Matters more with our fixed header: on a phone the nav is a hamburger, so a screen-reader user swiping linearly hits the header controls on every page load. The skip link is their way past it.",
+      },
+      {
+        name: "GOV.UK Design System — skip link",
+        url: "https://design-system.service.gov.uk/components/skip-link/",
+        whatGood:
+          "A production implementation tested with real assistive-technology users, including the focus behaviour after activation — the part most implementations get wrong.",
+        takeaway:
+          "Copy the implementation including moving focus, not just scrolling. Scrolling without focus movement leaves screen-reader users where they were.",
+        mobile:
+          "Their version stays usable at 320px and does not overlap the header when focused — worth copying, since our header is fixed and would otherwise cover the revealed link.",
+      },
+    ],
+    test: {
+      preconditions: ["Deployed at $BASE", "Browser viewport set to 375×812"],
+      steps: [
+        {
+          action: "At 375×812, press Tab once from page load on each route.",
+          tool: "browser",
+          expect: "The skip link is the first focusable element and becomes visible when focused.",
+        },
+        {
+          action: "Activate the skip link and check where focus lands.",
+          tool: "browser",
+          expect: "Focus moves into main — not merely a scroll. The fixed header must not cover the landing point.",
+        },
+        {
+          action: "Open the mobile menu, close it with Escape, and check focus.",
+          tool: "browser",
+          expect: "Focus returns to the hamburger trigger.",
+        },
+        {
+          action: "Count landmarks and check html lang on every route.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Exactly one banner, one main, one contentinfo; html lang present and correct.",
+        },
+      ],
+      mobileFirst: [
+        "Skip link is first focusable and visible on focus at 375px, not hidden behind the fixed header",
+        "Activating it moves focus, not just scroll position",
+        "Closing the mobile menu returns focus to its trigger",
+      ],
+      pass: [
+        "Skip link first-focusable on every route and moves focus into main",
+        "One banner / main / contentinfo per page",
+        "No keyboard trap; focus visible throughout",
+      ],
+    },
+  },
+  {
+    id: 31,
+    title: "Pre-launch verification gate",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§24 Build Item 26 · §26 checklist row 26",
+    harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
+    originalPriority: "P0",
+    pin: "legal",
+    repriorityNote:
+      "Scores 35.0 so P0 on merit, and pinned: this is the gate that stops unverified clinical, insurance and pricing claims reaching patients. It is the last line before launch.",
+    scores: { conversion: 2, reach: 5, risk: 5, effort: 3, readiness: 2 },
+    effort: "M",
+    status: "blocked",
+    wave: 3,
+    job: "(Team-facing — the last check before real patients arrive)",
+    story:
+      "As the practice, nothing goes live that we haven't confirmed, and every interaction has been exercised including its failure paths.",
+    problem:
+      "Item 2 removes unverified claims once. This is the recurring gate that confirms it stayed true, that all four interaction states exist everywhere, and that the three core journeys complete on real phones — run immediately before launch and before any subsequent content change.",
+    where: "Whole site",
+    scope: [
+      "Zero unverified claims live anywhere — re-run the item 2 sweep",
+      "Every interaction has loading, success, error and recovery behaviour",
+      "The three core journeys (book, find/arrive, emergency) complete at 320 / 360 / 375 / 390 / 430",
+      "Full mobile suite green on every P0 route",
+      "Privacy and accessibility pages live and footer-linked",
+    ],
+    acceptance: [
+      "Zero unverified claims in built output",
+      "All three core journeys complete at every matrix width",
+      "Mobile suite green on all P0 routes",
+      "Every form state exercised, including forced failures",
+    ],
+    evidence:
+      "Blueprint §24 Build Item 26 and §26 row 26 — a single explicit launch gate rather than trusting that earlier items held.",
+    dependsOn: "Every P0 item shipped · Akash's verification table complete",
+    outOfScope: "Treating this as a substitute for per-item testing. It is a gate, not the test plan.",
+    references: [
+      {
+        name: "GOV.UK — service standard and assessments",
+        url: "https://www.gov.uk/service-manual/service-standard",
+        whatGood:
+          "Establishes an explicit go-live gate a service must pass, tested end to end with real users on real devices, rather than assuming component-level sign-offs compose.",
+        takeaway:
+          "Copy the idea of a named gate with a pass/fail verdict. Ignore the panel process — one careful pass, not a ceremony.",
+        mobile:
+          "Their assessments require testing on the devices users actually have. Copy that literally: this gate is not passed on a resized desktop window.",
+      },
+      {
+        name: "WHO / NHS pre-launch clinical content review practice",
+        url: "https://service-manual.nhs.uk/content/how-we-write",
+        whatGood:
+          "Content touching health is reviewed for accuracy before publication as a matter of process, not judgement — the same discipline our clinical and insurance claims need.",
+        takeaway:
+          "Copy the review-before-publish default for anything clinical or financial.",
+        mobile:
+          "Their guidance assumes mobile reading and short scannable content, which is also what makes a final read-through at 375px worth doing as part of the gate.",
+      },
+    ],
+    test: {
+      preconditions: ["All P0 items shipped", "Verification table complete"],
+      steps: [
+        {
+          action:
+            "At 375×812, complete all three core journeys: request an appointment, find and get directions, reach emergency guidance.",
+          tool: "browser",
+          expect: "All three complete without backtracking or a dead end.",
+        },
+        {
+          action: "Repeat the three journeys at 320, 360, 390 and 430.",
+          tool: "browser",
+          expect: "All complete at every matrix width.",
+        },
+        {
+          action: "Force a failure in every form and confirm the recovery path.",
+          tool: "browser",
+          expect: "Every failure names a fix and offers the phone fallback.",
+        },
+        {
+          action: "Sweep the built output for unverified claims and placeholder markers.",
+          tool: "shell",
+          viewport: "any",
+          expect:
+            "Zero matches across every built route. Any hit blocks launch until it is verified or removed.",
+        },
+        {
+          action: "Run the full mobile suite on every P0 route.",
+          tool: "validator",
+          expect: "Green across the board, or every failure logged with an owner and a decision to ship or hold.",
+        },
+      ],
+      mobileFirst: [
+        "All three core journeys complete at 320 / 360 / 375 / 390 / 430",
+        "Every form failure path exercised on a phone",
+        "Mobile suite green on all P0 routes",
+      ],
+      pass: [
+        "Zero unverified claims live",
+        "Three core journeys complete at every matrix width",
+        "All four interaction states present everywhere",
+        "Privacy and accessibility live and linked",
+      ],
+      gotchas: [
+        "A gate that always passes is not a gate. If this item never blocks a launch, it is being run as a formality rather than a check.",
+      ],
+    },
+  },
+  {
+    id: 32,
+    title: "Mobile input correctness and form state preservation",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§17 forms · §22 form field · GTH-18",
+    harness: ["GTH-1", "GTH-4", "GTH-6", "GTH-13", "GTH-14", "GTH-18", "GTH-20"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 4, reach: 4, risk: 3, effort: 5, readiness: 5 },
+    effort: "S",
+    status: "not-started",
+    wave: 2,
+    job: "Fill in a form on a phone without fighting it",
+    story:
+      "As a patient typing on a phone, the right keyboard appears, autofill works, the page doesn't zoom when I tap a field, and my answers survive an interruption.",
+    problem:
+      "Three concrete mobile form defects the blueprint names that our items never covered: inputs under 16px trigger iOS zoom-on-focus (which then breaks the layout), missing type/inputmode/autocomplete gives a phone field a QWERTY keyboard and no autofill, and losing entered values on back-navigation punishes a patient who paused to find their insurance card — a genuinely common interruption on mobile.",
+    where: "src/components/AppointmentForm.tsx and every future form",
+    scope: [
+      "type + inputmode + autocomplete on every field (tel, email, name, postal-code)",
+      "Every input rendered at ≥16px to prevent iOS zoom-on-focus",
+      "Entered values preserved across back-navigation and app backgrounding",
+      "Submit control never covered by the on-screen keyboard",
+    ],
+    acceptance: [
+      "Every field declares correct type, inputmode and autocomplete",
+      "No input under 16px anywhere",
+      "Values survive back-navigation and a backgrounded browser",
+      "Submit reachable with the keyboard open",
+    ],
+    evidence:
+      "Blueprint GTH-18 and §17 forms. All three defects are invisible at desktop width and in a resized desktop window — they need a real device.",
+    dependsOn: null,
+    outOfScope: "Autosaving to browser storage. Any future form touching health data must not persist PHI locally (see item 24).",
+    references: [
+      {
+        name: "MDN — inputmode and autocomplete",
+        url: "https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode",
+        whatGood:
+          "Documents exactly which attribute controls the keyboard versus autofill — they are different mechanisms, and setting only one is the usual half-fix.",
+        takeaway:
+          "Copy the full triplet per field: type for semantics and validation, inputmode for the keyboard, autocomplete for autofill.",
+        mobile:
+          "The attribute has no visible effect on desktop at all, which is exactly why it gets skipped. Its entire purpose is the phone keyboard.",
+      },
+      {
+        name: "GOV.UK Design System — text input",
+        url: "https://design-system.service.gov.uk/components/text-input/",
+        whatGood:
+          "Production guidance derived from testing with users on low-end phones, covering autocomplete tokens, input sizing and never relying on placeholder text as a label.",
+        takeaway:
+          "Copy the attribute guidance and the visible-label rule. Both are already partly in item 9; this item makes the mobile half explicit.",
+        mobile:
+          "Their inputs are deliberately large enough to avoid iOS zoom and comfortable for a thumb — the same 16px floor this item enforces.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "A real phone available — a resized desktop window does not reproduce keyboard behaviour",
+        "Browser viewport set to 375×812",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, assert type, inputmode and autocomplete on every field, and computed font-size ≥16px on every input.",
+          tool: "browser",
+          expect: "All three attributes correct per field; no input under 16px.",
+        },
+        {
+          action: "On a real phone, tap into each field and observe the keyboard and any page zoom.",
+          tool: "manual",
+          expect:
+            "Correct keyboard per field (numeric pad for phone, @-key for email); the page does not zoom on focus.",
+        },
+        {
+          action:
+            "On a real phone, part-fill the form, background the browser, return, and check the values.",
+          tool: "manual",
+          expect: "Entered values preserved. Losing them is the abandonment case this item exists for.",
+        },
+        {
+          action: "With the keyboard open, confirm the submit control is still reachable.",
+          tool: "manual",
+          expect: "Submit visible or reachable by scrolling; never permanently covered.",
+        },
+      ],
+      mobileFirst: [
+        "Correct type / inputmode / autocomplete on every field",
+        "No input under 16px — no iOS zoom-on-focus",
+        "Values survive backgrounding and back-navigation on a real device",
+        "Submit reachable with the on-screen keyboard open",
+      ],
+      pass: [
+        "All fields declare the correct attribute triplet",
+        "No sub-16px inputs",
+        "State preserved across interruption",
+        "Submit never permanently obscured",
+      ],
+      gotchas: [
+        "Every defect in this item is invisible at desktop width and in a resized window. Without a real device this item cannot be honestly closed.",
+      ],
+    },
+  },
+  {
+    id: 33,
+    title: "Loading and empty states for every async interaction",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§17 state design · §22 loading/empty states",
+    harness: ["GTH-1", "GTH-4", "GTH-8", "GTH-9", "GTH-13", "GTH-19"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 3, reach: 4, risk: 2, effort: 5, readiness: 5 },
+    effort: "S",
+    status: "not-started",
+    wave: 2,
+    job: "Never be left wondering whether something is happening",
+    story:
+      "As a patient on a slow connection, I can always tell whether the site is working, and an empty result still offers me a way forward.",
+    problem:
+      "Item 9 covers success and error. The blueprint names four states, not two — loading and empty are missing. On a throttled mobile connection a submit with no loading state reads as broken and produces a double submission; an empty result with no fallback is a dead end.",
+    where: "AppointmentForm · any future async surface",
+    scope: [
+      "Loading state on every async action, with space reserved so it doesn't shift layout",
+      "Empty states that offer the phone rather than dead-ending",
+      "Disable or guard the submit control while in flight to prevent double submission",
+      "aria-busy or a live region so the state is announced, not just visual",
+    ],
+    acceptance: [
+      "Every async action shows a loading state within 100ms of activation",
+      "No layout shift when the loading state appears (CLS ≤0.1)",
+      "Every empty state offers a working alternative",
+      "Double submission is impossible",
+    ],
+    evidence:
+      "Blueprint §17 state design and §22 — 'every interactive component ships with its loading, success, error and recovery behavior; no dead ends.'",
+    dependsOn: "Item 9",
+    outOfScope: "Skeleton screens for content that loads instantly. A spinner for a 50ms action is worse than none.",
+    references: [
+      {
+        name: "NN/g — response times and progress indicators",
+        url: "https://www.nngroup.com/articles/response-times-3-important-limits/",
+        whatGood:
+          "The three response-time limits that decide when feedback is required: under 0.1s feels instant, 1s keeps flow, and beyond 10s attention is lost. Turns 'add a spinner' into a threshold.",
+        takeaway:
+          "Copy the thresholds as the rule for when a loading state is required rather than adding one everywhere.",
+        mobile:
+          "On a throttled mobile connection almost every network action crosses the 1s threshold, so states that seem unnecessary on a fast desktop connection are mandatory on a phone.",
+      },
+      {
+        name: "GOV.UK Design System — error and empty states in service patterns",
+        url: "https://design-system.service.gov.uk/patterns/",
+        whatGood:
+          "Treats the unhappy path as a first-class design deliverable rather than an afterthought, always leaving a route forward.",
+        takeaway:
+          "Copy the 'always a route forward' rule — for us that route is the phone.",
+        mobile:
+          "A dead-ended mobile user has no second tab to try. The fallback has to be in the empty state itself.",
+      },
+    ],
+    test: {
+      preconditions: ["Item 9 shipped", "Network throttling available", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812 on a throttled connection, submit the form and observe feedback.",
+          tool: "browser",
+          expect: "A loading state appears within ~100ms and persists until resolution.",
+        },
+        {
+          action: "Measure CLS while the loading state appears and resolves.",
+          tool: "browser",
+          expect: "CLS ≤0.1 — the state reserves its space rather than shoving content.",
+        },
+        {
+          action: "Tap submit repeatedly while in flight.",
+          tool: "browser",
+          expect: "Exactly one submission. Double-submits are the classic slow-connection defect.",
+        },
+        {
+          action: "Force an empty result and inspect the state.",
+          tool: "browser",
+          expect: "A working alternative is offered — the phone — not a blank panel.",
+        },
+      ],
+      mobileFirst: [
+        "Loading state visible within ~100ms on a throttled mobile connection",
+        "No layout shift when it appears (CLS ≤0.1)",
+        "Repeated taps while in flight produce exactly one submission",
+        "Empty states offer a one-tap phone fallback",
+      ],
+      pass: [
+        "All four states present on every async interaction",
+        "No CLS from state transitions",
+        "Double submission impossible",
+        "No dead-end empty state",
+      ],
+    },
+  },
+  {
+    id: 34,
+    title: "Prominent, honest, badged hours (early / late / weekend)",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§9 Downtown hours · §26 row 21 · P1-11",
+    harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-14", "GTH-17"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 4, reach: 4, risk: 2, effort: 5, readiness: 2 },
+    effort: "S",
+    status: "blocked",
+    wave: 2,
+    job: "Fit dental care around my working day",
+    story:
+      "As a time-poor professional, I can see at a glance whether this practice opens early enough to see me before work.",
+    problem:
+      "Hours are a competitive axis the blueprint found most downtown practices under-serving, and patients name early/late/weekend availability explicitly as a choose factor. This practice opens at 7:00 AM — genuinely early — and the site currently states it as a flat row in a menu rather than surfacing it as the advantage it is. Hours also currently appear in several places and must not disagree.",
+    where: "Nav · BookingBlock · Footer · Location section",
+    scope: [
+      "Surface the 7:00 AM open as a badge where it earns attention, not buried in a list",
+      "State closed days honestly rather than omitting them",
+      "One source of truth — hours identical across every surface and matching the Google Business Profile",
+      "Only badge what is true: no weekend badge if there are no weekend hours",
+    ],
+    acceptance: [
+      "Hours identical on every surface and matching the GBP",
+      "The early-open advantage is visible without opening a menu on mobile",
+      "No badge claims availability the practice doesn't have",
+    ],
+    evidence:
+      "Blueprint §9: patients praise '7am' and weekend availability explicitly; several examined downtown practices close Fri–Sun with no evening hours. Our primary persona is a time-poor professional, which makes this a direct fit signal.",
+    dependsOn: "Akash confirming hours are current and match the GBP",
+    outOfScope:
+      "A live 'open now' indicator. A static hours list is the accepted lower-cost v1 per the locked navigation requirements.",
+    references: [
+      {
+        name: "Google Business Profile — hours and special hours",
+        url: "https://support.google.com/business/answer/3038163",
+        whatGood:
+          "The listing is where most patients actually check hours, and it supports special/holiday hours — so the site's job is to agree with it rather than compete.",
+        takeaway:
+          "Copy the discipline of one authoritative source. Any disagreement between site and listing is a trust failure.",
+        mobile:
+          "Hours are checked overwhelmingly on a phone, usually from Maps. The site's hours must survive being read at 375px without a table that scrolls sideways.",
+      },
+      {
+        name: "Dentistry on Queen Anne — hours presentation",
+        url: "https://www.dentistryonqueenanne.com/",
+        whatGood:
+          "A local comparator stating hours plainly and consistently across the site rather than only in a footer.",
+        takeaway:
+          "Copy the consistency. Don't copy burying hours in the footer alone — for our persona this is a decision factor, not reference material.",
+        mobile:
+          "Their hours read as a label/value list rather than a table, which is what survives a narrow column — the same pattern already used in our hamburger.",
+      },
+    ],
+    test: {
+      preconditions: ["Akash has confirmed hours", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm hours are reachable without opening the hamburger.",
+          tool: "browser",
+          expect: "Visible somewhere in the page flow, not menu-only.",
+        },
+        {
+          action: "Collect the hours string from every surface that renders it.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Identical everywhere; all derived from one value in content.ts.",
+        },
+        {
+          action: "Compare against the live Google Business Profile.",
+          tool: "manual",
+          viewport: "any",
+          expect: "Exact match including closed days.",
+        },
+        {
+          action: "Check every badge against the confirmed hours.",
+          tool: "browser",
+          expect: "No badge claims availability the practice doesn't have.",
+        },
+      ],
+      mobileFirst: [
+        "Hours reachable at 375px without opening the hamburger",
+        "Hours render as a label/value list, not a sideways-scrolling table",
+        "No badge claims unavailable hours",
+      ],
+      pass: [
+        "Hours identical across all surfaces and matching the GBP",
+        "Early-open advantage surfaced rather than buried",
+        "Every badge traces to confirmed hours",
+      ],
+    },
+  },
+  {
+    id: 35,
+    title: "Publish one honest bounded first-visit self-pay price",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§15 adopt-list · §12 uninsured path · P1-9",
+    harness: ["GTH-10", "GTH-13", "GTH-14", "GTH-20"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 5, reach: 4, risk: 3, effort: 5, readiness: 1 },
+    effort: "S",
+    status: "blocked",
+    wave: 3,
+    job: "Know what this will cost me before I commit",
+    story:
+      "As an uninsured or cost-anxious patient, I can see one real number for a first visit instead of being told to call.",
+    problem:
+      "The blueprint identifies this as the single sharpest differentiator available: one honest bounded price for a first self-pay visit beats every competitor's 'we accept most insurance'. Cost uncertainty is a documented reason patients delay care, and roughly half our researched scenarios are cost-sensitive. It is one sentence — entirely blocked on the practice committing to a number it will honour.",
+    where: "/insurance-new-patients · homepage insurance block",
+    scope: [
+      "One bounded, honest first-visit self-pay figure the practice will stand behind",
+      "State exactly what it includes and what it doesn't",
+      "State plainly when it does not apply",
+      "Ship nothing if the practice won't commit — a number that isn't honoured is worse than silence",
+    ],
+    acceptance: [
+      "Either one committed figure with its inclusions, or the item is closed as declined",
+      "The figure is signed off in writing by Akash",
+      "No figure appears anywhere else that contradicts it",
+    ],
+    evidence:
+      "Blueprint §15 adopt-list, exemplar Integrity Dental Boston publishing a first-visit self-pay price. Corroborates our own finding that cost uncertainty drives delay while the publishable part costs nothing but a decision.",
+    dependsOn: "The practice committing to a first-visit self-pay price it will honour",
+    outOfScope:
+      "A per-procedure price list. The blueprint defers that explicitly — we can't stand behind it without an ops commitment.",
+    references: [
+      {
+        name: "Integrity Dental Boston — published self-pay first-visit price",
+        url: "https://www.integritydentalboston.com/",
+        whatGood:
+          "Publishes a single bounded number for a first visit without insurance, with what it covers — the only practice in the blueprint's scan doing so. It converts the most-avoided question into the most reassuring answer.",
+        takeaway:
+          "Copy the single-bounded-number approach and the inclusions list. Don't copy it as a marketing offer — it's a transparency commitment, not a discount.",
+        mobile:
+          "One number and one inclusions line fits a 375px column effortlessly, which is why it works where a fee schedule would not. Keep it to that.",
+      },
+      {
+        name: "CMS — hospital price transparency",
+        url: "https://www.cms.gov/priorities/key-initiatives/hospital-price-transparency",
+        whatGood:
+          "Sets the direction of travel for healthcare cost disclosure — meaningful cost information before service rather than a bill afterwards.",
+        takeaway:
+          "Adopt the principle. Note the rule binds hospitals, not private dental practices — we do this because it's right, and must not claim compliance with a rule that doesn't apply.",
+        mobile:
+          "Its machine-readable files are the cautionary case: technically transparent, practically unreadable on a phone. One sentence beats a data file.",
+      },
+    ],
+    test: {
+      preconditions: ["The practice has committed to a figure in writing, or declined"],
+      steps: [
+        {
+          action: "At 375×812, confirm the figure and its inclusions read as one block.",
+          tool: "browser",
+          expect: "Number, what it includes, and when it doesn't apply — all visible together.",
+        },
+        {
+          action: "Search the whole site for any other currency figure.",
+          tool: "shell",
+          viewport: "any",
+          expect: "No figure anywhere contradicts this one.",
+        },
+        {
+          action: "Confirm written sign-off from Akash for the exact figure and inclusions.",
+          tool: "manual",
+          viewport: "any",
+          expect: "Documented. Without it, this item ships nothing.",
+        },
+      ],
+      mobileFirst: [
+        "Figure, inclusions and exclusions read as one block at 375px",
+        "No sideways scroll from any pricing layout",
+      ],
+      pass: [
+        "One committed figure with inclusions, signed off — or the item closed as declined",
+        "No contradicting figure elsewhere on the site",
+      ],
+      gotchas: [
+        "Declining this item is a legitimate outcome. Publishing a number the practice won't honour is the failure mode, not leaving it out.",
+      ],
+    },
+  },
+  {
+    id: 36,
+    title: "Verify-benefits path — \"not sure? we'll help you check\"",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§12 insurance · §26 row 20 · P1-8",
+    harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-14", "GTH-18"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 4, reach: 4, risk: 3, effort: 3, readiness: 2 },
+    effort: "M",
+    status: "blocked",
+    wave: 2,
+    job: "Find out whether my specific plan is covered",
+    story:
+      "As a patient who can't tell from a carrier list whether my plan is covered, I have a named way to find out without guessing.",
+    problem:
+      "A carrier list alone doesn't answer the real question, because plans differ within a carrier. The blueprint's answer is to pair the list with an explicit offer to check on the patient's behalf — which converts the site's highest-risk ambiguity into a service. Without it, the honest caveat we already plan ('plans differ, confirm yours') dead-ends the patient.",
+    where: "/insurance-new-patients · homepage insurance block",
+    scope: [
+      "An explicit offer: give us your plan details and we'll confirm before your visit",
+      "Route it through the existing appointment request rather than building a second form",
+      "Plain explanation of what the practice can and cannot confirm in advance",
+      "State the response time only if the practice will commit to one",
+    ],
+    acceptance: [
+      "Every carrier mention is adjacent to a working verify path",
+      "The path is completable on a phone without a call",
+      "No response-time promise unless confirmed",
+    ],
+    evidence:
+      "Blueprint §12 and the ADA out-of-network guidance both identify the accepted-vs-in-network gap as the top abandonment cause. The verify path is what stops the honest caveat from becoming a dead end.",
+    dependsOn: "Item 6 · practice confirming it will do benefit checks and how fast",
+    outOfScope:
+      "A real-time eligibility lookup. No API, and a fake picker would imply certainty we can't deliver.",
+    references: [
+      {
+        name: "ADA — out-of-network provider guidance",
+        url: "https://adanews.ada.org/ada-news/2025/november/dear-ada-out-of-network-providers/",
+        whatGood:
+          "Documents the balance-bill failure mode that follows from a patient assuming a carrier list means their plan is in-network — the exact gap this path closes.",
+        takeaway:
+          "Copy the standard: never let a carrier list stand alone as the answer.",
+        mobile:
+          "A patient reading a carrier list on a phone has their insurance card in the other hand. The verify path has to accept those details on the same screen, not send them to a desktop.",
+      },
+      {
+        name: "Zocdoc — insurance resolved before commitment",
+        url: "https://www.zocdoc.com/resources/blog/article/patient-self-scheduling/",
+        whatGood:
+          "Puts insurance verification at the front of the flow rather than after booking, because that's where the friction actually is.",
+        takeaway:
+          "Copy the sequencing. Do not copy the plan-picker dropdown — dozens of options is bad on mobile and implies certainty we don't have.",
+        mobile:
+          "Their flow is one decision per screen with thumb-reachable controls; our verify path should be a couple of optional fields on the existing request form, not a new journey.",
+      },
+    ],
+    test: {
+      preconditions: ["Item 6 shipped", "Practice confirmed it will do benefit checks", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm a verify path is adjacent to every carrier mention.",
+          tool: "browser",
+          expect: "Reachable without scrolling away from the carrier list.",
+        },
+        {
+          action: "Complete the verify path on a phone without calling.",
+          tool: "browser",
+          expect: "Completable; fields use the correct mobile keyboards (GTH-18).",
+        },
+        {
+          action: "Scan for response-time promises.",
+          tool: "shell",
+          viewport: "any",
+          expect: "None unless the practice has committed to one.",
+        },
+      ],
+      mobileFirst: [
+        "Verify path adjacent to the carrier list at 375px",
+        "Completable on a phone without a call, with correct mobile keyboards",
+        "No unconfirmed response-time promise",
+      ],
+      pass: [
+        "Carrier mentions always paired with a working verify path",
+        "Path completable on mobile",
+        "No unverified promise",
+      ],
+    },
+  },
+  {
+    id: 37,
+    title: "Mobile-first type and spacing scale",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§17 typography & spacing",
+    harness: ["GTH-1", "GTH-5", "GTH-13", "GTH-20"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 2, reach: 5, risk: 3, effort: 5, readiness: 5 },
+    effort: "S",
+    status: "not-started",
+    wave: 1,
+    job: "Read the site comfortably on a phone",
+    story:
+      "As any patient, text is sized and spaced for the screen I'm actually on, not scaled down from a desktop design.",
+    problem:
+      "Our locked tokens define colour and font family but no type scale or spacing scale. Sizes are chosen per component, which is how a 16px rule drifts. The blueprint supplies a mobile-first scale: author the phone value first and enlarge for desktop, never shrink a desktop comp. This adds structure without touching any locked token.",
+    where: "src/app/globals.css",
+    scope: [
+      "Type scale authored mobile-first: body 17px on phones (never below 16 for body or inputs), 14 fine print, heading steps ~1.2",
+      "Desktop enhancement at ≥1024px scaling the same roles up (~1.25 step)",
+      "Spacing scale 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96, with phones working at the lower end so the primary action isn't pushed down",
+      "≥16px gutters on mobile so nothing touches the screen edge",
+      "Line length ~35–40 characters on a phone; line-height 1.5 body / 1.2–1.3 headings",
+      "Headline sizes capped so nothing forces sideways scroll at 320px",
+    ],
+    acceptance: [
+      "A named scale exists in globals.css and components reference it",
+      "No body text or input below 16px anywhere",
+      "No headline forces horizontal scroll at 320px",
+      "No locked colour or font-family token changed",
+    ],
+    evidence:
+      "Blueprint §17. Note the 16px input floor is the same rule as GTH-18 (iOS zoom-on-focus) approached from typography rather than forms — two independent reasons for one constraint.",
+    dependsOn: null,
+    outOfScope:
+      "Changing the locked colour or font tokens. Fraunces and Inter stay; this defines how they are sized, not what they are.",
+    references: [
+      {
+        name: "GOV.UK Design System — typography",
+        url: "https://design-system.service.gov.uk/styles/type-scale/",
+        whatGood:
+          "A production type scale with explicit per-breakpoint values, tested for readability across a very wide ability range rather than derived from a ratio in isolation.",
+        takeaway:
+          "Copy the practice of naming explicit values per breakpoint. Don't copy the values themselves — ours must suit Fraunces and Inter.",
+        mobile:
+          "Their scale is authored mobile-first and enlarges upward, which is exactly the inversion this item is making. Sizes are never shrunk down from desktop.",
+      },
+      {
+        name: "WCAG 2.2 — 1.4.4 Resize text and 1.4.12 Text Spacing",
+        url: "https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html",
+        whatGood:
+          "Defines the normative floor a scale has to survive: 200% resize with no loss of content, and user-applied spacing overrides without clipping.",
+        takeaway:
+          "Use as the acceptance test for the scale, not just as a guideline.",
+        mobile:
+          "Both criteria bite hardest at 320px, where a scale that only works at generous widths clips or overlaps immediately.",
+      },
+    ],
+    test: {
+      preconditions: ["Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, measure computed font-size on all body text and inputs.",
+          tool: "browser",
+          expect: "Nothing below 16px; body at the scale's phone value.",
+        },
+        {
+          action: "At 320px, check every headline for horizontal overflow.",
+          tool: "browser",
+          expect: "No headline forces sideways scroll.",
+        },
+        {
+          action: "Apply html{font-size:200%} and check for clipping or overlap.",
+          tool: "browser",
+          expect: "No loss of content or function (GTH-20).",
+        },
+        {
+          action: "Diff globals.css to confirm no colour or font-family token changed.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Only scale additions. Locked tokens untouched.",
+        },
+      ],
+      mobileFirst: [
+        "Phone values authored first; desktop scales up from them",
+        "No body text or input below 16px at 375px",
+        "No headline overflow at 320px",
+        "Survives 200% text resize",
+      ],
+      pass: [
+        "Named scale in globals.css, referenced by components",
+        "No sub-16px body or input",
+        "No 320px headline overflow",
+        "Zero locked-token changes",
+      ],
+      gotchas: [
+        "This item must not become a palette change. If a proposal touches a --color-* value it belongs with the flagged conflicts (items 45–47), not here.",
+      ],
+    },
+  },
+  {
+    id: 38,
+    title: "Performance and Core Web Vitals budget",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§24 Build Item 25 · GTH-2 / GTH-19",
+    harness: ["GTH-2", "GTH-8", "GTH-13", "GTH-19"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 4, reach: 5, risk: 3, effort: 3, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 2,
+    job: "Reach the site at all, on a real connection",
+    story:
+      "As a patient on a phone with a mediocre connection, the page is usable quickly rather than a blank screen.",
+    problem:
+      "Page weight is a patient-care issue, not a nicety, and we have never measured it. The homepage carries 29 images and two continuously-animating carousels — the exact LCP and CLS risk profile — and the blueprint sets an explicit throttled-mobile budget. First impression happens in seconds on a phone, and a slow load is an abandonment before any content is judged.",
+    where: "Sitewide, homepage first",
+    scope: [
+      "Establish the budget: LCP ≤2.5s, CLS ≤0.1, TBT ≤200ms, Performance ≥90 on the Lighthouse mobile preset",
+      "Measure the homepage first — 29 images and two carousels",
+      "Fix what's cheap: image sizing, formats, lazy-loading below the fold, reserving space to stop shift",
+      "Record the baseline so regressions are visible",
+    ],
+    acceptance: [
+      "Budget met on the homepage at the throttled mobile preset, or every miss logged with an owner",
+      "Baseline numbers recorded",
+      "Measured against the deployed preview, never localhost",
+    ],
+    evidence:
+      "Blueprint §24 Build Item 25 and GTH-19. Corroborated by our own finding that mobile is where LCP fails most often, and our homepage is 12.4 screens with 29 images.",
+    dependsOn: null,
+    outOfScope: "A rewrite for performance. Measure, fix what's cheap, log the rest.",
+    references: [
+      {
+        name: "web.dev — Web Vitals",
+        url: "https://web.dev/articles/vitals",
+        whatGood:
+          "Defines the three user-centred metrics and their thresholds at the 75th percentile — an objective bar rather than a subjective read of 'feels fast'.",
+        takeaway: "Copy the thresholds directly as the budget. Measure field-realistic conditions.",
+        mobile:
+          "Explicitly device-segmented, and mobile is where sites fail — LCP most of all. The mobile preset is the measurement that counts.",
+      },
+      {
+        name: "Next.js — image optimization",
+        url: "https://nextjs.org/docs/app/api-reference/components/image",
+        whatGood:
+          "Handles the exact failure modes we have: responsive sizing, modern formats, lazy-loading, and reserving space to prevent layout shift.",
+        takeaway:
+          "Confirm every image goes through it with correct sizes. An unoptimized hero is the most common LCP cause.",
+        mobile:
+          "Its `sizes` attribute is what stops a phone downloading a desktop-width image — the single biggest mobile weight win available to us.",
+      },
+    ],
+    test: {
+      preconditions: ["Deployed preview available (not localhost)"],
+      steps: [
+        {
+          action: "Run Lighthouse mobile preset against the homepage on the deployed preview.",
+          tool: "validator",
+          expect: "LCP ≤2.5s, CLS ≤0.1, TBT ≤200ms, Performance ≥90 — or each miss recorded.",
+        },
+        {
+          action: "At 375×812 on a throttled connection, observe what renders first and when.",
+          tool: "browser",
+          expect: "Headline and primary action usable early; no long blank phase.",
+        },
+        {
+          action: "Check every image is served through next/image with a correct sizes attribute.",
+          tool: "shell",
+          viewport: "any",
+          expect: "No raw img tags serving desktop-width files to phones.",
+        },
+        {
+          action: "Measure CLS through full page load including both carousels.",
+          tool: "browser",
+          expect: "CLS ≤0.1; carousels reserve their space.",
+        },
+      ],
+      mobileFirst: [
+        "Budget measured on the Lighthouse mobile preset, throttled, against the deployed preview",
+        "Headline and primary action usable early at 375px on a throttled connection",
+        "Every image responsive with correct sizes",
+        "CLS ≤0.1 including both carousels",
+      ],
+      pass: [
+        "Budget met on the homepage or every miss logged with an owner",
+        "Baseline recorded for regression tracking",
+        "No unoptimized image path",
+      ],
+      gotchas: [
+        "Localhost numbers are meaningless — no throttling, warm cache, no network. Always measure the deployed preview on the mobile preset.",
+      ],
+    },
+  },
+  {
+    id: 39,
+    title: "Design anti-pattern audit against the ten named failure modes",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§17 \"what could make this site feel wrong\" · §15C anti-patterns",
+    harness: ["GTH-1", "GTH-5", "GTH-10", "GTH-13", "GTH-22"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 3, reach: 5, risk: 2, effort: 3, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 3,
+    job: "Trust the practice from how the site feels, not just what it says",
+    story:
+      "As a patient forming an impression in seconds, nothing about the site reads as generic, salesy, cold, juvenile or untrustworthy.",
+    problem:
+      "The blueprint names ten specific ways a dental site can feel wrong — generic, untrustworthy, overly corporate, too expensive, sterile, juvenile, clinically intimidating, visually noisy, hard to read, aggressively sales-driven — each with a cause and an antidote. We have never audited against them. Several are live risks here: offer cards can read salesy, the testimonial rail auto-scrolls, and unverified claims read as untrustworthy.",
+    where: "Sitewide design review",
+    scope: [
+      "Walk all ten failure modes against every page at 375px",
+      "Check the specific anti-patterns: superlatives, urgency banners, autoplay, fabricated-looking reviews, contradictory information, stock-looking imagery",
+      "Record a verdict per mode with evidence, not an impression",
+      "Fix what's cheap; log the rest as its own item",
+    ],
+    acceptance: [
+      "A recorded verdict for each of the ten modes",
+      "Zero superlatives or unverifiable puffery sitewide",
+      "Zero urgency or false-scarcity language",
+      "Every finding fixed or logged with an owner",
+    ],
+    evidence:
+      "Blueprint §17 failure-mode table and §15C observed anti-patterns — several drawn from real Seattle practice sites, including fabricated-looking testimonials and hours that contradict across a page.",
+    dependsOn: "Items 2 and 13 (unverified claims and placeholder reviews are two of the modes)",
+    outOfScope:
+      "Redesigning to taste. This audits against named failure modes with stated causes, not personal preference.",
+    references: [
+      {
+        name: "NN/g — trustworthiness and credibility on the web",
+        url: "https://www.nngroup.com/articles/trustworthy-design/",
+        whatGood:
+          "Grounds credibility in observable design attributes — currency, specificity, absence of hype — rather than treating trust as an aesthetic outcome.",
+        takeaway:
+          "Copy the attribute-level framing so the audit produces findings rather than opinions.",
+        mobile:
+          "Credibility is judged in the first seconds, and on a phone that judgement happens within one viewport. The audit weights what's above the fold at 375px most heavily.",
+      },
+      {
+        name: "Blueprint §15C — observed dental anti-patterns",
+        url: "https://www.chicagoloopdentistry.com/",
+        whatGood:
+          "Its anti-pattern list is drawn from real practice sites, including fabricated-sounding testimonials, hours contradicting across a page, and neighbourhood filler before any patient value — concrete failures, not hypotheticals.",
+        takeaway:
+          "Use the observed list as the audit checklist. Our placeholder testimonials are currently an instance of the fabricated-review pattern.",
+        mobile:
+          "Neighbourhood filler and promo banners cost proportionally more on a phone, where they consume whole viewports before the patient reaches anything useful.",
+      },
+    ],
+    test: {
+      preconditions: ["Items 2 and 13 shipped", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, walk every page against all ten failure modes and record a verdict each.",
+          tool: "manual",
+          expect: "Ten recorded verdicts with evidence. 'Feels fine' is not a verdict.",
+        },
+        {
+          action: "Scan sitewide for superlatives and puffery: /award|best|#1|top dentist|world-class|state-of-the-art/i.",
+          tool: "shell",
+          viewport: "any",
+          expect:
+            "Zero matches. Unverifiable superlatives are discounted by patients and read as the generic-template failure mode.",
+        },
+        {
+          action: "Scan for urgency and false scarcity: /limited time|act now|hurry|only \\d+ left|today only/i.",
+          tool: "shell",
+          viewport: "any",
+          expect:
+            "Zero matches. False urgency is the aggressive/sales-driven failure mode and conflicts with the locked blend-not-urgency tone.",
+        },
+        {
+          action: "Check for autoplay and contradictory information at 375px.",
+          tool: "browser",
+          expect:
+            "No autoplay under reduced motion; hours, phone and address agree everywhere they appear.",
+        },
+      ],
+      mobileFirst: [
+        "All ten modes assessed at 375px, weighting the first viewport most heavily",
+        "No promo or urgency banner consuming a mobile viewport before patient value",
+        "No autoplay under prefers-reduced-motion",
+      ],
+      pass: [
+        "Ten recorded verdicts with evidence",
+        "Zero superlatives, puffery, or urgency language",
+        "No contradictory information across pages",
+        "Every finding fixed or logged",
+      ],
+    },
+  },
+  {
+    id: 40,
+    title: "Membership plan / financing path for uninsured patients",
+    priority: "P1",
+    source: "blueprint",
+    blueprintRef: "§12 uninsured path · P1-9",
+    harness: ["GTH-10", "GTH-13", "GTH-14"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 3, reach: 3, risk: 3, effort: 3, readiness: 1 },
+    effort: "M",
+    status: "blocked",
+    wave: 4,
+    job: "Get care without insurance",
+    story: "As an uninsured patient, there is a real named path for me, not just an apology.",
+    problem:
+      "The blueprint found membership plans and financing to be the standard credible answer for the uninsured segment, and their absence a documented abandonment cause. Our item 20 mentions financing; this item is the concrete offering behind it.",
+    where: "/insurance-new-patients",
+    scope: [
+      "Membership plan terms if the practice offers one, or financing terms if it doesn't",
+      "Plain-money language: what it costs, what it covers, how to join or apply",
+      "Only terms the practice will honour",
+    ],
+    acceptance: [
+      "An uninsured patient has a named, actionable path",
+      "Every term is practice-confirmed",
+      "No APR or fee published without sign-off",
+    ],
+    evidence: "Blueprint §12 and the adopt-list exemplars (Chicago Loop, Smile Generation).",
+    dependsOn: "Practice confirming membership and/or financing terms",
+    outOfScope: "Building a membership signup flow. A described path plus a phone call is the v1.",
+    references: [
+      {
+        name: "Chicago Loop Dentistry — in-house membership plan",
+        url: "https://www.chicagoloopdentistry.com/",
+        whatGood:
+          "States the plan's cost and inclusions plainly rather than gating them behind a call, so an uninsured patient can self-qualify before contacting anyone.",
+        takeaway: "Copy the transparency of cost and inclusions. Don't copy any term we can't honour.",
+        mobile:
+          "Their plan reads as a short list rather than a comparison table — the form that survives a 375px column. Avoid a plan-comparison grid on mobile.",
+      },
+      {
+        name: "CFPB — consumer guidance on medical financing",
+        url: "https://www.consumerfinance.gov/consumer-tools/",
+        whatGood:
+          "Sets the disclosure expectations for medical financing — deferred-interest terms in particular are a documented consumer-harm area.",
+        takeaway:
+          "If financing is offered, disclose the terms honestly including what happens if it isn't paid off in the promotional window.",
+        mobile:
+          "Financial terms are read on a phone, in a hurry. Anything requiring a wide table or fine print is effectively undisclosed at 375px.",
+      },
+    ],
+    test: {
+      preconditions: ["Practice has confirmed terms", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm the uninsured path reads as a short list, not a comparison table.",
+          tool: "browser",
+          expect: "Readable in a narrow column with no horizontal scroll.",
+        },
+        {
+          action: "Extract every figure, percentage and financing term and check against sign-off.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Zero unconfirmed terms.",
+        },
+        {
+          action: "Confirm the path is actionable — a next step exists.",
+          tool: "browser",
+          expect: "Named action, not just a description.",
+        },
+      ],
+      mobileFirst: [
+        "Uninsured path readable as a list at 375px with no horizontal scroll",
+        "Actionable next step reachable in one tap",
+      ],
+      pass: ["Named actionable uninsured path", "Every term practice-confirmed"],
+    },
+  },
+  {
+    id: 41,
+    title: "Appointment reminders and easy rescheduling",
+    priority: "P1",
+    source: "blueprint",
+    blueprintRef: "§13 scheduling · §26 row 21 · P1-12",
+    harness: ["GTH-1", "GTH-14", "GTH-18"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 3, reach: 3, risk: 2, effort: 3, readiness: 2 },
+    effort: "M",
+    status: "blocked",
+    wave: 4,
+    job: "Not lose my appointment to life getting in the way",
+    story: "As a busy patient, I get a reminder and can change my appointment without phone tag.",
+    problem:
+      "Phone tag is a named abandonment cause, and rescheduling currently means calling — into the channel already identified as leaking. Reminders reduce no-shows; a written reschedule path removes a call.",
+    where: "Confirmation state · /contact · new-patient content",
+    scope: [
+      "Clear instructions for changing or cancelling, respecting the stated notice period",
+      "Reminder opt-in with a real associated label if the practice sends reminders",
+      "SMS consent disclosure if texting is used — ties to the privacy item",
+    ],
+    acceptance: [
+      "A patient can find how to reschedule without calling",
+      "Reminder opt-in has a proper label and is genuinely optional",
+      "SMS disclosure present if the practice texts",
+    ],
+    evidence: "Blueprint §13 and P1-12; phone tag is a documented convenience abandonment trigger.",
+    dependsOn: "Practice confirming reminder and reschedule policy",
+    outOfScope: "Building reminder infrastructure. That belongs to Tab32, not this site.",
+    references: [
+      {
+        name: "NHS — book, check or cancel appointments",
+        url: "https://www.nhs.uk/nhs-services/gps/book-check-or-cancel-appointments/",
+        whatGood:
+          "Treats cancelling and rescheduling as first-class actions with equal prominence to booking, which is what actually reduces no-shows.",
+        takeaway: "Copy the parity. A reschedule path hidden behind a phone number is not a path.",
+        mobile:
+          "Designed for low-end phones with a visible non-digital alternative throughout — the right model for a patient rescheduling from a bus.",
+      },
+      {
+        name: "FCC — TCPA rules on automated texts",
+        url: "https://www.fcc.gov/general/telemarketing-and-robocalls",
+        whatGood:
+          "Sets the consent requirements for automated appointment texts — the reason a reminder opt-in needs real consent capture rather than a pre-ticked box.",
+        takeaway:
+          "If the practice texts, consent must be explicit and disclosed. Never pre-tick the opt-in.",
+        mobile:
+          "The opt-in control is tapped on a phone — it needs a real ≥44px target with an associated label, not a tiny checkbox.",
+      },
+    ],
+    test: {
+      preconditions: ["Practice policy confirmed", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, find the reschedule instructions without calling.",
+          tool: "browser",
+          expect: "Present and findable; notice period stated.",
+        },
+        {
+          action: "Check the reminder opt-in control if present.",
+          tool: "browser",
+          expect: "≥44×44px, associated label, not pre-ticked.",
+        },
+        {
+          action: "Confirm SMS disclosure if the practice texts.",
+          tool: "manual",
+          viewport: "any",
+          expect: "Present, or explicitly marked not applicable.",
+        },
+      ],
+      mobileFirst: [
+        "Reschedule instructions findable at 375px without a call",
+        "Opt-in control ≥44×44px with an associated label, never pre-ticked",
+      ],
+      pass: [
+        "Reschedule path documented and findable",
+        "Opt-in properly labelled and optional",
+        "SMS disclosure present if applicable",
+      ],
+    },
+  },
+  {
+    id: 42,
+    title: "Cosmetic overview framed as fact-finding, not sales",
+    priority: "P1",
+    source: "blueprint",
+    blueprintRef: "§4K cosmetic jobs · §26 row 23 · P1-14",
+    harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-14"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 3, reach: 2, risk: 2, effort: 5, readiness: 3 },
+    effort: "S",
+    status: "not-started",
+    wave: 4,
+    job: "Explore cosmetic options without being sold to",
+    story:
+      "As someone curious about cosmetic work, I can understand the options and what a consultation involves without feeling pressured.",
+    problem:
+      "Cosmetic content is where dental sites most often turn salesy, which actively alienates the value- and trust-driven patients this site is built for. The blueprint's fix is framing the consultation as fact-finding rather than a sales appointment, and keeping health context alongside aesthetics.",
+    where: "Services / cosmetic content",
+    scope: [
+      "Neutral description of options, process, commitment and upkeep",
+      "Consultation framed explicitly as fact-finding with no obligation",
+      "Health-first grounding rather than aesthetics alone",
+      "No pressure language, no countdowns, no discount-led framing",
+    ],
+    acceptance: [
+      "Zero pressure or urgency language",
+      "Consultation described as fact-finding",
+      "No before/after imagery without documented patient consent",
+    ],
+    evidence:
+      "Blueprint §4K and the anti-pattern list: salesy cosmetic-only framing alienates trust-driven patients. Matches our locked 'blend, not urgency/discount-led' tone decision.",
+    dependsOn: "Confirmed cosmetic service list",
+    outOfScope:
+      "Before/after galleries. The blueprint defers them pending a consent workflow and an accessibility plan.",
+    references: [
+      {
+        name: "ADA MouthHealthy — cosmetic procedures",
+        url: "https://www.mouthhealthy.org/all-topics-a-z",
+        whatGood:
+          "Describes cosmetic procedures with the same clinical neutrality as restorative ones — process, upkeep, and realistic expectations, with no outcome promises.",
+        takeaway: "Copy the neutral register. It is the strongest available antidote to salesy framing.",
+        mobile:
+          "Short single-column explanations that read fine on a phone. Avoid the wide before/after comparison layouts cosmetic pages default to — they break at 375px and carry consent risk.",
+      },
+      {
+        name: "FTC — health and beauty advertising guidance",
+        url: "https://www.ftc.gov/business-guidance/advertising-marketing",
+        whatGood:
+          "Sets substantiation expectations for outcome claims and testimonials in health-adjacent advertising — directly relevant to cosmetic dentistry copy.",
+        takeaway:
+          "No outcome claim we can't substantiate; no testimonial implying typical results without basis.",
+        mobile:
+          "Disclosures must be as prominent as the claim — on a phone that means adjacent to it, not in fine print at the bottom of a long scroll.",
+      },
+    ],
+    test: {
+      preconditions: ["Confirmed cosmetic service list", "Viewport 375×812"],
+      steps: [
+        {
+          action: "Scan for pressure language: /limited time|act now|hurry|special offer ends|only \\d+/i.",
+          tool: "shell",
+          viewport: "any",
+          expect:
+            "Zero matches. Cosmetic content is where sales pressure most often creeps in, and it alienates the trust-driven patients this site targets.",
+        },
+        {
+          action: "At 375×812, confirm the consultation is described as fact-finding with no obligation.",
+          tool: "browser",
+          expect: "Explicitly framed; visible without deep scrolling.",
+        },
+        {
+          action: "Confirm no before/after imagery ships without documented consent.",
+          tool: "manual",
+          viewport: "any",
+          expect: "None present, or consent documented per image.",
+        },
+      ],
+      mobileFirst: [
+        "Fact-finding framing visible at 375px without deep scrolling",
+        "No wide before/after comparison layout breaking at mobile width",
+        "No pressure banner consuming a mobile viewport",
+      ],
+      pass: [
+        "Zero pressure language",
+        "Consultation framed as fact-finding",
+        "No unconsented before/after imagery",
+      ],
+    },
+  },
+  {
+    id: 43,
+    title: "Non-discrimination notice and languages-spoken signal",
+    priority: "P1",
+    source: "merged",
+    blueprintRef: "§9 language access · §26 row 22 · P1-10",
+    harness: ["GTH-1", "GTH-3", "GTH-13", "GTH-14"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 1, reach: 3, risk: 4, effort: 5, readiness: 2 },
+    effort: "S",
+    status: "blocked",
+    wave: 4,
+    job: "Know I'll be served and understood",
+    story:
+      "As a patient who isn't a native English speaker, or who has been turned away before, I can see the practice's stated commitment.",
+    problem:
+      "Extends item 23 with the compliance half the blueprint adds: a non-discrimination notice alongside the languages signal, plus html lang set correctly for assistive technology. Seattle has a substantial limited-English population and the city runs a formal language-access program.",
+    where: "Footer · /about · /accessibility",
+    scope: [
+      "Non-discrimination notice",
+      "Languages actually spoken by the team, confirmed",
+      "html lang set correctly, verified by axe",
+      "Plain language throughout as the baseline access measure",
+    ],
+    acceptance: [
+      "Non-discrimination notice present and footer-linked",
+      "No language claimed without confirmation",
+      "axe html-has-lang passes on every route",
+    ],
+    evidence:
+      "Blueprint §9 and §26 row 22; Seattle OIRA and King County language-access programs establish the local need.",
+    dependsOn: "Confirmed team languages · practice-approved non-discrimination wording",
+    outOfScope: "Full site translation. Item 23 covers that; this is the signal and the notice.",
+    references: [
+      {
+        name: "HHS — Section 1557 non-discrimination",
+        url: "https://www.hhs.gov/civil-rights/for-individuals/section-1557/index.html",
+        whatGood:
+          "Defines the non-discrimination obligations and notice expectations for health programs, including language-assistance provisions.",
+        takeaway:
+          "Use as the model for the notice. Applicability to a private dental practice needs legal confirmation — adopt as good practice, don't assert compliance.",
+        mobile:
+          "The notice must remain readable in a stacked mobile footer rather than becoming a dense block nobody can parse at 375px.",
+      },
+      {
+        name: "Seattle — Language Access Program",
+        url: "https://www.seattle.gov/iandraffairs/LA",
+        whatGood:
+          "Names the languages that actually matter locally and models stating availability plainly without overpromising.",
+        takeaway: "Use to prioritise languages. Copy the plain statement of what's genuinely available.",
+        mobile:
+          "City guidance assumes mobile-primary access for many LEP residents — the signal has to work at 375px, in the footer, without a menu.",
+      },
+    ],
+    test: {
+      preconditions: ["Confirmed languages and approved wording", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm both signals are present in the stacked footer.",
+          tool: "browser",
+          expect: "Readable without horizontal scroll; links ≥44px.",
+        },
+        {
+          action: "Run axe html-has-lang on every route.",
+          tool: "validator",
+          viewport: "any",
+          expect: "Passes everywhere.",
+        },
+        {
+          action: "Check every named language against confirmation.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Zero unconfirmed language claims.",
+        },
+      ],
+      mobileFirst: [
+        "Both signals present and readable in the stacked mobile footer",
+        "Footer links ≥44×44px",
+      ],
+      pass: [
+        "Non-discrimination notice present and linked",
+        "Only confirmed languages named",
+        "html-has-lang passes on every route",
+      ],
+    },
+  },
+  {
+    id: 44,
+    title: "\"When we refer out\" integrity note",
+    priority: "P2",
+    source: "blueprint",
+    blueprintRef: "§7 praise · §11 referral integrity · P2-3",
+    harness: ["GTH-10", "GTH-13"],
+    originalPriority: "P2",
+    pin: null,
+    scores: { conversion: 2, reach: 2, risk: 2, effort: 5, readiness: 2 },
+    effort: "S",
+    status: "blocked",
+    wave: 5,
+    job: "Know they'll put my care above their revenue",
+    story:
+      "As a patient, I can see the practice refers out when someone else is better placed to treat me.",
+    problem:
+      "Patients specifically praise dentists who refer out rather than keeping work in-house — it reads as integrity over revenue. It's one honest paragraph and it reinforces the conservative-care statement (item 28).",
+    where: "/about",
+    scope: [
+      "A short honest note on when the practice refers to specialists",
+      "No implication of capabilities the practice lacks — and none it has",
+    ],
+    acceptance: [
+      "Note present on /about",
+      "Consistent with the actual scope of practice",
+    ],
+    evidence: "Blueprint §7 — emerging patient-generated theme, explicitly labelled emerging rather than repeated.",
+    dependsOn: "Dr. Dubey confirming referral practice",
+    outOfScope: "A specialist directory or named referral partners.",
+    references: [
+      {
+        name: "ADA — Principles of Ethics, referral and consultation",
+        url: "https://www.ada.org/about/principles/code-of-ethics",
+        whatGood:
+          "Establishes referral when a case exceeds one's scope as a professional obligation, which is what makes stating it credible rather than self-congratulatory.",
+        takeaway: "Frame it as normal professional practice, not a boast.",
+        mobile: "One short paragraph — the only form that earns its place on a phone About page.",
+      },
+      {
+        name: "Blueprint §11 — referral integrity signal",
+        url: "https://www.chicagoloopdentistry.com/",
+        whatGood:
+          "Pairs the referral note with the conservative-care promise so the two reinforce each other rather than reading as separate claims.",
+        takeaway: "Place it adjacent to item 28's statement on /about.",
+        mobile: "Adjacency matters more on mobile, where the two would otherwise be screens apart.",
+      },
+    ],
+    test: {
+      preconditions: ["Dr. Dubey confirmed referral practice", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm the note is present on /about and adjacent to the conservative-care statement.",
+          tool: "browser",
+          expect: "Present and adjacent, not screens apart in the stacked layout.",
+        },
+        {
+          action: "Check the note against the confirmed scope of practice.",
+          tool: "manual",
+          viewport: "any",
+          expect: "No implied capability the practice lacks.",
+        },
+      ],
+      mobileFirst: [
+        "Note adjacent to the conservative-care statement in the stacked mobile layout",
+      ],
+      pass: ["Note present on /about", "Consistent with actual scope"],
+    },
+  },
+  {
+    id: 45,
+    title: "Emergency reachability without a bottom bar",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§17 mobile actions · §19 homepage map · §22 sticky action bar · P0-1",
+    harness: ["GTH-6", "GTH-13", "GTH-14", "GTH-15", "GTH-17", "GTH-21"],
+    originalPriority: "P0",
+    pin: null,
+    decision: {
+      date: "2026-08-30",
+      ruling: "declined",
+      said: "No clear need for a sticky bottom bar.",
+      consequence:
+        "The locked Pattern A ruling stands — no bottom bar is built. But the requirement underneath it survives the ruling: item 7 makes emergency guidance P0, and the fixed header carries Call, Schedule and the hamburger, not emergency. This item is now the narrower job of proving emergency is reachable in one tap from every route without a bottom bar. If that turns out not to be achievable within the current header, the bottom-bar question comes back — with evidence rather than a recommendation.",
+    },
+    scores: { conversion: 4, reach: 5, risk: 3, effort: 5, readiness: 5 },
+    effort: "S",
+    status: "not-started",
+    wave: 2,
+    job: "Reach emergency help fast, from anywhere, on a phone",
+    story:
+      "As a patient in pain part-way down a long page, I can reach emergency guidance in one tap without scrolling back to the top.",
+    problem:
+      "Decided: no sticky bottom bar. That leaves a real question the bar would have answered by default. The fixed header persists (verified in item 27) and carries Call, Schedule and the hamburger — but no emergency action, and item 7 makes emergency P0. The homepage is 12.4 screens on a phone. So: where does emergency live, and is it genuinely one tap from every route?",
+    where: "src/components/Nav.tsx · Footer · emergency entry points",
+    scope: [
+      "Decide where emergency lives given no bottom bar: header (crowded — see item 27's 768px findings), hamburger, or a persistent in-page affordance",
+      "The header already carries a call control, which covers part of the urgent job — establish whether that is sufficient or whether emergency needs its own distinct entry",
+      "Verify one-tap reachability from every route, at every matrix width",
+      "Pairs with item 46: whatever the entry is, it must be visually distinguishable from the booking CTA",
+    ],
+    acceptance: [
+      "Emergency guidance reachable in one tap from every route at 375px",
+      "Verified at 320, 360, 375, 390, 430 and landscape",
+      "The emergency entry is visually distinct from the booking CTA",
+      "No bottom bar introduced",
+    ],
+    evidence:
+      "Blueprint §17/§19/§22 argued for a bottom bar; the ruling declined it. What survives is the underlying requirement — item 27 measured the fixed header persisting with a 44px Schedule control, so Call and Book are covered, and emergency is the genuine remaining gap.",
+    dependsOn: "Item 7 (emergency page must exist to link to) · item 46 (visual distinction)",
+    outOfScope:
+      "A sticky bottom bar. Ruled out 2026-08-30. Reopen only with measured evidence that one-tap emergency access is unachievable without one.",
+    references: [
+      {
+        name: "NN/g — thumb zone and mobile reachability",
+        url: "https://www.nngroup.com/articles/mobile-ux/",
+        whatGood:
+          "Establishes that the top of a large phone is genuinely hard to reach one-handed — the empirical basis for the blueprint's recommendation.",
+        takeaway:
+          "Take the reachability finding seriously. It does not by itself mandate a bottom bar; a lower-placed in-content action can satisfy it.",
+        mobile:
+          "This is a mobile-only concern — the entire argument disappears on desktop, which is why it never surfaced in our earlier passes.",
+      },
+      {
+        name: "iOS Human Interface Guidelines — layout and safe areas",
+        url: "https://developer.apple.com/design/human-interface-guidelines/layout",
+        whatGood:
+          "Documents safe-area insets and why bottom-anchored UI must clear the home indicator — the implementation detail that makes sticky bars break on notched devices.",
+        takeaway:
+          "If the decision goes ahead, honour env(safe-area-inset-bottom) and verify in landscape too.",
+        mobile:
+          "Also relevant to the argument against: a bottom bar permanently consumes vertical space on a device that has very little, and can cover a form's submit — a real cost, not just an aesthetic one.",
+      },
+    ],
+    test: {
+      preconditions: ["Item 7 shipped so there is an emergency destination", "Viewport 375×812"],
+      steps: [
+        {
+          action:
+            "At 375×812, from the homepage and from two other routes, count taps to reach emergency guidance.",
+          tool: "browser",
+          expect: "One tap from every route. More than one means the current header placement is insufficient.",
+        },
+        {
+          action:
+            "Repeat the count part-way down the homepage (around screen 6 of 12.4) without scrolling back up.",
+          tool: "browser",
+          expect:
+            "Still one tap. This is the case the bottom bar would have covered by default, so it is the one that has to be proven.",
+        },
+        {
+          action: "Measure the emergency entry's tap target and confirm it is visually distinct from the booking CTA.",
+          tool: "browser",
+          expect: "≥44×44px, and distinguishable from Schedule/Book at a glance (pairs with item 46).",
+        },
+        {
+          action: "Repeat at 320, 360, 390, 430 and in landscape.",
+          tool: "browser",
+          expect: "One-tap reachability holds at every matrix width, including landscape where the fixed header eats more of the viewport.",
+        },
+        {
+          action: "Confirm no bottom-anchored bar was introduced.",
+          tool: "shell",
+          viewport: "any",
+          expect: "No fixed bottom element. The 2026-08-30 ruling stands.",
+        },
+      ],
+      mobileFirst: [
+        "Emergency reachable in one tap from every route at 375px",
+        "Still one tap from mid-page, without scrolling back to the header",
+        "Emergency entry ≥44×44px and visually distinct from the booking CTA",
+        "Holds at 320 / 360 / 390 / 430 and in landscape",
+      ],
+      pass: [
+        "One-tap emergency access verified from every route and from mid-page",
+        "No bottom bar introduced",
+        "Emergency entry distinct from booking at mobile width",
+      ],
+      gotchas: [
+        "If one-tap access genuinely cannot be achieved within the current header, that is evidence to reopen the bottom-bar question — with a measurement, not a recommendation. Do not quietly add one instead.",
+      ],
+    },
+  },
+  {
+    id: 46,
+    title: "Add a palette-harmonised emergency colour token",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "§17 color strategy · §19 utility strip",
+    harness: ["GTH-1", "GTH-5"],
+    originalPriority: "P1",
+    repriorityNote:
+      "PROMOTED P1 → P0 (33.5) as a direct consequence of Akash's ruling. It scored 30.5 while blocked on a decision; approving it in principle moved readiness 1 → 4, which crossed the P0 threshold. The work didn't get more important — it got unblocked, and the model is built to reflect that.",
+    pin: null,
+    decision: {
+      date: "2026-08-30",
+      ruling: "approved-with-constraint",
+      said: "Emergency could be a different colour, but it goes with the matching palette.",
+      consequence:
+        "A fifth token is approved in principle for emergency use only — but it must harmonise with the locked warm-ivory / terracotta / espresso / sand family, not the blueprint's generic #C0392B alert red. The specific hex still needs sign-off. Candidates were derived from the existing palette and contrast-checked: **#A32E1F** (recommended — 6.67:1 on ivory, 7.08:1 for ivory text on it, clearly distinct from terracotta) or **#94271A** (deeper, 7.72:1, more distinct still). Both are warm brick reds in the same earthy family as terracotta rather than a clinical red.",
+    },
+    scores: { conversion: 2, reach: 3, risk: 4, effort: 5, readiness: 4 },
+    effort: "S",
+    status: "not-started",
+    wave: 2,
+    job: "Tell an emergency action apart from a booking action instantly",
+    story:
+      "As a patient in pain, the emergency action is visually distinct from every other button on the page.",
+    problem:
+      "Terracotta carries every primary CTA, so an emergency action rendered in it is indistinguishable from 'Book Appointment' at a glance — precisely when a patient is least able to read carefully. Approved: a fifth token, harmonised with the locked palette rather than a generic alert red.",
+    where: "src/app/globals.css (new token) · EmergencyGuidance component",
+    scope: [
+      "Add one token — recommended `--color-alert: #A32E1F`, alternate `#94271A` — pending Akash's sign-off on the exact value",
+      "Reserved exclusively for emergency. Never a marketing, promotional or error-state colour; a red used twice stops meaning anything",
+      "Verify AA against warm ivory and sand, and for ivory text on the token itself",
+      "Never colour alone — icon plus text label always, so it survives greyscale and outdoor glare",
+      "Do not touch any of the four existing tokens",
+    ],
+    acceptance: [
+      "One new token added, exact value signed off by Akash",
+      "AA verified on every surface pairing it appears in",
+      "Emergency action unmistakably distinct from booking CTAs at 375px",
+      "Identifiable in greyscale — meaning never colour-carried",
+      "Zero changes to the four locked tokens",
+    ],
+    evidence:
+      "Blueprint §17 colour strategy, constrained by Akash's 2026-08-30 ruling to stay within the palette family. Candidate values were contrast-computed against the actual locked tokens rather than taken from the blueprint.",
+    dependsOn: "Akash signing off the exact hex (#A32E1F recommended)",
+    outOfScope:
+      "Changing any of the four existing tokens, and using the new token for anything other than emergency.",
+    references: [
+      {
+        name: "WCAG 2.2 — 1.4.1 Use of Colour",
+        url: "https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html",
+        whatGood:
+          "Requires that colour is never the sole carrier of meaning — which means the emergency action needs an icon and label regardless of the palette decision.",
+        takeaway:
+          "This constraint applies either way, so implement icon-plus-label first; the colour question is secondary.",
+        mobile:
+          "Especially load-bearing on a phone in bright outdoor light, where colour differentiation degrades badly — the label does the work.",
+      },
+      {
+        name: "NHS Digital Service Manual — colour and emergency content",
+        url: "https://service-manual.nhs.uk/design-system/styles/colour",
+        whatGood:
+          "Reserves a specific red exclusively for emergency and warning content, and forbids its use for anything promotional — the discipline that keeps the signal meaningful.",
+        takeaway:
+          "If a token is approved, copy the exclusivity rule: emergency only, never marketing. A red used twice stops meaning anything.",
+        mobile:
+          "Their emergency treatment stays legible at small sizes and under reduced-motion — worth copying whichever way the decision lands.",
+      },
+    ],
+    test: {
+      preconditions: ["Akash has signed off the exact hex", "Viewport 375×812"],
+      steps: [
+        {
+          action: "Confirm the exact token value is signed off before editing globals.css.",
+          tool: "manual",
+          viewport: "any",
+          expect:
+            "A specific hex approved. The ruling approved the principle; the value still needs confirming.",
+        },
+        {
+          action:
+            "At 375×812, show the emergency action beside a booking CTA and confirm they are instantly distinguishable.",
+          tool: "browser",
+          expect: "Distinct at a glance, by icon and label at minimum.",
+        },
+        {
+          action: "Verify contrast of the emergency treatment against every surface it appears on.",
+          tool: "browser",
+          expect: "≥4.5:1 for its text, ≥3:1 for its boundary.",
+        },
+        {
+          action: "Render in greyscale and confirm the emergency action is still identifiable.",
+          tool: "browser",
+          expect: "Identifiable without colour — proves meaning isn't colour-carried.",
+        },
+      ],
+      mobileFirst: [
+        "Emergency and booking actions distinguishable at a glance at 375px",
+        "Still identifiable in greyscale — meaning never colour-only",
+        "AA contrast on every surface it appears on",
+      ],
+      pass: [
+        "Exact hex signed off and added as a single new token",
+        "Emergency visually unmistakable at mobile width",
+        "Colour never the sole carrier of meaning",
+        "Zero changes to the four existing tokens",
+      ],
+      gotchas: [
+        "The ruling was 'goes with the matching palette' — a generic alert red would satisfy the letter and miss the point. Candidates were derived from the locked palette for that reason.",
+        "Reserve it strictly for emergency. The moment it appears on a promotion, the signal is gone.",
+      ],
+    },
+  },
+  {
+    id: 47,
+    title: "Revisit testimonial auto-scroll once real reviews land",
+    priority: "P1",
+    source: "blueprint",
+    blueprintRef: "§17 reviews · §22 review card · §15C anti-patterns",
+    harness: ["GTH-1", "GTH-4", "GTH-13", "GTH-14", "GTH-22"],
+    originalPriority: "P1",
+    pin: null,
+    decision: {
+      date: "2026-08-30",
+      ruling: "deferred",
+      said: "We can decide when we reach that bridge.",
+      consequence:
+        "No change now — the rail keeps auto-scrolling as originally specified. The decision is deliberately deferred until item 13 lands real reviews, because the current placeholders cannot test the question: they were written short, and real quotes will be longer. The trigger is concrete rather than vague — when real quotes are in, read each one end to end at 375px while the rail is moving. If a quote scrolls out of view mid-sentence, that is the evidence; if not, the rail stays.",
+    },
+    scores: { conversion: 2, reach: 3, risk: 3, effort: 5, readiness: 3 },
+    effort: "S",
+    status: "blocked",
+    wave: 4,
+    job: "Actually read what patients said",
+    story: "As a patient checking reviews, I can read them at my own pace.",
+    problem:
+      "Deferred by decision, with a concrete trigger. The rail auto-scrolls continuously — a deliberate call, and it honours prefers-reduced-motion. The blueprint lists autoplay reviews among its anti-patterns on the grounds that moving text is harder to read and reads as less credible. Neither position can be tested against the current placeholders, which were written short. Real reviews from item 13 will be longer, and that is what decides it.",
+    where: "src/components/TestimonialsSection.tsx",
+    scope: [
+      "Do nothing until item 13 lands real quotes at real length",
+      "Then: read every real quote end to end at 375px while the rail is moving",
+      "If a quote scrolls out of view mid-sentence, switch to static attributed cards",
+      "If all quotes stay readable, the rail stays as specified",
+      "Also assess against WCAG 2.2.2 — if the rail is in scope, a pause control becomes a requirement and settles it",
+    ],
+    acceptance: [
+      "Assessed only after real quotes exist, never against placeholders",
+      "Every real quote readable end to end at 375px, whichever implementation ships",
+      "prefers-reduced-motion honoured either way",
+    ],
+    evidence:
+      "Blueprint §17/§22 specify static, no autoplay. Against that: the current implementation was explicitly requested and is reduced-motion aware. The real trigger is item 13 — longer quotes may make the decision for us.",
+    dependsOn: "Item 13 — real reviews are the trigger and the test material",
+    outOfScope: "Changing it before real reviews land. The current placeholders don't test the question.",
+    references: [
+      {
+        name: "NN/g — auto-forwarding carousels",
+        url: "https://www.nngroup.com/articles/auto-forwarding/",
+        whatGood:
+          "Documents that auto-advancing content is frequently missed or actively resented, and that users lose content they were mid-way through reading.",
+        takeaway:
+          "The finding is about content users are trying to read — which is exactly reviews. It's the strongest argument for the change.",
+        mobile:
+          "Worse on a phone: less text visible at once, so a moving rail is more likely to remove a quote mid-sentence. Real reviews will be longer than our placeholders.",
+      },
+      {
+        name: "WCAG 2.2 — 2.2.2 Pause, Stop, Hide",
+        url: "https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html",
+        whatGood:
+          "Requires a mechanism to pause moving content that starts automatically and lasts more than five seconds and is presented alongside other content.",
+        takeaway:
+          "Worth checking whether the current rail is in scope. If it is, a pause control becomes a requirement rather than a preference — which would itself settle the question.",
+        mobile:
+          "A pause control adds another ≥44px target on a phone; static cards avoid the problem entirely rather than solving it.",
+      },
+    ],
+    test: {
+      preconditions: ["Item 13 shipped with real quotes", "Viewport 375×812"],
+      steps: [
+        {
+          action: "Confirm real quotes are in place — this cannot be assessed against placeholders.",
+          tool: "manual",
+          viewport: "any",
+          expect:
+            "Real reviews at real length are live. Testing the short placeholders would produce a false pass and defer the question again.",
+        },
+        {
+          action:
+            "At 375×812 with real-length quotes, attempt to read each one fully in the current implementation.",
+          tool: "browser",
+          expect:
+            "Every quote readable end to end. If a quote moves out of view mid-sentence, that is the evidence the decision needs.",
+        },
+        {
+          action: "Assess against WCAG 2.2.2 — does the rail need a pause mechanism?",
+          tool: "manual",
+          viewport: "any",
+          expect: "A recorded determination either way.",
+        },
+        {
+          action: "Confirm prefers-reduced-motion freezes the rail.",
+          tool: "browser",
+          expect: "Frozen under the setting, whichever implementation ships.",
+        },
+      ],
+      mobileFirst: [
+        "Every real-length quote readable end to end at 375px",
+        "prefers-reduced-motion honoured",
+        "Keyboard reachable either way",
+      ],
+      pass: [
+        "Assessed against real quotes, not placeholders",
+        "Real quotes fully readable at mobile width in whichever implementation ships",
+        "Reduced motion honoured",
+      ],
+      gotchas: [
+        "The current behaviour was explicitly requested. Change it only on the evidence named above — a quote scrolling away mid-sentence — not on the blueprint's general preference.",
       ],
     },
   },
