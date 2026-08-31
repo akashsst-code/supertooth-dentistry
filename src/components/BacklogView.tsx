@@ -454,26 +454,61 @@ export function BacklogView() {
               Deliberately not building
             </h2>
             <p className="text-sm text-espresso/70 !mb-4 max-w-2xl">
-              Deferred because they add complexity without enough patient value — recorded so the
-              decision doesn&apos;t get re-litigated later.
+              Deferred or banned because they add complexity, risk or dishonesty without enough
+              patient value. Twelve of these come from the v2 blueprint&apos;s transfer-risk analysis
+              — attractive cross-domain patterns that would actively harm a small practice. Recorded
+              so the decision doesn&apos;t get re-litigated later.
             </p>
             <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm text-espresso/80">
               {[
                 [
-                  "Symptom checker",
-                  "Clinical risk, and no evidence patients want one from a single practice's site.",
+                  "Symptom / triage question engine",
+                  "Crosses into diagnosis — clinical-safety and scope-of-practice risk. Banned outright. Use static cited routing plus a browse-by-concern link list.",
                 ],
                 [
-                  "Cost calculator",
-                  "Can't be accurate without plan data. Inaccuracy is worse than silence.",
+                  "Cost calculator or per-procedure price list",
+                  "Can't stand behind fixed prices without an ops pricing commitment; over-promising erodes trust when the bill differs. One honest bounded number instead (item 35).",
                 ],
-                ["Patient portal", "Operational maturity Tab32 should own, not this site."],
-                ["Chatbot", "Adds a channel before the existing ones work."],
                 [
-                  "Personalization",
-                  "Locked principle: not before basic content and navigation work.",
+                  "Patient portal / account system",
+                  "Proxy access, PHI, records, secure messaging — a HIPAA-heavy build. Keep PHI out of public forms.",
                 ],
-                ["Live “open now” status", "A static hours list is the accepted lower-cost v1."],
+                [
+                  "Real-time scheduler / live availability",
+                  "Needs synced calendars and no-show automation. Exposing a calendar you can't keep accurate is worse than a request form.",
+                ],
+                [
+                  "Accessibility overlay widgets",
+                  "Do not confer WCAG conformance and can actively break assistive tech. ~1 in 2 dental sites now ships one; it is false assurance, not compliance.",
+                ],
+                [
+                  "Auto-translated multilingual site",
+                  "Machine translation of health and cost content risks dangerous inaccuracy. Plain language plus a verified languages-spoken signal first.",
+                ],
+                [
+                  "Gamified / dark-pattern onboarding",
+                  "Streaks, sunk-cost loaders, false urgency — manipulative and unethical for anxious health decisions.",
+                ],
+                [
+                  "Financing vendor front-and-centre",
+                  "Bias-flagged marketing partners; foregrounding them reads salesy and shifts risk to the patient. Describe neutrally and disclose.",
+                ],
+                [
+                  "SMS waitlist / automated notifications",
+                  "Needs staffing and messaging infrastructure. A phone and request fallback covers the empty-availability case.",
+                ],
+                [
+                  "24/7 messaging or implied teledentistry",
+                  "Sets an availability expectation a small practice cannot meet. State real channels and hours.",
+                ],
+                [
+                  "Mascots and gamified empty states",
+                  "Reads juvenile — a named failure mode. Warm but grown-up error and empty copy.",
+                ],
+                [
+                  "Live “open now” status",
+                  "A static hours list is the accepted lower-cost v1 per the locked navigation requirements.",
+                ],
               ].map(([name, why]) => (
                 <li key={name}>
                   <span className="font-medium text-espresso">{name}</span> — {why}

@@ -1081,6 +1081,8 @@ export const backlog: BacklogItem[] = [
       "When a specific estimate is possible (after the exam) and why not before",
       "A path for patients without insurance",
       "What to bring: card, ID, medication list, prior x-rays",
+      "v2: if the practice is out-of-network with a carrier, say so candidly AND state whether claims are still submitted on the patient's behalf — an observed site turns exactly this negative into a trust signal",
+      "v2: name carriers rather than saying \"most major insurance\", which remains a documented abandonment trigger",
       "Reuse the existing InsuranceBlock / InsuranceExpandCard components",
     ],
     acceptance: [
@@ -1233,6 +1235,9 @@ export const backlog: BacklogItem[] = [
       "Honest after-hours statement — what is and isn't available, and when the office opens",
       "One-tap call, prominent",
       "Optionally note that ERs rarely staff dentists and generally treat the symptom, not the tooth",
+      "v2: adopt the \"when unsure, default up\" rule — safer to be evaluated and sent home than to delay (NHS 111 / Bond Vet routing model, borrowed as static cited content, never as a question engine)",
+      "v2: add a short \"what to have ready when you call\" list — what happened, when, symptoms, medications",
+      "v2 anti-pattern: exactly ONE emergency number sitewide. An observed site listed three, which in a crisis is unusable",
     ],
     acceptance: [
       "Red-flag guidance matches ADA patient guidance",
@@ -1552,6 +1557,8 @@ export const backlog: BacklogItem[] = [
       "Success state: what was sent, what happens next, by when, and how to reach a human meanwhile",
       "Error states naming the problem and the fix, not just 'invalid'",
       "Optional free-text field — 'Anything we should know before your visit?'",
+      "v2 CD-9: set the mechanism expectation honestly — this is a request with a callback, not instant booking. Never dress a request up as a confirmed appointment",
+      "v2 CD-22: let the patient review what they entered before submitting",
       "Labels above fields, inline validation on blur, ≥44px targets",
     ],
     acceptance: [
@@ -1715,6 +1722,10 @@ export const backlog: BacklogItem[] = [
       "What actually happens at a first visit, step by step",
       "Only comfort options the practice verifiably offers",
       "Pairs with the optional form field from item 9",
+      "v2: a concrete stop-signal is far stronger than the word \"gentle\" — e.g. raise your hand and we stop — but it is a policy claim and needs confirming",
+      "v2: say plainly that flagging anxiety when you book is welcome; almost no site states this",
+      "v2: if sedation is offered, name the TYPE (inhalation / oral / IV). Generic \"sedation\" with the type unnamed is a catalogued anti-pattern",
+      "v2: the \"six months or six years\" no-judgment line is now a recognisable convention that directly answers the shame hinge"
     ],
     acceptance: [
       "No sedation or comfort claim appears without practice confirmation",
@@ -2241,6 +2252,8 @@ export const backlog: BacklogItem[] = [
       "Pull three real reviews from the Google Business Profile",
       "First name + last initial only — never a full patient name without written authorization",
       "Confirm the real rating and count against the live GBP",
+      "v2: show the aggregate count and its date — dated aggregates read as more credible than a bare star rating",
+      "v2 anti-pattern: never let a review count differ between two places on the site. Observed sites showed 4,700 vs 8,000+ and 1,300 vs 600 — self-evident verification failures that destroy review trust",
     ],
     acceptance: [
       "Zero placeholder quotes on the live site",
@@ -2730,6 +2743,7 @@ export const backlog: BacklogItem[] = [
       "Explicit statement covering children, teens, adults, older adults, caregivers",
       "Say plainly that households can be seen together",
       "Warm but never juvenile — no cartoons, no primary colors",
+      "v2 anti-pattern, and a direct check on our own positioning: an observed \"family\" site framed itself as \"tailored for the business professional\", narrowing away the multi-generational audience. Our primary persona is a time-poor downtown professional — the copy must serve them WITHOUT excluding the First Hill / International District families the practice also needs",
     ],
     acceptance: [
       "A patient with no children still sees themselves in the copy",
@@ -5088,6 +5102,7 @@ export const backlog: BacklogItem[] = [
       "Membership plan terms if the practice offers one, or financing terms if it doesn't",
       "Plain-money language: what it costs, what it covers, how to join or apply",
       "Only terms the practice will honour",
+      "v2 anti-pattern: keep membership a genuine uninsured safety net with itemised inclusions and an honest \"this is not insurance\" disclosure. An observed site reframed membership as a $595–$1,695/yr concierge tier with cosmetic credits, abandoning the affordability purpose entirely",
     ],
     acceptance: [
       "An uninsured patient has a named, actionable path",
@@ -5805,6 +5820,630 @@ export const backlog: BacklogItem[] = [
       ],
       gotchas: [
         "The current behaviour was explicitly requested. Change it only on the evidence named above — a quote scrolling away mid-sentence — not on the blueprint's general preference.",
+      ],
+    },
+  },
+  // ══════════════════════════════════════════════════════════════════
+  // BLUEPRINT v2 INTAKE — 2026-08-31
+  // Second evidence wave: 50 new dental sites (~90 total, ~62 deep) +
+  // ~55 cross-domain sites yielding the CD-1…CD-30 pattern catalogue.
+  // See docs/research/…-blueprint-v2.md
+  // ══════════════════════════════════════════════════════════════════
+  {
+    id: 48,
+    title: "Three clear doors on the homepage: Book · New patient · Emergency",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "v2 §16 CD-1 (One Medical, NHS 111) · §19 hero",
+    harness: ["GTH-1", "GTH-4", "GTH-13", "GTH-14", "GTH-15", "GTH-17"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 5, reach: 5, risk: 2, effort: 5, readiness: 4 },
+    effort: "S",
+    status: "not-started",
+    wave: 1,
+    job: "Self-sort by intent without hunting through a menu",
+    story:
+      "As a visitor arriving with one of three very different intents, I can see my door immediately instead of reading a nav.",
+    problem:
+      "Visitors arrive routine, new-patient, or in pain right now — three different first actions. Our homepage offers one CTA (Book) plus a call icon, so the new patient and the person in pain both have to work it out from a nav. CD-1 is the cross-domain answer: match the interface to the visitor's intent, one primary action per screen.",
+    where: "Hero · global header",
+    scope: [
+      "Exactly three doors in patient words: Book/Request · New patient · Dental emergency",
+      "The door only routes — it never assesses severity or asks the visitor to self-classify",
+      "Keep warmth; three cold triage buttons read like a hospital intake desk",
+      "Emergency door pairs with items 45 and 46 (reachability and visual distinction)",
+    ],
+    acceptance: [
+      "Three doors visible in the first mobile viewport",
+      "Each routes to a real destination",
+      "No door asks the visitor to rate their own severity",
+    ],
+    evidence:
+      "v2 §16 CD-1, sourced to One Medical and NHS 111 online, both DP/GOV-Strong. NHS 111 is explicit that it routes without diagnosing — exactly the line we need.",
+    dependsOn: "Item 7 (emergency destination must exist)",
+    outOfScope:
+      "NHS 111's symptom-question engine. The door routes; it never assesses. That is the banned diagnostic checker in a different coat.",
+    references: [
+      {
+        name: "NHS 111 online",
+        url: "https://111.nhs.uk/",
+        whatGood:
+          "States plainly that it will not give a diagnosis but will tell you what help you need — then routes by level of care. It is the clearest published example of intent-routing that stays the safe side of the diagnosis line.",
+        takeaway:
+          "Copy the routing logic and that sentence's honesty. Do NOT copy the question engine behind it — that is the symptom checker this backlog bans.",
+        mobile:
+          "Built mobile-first for people in distress: large targets, one decision per screen, no dense nav. Our three doors should be full-width rows at 375px, not a horizontal button group.",
+      },
+      {
+        name: "One Medical",
+        url: "https://www.onemedical.com/",
+        whatGood:
+          "Presents a small number of intent-shaped entry points rather than an org-chart menu, so a visitor self-sorts in one glance without reading navigation.",
+        takeaway:
+          "Copy the intent-shaped framing. Keep our three warm rather than clinical — over-triage reads cold, which is the specific risk CD-1 names.",
+        mobile:
+          "Their doors are thumb-reachable and stack cleanly. Three is the right count for a phone; four or more turns a glance into a decision.",
+      },
+    ],
+    test: {
+      preconditions: ["Item 7 shipped", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm all three doors are visible in the first viewport without scrolling.",
+          tool: "browser",
+          expect: "Three doors present above the fold, each ≥44×44px, full-width rows rather than a cramped button group.",
+        },
+        {
+          action: "Follow each door.",
+          tool: "browser",
+          expect: "Each lands on a real destination — booking, new-patient content, emergency guidance.",
+        },
+        {
+          action: "Read the door labels and check none asks the visitor to judge their own severity.",
+          tool: "manual",
+          viewport: "any",
+          expect:
+            "Labels describe intent ('Dental emergency'), never a self-assessment ('Is your pain severe?').",
+        },
+        {
+          action: "Inspect for any conditional logic behind the doors.",
+          tool: "browser",
+          viewport: "any",
+          expect: "Static links only. Branching means a triage engine has crept in.",
+        },
+      ],
+      mobileFirst: [
+        "All three doors in the first 375×812 viewport",
+        "Each a full-width row ≥44×44px with ≥8px separation",
+        "No horizontal button group cramming three labels across 375px",
+      ],
+      pass: [
+        "Three doors, each routing to a real destination",
+        "No self-classification of severity",
+        "Zero branching logic",
+      ],
+      gotchas: [
+        "Adding a fourth or fifth door destroys the pattern — the value is that a glance resolves it. Three is the number.",
+      ],
+    },
+  },
+  {
+    id: 49,
+    title: "Honest government-plan line (Apple Health / Medicaid)",
+    priority: "P0",
+    source: "blueprint",
+    blueprintRef: "v2 §12 government-plan-forward framing · §15 new pattern 3",
+    harness: ["GTH-10", "GTH-13", "GTH-14"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 3, reach: 4, risk: 4, effort: 5, readiness: 2 },
+    effort: "S",
+    status: "blocked",
+    wave: 2,
+    job: "Find out whether my public coverage is accepted",
+    story:
+      "As a patient on Apple Health, I can tell from the site whether this practice takes it — without phoning to be told no.",
+    problem:
+      "Wave 2 found government-plan-forward framing to be a real access signal, and — importantly — that honesty cuts both ways: Aspen Dental plainly states Medicaid is NOT accepted. Saying nothing is the worst option, because it makes a patient spend a call to discover a no. This is an equity item for a family practice serving a mixed-income catchment.",
+    where: "/insurance-new-patients",
+    scope: [
+      "State Apple Health / Medicaid participation plainly — or explicit non-participation, equally plainly",
+      "Never imply a program the practice doesn't take",
+      "If not accepted, point somewhere useful rather than dead-ending",
+    ],
+    acceptance: [
+      "A clear yes or no on Apple Health / Medicaid",
+      "Verified with the practice before publishing",
+      "If no, an onward pointer exists",
+    ],
+    evidence:
+      "v2 §12 and §15 new-pattern 3 (PR): Canadian sites lead with CDCP, US sites name Medicaid/Medi-Cal/CHIP, and Aspen models the honest negative. Seattle's mixed-income catchment — First Hill, International District — makes this a real access question.",
+    dependsOn: "Practice confirming Apple Health / Medicaid status",
+    outOfScope: "Implying participation in any program not confirmed.",
+    references: [
+      {
+        name: "Washington Apple Health — dental coverage",
+        url: "https://www.hca.wa.gov/health-care-services-supports/apple-health-medicaid-coverage",
+        whatGood:
+          "The authoritative statement of what Apple Health dental covers in this state — the reference to check any participation claim against.",
+        takeaway:
+          "Use to confirm the claim before publishing. State participation or non-participation; never leave it unsaid.",
+        mobile:
+          "Patients on public coverage skew mobile-primary, so this answer must be findable at 375px without a call — the call is the cost we're removing.",
+      },
+      {
+        name: "Aspen Dental — honest negative on Medicaid",
+        url: "https://www.aspendental.com/",
+        whatGood:
+          "States plainly that Medicaid is not accepted. Counter-intuitively a trust signal: it saves the patient a wasted call and reads as candour rather than evasion.",
+        takeaway:
+          "Copy the willingness to publish a negative. An unanswered question costs the patient more than a clear no.",
+        mobile:
+          "One short line, which is all this needs at 375px. Avoid burying it inside a long insurance table.",
+      },
+    ],
+    test: {
+      preconditions: ["Practice has confirmed status", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, find the answer on Apple Health / Medicaid.",
+          tool: "browser",
+          expect: "A clear yes or no, findable without a call and without opening an accordion.",
+        },
+        {
+          action: "If the answer is no, confirm an onward pointer exists.",
+          tool: "browser",
+          expect: "The patient is pointed somewhere useful rather than dead-ended.",
+        },
+        {
+          action: "Verify the published status against the practice's confirmation.",
+          tool: "manual",
+          viewport: "any",
+          expect: "Matches exactly. An implied acceptance that turns out false is the harm here.",
+        },
+      ],
+      mobileFirst: [
+        "A clear yes/no findable at 375px without a call or an accordion tap",
+        "If no, an onward pointer is present",
+      ],
+      pass: [
+        "Explicit participation status published",
+        "Verified with the practice",
+        "No implied participation in unconfirmed programs",
+      ],
+    },
+  },
+  {
+    id: 50,
+    title: "Household / multi-person booking affordance",
+    priority: "P1",
+    source: "blueprint",
+    blueprintRef: "v2 §15 white space · §16 CD-27 · §28 open question 16",
+    harness: ["GTH-1", "GTH-4", "GTH-14", "GTH-18"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 4, reach: 3, risk: 1, effort: 5, readiness: 4 },
+    effort: "S",
+    status: "not-started",
+    wave: 4,
+    job: "Arrange care for more than one person at once",
+    story:
+      "As the person who books dental appointments for my household, I can say so when I request rather than making three separate requests.",
+    problem:
+      "v2 confirms this as the clearest untouched white space in the entire scan: across ~62 homepages examined in depth, only one site gestures at booking a whole family. Every practice asserts 'family' and none enables it. For a practice positioning as a family dental home, a household field on the request form is a near-free differentiator.",
+    where: "src/components/AppointmentForm.tsx · family section",
+    scope: [
+      "One optional field: how many people is this for, and roughly what ages or relationships",
+      "Acknowledge the coordinator — the person booking is often not the patient",
+      "Say plainly on the family section that households can be seen together",
+      "Keep it a field, not a flow. No family accounts, no per-member dashboards",
+    ],
+    acceptance: [
+      "The request form accepts a multi-person request without a second submission",
+      "The field is optional and never blocks submission",
+      "The family content states that households can be booked together",
+    ],
+    evidence:
+      "v2 §15 confirms it as a white space unmet even in wave 2, and §16 CD-27 supplies the principle. This is the cheapest genuine differentiator the blueprint identifies.",
+    dependsOn: "Item 9",
+    outOfScope:
+      "Family accounts or per-member dashboards. v2's transfer-risk list flags patient portals as a HIPAA-heavy build to defer — this is a form field, not an account system.",
+    references: [
+      {
+        name: "Tend — book the whole family",
+        url: "https://www.hellotend.com/",
+        whatGood:
+          "The only site in ~62 examined that gestures at booking a household together, which is precisely what makes it worth noting — the bar is currently on the floor.",
+        takeaway:
+          "Copy the intent. There is no strong exemplar to imitate in detail, which is the opportunity rather than a problem.",
+        mobile:
+          "A household count is one extra field with a numeric keyboard — trivial on a phone. Avoid a repeating per-person sub-form, which is where this pattern usually becomes unusable at 375px.",
+      },
+      {
+        name: "GOV.UK Design System — asking users for information",
+        url: "https://design-system.service.gov.uk/patterns/question-pages/",
+        whatGood:
+          "Guidance on capturing variable-count information without building a repeating form — ask the number first, capture detail later or by phone.",
+        takeaway:
+          "Copy the ask-the-number-first approach. The practice can gather per-person detail on the callback; the site's job is to signal it's possible.",
+        mobile:
+          "Repeating sub-forms are the classic mobile form failure. A single count field with `inputmode=numeric` avoids it entirely.",
+      },
+    ],
+    test: {
+      preconditions: ["Item 9 shipped", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, submit a request for more than one person.",
+          tool: "browser",
+          expect: "Accepted in one submission; the household field uses a numeric keyboard (GTH-18).",
+        },
+        {
+          action: "Submit leaving the household field empty.",
+          tool: "browser",
+          expect: "Succeeds — the field is genuinely optional.",
+        },
+        {
+          action: "Confirm the family content states households can be seen together.",
+          tool: "browser",
+          expect: "Stated plainly, not implied by the word 'family'.",
+        },
+        {
+          action: "Inspect for any repeating per-person sub-form.",
+          tool: "browser",
+          expect: "None. A count field only — repeating sub-forms break at mobile width.",
+        },
+      ],
+      mobileFirst: [
+        "Multi-person request completes in one submission at 375px",
+        "Household field uses a numeric keyboard and is optional",
+        "No repeating per-person sub-form",
+      ],
+      pass: [
+        "Multi-person request accepted without a second submission",
+        "Field optional",
+        "Household capability stated plainly",
+      ],
+    },
+  },
+  {
+    id: 51,
+    title: "Plain-language benefits glossary (five terms, next to the decision)",
+    priority: "P1",
+    source: "blueprint",
+    blueprintRef: "v2 §16 CD-5 (HealthCare.gov, Oscar) · §12",
+    harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-20"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 3, reach: 3, risk: 2, effort: 5, readiness: 4 },
+    effort: "S",
+    status: "not-started",
+    wave: 4,
+    job: "Understand what my plan's words actually mean for me",
+    story:
+      "As a patient reading about coverage, the jargon is decoded in plain words right where it matters.",
+    problem:
+      "Patients confuse deductible with annual maximum, and copay with coinsurance — on top of the accepted-vs-in-network confusion item 6 covers. v2's cross-domain scan shows this is a solved problem elsewhere: a five-term glossary with a one-line 'what this means for you', placed next to the decision it affects rather than on a separate jargon page.",
+    where: "/insurance-new-patients",
+    scope: [
+      "Five terms only: premium, deductible, coinsurance, copay, annual maximum",
+      "One plain line each, plus what it means for the patient's bill",
+      "Placed next to the coverage content, not on a separate glossary page",
+      "Include the crisp in-network line: they've already agreed to lower negotiated rates, so you pay less",
+    ],
+    acceptance: [
+      "Five terms, each with a plain-language definition",
+      "Adjacent to the coverage decision, not a separate page",
+      "No ACA metal-tier machinery — dental has a simpler shape",
+    ],
+    evidence:
+      "v2 §16 CD-5, sourced to HealthCare.gov 'Your total costs' (GOV-Strong) and Oscar's insurance explainer (PR-Moderate).",
+    dependsOn: "Item 6",
+    outOfScope: "A full insurance encyclopedia. Five terms, in place, is the whole item.",
+    references: [
+      {
+        name: "HealthCare.gov — your total costs",
+        url: "https://www.healthcare.gov/choose-a-plan/your-total-costs/",
+        whatGood:
+          "Government-grade plain-language decoding of exactly these terms, with the cost consequence spelled out rather than left as a definition. Definitions alone don't help; the consequence does.",
+        takeaway:
+          "Copy the define-then-say-what-it-means-for-you structure. Ignore the ACA metal tiers — dental is simpler.",
+        mobile:
+          "Their cost blocks reflow cleanly into a narrow column because each term is a short block rather than a table row. Copy that form — a glossary table is a guaranteed 320px overflow.",
+      },
+      {
+        name: "Oscar Health — understanding health insurance",
+        url: "https://www.hioscar.com/",
+        whatGood:
+          "Ties the in-network explanation to the money directly — in-network means already-agreed lower negotiated rates, so you pay less — which is the sentence that actually resolves the confusion.",
+        takeaway:
+          "Copy that one sentence's logic into our in-network explainer. It's more useful than a paragraph of definition.",
+        mobile:
+          "Short paragraphs survive 375px; this content fails on mobile whenever someone reaches for a comparison table.",
+      },
+    ],
+    test: {
+      preconditions: ["Item 6 shipped", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm the five terms render as short blocks with no horizontal scroll.",
+          tool: "browser",
+          expect: "No table. Each term a short block that reflows cleanly.",
+        },
+        {
+          action: "Confirm each definition is followed by what it means for the patient's bill.",
+          tool: "browser",
+          expect: "Consequence stated, not just a definition.",
+        },
+        {
+          action: "Confirm the glossary sits adjacent to the coverage content.",
+          tool: "browser",
+          expect: "In place, not on a separate page a patient has to go find.",
+        },
+        {
+          action: "Apply 200% text zoom and check for clipping.",
+          tool: "browser",
+          expect: "No loss of content (GTH-20).",
+        },
+      ],
+      mobileFirst: [
+        "Five terms as short reflowing blocks, no table, no horizontal scroll at 375px",
+        "Adjacent to the coverage decision rather than a separate page",
+        "Survives 200% text zoom",
+      ],
+      pass: [
+        "Five terms defined with their cost consequence",
+        "Placed next to the decision",
+        "No metal-tier machinery",
+      ],
+    },
+  },
+  {
+    id: 52,
+    title: "Publish clinician license numbers as a verifiability signal",
+    priority: "P1",
+    source: "blueprint",
+    blueprintRef: "v2 §15 new pattern 12 (UK GDC numbers) · §16 CD-2",
+    harness: ["GTH-10", "GTH-13"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 2, reach: 3, risk: 3, effort: 5, readiness: 2 },
+    effort: "S",
+    status: "blocked",
+    wave: 4,
+    job: "Check that this dentist is actually licensed",
+    story:
+      "As a cautious patient, I can verify the dentist's credentials independently rather than taking the website's word for it.",
+    problem:
+      "v2 found UK practices publishing per-dentist GDC registration numbers — a verifiability signal that lets a patient check the register themselves. The US equivalent is the Washington state license number. It converts a credential claim into something checkable, which is the difference between a trust assertion and a trust proof.",
+    where: "/about · dentist profile component",
+    scope: [
+      "Publish Dr. Dubey's WA license number alongside her credentials",
+      "Optionally link to the state verification lookup",
+      "Verify the number before publishing — a wrong one is worse than none",
+    ],
+    acceptance: [
+      "License number published and verified against the state register",
+      "A patient can independently confirm it",
+    ],
+    evidence:
+      "v2 §15 new-pattern 12 (PR) and §16 CD-2. The blueprint frames it as making a credential verifiable rather than merely asserted — which pairs with our own finding that specifics beat adjectives.",
+    dependsOn: "Dr. Dubey providing the license number",
+    outOfScope: "Publishing staff credentials that haven't been confirmed.",
+    references: [
+      {
+        name: "Washington DOH — provider credential search",
+        url: "https://fortress.wa.gov/doh/providercredentialsearch/",
+        whatGood:
+          "The public register a patient would actually check, which is what makes publishing the number meaningful rather than decorative.",
+        takeaway:
+          "Publish the number and, ideally, link here. Verify against this before publishing — an incorrect number is a credibility failure, not a typo.",
+        mobile:
+          "The lookup is usable on a phone, so the whole verification loop can happen on mobile. That makes the linked version genuinely worth doing.",
+      },
+      {
+        name: "UK General Dental Council register",
+        url: "https://olr.gdc-uk.org/SearchRegister",
+        whatGood:
+          "The model v2 observed: UK practices routinely publish per-dentist registration numbers, normalising verifiability rather than treating it as unusual.",
+        takeaway:
+          "Copy the norm. US dental sites rarely do this, which is exactly why it reads as confidence.",
+        mobile: "A short alphanumeric string beside the name — no mobile cost at all.",
+      },
+    ],
+    test: {
+      preconditions: ["License number provided", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm the license number appears beside the credentials and doesn't overflow.",
+          tool: "browser",
+          expect: "Present, legible, no horizontal scroll.",
+        },
+        {
+          action: "Verify the published number against the WA DOH register.",
+          tool: "manual",
+          viewport: "any",
+          expect: "Exact match. A wrong number is worse than omitting it.",
+        },
+      ],
+      mobileFirst: ["License number legible beside credentials at 375px with no overflow"],
+      pass: [
+        "Number published and verified against the state register",
+        "A patient can independently confirm it via the public lookup",
+      ],
+    },
+  },
+  {
+    id: 53,
+    title: "Sensory and neurodivergent accommodation",
+    priority: "P1",
+    source: "blueprint",
+    blueprintRef: "v2 §14 anxiety · §15 new pattern 7 (serenedental.co.uk)",
+    harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-22"],
+    originalPriority: "P2",
+    repriorityNote:
+      "The blueprint rates this P2 as an isolated signal, and I initially copied that. The model disagrees at 26.0: risk-if-skipped is genuinely high (an unmet sensory promise makes a visit worse than not offering one), and it is Small and cheap. Kept at the model's answer rather than deferring to the source document — the whole point of scoring is that it can overrule an inherited rating.",
+    pin: null,
+    scores: { conversion: 2, reach: 2, risk: 3, effort: 5, readiness: 1 },
+    effort: "S",
+    status: "blocked",
+    wave: 5,
+    job: "Know the practice can accommodate sensory needs",
+    story:
+      "As an autistic patient, or a parent of one, I can see whether this practice understands sensory needs before I risk a visit.",
+    problem:
+      "v2 surfaced a genuinely new pattern: a dedicated autism/neurodivergent section citing the National Autistic Society, covering sensory-aware accommodation. It extends the anxiety job into sensory access, which our anxiety item doesn't reach. Isolated in the evidence — one exemplar — so it is honestly labelled P2 rather than inflated.",
+    where: "Anxiety & comfort content",
+    scope: [
+      "State only accommodations the practice genuinely offers — quieter times, dimmed lights, no unexpected touch, extra time",
+      "Invite disclosure through the same request-notes field as anxiety",
+      "Do not claim training or certification the team doesn't have",
+    ],
+    acceptance: [
+      "Every accommodation named is one the practice actually provides",
+      "A disclosure route exists that doesn't require phoning",
+    ],
+    evidence:
+      "v2 §15 new-pattern 7 (PR) — explicitly labelled an isolated signal rather than a repeated theme, and scored accordingly.",
+    dependsOn: "Practice confirming what it can genuinely accommodate",
+    outOfScope: "Claiming neurodiversity training or certification without it.",
+    references: [
+      {
+        name: "National Autistic Society — going to the dentist",
+        url: "https://www.autism.org.uk/advice-and-guidance/topics/physical-health/dentist",
+        whatGood:
+          "Patient-and-carer-facing guidance on what actually helps at a dental visit, from the authority the exemplar site cites — so accommodations can be grounded rather than guessed.",
+        takeaway:
+          "Use to choose which accommodations to offer and how to describe them. Only publish what the practice will actually do.",
+        mobile:
+          "Often read by a carer on a phone while deciding whether to attempt a booking. Keep it a short scannable list, not a prose essay.",
+      },
+      {
+        name: "Serene Dental — sensory-aware section",
+        url: "https://www.serenedental.co.uk/",
+        whatGood:
+          "The one observed exemplar: a dedicated section naming concrete sensory accommodations rather than folding them into generic 'gentle care' language.",
+        takeaway:
+          "Copy the concreteness. Avoid their branded protocol naming — a trademark-style name reads as marketing over substance.",
+        mobile:
+          "Concrete named accommodations scan far better at 375px than a reassurance paragraph, because a reader can find their own need in a list.",
+      },
+    ],
+    test: {
+      preconditions: ["Practice has confirmed accommodations", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm accommodations render as a scannable list.",
+          tool: "browser",
+          expect: "A list a reader can find their own need in, not a paragraph.",
+        },
+        {
+          action: "Check each named accommodation against the practice's confirmation.",
+          tool: "manual",
+          viewport: "any",
+          expect: "Zero unconfirmed accommodations. An unmet sensory promise is a worse visit than none.",
+        },
+        {
+          action: "Confirm a non-phone disclosure route exists.",
+          tool: "browser",
+          expect: "The request-notes field covers it — phoning is the barrier for many of these patients.",
+        },
+      ],
+      mobileFirst: [
+        "Accommodations render as a scannable list at 375px",
+        "A non-phone disclosure route is available",
+      ],
+      pass: [
+        "Only confirmed accommodations published",
+        "Disclosure possible without phoning",
+      ],
+    },
+  },
+  {
+    id: 54,
+    title: "Pre-appointment familiarisation visit or virtual tour",
+    priority: "P2",
+    source: "blueprint",
+    blueprintRef: "v2 §14 anxiety · §15 new pattern 13",
+    harness: ["GTH-2", "GTH-13", "GTH-19", "GTH-22"],
+    originalPriority: "P2",
+    pin: null,
+    scores: { conversion: 2, reach: 2, risk: 2, effort: 3, readiness: 1 },
+    effort: "M",
+    status: "blocked",
+    wave: 5,
+    job: "See the place before committing to a visit",
+    story:
+      "As a very anxious patient, I can look around before I ever sit in a chair.",
+    problem:
+      "v2 found UK practices offering a free pre-appointment familiarisation visit or a virtual tour specifically for nervous patients — lowering first-visit anxiety before treatment is involved. Our office carousel already does part of this job; a stated offer of a look-around, if the practice will do it, goes further.",
+    where: "Anxiety & comfort content",
+    scope: [
+      "State the offer only if the practice will genuinely honour it",
+      "Our existing office photography already serves the lighter version",
+      "Any video must be lazy-loaded and respect reduced motion — it sits below the fold",
+    ],
+    acceptance: [
+      "The offer is real and confirmed, or the item ships only the existing photography",
+      "No autoplay; reduced motion respected",
+      "No performance regression against item 38's budget",
+    ],
+    evidence:
+      "v2 §15 new-pattern 13 (PR). Isolated signal, and the practice may simply not want to offer it — hence P2 and blocked.",
+    dependsOn: "Practice confirming it will offer a familiarisation visit",
+    outOfScope:
+      "Heavy immersive media. v2's transfer-risk list flags immersive tours for page-weight and consent risk.",
+    references: [
+      {
+        name: "Mint Dental Clinic — free familiarisation visit",
+        url: "https://www.mintdentalclinic.co.uk/",
+        whatGood:
+          "Offers a no-treatment visit with a coordinator purely to remove the fear of the unknown — an operational commitment rather than reassuring copy.",
+        takeaway:
+          "Copy only if the practice will actually staff it. An offered-but-unhonoured visit is worse than not offering.",
+        mobile:
+          "The offer is one sentence and a request route — no mobile cost. It's the tour video, if any, that carries the weight risk.",
+      },
+      {
+        name: "web.dev — lazy-loading video",
+        url: "https://web.dev/articles/lazy-loading-video",
+        whatGood:
+          "The technique for deferring video so it doesn't consume the LCP budget — directly relevant since any tour sits below the fold.",
+        takeaway:
+          "If a tour ships, lazy-load it with a poster image. Never autoplay.",
+        mobile:
+          "Video is the single heaviest thing we could add on a throttled mobile connection; this is what keeps item 38's budget intact.",
+      },
+    ],
+    test: {
+      preconditions: ["Practice confirmed the offer", "Viewport 375×812"],
+      steps: [
+        {
+          action: "At 375×812, confirm the offer is stated and its request route works.",
+          tool: "browser",
+          expect: "Reachable without phoning.",
+        },
+        {
+          action: "If a tour video ships, confirm it is lazy-loaded and does not autoplay.",
+          tool: "browser",
+          expect: "Deferred below the fold; frozen under prefers-reduced-motion (GTH-22).",
+        },
+        {
+          action: "Re-run the item 38 performance budget with the tour present.",
+          tool: "validator",
+          viewport: "any",
+          expect: "LCP ≤2.5s on the throttled mobile preset — no regression.",
+        },
+      ],
+      mobileFirst: [
+        "Offer stated and requestable at 375px without phoning",
+        "Any video lazy-loaded, no autoplay, reduced motion honoured",
+        "No mobile performance regression",
+      ],
+      pass: [
+        "Offer confirmed and honoured, or only existing photography ships",
+        "No autoplay, no performance regression",
       ],
     },
   },
