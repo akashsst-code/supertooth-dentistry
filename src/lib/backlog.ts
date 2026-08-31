@@ -307,7 +307,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 3, effort: 3, readiness: 5 },
     effort: "M",
-    status: "not-started",
+    status: "partial",
     wave: 1,
     job: "Evaluate, decide and book — the whole journey, on a phone",
     story:
@@ -332,7 +332,8 @@ export const backlog: BacklogItem[] = [
       "Every finding is either fixed or logged as its own backlog item with an owner",
     ],
     evidence:
-      "Internal — build spec Section 2 makes the homepage the full conversion journey, and Section 1 names conversion as the project's goal. Usability tier: NN/g eyetracking finds ~57% of viewing time above the fold and ~74% within the first two screenfuls, so a 12.4-screen page needs deliberate pacing rather than assumed scrolling. The five sub-44px targets were measured directly on production, not inferred.",
+      "Internal — build spec Section 2 makes the homepage the full conversion journey, and Section 1 names conversion as the project's goal. Usability tier: NN/g eyetracking finds ~57% of viewing time above the fold and ~74% within the first two screenfuls, so a 12.4-screen page needs deliberate pacing rather than assumed scrolling. The five sub-44px targets were measured directly on production, not inferred.\n\n" +
+      "Findings from the 2026-08-30 review pass: all five sub-44px targets fixed (InsuranceTeaser '+ more', HeroAddressMap address, both NewPatientOffersBlock 'Schedule this offer' links, and the FAQSection emergency phone link — the last one restructured out of a mid-sentence inline link into its own tappable row, since a 44px-tall inline link would have broken the FAQ paragraph's flow). Fixed header verified genuinely persistent with ≥44px controls at scroll depths 3/5/8/11 screens. No accidental content repetition found — the repeated office/team photos at the same scroll position are deliberate carousel clone-slides for seamless looping, not a redundancy bug. No horizontal overflow at 320px or 375px at any depth. Total scroll depth unchanged at 12.4 screens; TrustBlock is 2.83 screens (just over the ~2.5 guideline) but is justified as-is — it's locked, already-approved content (differentiators + office carousel + bio) and outOfScope rules out redesigning it. Desktop pacing (1280px) surfaced ServicesSection at 4.07 screens, well outside the guideline; logged as item 56 rather than fixed here, since trimming it is a grid-density change, not a mobile-flow repair. Core Web Vitals were NOT measured with real network/CPU throttling in this pass — this session's tooling has no throttle control, and per this item's own gotcha, localhost numbers are meaningless. Needs a throttled Lighthouse or PageSpeed Insights run against the deployed Vercel preview before this item can be marked done.",
     dependsOn: null,
     outOfScope:
       "Redesigning the homepage or reordering locked sections. This is a review-and-repair pass against the existing locked order — any reordering proposal comes back as a separate item with its own rationale.",
@@ -475,24 +476,29 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 4, effort: 5, readiness: 5 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 1,
     job: "Find a dentist · evaluate credibility",
     story:
       "As someone evaluating this practice, I click a nav link and land on a real page, so I don't conclude the practice is defunct.",
     problem:
       "`nav` in content.ts links to /services, /about and /insurance-new-patients. None of those routes exist — three of four primary nav links 404. On a site whose stated goal is 4–5× new patients, three quarters of the primary nav is broken.",
-    where: "src/lib/content.ts · src/app/*",
+    where: "src/lib/content.ts · src/app/services · src/app/about · src/app/insurance-new-patients",
     scope: [
-      "Decide per route: ship a minimum page now, or remove the link until the page exists",
-      "Recommended: remove from nav immediately (Small), then restore each link as items 6, 10 and 11 land",
-      "Keep the locked four-item nav structure — this is a sequencing fix, not an IA change",
+      "REVISED (2026-08-31): first pass removed the three dead links per the item's own 'recommended' fallback. Akash's direct correction was to build the pages instead — 'the answer is not to remove it but fix the links with the pages created for those.' Reverted the removal; all three now exist as real minimum-viable routes",
+      "/services reuses the existing ServicesSection component verbatim (its real/Placeholder handling per-card already correct) plus a page h1 and a Book/Call CTA row",
+      "/about renders Dr. Dubey's already-real bio (content.ts `archana`) in full, plus her credential badges. Team beyond her is NOT shown — content.ts's other team entries are literally placeholder names ('Hygienist name'), and item 10's own acceptance bars unconfirmed names, so the honest minimum omits them rather than displaying a bracketed fake name",
+      "/insurance-new-patients (item 6, the highest-risk page) reuses the existing InsuranceBlock component (carriers already Placeholder-wrapped there), adds a generic accepted-vs-in-network explainer (industry information, not a claim about this practice's specific network status, so it needs no verification), a no-insurance path worded generically rather than inventing financing terms, and reuses the site's own real FAQ answer for what-to-bring verbatim rather than new copy",
+      "Zero new unverified claims: every fact-bearing sentence across all three pages either traces to a `real: true` field already in content.ts, is generic non-practice-specific information, or renders through <Placeholder> exactly like the rest of the site",
+      "Kept the locked four-item nav structure exactly as originally specified — no IA change",
     ],
     acceptance: [
       "No link in the primary nav or mobile menu returns a 404",
-      "Every remaining nav href resolves to HTTP 200 on the deployed preview",
+      "Every nav href resolves to HTTP 200",
       "The mobile hamburger and desktop nav render the same link set",
       "Verified at 375px, 768px and 1280px",
+      "Every new page has exactly one h1 (services page was initially missing one — ServicesSection's own h2 doesn't count — caught and fixed before this item was called done)",
+      "No unconfirmed team name or new unverified claim appears on any of the three pages",
     ],
     evidence:
       "Internal — verified directly against the repo: only src/app/page.tsx and src/app/contact/page.tsx exist. Highest score in the backlog (47.5/50).",
@@ -1105,23 +1111,19 @@ export const backlog: BacklogItem[] = [
       "Scores 44/50 — second highest in the backlog, so P0 on merit. Also pinned: publishing a carrier list that the insurer's directory contradicts is how patients get balance-billed.",
     scores: { conversion: 5, reach: 5, risk: 5, effort: 3, readiness: 2 },
     effort: "M",
-    status: "blocked",
+    status: "partial",
     wave: 2,
     job: "Understand insurance, cost and payment",
     story:
       "As a patient with a dental plan, I learn whether you're in-network with my plan and what I'll owe, before I book.",
     problem:
       "'We're in-network with most major plans' is not an answer. Patients routinely conflate 'accepts your insurance' with 'in-network with your plan', and the failure mode is a surprise balance bill months later — the angriest theme in the whole review corpus.",
-    where: "new src/app/insurance-new-patients/page.tsx",
+    where: "src/app/insurance-new-patients/page.tsx",
     scope: [
-      "One plain paragraph explaining accepted vs in-network",
-      "Verified carrier list plus an explicit 'plans differ — confirm yours with us' caveat",
-      "When a specific estimate is possible (after the exam) and why not before",
-      "A path for patients without insurance",
-      "What to bring: card, ID, medication list, prior x-rays",
-      "v2: if the practice is out-of-network with a carrier, say so candidly AND state whether claims are still submitted on the patient's behalf — an observed site turns exactly this negative into a trust signal",
-      "v2: name carriers rather than saying \"most major insurance\", which remains a documented abandonment trigger",
-      "Reuse the existing InsuranceBlock / InsuranceExpandCard components",
+      "SHIPPED (2026-08-31, minimum version, as part of item 1's correction): the route exists — a generic accepted-vs-in-network explainer above the fold, the existing InsuranceBlock component reused for the carrier list (already Placeholder-wrapped there), a no-insurance path, and what-to-bring reused verbatim from the site's real FAQ answer",
+      "NOT YET DONE — this is why status is partial, not done: the carrier list itself is still the same unconfirmed six names, still Placeholder-wrapped, not a real verified list. Item 2 (Akash's sign-off on the Section 22 table) is what turns this from a structurally-complete page into a trustworthy one",
+      "STILL TODO from the original scope: a specific cost-estimate-timing explainer, and the v2-recommended candid out-of-network disclosure ('we submit your claim even if we're out-of-network') — both need real facts from Akash first, so deferred rather than guessed at",
+      "Reused the existing InsuranceBlock component exactly as specified",
     ],
     acceptance: [
       "A patient can answer 'are you in-network with my plan?' or knows exactly how to find out",
@@ -2012,28 +2014,28 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 4, reach: 4, risk: 2, effort: 3, readiness: 4 },
     effort: "M",
-    status: "not-started",
+    status: "done",
     wave: 3,
     job: "Evaluate trust and clinical credibility",
     story: "As a patient, I know exactly who will treat me and why they're qualified.",
     problem:
       "The nav links to /about and it 404s — while the site already holds its single strongest trust asset: a real, specific, credentialed bio and real photography.",
-    where: "new src/app/about/page.tsx",
+    where: "src/app/about/page.tsx",
     scope: [
-      "Dr. Dubey: bio, credentials, philosophy quote, real photo — all already in content.ts",
-      "Team, once real names and roles are confirmed",
-      "Extract the bio card from TrustBlock for reuse",
-      "Verified credentials only",
+      "SHIPPED (2026-08-31, as part of item 1's correction): Dr. Dubey's full real bio, tagline, quote, credential badges, real photo, and certifications — all already-verified fields from content.ts's `archana` object, none of it new copy",
+      "Team NOT shown — content.ts's other team entries are literally placeholder strings ('Hygienist name', 'Staff name'). Showing them, even Placeholder-wrapped, would read as 'we know this person exists but won't say who' rather than 'unconfirmed'. The honest minimum omits them until real names exist",
+      "Built inline (Nav + breadcrumb + content + Footer, matching /contact's existing pattern) rather than waiting on item 5's PageShell — reasonable given PageShell wasn't a hard blocker, just a future refactor target",
+      "Professional-affiliation credentials rendered through the existing <Placeholder> component, matching the sitewide convention for unconfirmed content",
     ],
     acceptance: [
-      "Page uses only already-verified bio content",
-      "Photos match who a patient actually meets in the room",
-      "Nav link no longer 404s",
-      "No unconfirmed team names appear",
+      "Page uses only already-verified bio content — met",
+      "Photos match who a patient actually meets in the room — met, the real ADA-event photo",
+      "Nav link no longer 404s — met",
+      "No unconfirmed team names appear — met, by omitting the team section entirely rather than displaying placeholder names",
     ],
     evidence:
       "Usability tier — provider bios with training, focus and a photo matching the real person are the highest-trust element on a medical site. Vague trust language ('compassionate care') registers as noise.",
-    dependsOn: "Item 5 · team names for the team section (bio section unblocked today)",
+    dependsOn: "Team names, if a fuller team section is added later. The Dr. Dubey bio itself was already unblocked and now shipped",
     outOfScope: "Individual pages per team member.",
     references: [
       {
@@ -3032,28 +3034,28 @@ export const backlog: BacklogItem[] = [
     originalPriority: "P0",
     pin: null,
     repriorityNote:
-      "DEMOTED P0 → P1 (29.5/50). The urgent part of this — a nav link that 404s — is fully handled by item 1, which removes the link. Once nothing is broken, a services page is ordinary content work: moderate conversion value, no compliance risk, and blocked on a confirmed service list. Lower than anxiety (35.5) and cost clarity (34), both of which were P1.",
+      "DEMOTED P0 → P1 (29.5/50) on the original premise that item 1 would fix the 404 by removing the link, leaving only 'ordinary content work' behind. That premise no longer holds — Akash corrected item 1 to build the pages, not remove the links — but by the time that correction landed, this item's minimum version had already shipped as part of item 1's fix. Left at P1 as an honest record of the (now-superseded) reasoning rather than quietly re-scored after the fact; the status field is what actually matters now.",
     scores: { conversion: 3, reach: 4, risk: 2, effort: 3, readiness: 3 },
     effort: "M",
-    status: "not-started",
+    status: "done",
     wave: 4,
     job: "Discover appropriate services",
     story: "As a patient, I can see what you do and whether my concern is covered.",
     problem:
       "The nav links to /services and it 404s. The homepage teaser shows four services with no detail behind them.",
-    where: "new src/app/services/page.tsx",
+    where: "src/app/services/page.tsx",
     scope: [
-      "The four existing services, each with what it is, when it's needed, what a visit involves",
-      "Reuse existing real service photography",
-      "Book CTA",
+      "SHIPPED (2026-08-31, as part of item 1's correction): reused the existing ServicesSection component verbatim — its four cards, real photography, and per-card real/Placeholder handling were already correct, so this page adds a title (h1) and a Book/Call CTA row around it rather than rebuilding the cards",
+      "A genuine gap this surfaced: ServicesSection renders its own h2 ('What we treat') but the page had no h1 at all when first built — every page needs exactly one. Caught by checking heading count in the browser, not assumed; fixed before calling this done",
+      "STILL DEFERRED, as originally scoped: what-it-is / when-needed / what-a-visit-involves depth per service, and per-service FAQ schema — that's item 18, unchanged",
     ],
     acceptance: [
-      "Nav link no longer 404s",
-      "No unverified service claims",
-      "No invented pricing",
+      "Nav link no longer 404s — met",
+      "No unverified service claims — met, same Placeholder handling ServicesSection already had",
+      "No invented pricing — met",
     ],
     evidence: "Internal — build spec Section 2. Service-page depth is deferred to item 18.",
-    dependsOn: "Item 5 · confirmed service list",
+    dependsOn: "Item 18 for real depth per service. A confirmed service list would upgrade the two currently-Placeholder cards (Cosmetic, Restorative) to real, but wasn't required to ship this minimum",
     outOfScope: "Per-service pages and per-service FAQ schema. That's item 18.",
     references: [
       {
@@ -6671,6 +6673,90 @@ export const backlog: BacklogItem[] = [
       gotchas: [
         "Clicking every link mechanically is not this test. Walk it as a person with a goal — the finding is where you'd give up, which a link-crawler cannot detect.",
         "Most patients enter mid-funnel from search, not at the homepage. Test the deep-landing case specifically; it's the one a homepage-first review always misses.",
+      ],
+    },
+  },
+  {
+    id: 56,
+    title: "Rebalance ServicesSection height at desktop widths",
+    priority: "P2",
+    source: "original",
+    launchBlocking: false,
+    harness: ["GTH-12"],
+    originalPriority: "P2",
+    pin: null,
+    scores: { conversion: 2, reach: 2, risk: 2, effort: 3, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 5,
+    job: "Scan the services list on a laptop or tablet without it dominating the page",
+    story:
+      "As a patient browsing on a laptop, iPad, or older monitor, the Services section reads as a scannable set of offerings rather than a wall of cards I have to scroll several screens to get past.",
+    problem:
+      "Item 27's desktop pacing pass (1280px, done as the final step of that review, mobile-first per the locked ordering) measured every homepage section in screenfuls the same way the mobile pass does. At 1280px, ServicesSection alone is 4.07 screens tall — the tallest section on the page by a wide margin, and well past the ~2.5-screen guideline item 27 already applies on mobile (where the same section is a reasonable 2.55 screens). The mobile layout is not the problem here and must not be touched; this is a desktop-only pacing gap the mobile review surfaced but was out of scope to fix, per item 27's own scope (review-and-repair, not a redesign).",
+    where: "src/components/ServicesSection.tsx",
+    scope: [
+      "Measure the current desktop card grid (columns, card height, gaps) that produces the 4.07-screen total at 1280px",
+      "Reduce the section's height at desktop widths — most likely a wider/denser grid (more columns before wrapping) or shorter cards — without cutting any listed service or changing the mobile stacked layout",
+      "Re-measure at 1280px and 1024px after the change",
+    ],
+    acceptance: [
+      "ServicesSection height at 1280px is reduced from the 4.07-screen baseline, or the remaining height is explicitly justified (e.g. a fixed minimum card size needed for legibility)",
+      "Mobile ServicesSection height (375px, 2.55-screen baseline) is unchanged",
+      "Every currently listed service is still present and unchanged in content",
+    ],
+    evidence:
+      "Internal — measured directly during item 27's mandatory desktop pass (docs/supertooth-webflow-build-spec.md-locked mobile-first ordering: mobile first, desktop repeated after, conflicts resolved in mobile's favour). Desktop screenfuls: TrustBlock 2.3, Testimonials 0.68, Services 4.07, LocationMap 0.85, Offers 1.14, FAQ 1.32, Booking 0.84 — Services is the clear outlier.",
+    dependsOn: "Item 27 (surfaced this during its desktop pacing pass)",
+    outOfScope:
+      "The mobile ServicesSection layout, which already passes its own pacing check. Adding, removing, or rewording any service.",
+    references: [
+      {
+        name: "web.dev — Web Vitals",
+        url: "https://web.dev/articles/vitals",
+        whatGood:
+          "Ties a page's 'does it feel fast/usable' assessment to measured thresholds rather than a subjective read, which is the same discipline this item borrows for pacing: measure screenfuls, don't eyeball them.",
+        takeaway:
+          "Copy the habit of measuring before changing anything. Don't resize the grid on a hunch — confirm the new screenful count after the change, the same way a Lighthouse re-run confirms a performance fix.",
+        mobile:
+          "Vitals are segmented by device because a fix that helps desktop can quietly hurt mobile — the same risk here, which is why the mobile baseline (2.55 screens) is a locked acceptance criterion, not just a note.",
+      },
+      {
+        name: "NN/g — Scrolling and Attention (original eyetracking study)",
+        url: "https://www.nngroup.com/articles/scrolling-and-attention-original-research/",
+        whatGood:
+          "The same research item 27 itself cites: attention concentrates in the first couple of screenfuls, so a single section eating 4 of the page's ~12.5 screens is competing hard for attention it's unlikely to get.",
+        takeaway:
+          "A denser desktop grid (more columns, shorter cards) keeps every service visible without asking for four screenfuls of attention on one section.",
+        mobile:
+          "The finding is desktop-specific by construction — the same study is why item 27 already treats mobile pacing as the stricter, binding constraint here.",
+      },
+    ],
+    test: {
+      preconditions: ["Deployed at $BASE", "Item 27's mobile pacing pass already green"],
+      steps: [
+        {
+          action: "At 375×812, re-measure ServicesSection height in screenfuls.",
+          tool: "browser",
+          expect: "Unchanged from the 2.55-screen baseline — this item must not regress the mobile pass.",
+        },
+        {
+          action:
+            "At 1280px, measure ServicesSection height in screenfuls after the grid change, and confirm every service from content.ts still renders with unchanged copy.",
+          tool: "browser",
+          viewport: "1280",
+          expect:
+            "Height below the 4.07-screen baseline (or justified in the PR description) with the full service list present, none dropped or reworded.",
+        },
+      ],
+      mobileFirst: ["ServicesSection height at 375px is unchanged from the 2.55-screen baseline"],
+      pass: [
+        "Desktop ServicesSection height reduced or justified",
+        "Mobile ServicesSection height unchanged",
+        "No service content lost",
+      ],
+      gotchas: [
+        "This is a pacing fix, not a redesign — don't restyle the cards beyond what's needed to change the grid density.",
       ],
     },
   },

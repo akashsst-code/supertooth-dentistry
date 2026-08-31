@@ -443,6 +443,15 @@ export const faqs = [
   },
 ];
 
+// Backlog item 1 (2026-08-31): /services, /about and /insurance-new-patients
+// 404'd — linked here with no page behind them. First pass removed the
+// links; Akash's direct correction was to build the pages instead, so
+// all three now have a real minimum-viable route (see src/app/services,
+// src/app/about, src/app/insurance-new-patients) and the locked
+// four-item nav is restored as originally specified. Every fact-bearing
+// claim on those three pages either traces to a `real: true` field
+// below or renders through <Placeholder> — none of this data changed
+// to make the pages possible.
 export const nav = [
   { label: "Services", href: "/services" },
   { label: "About", href: "/about" },

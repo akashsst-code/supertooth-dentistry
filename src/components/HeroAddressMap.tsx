@@ -40,7 +40,7 @@ export function HeroAddressMap() {
           type="button"
           onClick={() => setExpanded((v) => !v)}
           aria-expanded={expanded}
-          className="text-left underline decoration-warm-ivory/40 underline-offset-2 hover:decoration-warm-ivory"
+          className="tap-target inline-flex items-center text-left underline decoration-warm-ivory/40 underline-offset-2 hover:decoration-warm-ivory"
         >
           {contact.address}
         </button>
