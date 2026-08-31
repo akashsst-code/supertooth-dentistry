@@ -143,7 +143,7 @@ export function AppointmentForm() {
           </a>
           <Link
             href="/"
-            className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+            className="tap-target inline-flex items-center justify-center rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
           >
             Back to home
           </Link>
@@ -264,7 +264,7 @@ export function AppointmentForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="tap-target inline-flex items-center justify-center gap-2 rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors disabled:opacity-70"
+          className="tap-target inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-6 py-3 text-sm font-semibold text-warm-ivory hover:brightness-110 transition disabled:opacity-70"
         >
           <CalendarIcon />
           {submitting ? "Sending..." : "Send Request"}
@@ -311,7 +311,7 @@ function Field({
   return (
     <div>
       <label htmlFor={name} className="block text-xs font-semibold uppercase tracking-wide text-espresso/60 mb-1.5">
-        {label} <span className="text-terracotta">*</span>
+        {label} <span className="text-terracotta-dark">*</span>
       </label>
       <input
         ref={inputRef}

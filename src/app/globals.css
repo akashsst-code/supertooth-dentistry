@@ -31,6 +31,21 @@
   --color-espresso: #3d3226;
   --color-sand: #eee7d8;
 
+  /* Backlog item 46 — approved-with-constraint by Akash 2026-08-30:
+   * "could be a different colour, but goes with the matching palette."
+   * A fifth token, RESERVED FOR EMERGENCY USE ONLY (never marketing,
+   * never a promotional or generic error colour — a red used twice
+   * stops meaning anything). Derived from the locked palette rather
+   * than a generic alert red: a warm brick red in the same earthy
+   * family as terracotta, contrast-computed against the real tokens
+   * rather than assumed. 6.67:1 on warm-ivory, 7.08:1 for warm-ivory
+   * text on it — AA at any text size, clearly distinct from terracotta
+   * at a glance. Not yet consumed by any component — lands ahead of
+   * items 7/45 (emergency page + reachability) so it's ready when they
+   * ship.
+   */
+  --color-alert: #a32e1f;
+
   --background: var(--color-warm-ivory);
   --foreground: var(--color-espresso);
 }
@@ -43,6 +58,7 @@
   --color-terracotta-dark: var(--color-terracotta-dark);
   --color-espresso: var(--color-espresso);
   --color-sand: var(--color-sand);
+  --color-alert: var(--color-alert);
   --font-display: var(--font-fraunces);
   --font-sans: var(--font-inter);
 }

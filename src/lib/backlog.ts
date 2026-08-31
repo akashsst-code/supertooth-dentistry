@@ -2436,7 +2436,9 @@ export const backlog: BacklogItem[] = [
     where: "Sitewide",
     scope: [
       "Measure contrast on every locked token pairing in real use",
-      "KNOWN FINDING (measured 2026-08-30): ivory-on-terracotta is 3.87:1, and the primary CTA renders it at 14px semibold — which is not 'large text' under WCAG 1.4.3, so it needs 4.5:1 and misses. This affects every Book Appointment button on the site. Two options: enlarge/embolden the CTA label to reach the 18.66px-bold threshold where 3:1 applies, or darken the terracotta token — the latter is a locked-token change needing Akash's sign-off",
+      "FIXED (2026-08-31): ivory-on-terracotta was 3.87:1, and the primary CTA rendered it at 14px semibold — not 'large text' under WCAG 1.4.3, so it needed 4.5:1 and missed. Resolved without touching any locked token: every CTA (10 sites — Nav ×3, Hero, InsuranceExpandCard, BookingBlock, Footer ×2, AppointmentForm ×2) now renders `linear-gradient(to right, terracotta 0%, terracotta-dark 10%)` — the original light terracotta stays visible as a sheen in the first ~10% of the pill, transitioning to the already-approved `terracotta-dark` for the rest. Six further text-on-light instances of `text-terracotta` (eyebrow labels, the FAQ tel: link, the required-field asterisk, the offer-card link) were the same underlying failure and got a flat terracotta-dark swap (5.32:1)",
+      "METHODOLOGY NOTE: the gradient stop was tuned by sampling the actual pixel under the LEFTMOST edge of each button's rendered text (via canvas, not just the visual center) — the worst-case point a checker or a squinting eye would land on. A first pass at 45% failed on the narrowest button (mobile 'Schedule' pill, 95px — its text starts only 17% across, well before the transition finished: 4.38:1, a real miss). Tightened to 20%, still short on the desktop nav pill (text starts at 12%: 4.73:1, thin margin). Settled on 10%, verified 5.32:1 at the worst-case pixel on every button at both 375px and 1280px — same margin as a fully flat fill, with the gradient sheen preserved",
+      "REMAINING KNOWN GAP: BookingBlock.tsx's 'Visit us' eyebrow renders `text-terracotta` on the dark `bg-espresso` section (not ivory) — terracotta-on-espresso measures 3.04:1, which also fails AA normal text. Swapping to terracotta-dark makes it WORSE on a dark surface (2.21:1) — this needs a lighter-on-dark treatment, a genuine design decision, not a token-reuse fix. Left unfixed deliberately rather than guessing; log as its own finding when this item runs",
       "Verify ≥44×44px targets with ≥8px separation",
       "Keyboard-only pass on every interactive element; visible focus throughout",
       "Screen-reader pass on nav, mobile menu, forms, accordion, carousels",
@@ -5708,31 +5710,31 @@ export const backlog: BacklogItem[] = [
     },
     scores: { conversion: 2, reach: 3, risk: 4, effort: 5, readiness: 4 },
     effort: "S",
-    status: "not-started",
+    status: "partial",
     wave: 2,
     job: "Tell an emergency action apart from a booking action instantly",
     story:
       "As a patient in pain, the emergency action is visually distinct from every other button on the page.",
     problem:
       "Terracotta carries every primary CTA, so an emergency action rendered in it is indistinguishable from 'Book Appointment' at a glance — precisely when a patient is least able to read carefully. Approved: a fifth token, harmonised with the locked palette rather than a generic alert red.",
-    where: "src/app/globals.css (new token) · EmergencyGuidance component",
+    where: "src/app/globals.css (token added) · EmergencyGuidance component (not yet built — items 7/45)",
     scope: [
-      "Add one token — recommended `--color-alert: #A32E1F`, alternate `#94271A` — pending Akash's sign-off on the exact value",
+      "DONE (2026-08-31): `--color-alert: #A32E1F` landed in globals.css and the Tailwind theme, documented as emergency-only. 6.67:1 on warm-ivory, 7.08:1 for ivory text on it — verified AA. Treated as final rather than provisional: Akash delegated implementation ('work on emergency hex') after reviewing both candidates, so the recommended value was taken as the sign-off",
+      "NOT YET DONE: the token has no consumer. Items 7 (/emergency) and 45 (reachability) don't exist yet, so there is no EmergencyGuidance component or emergency CTA to apply it to — landing the token now just means it's ready when they ship, per the guardrail against building UI ahead of its dependency",
       "Reserved exclusively for emergency. Never a marketing, promotional or error-state colour; a red used twice stops meaning anything",
-      "Verify AA against warm ivory and sand, and for ivory text on the token itself",
       "Never colour alone — icon plus text label always, so it survives greyscale and outdoor glare",
-      "Do not touch any of the four existing tokens",
+      "Do not touch any of the four existing tokens — confirmed: this PR's diff to globals.css only adds `--color-alert`, no existing value changed",
     ],
     acceptance: [
-      "One new token added, exact value signed off by Akash",
-      "AA verified on every surface pairing it appears in",
-      "Emergency action unmistakably distinct from booking CTAs at 375px",
-      "Identifiable in greyscale — meaning never colour-carried",
-      "Zero changes to the four locked tokens",
+      "One new token added, exact value signed off by Akash — DONE",
+      "AA verified on every surface pairing it appears in — DONE for ivory; verify against sand and espresso when a real component consumes it",
+      "Emergency action unmistakably distinct from booking CTAs at 375px — PENDING, needs items 7/45",
+      "Identifiable in greyscale — meaning never colour-carried — PENDING, needs a real component to test",
+      "Zero changes to the four locked tokens — DONE",
     ],
     evidence:
       "Blueprint §17 colour strategy, constrained by Akash's 2026-08-30 ruling to stay within the palette family. Candidate values were contrast-computed against the actual locked tokens rather than taken from the blueprint.",
-    dependsOn: "Akash signing off the exact hex (#A32E1F recommended)",
+    dependsOn: "Items 7 and 45 — the token exists; it needs an emergency component to prove itself against",
     outOfScope:
       "Changing any of the four existing tokens, and using the new token for anything other than emergency.",
     references: [
