@@ -90,7 +90,7 @@ const VIEWPORT_LABELS: Record<Viewport, string> = {
   any: "any width",
 };
 
-type Filter = "all" | Priority | "blocked" | "moved" | "conflict" | "blueprint";
+type Filter = "all" | Priority | "blocked" | "moved" | "conflict" | "blueprint" | "decided";
 type Sort = "wave" | "score";
 
 // Mobile-first coverage, computed from the data so the headline numbers
@@ -104,6 +104,7 @@ const desktopStepCount = allRenderingSteps.filter((s) => viewportOf(s) === "1280
 const mobileGateCount = backlog.reduce((n, i) => n + i.test.mobileFirst.length, 0);
 const mobileRefCount = backlog.reduce((n, i) => n + i.references.length, 0);
 const conflictCount = backlog.filter((i) => i.conflict).length;
+const decidedCount = backlog.filter((i) => i.decision).length;
 const blueprintCount = backlog.filter((i) => i.source !== "original").length;
 
 export function BacklogView() {
@@ -118,6 +119,7 @@ export function BacklogView() {
         if (filter === "blocked") return item.status === "blocked";
         if (filter === "moved") return item.priority !== item.originalPriority;
         if (filter === "conflict") return Boolean(item.conflict);
+        if (filter === "decided") return Boolean(item.decision);
         if (filter === "blueprint") return item.source !== "original";
         return item.priority === filter;
       }),
@@ -157,6 +159,7 @@ export function BacklogView() {
     { key: "moved", label: "Re-prioritised", count: counts.moved },
     { key: "blueprint", label: "From blueprint", count: blueprintCount },
     { key: "conflict", label: "Needs your call", count: conflictCount },
+    { key: "decided", label: "You ruled", count: decidedCount },
   ];
 
   return (
@@ -194,10 +197,11 @@ export function BacklogView() {
               Now merged with the Downtown Seattle family-dental blueprint:{" "}
               <span className="font-medium text-espresso">{blueprintCount} new or enriched items</span>,
               a {Object.keys(harnessById).length}-check global test harness, and{" "}
+              and{" "}
               <span className="font-medium text-terracotta">
-                {conflictCount} conflicts with locked decisions
+                {decidedCount} conflicts with locked decisions
               </span>{" "}
-              surfaced rather than silently applied.
+              surfaced rather than silently applied — all three now ruled on.
             </p>
             <p className="text-sm text-espresso/60 max-w-2xl !mb-6">
               Reasoning and sources:{" "}
@@ -291,6 +295,30 @@ export function BacklogView() {
             </p>
           </div>
         </div>
+
+        {/* Decisions recorded */}
+        {decidedCount > 0 && conflictCount === 0 && (
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 pt-6">
+            <div className="rounded-2xl border border-espresso/20 bg-espresso/[0.04] p-5 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-espresso/55 !mb-2">
+                All {decidedCount} conflicts ruled on
+              </p>
+              <ul className="flex flex-col gap-1.5 !mb-0">
+                {backlog
+                  .filter((i) => i.decision)
+                  .map((i) => (
+                    <li key={i.id} className="text-sm text-espresso/85 leading-relaxed">
+                      <span className="font-semibold">#{i.id}</span>{" "}
+                      <span className="font-medium text-terracotta">
+                        {i.decision!.ruling.replace(/-/g, " ")}
+                      </span>{" "}
+                      — {i.title}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+        )}
 
         {/* Conflicts — the things only Akash can resolve */}
         {conflictCount > 0 && (
@@ -564,6 +592,11 @@ function ItemCard({
                   Needs your call
                 </span>
               )}
+              {item.decision && (
+                <span className="inline-flex items-center rounded-full border border-espresso/30 bg-espresso/[0.06] px-2 py-0.5 text-[0.6875rem] font-semibold text-espresso/70">
+                  You ruled: {item.decision.ruling.replace(/-/g, " ")}
+                </span>
+              )}
               {item.source !== "original" && (
                 <span className="inline-flex items-center rounded-full border border-espresso/25 px-2 py-0.5 text-[0.6875rem] text-espresso/55">
                   {item.source === "blueprint" ? "New — blueprint" : "Enriched"}
@@ -602,6 +635,21 @@ function ItemCard({
       >
         <div className="overflow-hidden">
           <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-espresso/10 mt-1">
+            {item.decision && (
+              <div className="mt-4 rounded-xl border border-espresso/25 bg-espresso/[0.04] px-4 py-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-espresso/55 !mb-2">
+                  Your decision · {item.decision.date} · {item.decision.ruling.replace(/-/g, " ")}
+                </p>
+                <p className="text-sm leading-relaxed text-espresso !mb-2 italic">
+                  &ldquo;{item.decision.said}&rdquo;
+                </p>
+                <p className="text-sm leading-relaxed text-espresso/80 !mb-0">
+                  <span className="font-semibold text-espresso">What changes:</span>{" "}
+                  {item.decision.consequence}
+                </p>
+              </div>
+            )}
+
             {item.conflict && (
               <div className="mt-4 rounded-xl border-2 border-terracotta bg-terracotta/[0.08] px-4 py-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-terracotta !mb-2">

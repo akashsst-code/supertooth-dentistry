@@ -172,10 +172,27 @@ export type Conflict = {
   question: string;
 };
 
+/**
+ * A ruling from Akash on a flagged conflict. Once present, the item is no
+ * longer "awaiting a decision" — it either proceeds under the ruling, is
+ * closed, or is explicitly deferred.
+ */
+export type Decision = {
+  date: string;
+  /** approved | approved-with-constraint | declined | deferred */
+  ruling: "approved" | "approved-with-constraint" | "declined" | "deferred";
+  /** Akash's words, paraphrased minimally. */
+  said: string;
+  /** What actually changes as a result — including anything that survives. */
+  consequence: string;
+};
+
 export type BacklogItem = {
   id: number;
   title: string;
   source: Source;
+  /** Set once a flagged conflict has been ruled on. */
+  decision?: Decision;
   /** Section(s) of the blueprint this draws on, for traceability. */
   blueprintRef?: string;
   /** Global Test Harness checks that apply — see src/lib/test-harness.ts. */
@@ -2354,6 +2371,7 @@ export const backlog: BacklogItem[] = [
     where: "Sitewide",
     scope: [
       "Measure contrast on every locked token pairing in real use",
+      "KNOWN FINDING (measured 2026-08-30): ivory-on-terracotta is 3.87:1, and the primary CTA renders it at 14px semibold — which is not 'large text' under WCAG 1.4.3, so it needs 4.5:1 and misses. This affects every Book Appointment button on the site. Two options: enlarge/embolden the CTA label to reach the 18.66px-bold threshold where 3:1 applies, or darken the terracotta token — the latter is a locked-token change needing Akash's sign-off",
       "Verify ≥44×44px targets with ≥8px separation",
       "Keyboard-only pass on every interactive element; visible focus throughout",
       "Screen-reader pass on nav, mobile menu, forms, accordion, carousels",
@@ -2505,6 +2523,7 @@ export const backlog: BacklogItem[] = [
       ],
       gotchas: [
         "Automated tools catch roughly a third of real issues. A clean axe run with an untested keyboard path is a false pass.",
+        "The terracotta/ivory pairing at 3.87:1 already misses AA for normal-size text and affects every primary CTA. Do not close this item by quietly reclassifying the CTA label as large text — measure the rendered font-size and weight against the 18.66px-bold threshold.",
         "Backgrounded browser tabs suspend CSS transitions and pointer input — verified in this repo already. Run motion and interaction checks in a foregrounded tab or assert on class/ARIA state instead of measured animation values.",
         "Running axe only at desktop width is a false pass for this project specifically: target size, reflow and focus-obscured are the criteria most likely to fail here, and all three are viewport-dependent.",
         "A resized desktop browser does not reproduce touch behaviour, on-screen keyboards, or mobile screen-reader gestures. The manual steps genuinely need a phone.",
@@ -5457,47 +5476,47 @@ export const backlog: BacklogItem[] = [
   },
   {
     id: 45,
-    title: "CONFLICT — sticky mobile action bar (Call · Book · Emergency)",
+    title: "Emergency reachability without a bottom bar",
     priority: "P0",
     source: "blueprint",
     blueprintRef: "§17 mobile actions · §19 homepage map · §22 sticky action bar · P0-1",
-    harness: ["GTH-6", "GTH-13", "GTH-14", "GTH-15", "GTH-16", "GTH-17", "GTH-21"],
+    harness: ["GTH-6", "GTH-13", "GTH-14", "GTH-15", "GTH-17", "GTH-21"],
     originalPriority: "P0",
     pin: null,
-    conflict: {
-      locked:
-        "supertooth-webflow-build-spec.md §4 — Pattern A locked; 'Explicitly ruled out: persistent bottom bar (Option B) — app-like feel outweighed benefit.'",
-      blueprint:
-        "A bottom-anchored sticky bar carrying Call · Book · Emergency is the single most-repeated mobile recommendation in the blueprint, on the grounds that the top of a tall phone is out of one-handed reach and urgent patients won't navigate.",
-      question:
-        "The bottom bar was ruled out on feel. Since then two things changed: an emergency pathway is now P0 (item 7), and the homepage measured 12.4 screens on a phone. Does the ruling still hold, or does the emergency action specifically justify a bottom-anchored affordance?",
+    decision: {
+      date: "2026-08-30",
+      ruling: "declined",
+      said: "No clear need for a sticky bottom bar.",
+      consequence:
+        "The locked Pattern A ruling stands — no bottom bar is built. But the requirement underneath it survives the ruling: item 7 makes emergency guidance P0, and the fixed header carries Call, Schedule and the hamburger, not emergency. This item is now the narrower job of proving emergency is reachable in one tap from every route without a bottom bar. If that turns out not to be achievable within the current header, the bottom-bar question comes back — with evidence rather than a recommendation.",
     },
-    scores: { conversion: 5, reach: 5, risk: 2, effort: 3, readiness: 1 },
-    effort: "M",
-    status: "blocked",
+    scores: { conversion: 4, reach: 5, risk: 3, effort: 5, readiness: 5 },
+    effort: "S",
+    status: "not-started",
     wave: 2,
-    job: "Act from anywhere on a phone, one-handed",
+    job: "Reach emergency help fast, from anywhere, on a phone",
     story:
-      "As a patient anywhere on the site, the actions that matter are within thumb reach without scrolling back to the top.",
+      "As a patient in pain part-way down a long page, I can reach emergency guidance in one tap without scrolling back to the top.",
     problem:
-      "**This item contradicts a locked decision and must not be built until Akash rules.** The blueprint treats the sticky bar as P0 and cites the thumb-zone argument. Our fixed header already keeps Call and Book reachable — measured and verified in item 27 — so the gap is narrower than the blueprint assumes. What the header does not carry is an emergency action, and item 7 makes emergency P0.",
-    where: "Nav / new sticky component — NOT to be built pending a decision",
+      "Decided: no sticky bottom bar. That leaves a real question the bar would have answered by default. The fixed header persists (verified in item 27) and carries Call, Schedule and the hamburger — but no emergency action, and item 7 makes emergency P0. The homepage is 12.4 screens on a phone. So: where does emergency live, and is it genuinely one tap from every route?",
+    where: "src/components/Nav.tsx · Footer · emergency entry points",
     scope: [
-      "Decision first: does the locked no-bottom-bar ruling still hold?",
-      "If it holds: confirm the fixed header covers Call and Book (already verified), and decide where emergency lives instead",
-      "If it is revisited: bottom bar with safe-area insets, never covering a form's submit, landscape-aware",
-      "Middle option worth considering: emergency-only affordance rather than a three-action bar",
+      "Decide where emergency lives given no bottom bar: header (crowded — see item 27's 768px findings), hamburger, or a persistent in-page affordance",
+      "The header already carries a call control, which covers part of the urgent job — establish whether that is sufficient or whether emergency needs its own distinct entry",
+      "Verify one-tap reachability from every route, at every matrix width",
+      "Pairs with item 46: whatever the entry is, it must be visually distinguishable from the booking CTA",
     ],
     acceptance: [
-      "A recorded decision from Akash, with a reason",
-      "If declined: emergency access is solved another way and that route is verified",
-      "If accepted: safe-area aware, never obscures a submit control, works in landscape",
+      "Emergency guidance reachable in one tap from every route at 375px",
+      "Verified at 320, 360, 375, 390, 430 and landscape",
+      "The emergency entry is visually distinct from the booking CTA",
+      "No bottom bar introduced",
     ],
     evidence:
-      "Blueprint §17/§19/§22 treat it as P0. Against that: our locked Pattern A ruled it out on feel, and item 27 measured the fixed header genuinely persisting mid-scroll with a 44px Schedule control. The honest position is that the Call/Book case is weak here and the emergency case is real.",
-    dependsOn: "Akash's decision on the locked Pattern A ruling",
+      "Blueprint §17/§19/§22 argued for a bottom bar; the ruling declined it. What survives is the underlying requirement — item 27 measured the fixed header persisting with a 44px Schedule control, so Call and Book are covered, and emergency is the genuine remaining gap.",
+    dependsOn: "Item 7 (emergency page must exist to link to) · item 46 (visual distinction)",
     outOfScope:
-      "Building it before the decision. A locked decision changes with a stated reason, not because a new document recommends otherwise.",
+      "A sticky bottom bar. Ruled out 2026-08-30. Reopen only with measured evidence that one-tap emergency access is unachievable without one.",
     references: [
       {
         name: "NN/g — thumb zone and mobile reachability",
@@ -5521,86 +5540,101 @@ export const backlog: BacklogItem[] = [
       },
     ],
     test: {
-      preconditions: ["Akash has ruled on the locked Pattern A decision"],
+      preconditions: ["Item 7 shipped so there is an emergency destination", "Viewport 375×812"],
       steps: [
         {
-          action: "Confirm a recorded decision exists before any implementation.",
-          tool: "manual",
-          viewport: "any",
+          action:
+            "At 375×812, from the homepage and from two other routes, count taps to reach emergency guidance.",
+          tool: "browser",
+          expect: "One tap from every route. More than one means the current header placement is insufficient.",
+        },
+        {
+          action:
+            "Repeat the count part-way down the homepage (around screen 6 of 12.4) without scrolling back up.",
+          tool: "browser",
           expect:
-            "A written ruling with a reason. Without it this item ships nothing — that is the pass condition today.",
+            "Still one tap. This is the case the bottom bar would have covered by default, so it is the one that has to be proven.",
         },
         {
-          action:
-            "If declined: at 375×812, verify emergency access is reachable in one tap from every route by whatever route was chosen instead.",
+          action: "Measure the emergency entry's tap target and confirm it is visually distinct from the booking CTA.",
           tool: "browser",
-          expect: "Emergency one tap from any page, verified rather than assumed.",
+          expect: "≥44×44px, and distinguishable from Schedule/Book at a glance (pairs with item 46).",
         },
         {
-          action:
-            "If accepted: at 390×844, verify safe-area inset padding, that the bar never covers a form's submit, and that it adapts in landscape.",
+          action: "Repeat at 320, 360, 390, 430 and in landscape.",
           tool: "browser",
-          expect: "Inset honoured; submit reachable; landscape usable (GTH-16, GTH-21).",
+          expect: "One-tap reachability holds at every matrix width, including landscape where the fixed header eats more of the viewport.",
+        },
+        {
+          action: "Confirm no bottom-anchored bar was introduced.",
+          tool: "shell",
+          viewport: "any",
+          expect: "No fixed bottom element. The 2026-08-30 ruling stands.",
         },
       ],
       mobileFirst: [
-        "A decision is recorded before any code is written",
-        "Whichever way it goes, emergency access is one tap from every route at 375px",
-        "If built: safe-area aware, never covers a submit, works in landscape",
+        "Emergency reachable in one tap from every route at 375px",
+        "Still one tap from mid-page, without scrolling back to the header",
+        "Emergency entry ≥44×44px and visually distinct from the booking CTA",
+        "Holds at 320 / 360 / 390 / 430 and in landscape",
       ],
       pass: [
-        "Akash's decision recorded with a reason",
-        "Emergency access verified one-tap sitewide either way",
+        "One-tap emergency access verified from every route and from mid-page",
+        "No bottom bar introduced",
+        "Emergency entry distinct from booking at mobile width",
       ],
       gotchas: [
-        "Do not treat the blueprint's P0 rating as authority to override a locked decision. It researched a generic downtown practice; the Pattern A ruling was made for this one.",
+        "If one-tap access genuinely cannot be achieved within the current header, that is evidence to reopen the bottom-bar question — with a measurement, not a recommendation. Do not quietly add one instead.",
       ],
     },
   },
   {
     id: 46,
-    title: "CONFLICT — dedicated emergency alert colour",
-    priority: "P1",
+    title: "Add a palette-harmonised emergency colour token",
+    priority: "P0",
     source: "blueprint",
     blueprintRef: "§17 color strategy · §19 utility strip",
     harness: ["GTH-1", "GTH-5"],
     originalPriority: "P1",
+    repriorityNote:
+      "PROMOTED P1 → P0 (33.5) as a direct consequence of Akash's ruling. It scored 30.5 while blocked on a decision; approving it in principle moved readiness 1 → 4, which crossed the P0 threshold. The work didn't get more important — it got unblocked, and the model is built to reflect that.",
     pin: null,
-    conflict: {
-      locked:
-        "CLAUDE.md — the four-colour palette (Warm Ivory, Terracotta, Espresso, Sand) is locked and approved; a base-token change requires an explicit reason from Akash.",
-      blueprint:
-        "Recommends a single restrained alert colour (a warm red) reserved exclusively for the emergency action, never for marketing — plus icon and label so meaning is never carried by colour alone.",
-      question:
-        "Emergency guidance is P0 (item 7) and currently has no visual treatment distinguishing it from ordinary CTAs. Terracotta is already the CTA colour, so an emergency action would look like a booking button. Add a fifth token used only for emergency, or distinguish it by icon, label and placement within the existing palette?",
+    decision: {
+      date: "2026-08-30",
+      ruling: "approved-with-constraint",
+      said: "Emergency could be a different colour, but it goes with the matching palette.",
+      consequence:
+        "A fifth token is approved in principle for emergency use only — but it must harmonise with the locked warm-ivory / terracotta / espresso / sand family, not the blueprint's generic #C0392B alert red. The specific hex still needs sign-off. Candidates were derived from the existing palette and contrast-checked: **#A32E1F** (recommended — 6.67:1 on ivory, 7.08:1 for ivory text on it, clearly distinct from terracotta) or **#94271A** (deeper, 7.72:1, more distinct still). Both are warm brick reds in the same earthy family as terracotta rather than a clinical red.",
     },
-    scores: { conversion: 2, reach: 3, risk: 4, effort: 5, readiness: 1 },
+    scores: { conversion: 2, reach: 3, risk: 4, effort: 5, readiness: 4 },
     effort: "S",
-    status: "blocked",
+    status: "not-started",
     wave: 2,
     job: "Tell an emergency action apart from a booking action instantly",
     story:
       "As a patient in pain, the emergency action is visually distinct from every other button on the page.",
     problem:
-      "**Contradicts the locked palette and must not be applied until Akash rules.** Terracotta already carries every primary CTA. An emergency action rendered in terracotta is indistinguishable from 'Book Appointment' at a glance — which matters precisely when a patient is least able to read carefully. The blueprint's answer is a reserved alert colour; ours may instead be icon, label and placement.",
-    where: "globals.css tokens (if approved) · EmergencyGuidance component",
+      "Terracotta carries every primary CTA, so an emergency action rendered in it is indistinguishable from 'Book Appointment' at a glance — precisely when a patient is least able to read carefully. Approved: a fifth token, harmonised with the locked palette rather than a generic alert red.",
+    where: "src/app/globals.css (new token) · EmergencyGuidance component",
     scope: [
-      "Decision first — this is a locked-token change",
-      "If approved: one restrained alert colour, used only for emergency, AA-verified against both surfaces",
-      "If declined: distinguish emergency by icon, label, weight and placement within the existing four tokens",
-      "Either way: never colour alone — icon plus text label always",
+      "Add one token — recommended `--color-alert: #A32E1F`, alternate `#94271A` — pending Akash's sign-off on the exact value",
+      "Reserved exclusively for emergency. Never a marketing, promotional or error-state colour; a red used twice stops meaning anything",
+      "Verify AA against warm ivory and sand, and for ivory text on the token itself",
+      "Never colour alone — icon plus text label always, so it survives greyscale and outdoor glare",
+      "Do not touch any of the four existing tokens",
     ],
     acceptance: [
-      "A recorded decision from Akash",
-      "The emergency action is unmistakably distinct from booking CTAs at 375px",
-      "Meaning never carried by colour alone",
-      "Any new token verified AA against every surface it appears on",
+      "One new token added, exact value signed off by Akash",
+      "AA verified on every surface pairing it appears in",
+      "Emergency action unmistakably distinct from booking CTAs at 375px",
+      "Identifiable in greyscale — meaning never colour-carried",
+      "Zero changes to the four locked tokens",
     ],
     evidence:
-      "Blueprint §17 colour strategy. The underlying requirement — emergency must be instantly distinguishable — holds regardless of which way the decision goes.",
-    dependsOn: "Akash's decision on adding a fifth colour token",
+      "Blueprint §17 colour strategy, constrained by Akash's 2026-08-30 ruling to stay within the palette family. Candidate values were contrast-computed against the actual locked tokens rather than taken from the blueprint.",
+    dependsOn: "Akash signing off the exact hex (#A32E1F recommended)",
     outOfScope:
-      "Changing any of the four existing tokens. This is strictly about whether a fifth, emergency-only token is added.",
+      "Changing any of the four existing tokens, and using the new token for anything other than emergency.",
     references: [
       {
         name: "WCAG 2.2 — 1.4.1 Use of Colour",
@@ -5624,13 +5658,14 @@ export const backlog: BacklogItem[] = [
       },
     ],
     test: {
-      preconditions: ["Akash has ruled on the fifth token"],
+      preconditions: ["Akash has signed off the exact hex", "Viewport 375×812"],
       steps: [
         {
-          action: "Confirm a recorded decision exists before any token change.",
+          action: "Confirm the exact token value is signed off before editing globals.css.",
           tool: "manual",
           viewport: "any",
-          expect: "A written ruling. Without it, no --color-* value is touched.",
+          expect:
+            "A specific hex approved. The ruling approved the principle; the value still needs confirming.",
         },
         {
           action:
@@ -5655,55 +5690,57 @@ export const backlog: BacklogItem[] = [
         "AA contrast on every surface it appears on",
       ],
       pass: [
-        "Decision recorded",
+        "Exact hex signed off and added as a single new token",
         "Emergency visually unmistakable at mobile width",
         "Colour never the sole carrier of meaning",
+        "Zero changes to the four existing tokens",
       ],
       gotchas: [
-        "CLAUDE.md requires asking before changing a base token. A recommendation in a research document is not a reason — Akash's stated reason is.",
+        "The ruling was 'goes with the matching palette' — a generic alert red would satisfy the letter and miss the point. Candidates were derived from the locked palette for that reason.",
+        "Reserve it strictly for emergency. The moment it appears on a promotion, the signal is gone.",
       ],
     },
   },
   {
     id: 47,
-    title: "CONFLICT — testimonial rail auto-scrolls",
+    title: "Revisit testimonial auto-scroll once real reviews land",
     priority: "P1",
     source: "blueprint",
     blueprintRef: "§17 reviews · §22 review card · §15C anti-patterns",
     harness: ["GTH-1", "GTH-4", "GTH-13", "GTH-14", "GTH-22"],
     originalPriority: "P1",
     pin: null,
-    conflict: {
-      locked:
-        "TestimonialsSection.tsx ships a continuous auto-scrolling rail, built to Akash's explicit spec ('just have photos run… no user can pause or click').",
-      blueprint:
-        "Reviews should be static attributed cards with no autoplay carousel — autoplay is listed among the anti-patterns, and the component inventory specifies 'no autoplay' for review cards.",
-      question:
-        "The auto-scroll was your call and it's implemented well (reduced-motion aware). The blueprint argues autoplay reviews read as less credible and are harder to actually read on a phone. Keep the motion, or switch reviews to static cards once real quotes land in item 13?",
+    decision: {
+      date: "2026-08-30",
+      ruling: "deferred",
+      said: "We can decide when we reach that bridge.",
+      consequence:
+        "No change now — the rail keeps auto-scrolling as originally specified. The decision is deliberately deferred until item 13 lands real reviews, because the current placeholders cannot test the question: they were written short, and real quotes will be longer. The trigger is concrete rather than vague — when real quotes are in, read each one end to end at 375px while the rail is moving. If a quote scrolls out of view mid-sentence, that is the evidence; if not, the rail stays.",
     },
     scores: { conversion: 2, reach: 3, risk: 3, effort: 5, readiness: 3 },
     effort: "S",
-    status: "not-started",
+    status: "blocked",
     wave: 4,
     job: "Actually read what patients said",
     story: "As a patient checking reviews, I can read them at my own pace.",
     problem:
-      "**Contradicts an explicit instruction from Akash and must not be changed unilaterally.** The rail currently auto-scrolls continuously. That was a deliberate call and it honours prefers-reduced-motion. But real reviews (item 13) will be longer than the placeholders the rail was sized for, and moving text is harder to read on a phone — the blueprint lists autoplay among its anti-patterns. Worth revisiting once real quotes exist, not before.",
+      "Deferred by decision, with a concrete trigger. The rail auto-scrolls continuously — a deliberate call, and it honours prefers-reduced-motion. The blueprint lists autoplay reviews among its anti-patterns on the grounds that moving text is harder to read and reads as less credible. Neither position can be tested against the current placeholders, which were written short. Real reviews from item 13 will be longer, and that is what decides it.",
     where: "src/components/TestimonialsSection.tsx",
     scope: [
-      "Decision first — this reverses an explicit instruction",
-      "Revisit only after item 13 lands real quotes at real length",
-      "If changed: static attributed cards, keyboard reachable, no autoplay",
-      "If kept: verify real-length quotes remain readable while moving at 375px",
+      "Do nothing until item 13 lands real quotes at real length",
+      "Then: read every real quote end to end at 375px while the rail is moving",
+      "If a quote scrolls out of view mid-sentence, switch to static attributed cards",
+      "If all quotes stay readable, the rail stays as specified",
+      "Also assess against WCAG 2.2.2 — if the rail is in scope, a pause control becomes a requirement and settles it",
     ],
     acceptance: [
-      "A recorded decision from Akash",
-      "Either way, real quotes are fully readable at 375px",
+      "Assessed only after real quotes exist, never against placeholders",
+      "Every real quote readable end to end at 375px, whichever implementation ships",
       "prefers-reduced-motion honoured either way",
     ],
     evidence:
       "Blueprint §17/§22 specify static, no autoplay. Against that: the current implementation was explicitly requested and is reduced-motion aware. The real trigger is item 13 — longer quotes may make the decision for us.",
-    dependsOn: "Item 13 · Akash's decision",
+    dependsOn: "Item 13 — real reviews are the trigger and the test material",
     outOfScope: "Changing it before real reviews land. The current placeholders don't test the question.",
     references: [
       {
@@ -5728,13 +5765,14 @@ export const backlog: BacklogItem[] = [
       },
     ],
     test: {
-      preconditions: ["Item 13 shipped with real quotes", "Akash has ruled", "Viewport 375×812"],
+      preconditions: ["Item 13 shipped with real quotes", "Viewport 375×812"],
       steps: [
         {
-          action: "Confirm a recorded decision exists before changing the component.",
+          action: "Confirm real quotes are in place — this cannot be assessed against placeholders.",
           tool: "manual",
           viewport: "any",
-          expect: "A written ruling. This reverses an explicit instruction.",
+          expect:
+            "Real reviews at real length are live. Testing the short placeholders would produce a false pass and defer the question again.",
         },
         {
           action:
@@ -5761,12 +5799,12 @@ export const backlog: BacklogItem[] = [
         "Keyboard reachable either way",
       ],
       pass: [
-        "Decision recorded",
-        "Real quotes fully readable at mobile width",
+        "Assessed against real quotes, not placeholders",
+        "Real quotes fully readable at mobile width in whichever implementation ships",
         "Reduced motion honoured",
       ],
       gotchas: [
-        "The current behaviour was explicitly requested. Changing it without a decision would be substituting a document's opinion for the user's.",
+        "The current behaviour was explicitly requested. Change it only on the evidence named above — a quote scrolling away mid-sentence — not on the blueprint's general preference.",
       ],
     },
   },
