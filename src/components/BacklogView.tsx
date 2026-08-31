@@ -90,7 +90,7 @@ const VIEWPORT_LABELS: Record<Viewport, string> = {
   any: "any width",
 };
 
-type Filter = "all" | Priority | "blocked" | "moved" | "conflict" | "blueprint" | "decided" | "launch";
+type Filter = "all" | Priority | "blocked" | "moved" | "conflict" | "blueprint" | "decided" | "launch" | "foundation";
 type Sort = "wave" | "score";
 
 // Mobile-first coverage, computed from the data so the headline numbers
@@ -107,6 +107,9 @@ const conflictCount = backlog.filter((i) => i.conflict).length;
 const decidedCount = backlog.filter((i) => i.decision).length;
 const blockingItems = backlog.filter((i) => i.launchBlocking);
 const blockingCount = blockingItems.length;
+/** The other half of P0: needed, but the site can honestly open without them. */
+const foundationItems = backlog.filter((i) => i.priority === "P0" && !i.launchBlocking);
+const foundationCount = foundationItems.length;
 const blueprintCount = backlog.filter((i) => i.source !== "original").length;
 
 export function BacklogView() {
@@ -123,6 +126,7 @@ export function BacklogView() {
         if (filter === "conflict") return Boolean(item.conflict);
         if (filter === "decided") return Boolean(item.decision);
         if (filter === "launch") return item.launchBlocking;
+        if (filter === "foundation") return item.priority === "P0" && !item.launchBlocking;
         if (filter === "blueprint") return item.source !== "original";
         return item.priority === filter;
       }),
@@ -156,7 +160,8 @@ export function BacklogView() {
   const filters: { key: Filter; label: string; count: number }[] = [
     { key: "all", label: "All", count: backlog.length },
     { key: "launch", label: "Launch-blocking", count: blockingCount },
-    { key: "P0", label: "P0", count: counts.P0 },
+    { key: "foundation", label: "P0 foundation", count: foundationCount },
+    { key: "P0", label: "P0 (all)", count: counts.P0 },
     { key: "P1", label: "P1 — Conversion", count: counts.P1 },
     { key: "P2", label: "P2 — Later", count: counts.P2 },
     { key: "blocked", label: "Blocked on Akash", count: counts.blocked },
@@ -300,35 +305,75 @@ export function BacklogView() {
           </div>
         </div>
 
-        {/* Launch-blocking — the tier that actually gates go-live */}
+        {/* P0 in two tiers — what gates launch, and what doesn't */}
         <div className="mx-auto max-w-4xl px-4 sm:px-6 pt-8">
-          <div className="rounded-2xl border-2 border-terracotta bg-terracotta/[0.08] p-5 sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta !mb-2">
-              {blockingCount} launch-blocking of {counts.P0} P0
-            </p>
-            <p className="text-espresso !mb-3 leading-relaxed">
-              {counts.P0} items are P0 — the arithmetic of merging three
-              &ldquo;needed before launch&rdquo; lists, which stopped P0 meaning anything. These{" "}
-              {blockingCount} are the narrow tier that actually gates go-live:{" "}
-              <strong>the site cannot honestly open to patients without them.</strong> Only three
-              grounds qualify — legal, patient safety, or plainly broken. Everything else is
-              foundation, however valuable.
-            </p>
-            <ol className="flex flex-col gap-1.5 !mb-0">
-              {[...blockingItems]
-                .sort((a, b) => scoreOf(b.scores) - scoreOf(a.scores))
-                .map((i) => (
-                  <li key={i.id} className="flex gap-2.5 text-sm text-espresso/85 leading-relaxed">
-                    <span className="font-semibold tabular-nums shrink-0 text-terracotta">
-                      {scoreOf(i.scores).toFixed(1)}
-                    </span>
-                    <span>
-                      <span className="font-semibold">#{i.id}</span>{" "}
-                      <span className="text-espresso/55">[{i.blockingGround}]</span> {i.title}
-                    </span>
-                  </li>
-                ))}
-            </ol>
+          <div className="rounded-2xl border border-espresso/15 bg-warm-ivory overflow-hidden">
+            <div className="px-5 sm:px-6 py-5 border-b border-espresso/10">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-espresso/55 !mb-2">
+                P0 in two tiers · {counts.P0} items
+              </p>
+              <p className="text-espresso !mb-0 leading-relaxed text-sm">
+                {counts.P0} items are P0 — the arithmetic of merging three &ldquo;needed before
+                launch&rdquo; lists, which stopped P0 meaning anything on its own. Splitting it
+                restores the signal. <strong>Important is not the test</strong> — the
+                conservative-care statement scores 43.0, higher than most of the blocking tier, and
+                still isn&apos;t blocking, because the site can open honestly without it.
+              </p>
+            </div>
+
+            {/* Tier 1 */}
+            <div className="px-5 sm:px-6 py-5 bg-terracotta/[0.07] border-b border-espresso/10">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-terracotta !mb-1">
+                Launch-blocking · {blockingCount}
+              </p>
+              <p className="text-sm text-espresso/75 !mb-3 leading-relaxed">
+                The site cannot honestly open to patients without these. Three grounds only: legal,
+                patient safety, or plainly broken.
+              </p>
+              <ol className="flex flex-col gap-1.5 !mb-0">
+                {[...blockingItems]
+                  .sort((a, b) => scoreOf(b.scores) - scoreOf(a.scores))
+                  .map((i) => (
+                    <li key={i.id} className="flex gap-2.5 text-sm text-espresso/85 leading-relaxed">
+                      <span className="font-semibold tabular-nums shrink-0 text-terracotta w-10">
+                        {scoreOf(i.scores).toFixed(1)}
+                      </span>
+                      <span>
+                        <span className="font-semibold">#{i.id}</span>{" "}
+                        <span className="text-espresso/50">[{i.blockingGround}]</span> {i.title}
+                      </span>
+                    </li>
+                  ))}
+              </ol>
+            </div>
+
+            {/* Tier 2 */}
+            <div className="px-5 sm:px-6 py-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-espresso/55 !mb-1">
+                P0 foundation · {foundationCount}
+              </p>
+              <p className="text-sm text-espresso/75 !mb-3 leading-relaxed">
+                Needed for a site worth launching, but not a gate on opening. Several outscore the
+                blocking tier — work them in score order once the twelve above are clear.
+              </p>
+              <ol className="flex flex-col gap-1.5 !mb-0">
+                {[...foundationItems]
+                  .sort((a, b) => scoreOf(b.scores) - scoreOf(a.scores))
+                  .map((i) => (
+                    <li key={i.id} className="flex gap-2.5 text-sm text-espresso/80 leading-relaxed">
+                      <span className="font-semibold tabular-nums shrink-0 text-espresso/45 w-10">
+                        {scoreOf(i.scores).toFixed(1)}
+                      </span>
+                      <span>
+                        <span className="font-semibold text-espresso/70">#{i.id}</span> {i.title}
+                        {i.status === "blocked" && (
+                          <span className="text-terracotta/80"> · blocked on you</span>
+                        )}
+                      </span>
+                    </li>
+                  ))}
+              </ol>
+            </div>
           </div>
         </div>
 
