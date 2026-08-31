@@ -59,7 +59,7 @@ export default function ContactPage() {
 
         <div className="flex-1 flex items-center">
           <div className="mx-auto max-w-2xl w-full px-4 sm:px-6 py-8 sm:py-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta mb-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta-dark mb-2">
               Appointments
             </p>
             <h1 className="font-display text-2xl sm:text-3xl font-semibold text-espresso leading-tight mb-2">

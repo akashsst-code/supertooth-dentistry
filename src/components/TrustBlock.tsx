@@ -131,7 +131,7 @@ export function TrustBlock() {
             />
           </div>
           <div className="p-6 sm:p-8 text-center sm:text-left">
-            <p className="text-xs font-semibold tracking-wide uppercase text-terracotta">
+            <p className="text-xs font-semibold tracking-wide uppercase text-terracotta-dark">
               Meet Dr. Archana Dubey
             </p>
             <h3 className="mt-2 font-display text-2xl sm:text-3xl font-semibold text-espresso leading-tight">

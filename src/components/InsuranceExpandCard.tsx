@@ -103,7 +103,7 @@ export function BookingCtaRow() {
     <div className="mt-3 flex flex-wrap gap-2">
       <a
         href="/contact"
-        className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full bg-terracotta px-4 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+        className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full bg-terracotta-dark px-4 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta transition-colors"
       >
         <CalendarIcon />
         Book Appointment

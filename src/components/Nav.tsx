@@ -97,7 +97,7 @@ export function Nav() {
 
             <Link
               href="/contact"
-              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta-dark transition-colors"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta-dark px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta transition-colors"
             >
               Book Appointment
             </Link>
@@ -114,7 +114,7 @@ export function Nav() {
             </a>
             <Link
               href="/contact"
-              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-4 text-sm font-semibold text-warm-ivory whitespace-nowrap"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta-dark px-4 text-sm font-semibold text-warm-ivory whitespace-nowrap"
             >
               Schedule
             </Link>
@@ -176,7 +176,7 @@ export function Nav() {
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-warm-ivory"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta-dark px-6 py-3 text-sm font-semibold text-warm-ivory"
             >
               Book Appointment
             </Link>

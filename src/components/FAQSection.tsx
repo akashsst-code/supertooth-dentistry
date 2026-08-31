@@ -94,7 +94,7 @@ export function FAQSection() {
                     {isEmergency ? (
                       <>
                         Call us at{" "}
-                        <a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`} className="font-medium text-terracotta underline underline-offset-2">
+                        <a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`} className="font-medium text-terracotta-dark underline underline-offset-2">
                           {contact.phone}
                         </a>{" "}
                         — {faq.answer}
