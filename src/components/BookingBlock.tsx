@@ -72,7 +72,7 @@ export function BookingBlock() {
               <div className="flex flex-wrap gap-1.5">
                 <a
                   href="/contact"
-                  className="tap-target inline-flex items-center justify-center gap-1 rounded-full bg-terracotta-dark px-3.5 py-3.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta transition-colors"
+                  className="tap-target inline-flex items-center justify-center gap-1 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3.5 py-3.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
                 >
                   <CalendarIcon />
                   Book Appointment

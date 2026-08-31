@@ -103,7 +103,7 @@ export function Hero() {
         <div className="mt-5 flex flex-row flex-wrap gap-1.5 sm:gap-2">
           <Link
             href="/contact"
-            className="tap-target grow shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-terracotta-dark px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta transition-colors sm:px-6"
+            className="tap-target grow shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition sm:px-6"
           >
             <CalendarIcon />
             Book Appointment

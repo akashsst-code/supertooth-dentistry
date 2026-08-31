@@ -97,7 +97,7 @@ export function Nav() {
 
             <Link
               href="/contact"
-              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta-dark px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta transition-colors"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
             >
               Book Appointment
             </Link>
@@ -114,7 +114,7 @@ export function Nav() {
             </a>
             <Link
               href="/contact"
-              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta-dark px-4 text-sm font-semibold text-warm-ivory whitespace-nowrap"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-4 text-sm font-semibold text-warm-ivory whitespace-nowrap"
             >
               Schedule
             </Link>
@@ -176,7 +176,7 @@ export function Nav() {
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="tap-target inline-flex items-center justify-center rounded-full bg-terracotta-dark px-6 py-3 text-sm font-semibold text-warm-ivory"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-6 py-3 text-sm font-semibold text-warm-ivory"
             >
               Book Appointment
             </Link>

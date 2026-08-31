@@ -38,7 +38,7 @@ function MobileFooter() {
         <div className="mt-2 flex flex-wrap justify-center gap-1.5">
           <a
             href="/contact"
-            className="tap-target inline-flex items-center justify-center gap-1 rounded-full bg-terracotta-dark px-3 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta transition-colors"
+            className="tap-target inline-flex items-center justify-center gap-1 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3 py-2.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
           >
             <CalendarIcon />
             Book Appointment
@@ -75,7 +75,7 @@ function DesktopFooter() {
         <div className="flex items-center gap-3">
           <a
             href="/contact"
-            className="tap-target inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-terracotta-dark px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:bg-terracotta transition-colors"
+            className="tap-target inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
           >
             <CalendarIcon />
             Book Appointment
