@@ -90,7 +90,7 @@ const VIEWPORT_LABELS: Record<Viewport, string> = {
   any: "any width",
 };
 
-type Filter = "all" | Priority | "blocked" | "moved" | "conflict" | "blueprint" | "decided";
+type Filter = "all" | Priority | "blocked" | "moved" | "conflict" | "blueprint" | "decided" | "launch";
 type Sort = "wave" | "score";
 
 // Mobile-first coverage, computed from the data so the headline numbers
@@ -105,6 +105,8 @@ const mobileGateCount = backlog.reduce((n, i) => n + i.test.mobileFirst.length, 
 const mobileRefCount = backlog.reduce((n, i) => n + i.references.length, 0);
 const conflictCount = backlog.filter((i) => i.conflict).length;
 const decidedCount = backlog.filter((i) => i.decision).length;
+const blockingItems = backlog.filter((i) => i.launchBlocking);
+const blockingCount = blockingItems.length;
 const blueprintCount = backlog.filter((i) => i.source !== "original").length;
 
 export function BacklogView() {
@@ -120,6 +122,7 @@ export function BacklogView() {
         if (filter === "moved") return item.priority !== item.originalPriority;
         if (filter === "conflict") return Boolean(item.conflict);
         if (filter === "decided") return Boolean(item.decision);
+        if (filter === "launch") return item.launchBlocking;
         if (filter === "blueprint") return item.source !== "original";
         return item.priority === filter;
       }),
@@ -152,7 +155,8 @@ export function BacklogView() {
 
   const filters: { key: Filter; label: string; count: number }[] = [
     { key: "all", label: "All", count: backlog.length },
-    { key: "P0", label: "P0 — Foundation", count: counts.P0 },
+    { key: "launch", label: "Launch-blocking", count: blockingCount },
+    { key: "P0", label: "P0", count: counts.P0 },
     { key: "P1", label: "P1 — Conversion", count: counts.P1 },
     { key: "P2", label: "P2 — Later", count: counts.P2 },
     { key: "blocked", label: "Blocked on Akash", count: counts.blocked },
@@ -293,6 +297,38 @@ export function BacklogView() {
               <span className="font-mono text-[0.9em]">/insurance-new-patients</span> are all in the
               nav; none of those routes exist. Item&nbsp;1 — Small, needs nothing from the practice.
             </p>
+          </div>
+        </div>
+
+        {/* Launch-blocking — the tier that actually gates go-live */}
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 pt-8">
+          <div className="rounded-2xl border-2 border-terracotta bg-terracotta/[0.08] p-5 sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta !mb-2">
+              {blockingCount} launch-blocking of {counts.P0} P0
+            </p>
+            <p className="text-espresso !mb-3 leading-relaxed">
+              {counts.P0} items are P0 — the arithmetic of merging three
+              &ldquo;needed before launch&rdquo; lists, which stopped P0 meaning anything. These{" "}
+              {blockingCount} are the narrow tier that actually gates go-live:{" "}
+              <strong>the site cannot honestly open to patients without them.</strong> Only three
+              grounds qualify — legal, patient safety, or plainly broken. Everything else is
+              foundation, however valuable.
+            </p>
+            <ol className="flex flex-col gap-1.5 !mb-0">
+              {[...blockingItems]
+                .sort((a, b) => scoreOf(b.scores) - scoreOf(a.scores))
+                .map((i) => (
+                  <li key={i.id} className="flex gap-2.5 text-sm text-espresso/85 leading-relaxed">
+                    <span className="font-semibold tabular-nums shrink-0 text-terracotta">
+                      {scoreOf(i.scores).toFixed(1)}
+                    </span>
+                    <span>
+                      <span className="font-semibold">#{i.id}</span>{" "}
+                      <span className="text-espresso/55">[{i.blockingGround}]</span> {i.title}
+                    </span>
+                  </li>
+                ))}
+            </ol>
           </div>
         </div>
 
@@ -619,6 +655,11 @@ function ItemCard({
               {moved && (
                 <span className="inline-flex items-center gap-1 rounded-full border border-terracotta/50 bg-terracotta/10 px-2 py-0.5 text-[0.6875rem] font-semibold text-terracotta">
                   {item.originalPriority} → {item.priority}
+                </span>
+              )}
+              {item.launchBlocking && (
+                <span className="inline-flex items-center rounded-full bg-terracotta text-warm-ivory px-2.5 py-0.5 text-[0.6875rem] font-semibold">
+                  Launch-blocking · {item.blockingGround}
                 </span>
               )}
               {item.pin && <PinBadge pin={item.pin} />}
