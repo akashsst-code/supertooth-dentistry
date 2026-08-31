@@ -175,6 +175,31 @@ for (const item of backlog) {
     item.source === "original" || Boolean(item.blueprintRef),
     `${tag}: source is "${item.source}" but no blueprintRef given`,
   );
+  // ── LAUNCH-BLOCKING TIER ───────────────────────────────────────────
+  // The narrow tier inside P0 that actually gates go-live.
+  check(
+    typeof item.launchBlocking === "boolean",
+    `${tag}: launchBlocking must be set explicitly`,
+  );
+  check(
+    !item.launchBlocking || Boolean(item.blockingGround),
+    `${tag}: launchBlocking but no blockingGround (legal | safety | broken)`,
+  );
+  check(
+    item.launchBlocking || !item.blockingGround,
+    `${tag}: has a blockingGround but isn't flagged launchBlocking`,
+  );
+  // Anything legally pinned is by definition unshippable without.
+  check(
+    item.pin !== "legal" || item.launchBlocking,
+    `${tag}: pinned "legal" but not marked launchBlocking — a legal pin means go-live is not lawful/ethical without it`,
+  );
+  // Blocking implies P0. The reverse is emphatically not true.
+  check(
+    !item.launchBlocking || item.priority === "P0",
+    `${tag}: launchBlocking but priority is ${item.priority}`,
+  );
+
   // A decision must record what was said and what changes as a result —
   // otherwise "it was decided" becomes unauditable.
   if (item.decision) {
@@ -241,11 +266,27 @@ console.log(
     `${desktop} at 1280px · ${gates} mobile gate criteria · ` +
     `${backlog.length}/${backlog.length} items with a mobile gate`,
 );
+const blocking = backlog.filter((i) => i.launchBlocking);
+const ground = (g: string) => blocking.filter((i) => i.blockingGround === g).length;
+console.log(
+  `  LAUNCH-BLOCKING: ${blocking.length} of ${counts.P0} P0 · ` +
+    `${ground("legal")} legal · ${ground("safety")} safety · ${ground("broken")} broken · ` +
+    `${counts.P0 - blocking.length} foundation`,
+);
 const bySource = (s: string) => backlog.filter((i) => i.source === s).length;
 console.log(
   `  provenance: ${bySource("original")} original · ${bySource("blueprint")} from blueprint · ` +
     `${bySource("merged")} enriched · ${harnessChecks.length} harness checks defined`,
 );
+
+console.log("-".repeat(width));
+console.log("  Launch-blocking — the site cannot honestly go live without these:");
+for (const b of [...blocking].sort((a, c) => scoreOf(c.scores) - scoreOf(a.scores))) {
+  console.log(
+    `    ${scoreOf(b.scores).toFixed(1).padStart(5)}  #${String(b.id).padStart(2)}  [${b.blockingGround}]`.padEnd(30) +
+      `  ${b.title.slice(0, 46)}`,
+  );
+}
 
 const decided = backlog.filter((i) => i.decision);
 if (decided.length) {

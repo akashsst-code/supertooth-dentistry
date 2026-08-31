@@ -187,10 +187,37 @@ export type Decision = {
   consequence: string;
 };
 
+/**
+ * LAUNCH-BLOCKING — the tier inside P0 that actually gates go-live.
+ *
+ * 32 of 54 items are P0, which is the arithmetic of merging three
+ * "everything needed before launch" lists. That made P0 stop meaning
+ * anything. This flag restores the signal.
+ *
+ * The criterion is deliberately narrow: **the site cannot honestly go
+ * live to real patients without it.** Only three grounds qualify —
+ *
+ *   1. LEGAL / COMPLIANCE — privacy and NPP, accessibility statement,
+ *      HIPAA testimonial attribution, no unverifiable claims published.
+ *   2. PATIENT SAFETY — emergency guidance exists and is reachable;
+ *      clinical content is accurate.
+ *   3. BROKEN OR DISHONEST — nav links that 404, a phone number that
+ *      doesn't reach the practice, placeholder text visible to patients,
+ *      a form that submits into silence.
+ *
+ * Everything else is FOUNDATION: often more valuable than a blocking
+ * item (the conservative-care statement scores higher than most of
+ * them), but the site can honestly open without it. "Important" is not
+ * the test — "can we ethically launch without it" is.
+ */
 export type BacklogItem = {
   id: number;
   title: string;
   source: Source;
+  /** True only if go-live is unethical or dishonest without it. */
+  launchBlocking: boolean;
+  /** Which of the three grounds. Required when launchBlocking. */
+  blockingGround?: "legal" | "safety" | "broken";
   /** Set once a flagged conflict has been ruled on. */
   decision?: Decision;
   /** Section(s) of the blueprint this draws on, for traceability. */
@@ -274,6 +301,7 @@ export const backlog: BacklogItem[] = [
     title: "Walk the homepage mobile flow section by section",
     priority: "P0",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
@@ -440,6 +468,8 @@ export const backlog: BacklogItem[] = [
     title: "Fix the three 404 primary-nav routes",
     priority: "P0",
     source: "original",
+    launchBlocking: true,
+    blockingGround: "broken",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
@@ -560,6 +590,8 @@ export const backlog: BacklogItem[] = [
     title: "Verify-or-remove every unverifiable claim",
     priority: "P0",
     source: "original",
+    launchBlocking: true,
+    blockingGround: "legal",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
@@ -683,6 +715,8 @@ export const backlog: BacklogItem[] = [
     title: "Resolve the phone-number conflict and make NAP consistent",
     priority: "P0",
     source: "original",
+    launchBlocking: true,
+    blockingGround: "broken",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
@@ -802,6 +836,7 @@ export const backlog: BacklogItem[] = [
     title: "Add LocalBusiness schema, robots.ts, sitemap.ts and per-page metadata",
     priority: "P0",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
@@ -940,6 +975,7 @@ export const backlog: BacklogItem[] = [
     title: "Extract a PageShell component",
     priority: "P0",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "dependency",
@@ -1060,6 +1096,8 @@ export const backlog: BacklogItem[] = [
     title: "Build /insurance-new-patients — the highest-risk content on the site",
     priority: "P0",
     source: "original",
+    launchBlocking: true,
+    blockingGround: "legal",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
@@ -1213,6 +1251,8 @@ export const backlog: BacklogItem[] = [
     title: "Build /emergency — safe, non-diagnostic urgent guidance",
     priority: "P0",
     source: "original",
+    launchBlocking: true,
+    blockingGround: "safety",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
@@ -1384,6 +1424,7 @@ export const backlog: BacklogItem[] = [
     title: "Expand arrival: transit, parking, entrance and Suite A",
     priority: "P0",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
@@ -1540,6 +1581,8 @@ export const backlog: BacklogItem[] = [
     title: "Add form confirmation and error states",
     priority: "P0",
     source: "original",
+    launchBlocking: true,
+    blockingGround: "broken",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
@@ -1702,6 +1745,7 @@ export const backlog: BacklogItem[] = [
     title: "Dental anxiety and comfort content",
     priority: "P0",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
@@ -1838,6 +1882,7 @@ export const backlog: BacklogItem[] = [
     title: "Cost and financing explainer",
     priority: "P0",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
@@ -1961,6 +2006,7 @@ export const backlog: BacklogItem[] = [
     title: "Build /about from Dr. Dubey's existing real bio",
     priority: "P0",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
@@ -2099,6 +2145,8 @@ export const backlog: BacklogItem[] = [
     title: "Add /privacy and /accessibility",
     priority: "P0",
     source: "original",
+    launchBlocking: true,
+    blockingGround: "legal",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
@@ -2234,6 +2282,8 @@ export const backlog: BacklogItem[] = [
     title: "Replace the three placeholder testimonials with real reviews",
     priority: "P0",
     source: "original",
+    launchBlocking: true,
+    blockingGround: "legal",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
@@ -2368,6 +2418,8 @@ export const backlog: BacklogItem[] = [
     title: "WCAG 2.2 AA and mobile QA pass — the patient-ready line",
     priority: "P0",
     source: "original",
+    launchBlocking: true,
+    blockingGround: "legal",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: "legal",
@@ -2550,6 +2602,7 @@ export const backlog: BacklogItem[] = [
     title: "Online booking via the Tab32 service layer",
     priority: "P1",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
@@ -2727,6 +2780,7 @@ export const backlog: BacklogItem[] = [
     title: "Family and life-stage clarity",
     priority: "P1",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
@@ -2842,6 +2896,7 @@ export const backlog: BacklogItem[] = [
     title: "Concern-led service entry",
     priority: "P1",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
@@ -2970,6 +3025,7 @@ export const backlog: BacklogItem[] = [
     title: "Build /services — minimum version",
     priority: "P1",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
     pin: null,
@@ -3099,6 +3155,7 @@ export const backlog: BacklogItem[] = [
     title: "Reviews fed by real Google Business Profile data",
     priority: "P1",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
@@ -3229,6 +3286,7 @@ export const backlog: BacklogItem[] = [
     title: "Language support signal and key-page translation",
     priority: "P2",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P2",
     pin: null,
@@ -3333,6 +3391,7 @@ export const backlog: BacklogItem[] = [
     title: "Per-service pages with FAQ pairs and schema",
     priority: "P2",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
@@ -3453,6 +3512,7 @@ export const backlog: BacklogItem[] = [
     title: "Pre-visit digital forms",
     priority: "P2",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P2",
     pin: null,
@@ -3562,6 +3622,7 @@ export const backlog: BacklogItem[] = [
     title: "Aftercare and records requests",
     priority: "P2",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P1",
     pin: null,
@@ -3673,6 +3734,7 @@ export const backlog: BacklogItem[] = [
     title: "Neighborhood and local content",
     priority: "P2",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P2",
     pin: null,
@@ -3764,6 +3826,7 @@ export const backlog: BacklogItem[] = [
     title: "Conversion instrumentation and analytics",
     priority: "P2",
     source: "original",
+    launchBlocking: false,
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P2",
     pin: null,
@@ -3883,6 +3946,7 @@ export const backlog: BacklogItem[] = [
     title: "Publish a conservative-care / anti-over-treatment statement",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§7 praise/abandon · §11 trust · P0-14",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
@@ -3988,6 +4052,7 @@ export const backlog: BacklogItem[] = [
     title: "Adopt the Global Test Harness (GTH-1 – GTH-22)",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§25(c) global test harness",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
@@ -4111,6 +4176,8 @@ export const backlog: BacklogItem[] = [
     title: "Global shell semantics: skip link, landmarks, focus order",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: true,
+    blockingGround: "legal",
     blueprintRef: "§17 accessibility baseline · §22 global header · P0-1",
     harness: ["GTH-1", "GTH-3", "GTH-4", "GTH-9", "GTH-13", "GTH-14", "GTH-20", "GTH-21"],
     originalPriority: "P0",
@@ -4205,6 +4272,8 @@ export const backlog: BacklogItem[] = [
     title: "Pre-launch verification gate",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: true,
+    blockingGround: "legal",
     blueprintRef: "§24 Build Item 26 · §26 checklist row 26",
     harness: [...BASELINE_IDS, ...MOBILE_SUITE_IDS],
     originalPriority: "P0",
@@ -4313,6 +4382,7 @@ export const backlog: BacklogItem[] = [
     title: "Mobile input correctness and form state preservation",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§17 forms · §22 form field · GTH-18",
     harness: ["GTH-1", "GTH-4", "GTH-6", "GTH-13", "GTH-14", "GTH-18", "GTH-20"],
     originalPriority: "P0",
@@ -4417,6 +4487,7 @@ export const backlog: BacklogItem[] = [
     title: "Loading and empty states for every async interaction",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§17 state design · §22 loading/empty states",
     harness: ["GTH-1", "GTH-4", "GTH-8", "GTH-9", "GTH-13", "GTH-19"],
     originalPriority: "P0",
@@ -4512,6 +4583,7 @@ export const backlog: BacklogItem[] = [
     title: "Prominent, honest, badged hours (early / late / weekend)",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§9 Downtown hours · §26 row 21 · P1-11",
     harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-14", "GTH-17"],
     originalPriority: "P0",
@@ -4607,6 +4679,7 @@ export const backlog: BacklogItem[] = [
     title: "Publish one honest bounded first-visit self-pay price",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§15 adopt-list · §12 uninsured path · P1-9",
     harness: ["GTH-10", "GTH-13", "GTH-14", "GTH-20"],
     originalPriority: "P0",
@@ -4698,6 +4771,7 @@ export const backlog: BacklogItem[] = [
     title: "Verify-benefits path — \"not sure? we'll help you check\"",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§12 insurance · §26 row 20 · P1-8",
     harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-14", "GTH-18"],
     originalPriority: "P0",
@@ -4787,6 +4861,7 @@ export const backlog: BacklogItem[] = [
     title: "Mobile-first type and spacing scale",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§17 typography & spacing",
     harness: ["GTH-1", "GTH-5", "GTH-13", "GTH-20"],
     originalPriority: "P0",
@@ -4889,6 +4964,7 @@ export const backlog: BacklogItem[] = [
     title: "Performance and Core Web Vitals budget",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§24 Build Item 25 · GTH-2 / GTH-19",
     harness: ["GTH-2", "GTH-8", "GTH-13", "GTH-19"],
     originalPriority: "P0",
@@ -4985,6 +5061,7 @@ export const backlog: BacklogItem[] = [
     title: "Design anti-pattern audit against the ten named failure modes",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§17 \"what could make this site feel wrong\" · §15C anti-patterns",
     harness: ["GTH-1", "GTH-5", "GTH-10", "GTH-13", "GTH-22"],
     originalPriority: "P0",
@@ -5085,6 +5162,7 @@ export const backlog: BacklogItem[] = [
     title: "Membership plan / financing path for uninsured patients",
     priority: "P1",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§12 uninsured path · P1-9",
     harness: ["GTH-10", "GTH-13", "GTH-14"],
     originalPriority: "P1",
@@ -5165,6 +5243,7 @@ export const backlog: BacklogItem[] = [
     title: "Appointment reminders and easy rescheduling",
     priority: "P1",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§13 scheduling · §26 row 21 · P1-12",
     harness: ["GTH-1", "GTH-14", "GTH-18"],
     originalPriority: "P1",
@@ -5248,6 +5327,7 @@ export const backlog: BacklogItem[] = [
     title: "Cosmetic overview framed as fact-finding, not sales",
     priority: "P1",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§4K cosmetic jobs · §26 row 23 · P1-14",
     harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-14"],
     originalPriority: "P1",
@@ -5338,6 +5418,7 @@ export const backlog: BacklogItem[] = [
     title: "Non-discrimination notice and languages-spoken signal",
     priority: "P1",
     source: "merged",
+    launchBlocking: false,
     blueprintRef: "§9 language access · §26 row 22 · P1-10",
     harness: ["GTH-1", "GTH-3", "GTH-13", "GTH-14"],
     originalPriority: "P1",
@@ -5425,6 +5506,7 @@ export const backlog: BacklogItem[] = [
     title: "\"When we refer out\" integrity note",
     priority: "P2",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§7 praise · §11 referral integrity · P2-3",
     harness: ["GTH-10", "GTH-13"],
     originalPriority: "P2",
@@ -5494,6 +5576,8 @@ export const backlog: BacklogItem[] = [
     title: "Emergency reachability without a bottom bar",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: true,
+    blockingGround: "safety",
     blueprintRef: "§17 mobile actions · §19 homepage map · §22 sticky action bar · P0-1",
     harness: ["GTH-6", "GTH-13", "GTH-14", "GTH-15", "GTH-17", "GTH-21"],
     originalPriority: "P0",
@@ -5608,6 +5692,7 @@ export const backlog: BacklogItem[] = [
     title: "Add a palette-harmonised emergency colour token",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§17 color strategy · §19 utility strip",
     harness: ["GTH-1", "GTH-5"],
     originalPriority: "P1",
@@ -5721,6 +5806,7 @@ export const backlog: BacklogItem[] = [
     title: "Revisit testimonial auto-scroll once real reviews land",
     priority: "P1",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "§17 reviews · §22 review card · §15C anti-patterns",
     harness: ["GTH-1", "GTH-4", "GTH-13", "GTH-14", "GTH-22"],
     originalPriority: "P1",
@@ -5834,6 +5920,7 @@ export const backlog: BacklogItem[] = [
     title: "Three clear doors on the homepage: Book · New patient · Emergency",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "v2 §16 CD-1 (One Medical, NHS 111) · §19 hero",
     harness: ["GTH-1", "GTH-4", "GTH-13", "GTH-14", "GTH-15", "GTH-17"],
     originalPriority: "P0",
@@ -5933,6 +6020,7 @@ export const backlog: BacklogItem[] = [
     title: "Honest government-plan line (Apple Health / Medicaid)",
     priority: "P0",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "v2 §12 government-plan-forward framing · §15 new pattern 3",
     harness: ["GTH-10", "GTH-13", "GTH-14"],
     originalPriority: "P0",
@@ -6019,6 +6107,7 @@ export const backlog: BacklogItem[] = [
     title: "Household / multi-person booking affordance",
     priority: "P1",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "v2 §15 white space · §16 CD-27 · §28 open question 16",
     harness: ["GTH-1", "GTH-4", "GTH-14", "GTH-18"],
     originalPriority: "P1",
@@ -6112,6 +6201,7 @@ export const backlog: BacklogItem[] = [
     title: "Plain-language benefits glossary (five terms, next to the decision)",
     priority: "P1",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "v2 §16 CD-5 (HealthCare.gov, Oscar) · §12",
     harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-20"],
     originalPriority: "P1",
@@ -6204,6 +6294,7 @@ export const backlog: BacklogItem[] = [
     title: "Publish clinician license numbers as a verifiability signal",
     priority: "P1",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "v2 §15 new pattern 12 (UK GDC numbers) · §16 CD-2",
     harness: ["GTH-10", "GTH-13"],
     originalPriority: "P1",
@@ -6279,6 +6370,7 @@ export const backlog: BacklogItem[] = [
     title: "Sensory and neurodivergent accommodation",
     priority: "P1",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "v2 §14 anxiety · §15 new pattern 7 (serenedental.co.uk)",
     harness: ["GTH-1", "GTH-10", "GTH-13", "GTH-22"],
     originalPriority: "P2",
@@ -6365,6 +6457,7 @@ export const backlog: BacklogItem[] = [
     title: "Pre-appointment familiarisation visit or virtual tour",
     priority: "P2",
     source: "blueprint",
+    launchBlocking: false,
     blueprintRef: "v2 §14 anxiety · §15 new pattern 13",
     harness: ["GTH-2", "GTH-13", "GTH-19", "GTH-22"],
     originalPriority: "P2",
@@ -6444,6 +6537,138 @@ export const backlog: BacklogItem[] = [
       pass: [
         "Offer confirmed and honoured, or only existing photography ships",
         "No autoplay, no performance regression",
+      ],
+    },
+  },
+  {
+    id: 55,
+    title: "Walk the cross-page journey — every route, every next step",
+    priority: "P0",
+    source: "blueprint",
+    launchBlocking: false,
+    blueprintRef: "v1/v2 §8 stage map · §18 IA guardrails · §20 related pages",
+    harness: ["GTH-1", "GTH-4", "GTH-9", "GTH-13", "GTH-14", "GTH-17"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 5, reach: 5, risk: 3, effort: 3, readiness: 3 },
+    effort: "M",
+    status: "not-started",
+    wave: 3,
+    job: "Move through the whole site without hitting a dead end",
+    story:
+      "As a patient whose question spans several pages, every page I land on tells me where to go next, and I can always get back.",
+    problem:
+      "Item 27 walks the homepage. Item 31 is an end-gate that tests three journeys once everything else has shipped. **Nothing reviews the site as a connected journey** — which is the gap, because the research models a nine-stage funnel (trigger → first impression → trust → fit → cost → anxiety/urgency → convert → prepare & arrive → post-visit) that crosses pages, and most patients enter mid-funnel rather than at the homepage. A site can pass every per-page test and still strand people between pages.",
+    where: "Sitewide — every route and the links between them",
+    scope: [
+      "Map every route's primary and secondary next step, and confirm each leads somewhere real",
+      "Verify the IA guardrail: every P0 page reachable in ≤2 taps from Home AND from the footer",
+      "Check each of the nine journey stages has a surface that serves it — and name any with none",
+      "Find orphan pages: routes with no inbound link from anywhere",
+      "Find dead ends: pages whose only exit is browser-back",
+      "Confirm related-page links exist where the page inventory calls for them (insurance ↔ new patients ↔ services ↔ location)",
+      "Walk the 12 researched patient scenarios end to end and record where each stalls",
+    ],
+    acceptance: [
+      "Every P0 page reachable in ≤2 taps from Home and from the footer",
+      "Zero orphan routes and zero dead-end pages",
+      "All nine journey stages have a named serving surface, or the gap is logged as its own item",
+      "All 12 scenarios complete or their stall point is recorded",
+    ],
+    evidence:
+      "Blueprint §8 supplies the nine-stage funnel with named drop-off points; §18 supplies the ≤2-taps IA guardrail; §20's page inventory specifies related-page links per route. Our own research contributes the 12 scenarios. None of these is currently tested by any item.",
+    dependsOn: "Items 6, 7, 10, 11 — the pages have to exist before the journey between them can be walked",
+    outOfScope:
+      "Redesigning the IA. This verifies the locked structure holds together as a journey; a proposed IA change comes back as its own item.",
+    references: [
+      {
+        name: "NN/g — information scent and wayfinding",
+        url: "https://www.nngroup.com/articles/information-scent/",
+        whatGood:
+          "Explains why users abandon when a page gives no cue about where the answer lives next — the mechanism behind a dead end, framed as something you can inspect rather than intuit.",
+        takeaway:
+          "Copy the diagnostic: for each page ask what the next step looks like to someone mid-task. Absent scent is the finding.",
+        mobile:
+          "Scent is weaker on a phone: no hover previews, no visible sidebar, one screen at a time. A next step that's obvious on desktop can be genuinely invisible at 375px, so the walk is done on mobile.",
+      },
+      {
+        name: "GOV.UK Service Manual — mapping a user journey",
+        url: "https://www.gov.uk/service-manual/design/map-a-users-whole-problem",
+        whatGood:
+          "Insists on mapping the user's whole problem rather than the screens you happen to own, precisely because services pass screen-level review and fail as journeys.",
+        takeaway:
+          "Copy the whole-problem framing and the practice of walking it as a real person with a real goal, not clicking every link mechanically.",
+        mobile:
+          "Their journey mapping assumes the device users actually have. Walk this on a phone; a desktop walk with two tabs open is not the same journey.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "Items 6, 7, 10, 11 shipped so the routes exist",
+        "Viewport 375×812 — the journey is walked on a phone",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, from the homepage, count taps to reach every P0 page. Repeat starting from the footer.",
+          tool: "browser",
+          expect: "≤2 taps from both, per the IA guardrail. Anything deeper is a finding.",
+        },
+        {
+          action:
+            "At 375px, land directly on each non-home route (as a search visitor would) and identify its next step without scrolling back to the nav.",
+          tool: "browser",
+          expect:
+            "Every page offers a visible next step. Most patients enter mid-funnel, so a page whose only exit is browser-back is a dead end.",
+        },
+        {
+          action:
+            "Walk all 12 researched scenarios end to end at 375px, recording where each stalls.",
+          tool: "manual",
+          expect: "Each completes, or its stall point is recorded as a finding with an owner.",
+        },
+        {
+          action:
+            "Check each of the nine journey stages against a named serving surface.",
+          tool: "manual",
+          viewport: "any",
+          expect: "Every stage mapped, or the gap logged as its own backlog item.",
+        },
+        {
+          action:
+            "Build the full route inbound-link map and find any route with zero inbound links.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Zero orphans. /backlog is the one deliberate exception and must be named as such.",
+        },
+        {
+          action: "Verify the related-page links the page inventory specifies actually exist.",
+          tool: "browser",
+          expect:
+            "Insurance ↔ new patients ↔ services ↔ location all cross-link, so a patient mid-question isn't sent back to the nav.",
+        },
+        {
+          action: "Only after the mobile walk, repeat the tap-count check at 1280px.",
+          tool: "browser",
+          viewport: "1280",
+          expect: "Journey holds at desktop width; any conflict is resolved in mobile's favour.",
+        },
+      ],
+      mobileFirst: [
+        "Every P0 page ≤2 taps from Home and from the footer at 375px",
+        "Every route offers a visible next step when landed on directly, without scrolling back to the nav",
+        "All 12 scenarios walked on a phone, with stall points recorded",
+        "Zero orphan routes and zero dead ends",
+      ],
+      pass: [
+        "≤2-tap reachability verified from Home and footer",
+        "No orphan or dead-end routes",
+        "Nine journey stages each mapped to a surface, or gaps logged",
+        "12 scenarios completed or their stalls recorded",
+      ],
+      gotchas: [
+        "Clicking every link mechanically is not this test. Walk it as a person with a goal — the finding is where you'd give up, which a link-crawler cannot detect.",
+        "Most patients enter mid-funnel from search, not at the homepage. Test the deep-landing case specifically; it's the one a homepage-first review always misses.",
       ],
     },
   },
