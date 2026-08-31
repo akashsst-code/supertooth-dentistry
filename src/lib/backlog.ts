@@ -475,7 +475,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 4, effort: 5, readiness: 5 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 1,
     job: "Find a dentist · evaluate credibility",
     story:
@@ -484,9 +484,9 @@ export const backlog: BacklogItem[] = [
       "`nav` in content.ts links to /services, /about and /insurance-new-patients. None of those routes exist — three of four primary nav links 404. On a site whose stated goal is 4–5× new patients, three quarters of the primary nav is broken.",
     where: "src/lib/content.ts · src/app/*",
     scope: [
-      "Decide per route: ship a minimum page now, or remove the link until the page exists",
-      "Recommended: remove from nav immediately (Small), then restore each link as items 6, 10 and 11 land",
-      "Keep the locked four-item nav structure — this is a sequencing fix, not an IA change",
+      "DONE (2026-08-31): took the recommended path — /services, /about and /insurance-new-patients removed from the nav array, leaving Contact as the sole entry until each gets a real page",
+      "Restoration is deliberately NOT part of this item — it happens as items 6 (/insurance-new-patients), 10 (/about) and 11 (/services) ship, each restoring its own label",
+      "Kept the locked four-item nav structure as the target — this was a sequencing fix, not an IA change; content.ts carries a comment mapping each removed label back to the item that restores it",
     ],
     acceptance: [
       "No link in the primary nav or mobile menu returns a 404",

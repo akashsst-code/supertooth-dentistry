@@ -443,9 +443,15 @@ export const faqs = [
   },
 ];
 
-export const nav = [
-  { label: "Services", href: "/services" },
-  { label: "About", href: "/about" },
-  { label: "Insurance & New Patients", href: "/insurance-new-patients" },
-  { label: "Contact", href: "/contact" },
-];
+// Backlog item 1 (2026-08-31): /services, /about and /insurance-new-patients
+// were linked here with no page ever built behind them — three of four
+// primary nav links 404'd in production. Per the item's own locked scope
+// ("remove from nav immediately, then restore each link as items 6, 10
+// and 11 land"), they're pulled until a real page exists. The locked
+// four-item nav structure (docs/supertooth-navigation-requirements.md)
+// is unchanged as the target — this is a sequencing fix, not an IA
+// change, and each entry goes back in as its backlog item ships:
+//   Services                 -> item 11 (/services)
+//   About                    -> item 10 (/about)
+//   Insurance & New Patients -> item 6  (/insurance-new-patients)
+export const nav = [{ label: "Contact", href: "/contact" }];
