@@ -108,7 +108,7 @@ export function NewPatientOffersBlock() {
             </p>
             <a
               href="/contact"
-              className="inline-flex w-fit items-center font-semibold text-terracotta-dark hover:text-terracotta underline underline-offset-4 decoration-2 mb-8"
+              className="tap-target inline-flex w-fit items-center font-semibold text-terracotta-dark hover:text-terracotta underline underline-offset-4 decoration-2 mb-8"
             >
               Schedule this offer
             </a>

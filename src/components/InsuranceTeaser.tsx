@@ -33,7 +33,7 @@ export function InsuranceTeaser() {
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="underline decoration-warm-ivory/40 underline-offset-2 hover:decoration-warm-ivory"
+          className="tap-target inline-flex items-center underline decoration-warm-ivory/40 underline-offset-2 hover:decoration-warm-ivory"
         >
           {" "}
           + more

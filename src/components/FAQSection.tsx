@@ -90,19 +90,17 @@ export function FAQSection() {
                 }`}
               >
                 <div className="overflow-hidden">
-                  <p className="px-5 pb-5 pt-4 text-sm text-espresso/70 border-t border-sand">
-                    {isEmergency ? (
-                      <>
-                        Call us at{" "}
-                        <a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`} className="font-medium text-terracotta-dark underline underline-offset-2">
-                          {contact.phone}
-                        </a>{" "}
-                        — {faq.answer}
-                      </>
-                    ) : (
-                      faq.answer
+                  <div className="flex flex-col gap-2 px-5 pb-5 pt-4 border-t border-sand">
+                    {isEmergency && (
+                      <a
+                        href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
+                        className="tap-target inline-flex w-fit items-center font-medium text-terracotta-dark underline underline-offset-2"
+                      >
+                        Call us at {contact.phone}
+                      </a>
                     )}
-                  </p>
+                    <p className="text-sm text-espresso/70">{faq.answer}</p>
+                  </div>
                 </div>
               </div>
             </div>

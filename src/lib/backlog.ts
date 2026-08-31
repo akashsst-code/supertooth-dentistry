@@ -307,7 +307,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 3, effort: 3, readiness: 5 },
     effort: "M",
-    status: "not-started",
+    status: "partial",
     wave: 1,
     job: "Evaluate, decide and book — the whole journey, on a phone",
     story:
@@ -332,7 +332,8 @@ export const backlog: BacklogItem[] = [
       "Every finding is either fixed or logged as its own backlog item with an owner",
     ],
     evidence:
-      "Internal — build spec Section 2 makes the homepage the full conversion journey, and Section 1 names conversion as the project's goal. Usability tier: NN/g eyetracking finds ~57% of viewing time above the fold and ~74% within the first two screenfuls, so a 12.4-screen page needs deliberate pacing rather than assumed scrolling. The five sub-44px targets were measured directly on production, not inferred.",
+      "Internal — build spec Section 2 makes the homepage the full conversion journey, and Section 1 names conversion as the project's goal. Usability tier: NN/g eyetracking finds ~57% of viewing time above the fold and ~74% within the first two screenfuls, so a 12.4-screen page needs deliberate pacing rather than assumed scrolling. The five sub-44px targets were measured directly on production, not inferred.\n\n" +
+      "Findings from the 2026-08-30 review pass: all five sub-44px targets fixed (InsuranceTeaser '+ more', HeroAddressMap address, both NewPatientOffersBlock 'Schedule this offer' links, and the FAQSection emergency phone link — the last one restructured out of a mid-sentence inline link into its own tappable row, since a 44px-tall inline link would have broken the FAQ paragraph's flow). Fixed header verified genuinely persistent with ≥44px controls at scroll depths 3/5/8/11 screens. No accidental content repetition found — the repeated office/team photos at the same scroll position are deliberate carousel clone-slides for seamless looping, not a redundancy bug. No horizontal overflow at 320px or 375px at any depth. Total scroll depth unchanged at 12.4 screens; TrustBlock is 2.83 screens (just over the ~2.5 guideline) but is justified as-is — it's locked, already-approved content (differentiators + office carousel + bio) and outOfScope rules out redesigning it. Desktop pacing (1280px) surfaced ServicesSection at 4.07 screens, well outside the guideline; logged as item 56 rather than fixed here, since trimming it is a grid-density change, not a mobile-flow repair. Core Web Vitals were NOT measured with real network/CPU throttling in this pass — this session's tooling has no throttle control, and per this item's own gotcha, localhost numbers are meaningless. Needs a throttled Lighthouse or PageSpeed Insights run against the deployed Vercel preview before this item can be marked done.",
     dependsOn: null,
     outOfScope:
       "Redesigning the homepage or reordering locked sections. This is a review-and-repair pass against the existing locked order — any reordering proposal comes back as a separate item with its own rationale.",
@@ -6671,6 +6672,90 @@ export const backlog: BacklogItem[] = [
       gotchas: [
         "Clicking every link mechanically is not this test. Walk it as a person with a goal — the finding is where you'd give up, which a link-crawler cannot detect.",
         "Most patients enter mid-funnel from search, not at the homepage. Test the deep-landing case specifically; it's the one a homepage-first review always misses.",
+      ],
+    },
+  },
+  {
+    id: 56,
+    title: "Rebalance ServicesSection height at desktop widths",
+    priority: "P2",
+    source: "original",
+    launchBlocking: false,
+    harness: ["GTH-12"],
+    originalPriority: "P2",
+    pin: null,
+    scores: { conversion: 2, reach: 2, risk: 2, effort: 3, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 5,
+    job: "Scan the services list on a laptop or tablet without it dominating the page",
+    story:
+      "As a patient browsing on a laptop, iPad, or older monitor, the Services section reads as a scannable set of offerings rather than a wall of cards I have to scroll several screens to get past.",
+    problem:
+      "Item 27's desktop pacing pass (1280px, done as the final step of that review, mobile-first per the locked ordering) measured every homepage section in screenfuls the same way the mobile pass does. At 1280px, ServicesSection alone is 4.07 screens tall — the tallest section on the page by a wide margin, and well past the ~2.5-screen guideline item 27 already applies on mobile (where the same section is a reasonable 2.55 screens). The mobile layout is not the problem here and must not be touched; this is a desktop-only pacing gap the mobile review surfaced but was out of scope to fix, per item 27's own scope (review-and-repair, not a redesign).",
+    where: "src/components/ServicesSection.tsx",
+    scope: [
+      "Measure the current desktop card grid (columns, card height, gaps) that produces the 4.07-screen total at 1280px",
+      "Reduce the section's height at desktop widths — most likely a wider/denser grid (more columns before wrapping) or shorter cards — without cutting any listed service or changing the mobile stacked layout",
+      "Re-measure at 1280px and 1024px after the change",
+    ],
+    acceptance: [
+      "ServicesSection height at 1280px is reduced from the 4.07-screen baseline, or the remaining height is explicitly justified (e.g. a fixed minimum card size needed for legibility)",
+      "Mobile ServicesSection height (375px, 2.55-screen baseline) is unchanged",
+      "Every currently listed service is still present and unchanged in content",
+    ],
+    evidence:
+      "Internal — measured directly during item 27's mandatory desktop pass (docs/supertooth-webflow-build-spec.md-locked mobile-first ordering: mobile first, desktop repeated after, conflicts resolved in mobile's favour). Desktop screenfuls: TrustBlock 2.3, Testimonials 0.68, Services 4.07, LocationMap 0.85, Offers 1.14, FAQ 1.32, Booking 0.84 — Services is the clear outlier.",
+    dependsOn: "Item 27 (surfaced this during its desktop pacing pass)",
+    outOfScope:
+      "The mobile ServicesSection layout, which already passes its own pacing check. Adding, removing, or rewording any service.",
+    references: [
+      {
+        name: "web.dev — Web Vitals",
+        url: "https://web.dev/articles/vitals",
+        whatGood:
+          "Ties a page's 'does it feel fast/usable' assessment to measured thresholds rather than a subjective read, which is the same discipline this item borrows for pacing: measure screenfuls, don't eyeball them.",
+        takeaway:
+          "Copy the habit of measuring before changing anything. Don't resize the grid on a hunch — confirm the new screenful count after the change, the same way a Lighthouse re-run confirms a performance fix.",
+        mobile:
+          "Vitals are segmented by device because a fix that helps desktop can quietly hurt mobile — the same risk here, which is why the mobile baseline (2.55 screens) is a locked acceptance criterion, not just a note.",
+      },
+      {
+        name: "NN/g — Scrolling and Attention (original eyetracking study)",
+        url: "https://www.nngroup.com/articles/scrolling-and-attention-original-research/",
+        whatGood:
+          "The same research item 27 itself cites: attention concentrates in the first couple of screenfuls, so a single section eating 4 of the page's ~12.5 screens is competing hard for attention it's unlikely to get.",
+        takeaway:
+          "A denser desktop grid (more columns, shorter cards) keeps every service visible without asking for four screenfuls of attention on one section.",
+        mobile:
+          "The finding is desktop-specific by construction — the same study is why item 27 already treats mobile pacing as the stricter, binding constraint here.",
+      },
+    ],
+    test: {
+      preconditions: ["Deployed at $BASE", "Item 27's mobile pacing pass already green"],
+      steps: [
+        {
+          action: "At 375×812, re-measure ServicesSection height in screenfuls.",
+          tool: "browser",
+          expect: "Unchanged from the 2.55-screen baseline — this item must not regress the mobile pass.",
+        },
+        {
+          action:
+            "At 1280px, measure ServicesSection height in screenfuls after the grid change, and confirm every service from content.ts still renders with unchanged copy.",
+          tool: "browser",
+          viewport: "1280",
+          expect:
+            "Height below the 4.07-screen baseline (or justified in the PR description) with the full service list present, none dropped or reworded.",
+        },
+      ],
+      mobileFirst: ["ServicesSection height at 375px is unchanged from the 2.55-screen baseline"],
+      pass: [
+        "Desktop ServicesSection height reduced or justified",
+        "Mobile ServicesSection height unchanged",
+        "No service content lost",
+      ],
+      gotchas: [
+        "This is a pacing fix, not a redesign — don't restyle the cards beyond what's needed to change the grid density.",
       ],
     },
   },
