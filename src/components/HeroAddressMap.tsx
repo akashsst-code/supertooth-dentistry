@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { contact, practice } from "@/lib/content";
-import { CloseIcon, MapPinIcon } from "./icons";
+import { contact, mapDirectionsUrl, practice } from "@/lib/content";
+import { CloseIcon, ExternalLinkIcon, MapPinIcon } from "./icons";
 
 /**
  * Hero address line, tap-to-expand — Akash's follow-up call after the
@@ -28,6 +28,17 @@ import { CloseIcon, MapPinIcon } from "./icons";
  * it keeps the visitor contained by making any "open in new tab" link
  * inside the embed (on the place card, etc.) inert, without touching
  * what's actually rendered.
+ *
+ * Item 59 — the sandbox above means nothing inside the iframe can ever
+ * open a native maps app, which item 55's cross-page journey walk
+ * flagged as a real gap against scenario 1's "one-tap directions" need.
+ * Ruling: add a real "Get Directions" anchor OUTSIDE the iframe (using
+ * `mapDirectionsUrl`, content.ts) rather than loosen the sandbox — the
+ * embed's on-page-preview behavior stays exactly as locked, this is
+ * purely additive. Placed inside the expanded panel rather than the
+ * collapsed trust-strip line: that line is already tight (see the tap
+ * target note below) and this is a next step only relevant once the
+ * visitor has already opened the preview.
  *
  * Tap target: an earlier pass gave this button a real 44px min-height,
  * which stretched the whole three-line hero trust strip apart (Akash:
@@ -73,6 +84,16 @@ export function HeroAddressMap() {
           >
             <CloseIcon className="h-4 w-4" />
           </button>
+
+          <a
+            href={mapDirectionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tap-target absolute left-2 bottom-2 inline-flex items-center gap-1.5 rounded-full bg-warm-ivory px-3 text-xs font-semibold text-espresso shadow hover:bg-warm-ivory/90"
+          >
+            Get Directions
+            <ExternalLinkIcon className="h-3 w-3" />
+          </a>
         </div>
       )}
     </>

@@ -42,6 +42,15 @@ export const contact = {
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2689.3360303923164!2d-122.35969792320054!3d47.61959897119115!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x549015452bd2ce89%3A0x924ad9078701e7fa!2sSupertooth%20Dentistry!5e0!3m2!1sen!2sus!4v1788069595923!5m2!1sen!2sus",
 };
 
+// Item 59 — a plain https://www.google.com/maps/search/?api=1&query=... link,
+// per Google's own "Maps URLs" documentation. Deliberately separate from
+// mapEmbedSrc above: the embed stays sandboxed against navigating away
+// (Akash's locked call to keep visitors on-page), and this is instead a
+// real, additional anchor rendered outside the iframe — the one thing the
+// sandboxed embed can never provide, a one-tap handoff to the visitor's
+// own installed maps app for turn-by-turn directions.
+export const mapDirectionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.address)}`;
+
 export const hours = [
   { days: "Tuesday – Friday", time: "7:00 AM – 4:30 PM" },
   { days: "Saturday – Monday", time: "Closed" },

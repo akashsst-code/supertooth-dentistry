@@ -6861,7 +6861,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 2, reach: 3, risk: 1, effort: 5, readiness: 5 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 4,
     job: "Follow a related question to the page that actually answers it, without backtracking to the nav",
     story:
@@ -6881,7 +6881,8 @@ export const backlog: BacklogItem[] = [
       "Links read as a natural next question, not a sitemap dump",
     ],
     evidence:
-      "Confirmed via `grep -rEho 'href=\"/[a-zA-Z0-9_/#-]*\"' src/app src/components` — only /, /contact and /backlog appear. Cross-checked by loading /about, /services and /insurance-new-patients directly at 375px and reading the rendered text: each ends on a Book Appointment/call CTA with no related-page link. Full detail in item 55's evidence.",
+      "Confirmed via `grep -rEho 'href=\"/[a-zA-Z0-9_/#-]*\"' src/app src/components` — only /, /contact and /backlog appear. Cross-checked by loading /about, /services and /insurance-new-patients directly at 375px and reading the rendered text: each ends on a Book Appointment/call CTA with no related-page link. Full detail in item 55's evidence.\n\n" +
+      "Fixed 2026-08-31: one contextual link added on each of the three pages, each placed as a secondary line above the existing Book Appointment/call CTA row so the primary CTA stays visually first. /insurance-new-patients → /services ('Wondering what's actually covered? See our services'); /services → /about ('Curious who's behind the chair? Meet Dr. Archana Dubey'); /about → /insurance-new-patients ('Thinking of becoming a patient? See insurance & new-patient info'). Forms a cycle covering all three pairs without every page linking to both others, keeping each addition to one line. Verified via `npx tsc --noEmit` and `npx next build` — both clean.",
     dependsOn: "Items 6, 10, 11 — the three pages have to exist, and do",
     outOfScope:
       "Restructuring the nav or adding a dedicated Location page — this is in-content links between what's already built, not an IA change.",
@@ -6942,7 +6943,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 2, reach: 2, risk: 1, effort: 5, readiness: 2 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 5,
     job: "Get turn-by-turn directions in one tap when that's actually what's wanted",
     story:
@@ -6950,23 +6951,23 @@ export const backlog: BacklogItem[] = [
     problem:
       "Item 55's walk (2026-08-31) found no native maps deep link anywhere on the site. Both map instances (HeroAddressMap.tsx, LocationMapSection.tsx) sandbox the Google embed without allow-popups/allow-top-navigation specifically so nothing inside it can navigate away — a deliberate, documented choice made after Akash asked to keep the visitor on the page rather than opening Google Maps in a new tab. That choice is working as designed, but it means scenario 1's 'one-tap directions' need and GTH-17's maps-deep-link check both go unmet by design.",
     where: "src/components/HeroAddressMap.tsx · src/components/LocationMapSection.tsx",
-    scope: ["Not a build task until Akash rules on the conflict below."],
+    scope: ["Not a build task until Akash rules on the conflict (see `decision` — ruled 2026-08-31, approved)."],
     acceptance: [
       "A ruling recorded (approved / approved-with-constraint / declined / deferred), and this item's status updated to match",
       "If approved, the sandboxed embed's own behavior is unchanged — the new link is additive, not a replacement",
     ],
     evidence:
-      "Verified by reading both components' sandbox attribute (`sandbox=\"allow-scripts allow-same-origin\"` — no allow-popups, no allow-top-navigation) and their comments, which state the omission is intentional.",
+      "Verified by reading both components' sandbox attribute (`sandbox=\"allow-scripts allow-same-origin\"` — no allow-popups, no allow-top-navigation) and their comments, which state the omission is intentional.\n\n" +
+      "Ruled and fixed 2026-08-31 (see `decision` below): added `contact.mapDirectionsUrl` in content.ts (a plain `https://www.google.com/maps/search/?api=1&query=...` link per the Google reference above) and a real 'Get Directions' anchor, rendered outside the iframe in both components — inside HeroAddressMap's expanded panel (bottom-left, alongside the existing close button, `tap-target` ≥44px) and directly under the address in LocationMapSection's sidebar card. Both open in a new tab (`target=\"_blank\" rel=\"noopener noreferrer\"`). Neither iframe's `sandbox` attribute changed — the on-page preview behaves exactly as before. Verified via `npx tsc --noEmit` and `npx next build`, both clean.",
     dependsOn: null,
     outOfScope:
       "Changing the embed's on-page preview behavior — this only asks whether a supplementary link should be added alongside it, not whether the preview should be removed.",
-    conflict: {
-      locked:
-        "HeroAddressMap and LocationMapSection deliberately sandbox their map embeds so nothing inside can navigate the visitor away from the page.",
-      blueprint:
-        "Blueprint scenario 1 and GTH-17 both expect a working one-tap 'open in native maps app' handoff from the address.",
-      question:
-        "Add a small supplementary 'Get Directions' link/button next to the embed (opens the native maps app in a new tab, embed stays as-is), or leave it page-preview-only?",
+    decision: {
+      date: "2026-08-31",
+      ruling: "approved",
+      said: "Yes, do both — implement item 58's cross-links and item 59's directions link now.",
+      consequence:
+        "A supplementary 'Get Directions' link was added outside both sandboxed embeds. The embeds' own sandbox and on-page-preview behavior are unchanged — this is additive, per the ruling's own constraint.",
     },
     references: [
       {

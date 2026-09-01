@@ -119,9 +119,16 @@ export default function InsuranceNewPatientsPage() {
         </div>
 
         <div className="mx-auto max-w-3xl px-4 sm:px-6 pb-16 sm:pb-20">
-          <p className="text-sm text-espresso/60 !mb-6">
+          <p className="text-sm text-espresso/60 !mb-3">
             <Placeholder>New-patient offer and financing details</Placeholder> — ask when you call
             or request an appointment.
+          </p>
+          <p className="text-sm text-espresso/60 !mb-6">
+            Wondering what&apos;s actually covered?{" "}
+            <Link href="/services" className="font-medium text-terracotta-dark hover:text-terracotta transition-colors">
+              See our services
+            </Link>
+            .
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
