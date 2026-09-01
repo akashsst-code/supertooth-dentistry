@@ -42,8 +42,11 @@ const CROSSFADE_MS = 1200;
  * All <Image>s are always mounted and stacked, crossfading via opacity
  * — not swapped in/out — so the Ken Burns zoom (applied to all of them
  * continuously) never restarts/pops mid-transition. Only index 0 gets
- * `priority` (it's the photo that paints first, and now also the one
- * always shown first).
+ * `preload`/`fetchPriority="high"` (it's the photo that paints first, and
+ * now also the one always shown first) — `priority` was deprecated in
+ * Next 16 in favor of `preload`, which no longer implies fetchPriority on
+ * its own, so both props are needed for the LCP image to actually be
+ * fetched with high priority.
  */
 export function HeroCarousel() {
   const [index, setIndex] = useState(0);
@@ -78,7 +81,8 @@ export function HeroCarousel() {
           src={photo.src}
           alt={photo.alt}
           fill
-          priority={i === 0}
+          preload={i === 0}
+          fetchPriority={i === 0 ? "high" : undefined}
           aria-hidden
           sizes="100vw"
           style={{ transitionDuration: `${CROSSFADE_MS}ms` }}
