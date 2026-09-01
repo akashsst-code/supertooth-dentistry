@@ -156,7 +156,7 @@ export function InsuranceExpandCard({
 }) {
   return (
     <ExpandCard title={title} detail={detail} icon={<ShieldCheckIcon />} image={image} className={className}>
-      <p className="mt-3 mb-2 text-[11px] font-semibold uppercase tracking-wide text-warm-ivory/50">
+      <p className="mt-3 mb-2 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
         Accepted plans include
       </p>
       <div className="grid grid-cols-2 gap-2">

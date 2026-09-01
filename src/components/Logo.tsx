@@ -26,7 +26,7 @@ export function Logo() {
       <Image src={toothMark} alt="" width={32} height={33} className="h-8 w-auto" priority aria-hidden="true" />
       <span className="flex flex-col leading-tight" aria-hidden="true">
         <span className="font-display text-xl font-normal text-espresso">Supertooth</span>
-        <span className="text-[10px] font-medium tracking-widest text-espresso/60 uppercase">
+        <span className="text-xs font-medium tracking-widest text-espresso/60 uppercase">
           Dentistry
         </span>
       </span>
