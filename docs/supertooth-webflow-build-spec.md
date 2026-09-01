@@ -130,6 +130,17 @@ Staged rollout via Webflow staging/preview before publishing live. Webflow versi
 
 ## Status: Next.js build (current — see `supertooth-platform-pivot.md`)
 
+**Three clear doors on the homepage — item 48, worked this pass, status `partial`, PR open, not yet merged:** Akash asked to fix item 48 (Hero: Book · New patient · Emergency). The homepage previously offered one CTA (Book Appointment) plus a bare phone link, so a new patient or someone in pain had to work out their next step from the nav — the gap item 48 exists to close.
+
+Hero's old two-up "Book Appointment / Call" row is replaced with three full-width stacked door rows — static `Link`s only, no branching or self-assessment logic, each `tap-target` (≥44px) with `gap-2` (8px) separation:
+- **Book Appointment** → `/contact`, terracotta primary pill (unchanged destination/styling from before).
+- **New Patient** → `/insurance-new-patients`, warm-ivory outline pill (new).
+- **Dental Emergency** → `/contact`, using item 46's reserved `bg-alert` token for visual distinction, paired with a new `MedicalCrossIcon` (a warm circle-plus glyph, not a warning triangle — item 48's scope explicitly warns against "three cold triage buttons that read like a hospital intake desk"). This is the alert token's first real consumer; item 46 updated in `backlog.ts` to record that.
+
+**Verified at 375×812 and 1280px:** all three doors render inside `ViewportHero`'s one-screen-tall mobile wrapper without clipping the badge/headline/body/trust-strip above them, and each `href` resolves to a real, already-built page.
+
+**Known gap, not fixed here:** item 48 depends on item 7 (`/emergency`), which is still blocked on Akash confirming the after-hours reality. Rather than leave the Emergency door pointing nowhere, or invent an after-hours claim to unblock item 7 early, Akash approved routing it to `/contact` (the existing appointment-request form) as an interim destination — real, but not the tiered non-diagnostic guidance item 7 calls for. Both `backlog.ts` items 46 and 48 are left at `partial`, not `done`, to keep that honest; re-point the door once item 7 ships.
+
 **Homepage mobile-flow review — item 27, worked this pass, status `partial`, PR open, not yet merged:** Akash asked whether anything in the backlog checks the mobile homepage flow page-by-page, feature-by-feature. Audited: nothing did. Items 16/17/19 *add sections to* the homepage and item 14 is a sitewide accessibility audit, but no item tested the homepage as a continuous mobile journey — the gap that matters most, since Section 2 above makes the homepage the full conversion journey and the site is single-page-led. A page can pass every per-feature test and still fail as a sequence.
 
 Item 27 scores **42.0/50 — third-highest in the backlog**, P0, Wave 1. A ten-minute measurement of production at 375×812 (2026-08-30) seeded it with real findings, and this pass acted on them:

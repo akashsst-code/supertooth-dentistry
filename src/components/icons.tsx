@@ -216,3 +216,30 @@ export function PinDotIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+/** New-patient door — Hero "three clear doors" (item 48). */
+export function UserPlusIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <circle cx="10" cy="8" r="3.5" stroke="currentColor" strokeWidth="2" />
+      <path d="M3.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M18.5 8v5M16 10.5h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/**
+ * Dental-emergency door — Hero "three clear doors" (item 48). A first-aid
+ * cross rather than a warning-triangle/exclamation glyph, deliberately —
+ * the item's scope explicitly warns against "three cold triage buttons
+ * that read like a hospital intake desk," so this reuses CheckIcon's
+ * warmer circle-plus-stroke language instead of an alarm symbol.
+ */
+export function MedicalCrossIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15" />
+      <path d="M12 7v10M7 12h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}

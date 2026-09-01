@@ -5722,7 +5722,7 @@ export const backlog: BacklogItem[] = [
     where: "src/app/globals.css (token added) · EmergencyGuidance component (not yet built — items 7/45)",
     scope: [
       "DONE (2026-08-31): `--color-alert: #A32E1F` landed in globals.css and the Tailwind theme, documented as emergency-only. 6.67:1 on warm-ivory, 7.08:1 for ivory text on it — verified AA. Treated as final rather than provisional: Akash delegated implementation ('work on emergency hex') after reviewing both candidates, so the recommended value was taken as the sign-off",
-      "NOT YET DONE: the token has no consumer. Items 7 (/emergency) and 45 (reachability) don't exist yet, so there is no EmergencyGuidance component or emergency CTA to apply it to — landing the token now just means it's ready when they ship, per the guardrail against building UI ahead of its dependency",
+      "DONE (2026-08-31): the token now has a real consumer — item 48's Hero 'Dental Emergency' door (`bg-alert`) is the first UI to use it, verified against warm-ivory (the Hero photo scrim) at 375px and desktop. Items 7 (/emergency) and 45 (sitewide reachability) are still not built, so this is the token proven at its one current call site, not full coverage",
       "Reserved exclusively for emergency. Never a marketing, promotional or error-state colour; a red used twice stops meaning anything",
       "Never colour alone — icon plus text label always, so it survives greyscale and outdoor glare",
       "Do not touch any of the four existing tokens — confirmed: this PR's diff to globals.css only adds `--color-alert`, no existing value changed",
@@ -5730,13 +5730,13 @@ export const backlog: BacklogItem[] = [
     acceptance: [
       "One new token added, exact value signed off by Akash — DONE",
       "AA verified on every surface pairing it appears in — DONE for ivory; verify against sand and espresso when a real component consumes it",
-      "Emergency action unmistakably distinct from booking CTAs at 375px — PENDING, needs items 7/45",
-      "Identifiable in greyscale — meaning never colour-carried — PENDING, needs a real component to test",
+      "Emergency action unmistakably distinct from booking CTAs at 375px — DONE against item 48's Hero door (icon + text label, not colour alone, paired with the terracotta Book door for direct comparison); still PENDING sitewide once item 45 lands more entry points",
+      "Identifiable in greyscale — meaning never colour-carried — DONE for the Hero door: MedicalCrossIcon + 'Dental Emergency' label carry the meaning independent of the alert colour",
       "Zero changes to the four locked tokens — DONE",
     ],
     evidence:
       "Blueprint §17 colour strategy, constrained by Akash's 2026-08-30 ruling to stay within the palette family. Candidate values were contrast-computed against the actual locked tokens rather than taken from the blueprint.",
-    dependsOn: "Items 7 and 45 — the token exists; it needs an emergency component to prove itself against",
+    dependsOn: "Item 45 — sitewide reachability beyond the Hero door still needs it; item 7 for the eventual real emergency destination",
     outOfScope:
       "Changing any of the four existing tokens, and using the new token for anything other than emergency.",
     references: [
@@ -5931,7 +5931,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 2, effort: 5, readiness: 4 },
     effort: "S",
-    status: "not-started",
+    status: "partial",
     wave: 1,
     job: "Self-sort by intent without hunting through a menu",
     story:
@@ -5944,15 +5944,17 @@ export const backlog: BacklogItem[] = [
       "The door only routes — it never assesses severity or asks the visitor to self-classify",
       "Keep warmth; three cold triage buttons read like a hospital intake desk",
       "Emergency door pairs with items 45 and 46 (reachability and visual distinction)",
+      "DONE (2026-08-31): all three doors built in Hero.tsx as full-width stacked rows (Book Appointment → /contact, New Patient → /insurance-new-patients, Dental Emergency → /contact), static Links only, no branching logic. Emergency door consumes item 46's `bg-alert` token for visual distinction (icon + label, not colour alone)",
+      "NOT YET DONE: the Dental Emergency door routes to /contact — the generic appointment-request form — rather than a dedicated non-diagnostic emergency page. Item 7 (/emergency) is still blocked on Akash confirming the after-hours reality; Akash approved /contact as the interim destination 2026-08-31 rather than leave the door dangling or invent an after-hours claim. Re-point once item 7 ships.",
     ],
     acceptance: [
-      "Three doors visible in the first mobile viewport",
-      "Each routes to a real destination",
-      "No door asks the visitor to rate their own severity",
+      "Three doors visible in the first mobile viewport — DONE, verified at 375×812: badge/headline/body/trust-strip/all three doors fit without clipping inside ViewportHero's one-screen-tall wrapper",
+      "Each routes to a real destination — DONE, but Dental Emergency's destination (/contact) is an interim stand-in, not the eventual /emergency page — see scope note above",
+      "No door asks the visitor to rate their own severity — DONE",
     ],
     evidence:
       "v2 §16 CD-1, sourced to One Medical and NHS 111 online, both DP/GOV-Strong. NHS 111 is explicit that it routes without diagnosing — exactly the line we need.",
-    dependsOn: "Item 7 (emergency destination must exist)",
+    dependsOn: "Item 7 (emergency destination must exist) — still open; the Dental Emergency door ships pointed at /contact as an interim measure until it does",
     outOfScope:
       "NHS 111's symptom-question engine. The door routes; it never assesses. That is the banned diagnostic checker in a different coat.",
     references: [
