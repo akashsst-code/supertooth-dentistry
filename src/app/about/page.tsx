@@ -36,7 +36,7 @@ export default function AboutPage() {
   return (
     <>
       <Nav />
-      <main className="pt-16">
+      <main id="main-content" tabIndex={-1} className="pt-16">
         <div className="border-b border-sand bg-warm-ivory">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 py-3 flex items-center gap-3">
             <Link

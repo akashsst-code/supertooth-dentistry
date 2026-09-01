@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
+import { SkipLink } from "@/components/SkipLink";
 import "./globals.css";
 
 // Design system typography — locked in docs/supertooth-ux-flow.md:
@@ -25,7 +26,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-warm-ivory text-espresso">{children}</body>
+      <body className="min-h-full flex flex-col bg-warm-ivory text-espresso">
+        <SkipLink />
+        {children}
+      </body>
     </html>
   );
 }

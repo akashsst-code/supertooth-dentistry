@@ -138,6 +138,24 @@ p {
   min-height: 44px;
 }
 
+/* Backlog item 30 — visible focus ring, checked against the locked
+ * palette rather than left to browser default. Section backgrounds on
+ * this site swing from light (warm-ivory/sand) to dark (espresso, in
+ * BookingBlock/HeroCarousel/TestimonialsSection/OfficeCarousel/Nav's
+ * mobile menu overlay), so no single ring color reads on all of them —
+ * a terracotta-dark ring alone is close to invisible against espresso.
+ * Halo pattern instead: an inner terracotta-dark ring (visible on light
+ * surfaces) plus an outer warm-ivory ring (visible on dark surfaces),
+ * so at least one ring has AA-level non-text contrast against whatever
+ * is behind the focused element. `:focus-visible` only, so mouse/touch
+ * users never see it.
+ */
+:focus-visible {
+  outline: 2px solid var(--color-terracotta-dark);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--color-warm-ivory);
+}
+
 /* Slow Ken Burns zoom — makes static hero photos read as "videographic"
    until real footage replaces them, see HeroCarousel.tsx */
 @keyframes slow-zoom {
