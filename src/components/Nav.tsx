@@ -90,7 +90,7 @@ export function Nav() {
               className="group hidden lg:inline-flex items-baseline gap-1.5 text-sm text-espresso/45 hover:text-terracotta transition-colors -ml-4"
             >
               Backlog
-              <span className="text-[0.6875rem] text-espresso/30 group-hover:text-terracotta/60 transition-colors">
+              <span className="text-xs text-espresso/30 group-hover:text-terracotta/60 transition-colors">
                 internal
               </span>
             </Link>
