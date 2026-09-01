@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { contact, hours, nav } from "@/lib/content";
@@ -37,6 +37,24 @@ import { contact, hours, nav } from "@/lib/content";
  */
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Backlog item 30 — Escape closes the mobile menu, and focus returns
+  // to its trigger either way (Escape or the header button toggling it
+  // closed) rather than being dropped onto <body>.
+  function closeMenu() {
+    setOpen(false);
+    menuButtonRef.current?.focus();
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") closeMenu();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
 
   return (
     <>
@@ -90,7 +108,7 @@ export function Nav() {
               className="group hidden lg:inline-flex items-baseline gap-1.5 text-sm text-espresso/45 hover:text-terracotta transition-colors -ml-4"
             >
               Backlog
-              <span className="text-[0.6875rem] text-espresso/30 group-hover:text-terracotta/60 transition-colors">
+              <span className="text-xs text-espresso/30 group-hover:text-terracotta/60 transition-colors">
                 internal
               </span>
             </Link>
@@ -119,10 +137,11 @@ export function Nav() {
               Schedule
             </Link>
             <button
+              ref={menuButtonRef}
               type="button"
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
+              onClick={() => (open ? closeMenu() : setOpen(true))}
               className="tap-target inline-flex items-center justify-center rounded-full border border-espresso/20 text-espresso"
             >
               {open ? <CloseIcon /> : <MenuIcon />}

@@ -174,7 +174,7 @@ export function BacklogView() {
   return (
     <>
       <Nav />
-      <main className="pt-16">
+      <main id="main-content" tabIndex={-1} className="pt-16">
         {/* Header */}
         <header className="border-b border-sand bg-sand/40">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 sm:py-14">

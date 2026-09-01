@@ -48,7 +48,7 @@ export default function Home() {
       <ViewportHero>
         <Hero />
       </ViewportHero>
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <TrustBlock />
         <TestimonialsSection />
         <ServicesSection />

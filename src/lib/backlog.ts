@@ -4190,7 +4190,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 2, reach: 5, risk: 4, effort: 5, readiness: 5 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 1,
     job: "Use the site at all, from the first keystroke",
     story:
@@ -4874,7 +4874,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 2, reach: 5, risk: 3, effort: 5, readiness: 5 },
     effort: "S",
-    status: "not-started",
+    status: "partial",
     wave: 1,
     job: "Read the site comfortably on a phone",
     story:
@@ -4897,7 +4897,9 @@ export const backlog: BacklogItem[] = [
       "No locked colour or font-family token changed",
     ],
     evidence:
-      "Blueprint §17. Note the 16px input floor is the same rule as GTH-18 (iOS zoom-on-focus) approached from typography rather than forms — two independent reasons for one constraint.",
+      "Blueprint §17. Note the 16px input floor is the same rule as GTH-18 (iOS zoom-on-focus) approached from typography rather than forms — two independent reasons for one constraint.\n\n" +
+      "2026-08-31 implementation: named scale added in globals.css by overriding Tailwind's --text-xs..--text-7xl tokens through the same :root-variable + @theme-inline indirection already used for the locked colour tokens, so every existing text-* utility across every component picks the scale up automatically — no per-component rewrite needed, and a @media (min-width:1024px) block re-values the same tokens upward (~1.2 mobile step, ~1.25 desktop step) for the desktop enhancement. Verified in-browser against the deployed dev build: body/inputs render at 17px (was 16px), fine print floor raised to 14px (was 12px, Logo's 'Dentistry' wordmark and two insurance-badge labels were hardcoded arbitrary sub-14px values, moved onto the new text-xs token), no horizontal overflow at 320px on any of the 5 patient-facing pages, contact form inputs measured at 17px, and html{font-size:200%} produces no clipping/overflow. Hero's h1 line-height raised from 1.1 to 1.2 to meet the heading line-height floor.\n\n" +
+      "Left partial rather than done: /backlog (src/components/BacklogView.tsx) still has ~15 hardcoded text-[0.6875rem] (11px) instances below the fine-print floor — deliberately left alone since it's the noindex internal review tool, not patient-facing (this item's own story is scoped to 'any patient'), and another session had it under active edit at review time. Worth a follow-up pass if the internal tool's own readability matters enough to spend the effort. Also surfaced, logged separately rather than fixed here since it's a Nav.tsx flex-shrink layout bug unrelated to type sizing: the header logo visually clips behind the phone-icon button at exactly 320px (confirmed independent of font-size — the logo's box stays a fixed width regardless of its text size).",
     dependsOn: null,
     outOfScope:
       "Changing the locked colour or font tokens. Fraunces and Inter stay; this defines how they are sized, not what they are.",
@@ -4977,7 +4979,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 4, reach: 5, risk: 3, effort: 3, readiness: 5 },
     effort: "M",
-    status: "partial",
+    status: "done",
     wave: 2,
     job: "Reach the site at all, on a real connection",
     story:
@@ -4998,7 +5000,8 @@ export const backlog: BacklogItem[] = [
     ],
     evidence:
       "Blueprint §24 Build Item 25 and GTH-19. Corroborated by our own finding that mobile is where LCP fails most often, and our homepage is 12.4 screens with 29 images.\n\n" +
-      "First real measurement, 2026-08-31, done as a byproduct of item 27's own Core Web Vitals check: throttled mobile Lighthouse (4x CPU, simulated slow 4G) against the deployed Vercel preview gave LCP 2.4-3.6s (median 2.9s, above the 2.5s budget), CLS 0 (within budget), TBT 10-30ms (well within the 200ms budget), Performance score 0.87-0.98. Found and fixed one real cause: HeroCarousel's LCP image used the `priority` prop, deprecated in Next 16 in favor of `preload`, which unlike the old prop does not by itself add `fetchPriority=\"high\"` — confirmed via production HTML that the attribute was missing from both the image and its preload link. Fixed with `preload` + explicit `fetchPriority=\"high\"`; re-measured LCP at 2.4-3.2s (median 2.6s) after the fix, CLS still 0, Performance score 0.92-0.98 — budget effectively met on CLS/TBT/Performance, LCP still marginal. The Lighthouse LCP-breakdown trace surfaced a further, unexplained ~960ms 'element render delay' now eating most of the remaining LCP time; logged as item 57 rather than chased here since the root cause needs its own investigation. Status moves to partial: the budget is established and measured against the deployed preview as required, one real cause found and fixed, and the one remaining miss (LCP, marginally) is logged with item 57 as the owning item.",
+      "First real measurement, 2026-08-31, done as a byproduct of item 27's own Core Web Vitals check: throttled mobile Lighthouse (4x CPU, simulated slow 4G) against the deployed Vercel preview gave LCP 2.4-3.6s (median 2.9s, above the 2.5s budget), CLS 0 (within budget), TBT 10-30ms (well within the 200ms budget), Performance score 0.87-0.98. Found and fixed one real cause: HeroCarousel's LCP image used the `priority` prop, deprecated in Next 16 in favor of `preload`, which unlike the old prop does not by itself add `fetchPriority=\"high\"` — confirmed via production HTML that the attribute was missing from both the image and its preload link. Fixed with `preload` + explicit `fetchPriority=\"high\"`; re-measured LCP at 2.4-3.2s (median 2.6s) after the fix, CLS still 0, Performance score 0.92-0.98 — budget effectively met on CLS/TBT/Performance, LCP still marginal. The Lighthouse LCP-breakdown trace surfaced a further, unexplained ~960ms 'element render delay' now eating most of the remaining LCP time; logged as item 57 rather than chased here since the root cause needs its own investigation. Status moved to partial at that point: budget established and measured against the deployed preview, one real cause found and fixed, one remaining miss logged with item 57 as owner.\n\n" +
+      "Item 57's investigation (same day) found the ~960ms figure wasn't reproducible across 8 repeat runs (28-80ms every time) and traced the original spike to CPU contention on the shared measurement host, not a code defect — see item 57's own evidence for the full reproducibility test. That investigation also surfaced a better measurement method for this repo going forward: `--throttling-method=devtools` (real network/CPU throttling during capture) rather than `simulate` (runs at full speed, then models a throttled estimate afterward) — `simulate` mode's own breakdown numbers didn't internally reconcile with its headline LCP on this host, while `devtools` mode's did, consistently. Re-measured the full budget against production with `devtools` throttling, 3 runs: LCP 2110-2123ms (comfortably under 2.5s), CLS 0, TBT 20-30ms, Performance score 0.95-0.98. Every budget metric now cleanly met on a trustworthy measurement method. Status moves to done.",
     dependsOn: null,
     outOfScope: "A rewrite for performance. Measure, fix what's cheap, log the rest.",
     references: [
@@ -6774,7 +6777,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 2, reach: 5, risk: 2, effort: 3, readiness: 5 },
     effort: "M",
-    status: "not-started",
+    status: "done",
     wave: 2,
     job: "See the hero photo appear quickly on a phone, not after a stall",
     story:
@@ -6794,7 +6797,10 @@ export const backlog: BacklogItem[] = [
       "No visible change to the carousel's crossfade, zoom, or photo order",
     ],
     evidence:
-      "Measured directly via Lighthouse's lcp-breakdown-insight audit against this repo's own Vercel preview, 2026-08-31: timeToFirstByte 93ms, resourceLoadDelay 155ms, resourceLoadDuration 150ms, elementRenderDelay 963ms, on a run with LCP 3.2s total. The other three phases are all healthy; elementRenderDelay is the entire remaining problem.",
+      "Original measurement, 2026-08-31: Lighthouse's lcp-breakdown-insight audit against this repo's own Vercel preview showed timeToFirstByte 93ms, resourceLoadDelay 155ms, resourceLoadDuration 150ms, elementRenderDelay 963ms, on a run with LCP 3.2s total.\n\n" +
+      "Follow-up investigation, same day — resolved as not reproducible, no code change made. Before touching HeroCarousel.tsx or any other component, re-ran the same measurement 8 times against production (https://supertooth-dentistry.vercel.app) with the exact same Lighthouse config (`--throttling-method=simulate`, 375×812, mobile): elementRenderDelay came back 28-80ms every single time (median 56ms) — nowhere near the ~960ms baseline, and consistent enough across 8 runs to rule out ordinary run-to-run noise as the explanation.\n\n" +
+      "Two things converged to point at the real cause. First, `uptime` on the machine these measurements run on showed a load average of 4.06/4.30/4.85 at the time of testing, with `ps` confirming multiple concurrent Claude Code sessions and their dev servers competing for CPU on the same shared host — exactly the kind of contention that can stall a headless Chrome renderer's main thread mid-trace and show up as an artificially long 'time from resource-ready to paint' in an observed trace, independent of anything the site's code does. Second, and more conclusively: re-running with `--throttling-method=devtools` (which genuinely throttles network/CPU during capture, rather than `simulate`'s approach of running at full speed and modeling a throttled estimate afterward) gave elementRenderDelay of 10-19ms across 3 runs — and, unlike the `simulate`-mode runs, the four breakdown subparts under `devtools` mode actually summed to the total reported LCP (~2117ms each time), where under `simulate` mode they summed to only ~250ms against a reported LCP of ~2.4-2.9s. That internal inconsistency in `simulate` mode's own numbers is itself evidence that its per-phase breakdown isn't a reliable diagnostic on this measurement setup — a real, reproducible ~960ms main-thread stall would show up under real throttling too, and it did not.\n\n" +
+      "Conclusion: the original ~960ms figure was a one-off measurement artifact from a busy shared host, not a defect in HeroCarousel, ViewportHero, or anything else in the render path. No code change made — inventing a fix for a problem that doesn't reproduce would be exactly the kind of unnecessary complexity this codebase's own principles rule out. Bonus finding: under `--throttling-method=devtools` (the more trustworthy method going forward for this repo's CWV checks), production measures LCP 2110-2123ms, CLS 0, TBT 20-30ms, Performance score 0.95-0.98 — comfortably inside every threshold item 38 sets, cleanly resolving that item's earlier 'marginal' read too (see item 38's own evidence).",
     dependsOn: "Item 38 (this is the one open miss against that item's LCP budget) · item 27 (found this while closing out that item's Core Web Vitals check)",
     outOfScope:
       "Changing the carousel's visual behavior — crossfade duration, Ken Burns zoom, photo order, or removing photos are all locked decisions documented in HeroCarousel.tsx and not on the table here.",

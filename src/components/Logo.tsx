@@ -38,7 +38,7 @@ export function Logo() {
       />
       <span className="flex flex-col leading-tight" aria-hidden="true">
         <span className="font-display text-sm min-[375px]:text-xl font-normal text-espresso">Supertooth</span>
-        <span className="text-[8px] min-[375px]:text-[10px] font-medium tracking-widest text-espresso/60 uppercase">
+        <span className="text-[8px] min-[375px]:text-xs font-medium tracking-widest text-espresso/60 uppercase">
           Dentistry
         </span>
       </span>
