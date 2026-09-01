@@ -17,6 +17,13 @@ import { insuranceCarriers, insuranceCarriersHeroTeaser } from "@/lib/content";
  *
  * Deliberately still not wrapped in <Placeholder> here, same as the
  * rest of this trust strip — see the comment above it in Hero.tsx.
+ *
+ * Tap target: an earlier pass gave this button a real 44px min-height,
+ * which stretched the whole three-line trust strip apart (Akash: "too
+ * far off, make it visually closer"). Reverted to the button's natural
+ * small size and widened only the invisible ::after hit area instead —
+ * a 375×812 sweep confirms the real tappable region is still ≥44×44px,
+ * it's just no longer the visible box.
  */
 export function InsuranceTeaser() {
   const [expanded, setExpanded] = useState(false);
@@ -33,7 +40,7 @@ export function InsuranceTeaser() {
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="tap-target inline-flex items-center underline decoration-warm-ivory/40 underline-offset-2 hover:decoration-warm-ivory"
+          className="relative underline decoration-warm-ivory/40 underline-offset-2 hover:decoration-warm-ivory after:absolute after:-inset-3.5 after:content-['']"
         >
           {" "}
           + more

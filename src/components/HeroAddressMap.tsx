@@ -28,6 +28,14 @@ import { CloseIcon, MapPinIcon } from "./icons";
  * it keeps the visitor contained by making any "open in new tab" link
  * inside the embed (on the place card, etc.) inert, without touching
  * what's actually rendered.
+ *
+ * Tap target: an earlier pass gave this button a real 44px min-height,
+ * which stretched the whole three-line hero trust strip apart (Akash:
+ * "too far off, make it visually closer"). Reverted to the button's
+ * natural small size and widened only the invisible ::after hit area
+ * instead — a 375×812 sweep confirms the real tappable region is still
+ * ≥44×44px, it's just no longer the visible box. See the same note on
+ * InsuranceTeaser.tsx's "+ more" button, right above it in this strip.
  */
 export function HeroAddressMap() {
   const [expanded, setExpanded] = useState(false);
@@ -40,7 +48,7 @@ export function HeroAddressMap() {
           type="button"
           onClick={() => setExpanded((v) => !v)}
           aria-expanded={expanded}
-          className="tap-target inline-flex items-center text-left underline decoration-warm-ivory/40 underline-offset-2 hover:decoration-warm-ivory"
+          className="relative text-left underline decoration-warm-ivory/40 underline-offset-2 hover:decoration-warm-ivory after:absolute after:-inset-3.5 after:content-['']"
         >
           {contact.address}
         </button>
