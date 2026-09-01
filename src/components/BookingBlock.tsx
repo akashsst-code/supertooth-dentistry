@@ -64,15 +64,22 @@ import { CalendarIcon, ClockIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, UserP
  * locked-palette constraint on item 46's token — hue alone was never
  * going to separate them cleanly).
  *
- * Fixed by dropping pills entirely for both secondary links — one
- * quiet inline line below Office hours/Location, no bold uppercase
- * label competing with "Quick actions"/"Office hours"/"Location", so
- * it reads as a footnote rather than a fourth section. Distinction
- * for Dental Emergency now comes from `text-alert-light` (a lighter
- * tint of the same locked hue, sized for AA as plain text against this
- * section's espresso background — the base `--color-alert` only hits
- * ~2:1 there) plus its own icon, not from a background fill that could
- * be visually confused with a button.
+ * Both secondary links moved out of "Quick actions" into one quiet
+ * inline line below Office hours/Location, no bold uppercase label
+ * competing with "Quick actions"/"Office hours"/"Location" — that part
+ * stuck. New Patient is plain text (icon + warm-ivory/70).
+ *
+ * Dental Emergency went through a third round the same day: plain
+ * `--color-alert`-tinted text (to dodge the color-clash complaint
+ * above) then read as "hidden" — too quiet to register as an action at
+ * all. Landed on a small solid `bg-alert` badge instead, at the
+ * original (undiluted) alert hex: restraint comes from its size — a
+ * compact badge, noticeably smaller than the Book/Call pills above,
+ * not full pill-sized — rather than from muting the color, which is
+ * also how NHS/GOV.UK-style services actually treat a reserved
+ * emergency red (undiluted, but used sparingly and small). Sitting on
+ * its own line below Office hours/Location rather than directly beside
+ * the terracotta Book pill avoids the earlier "same color" read.
  */
 export function BookingBlock() {
   const openHours = hours.find((h) => h.time !== "Closed");
@@ -137,23 +144,22 @@ export function BookingBlock() {
               </div>
             </div>
 
-            <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-warm-ivory/60">
+            <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
               <a
                 href="/insurance-new-patients"
-                className="tap-target inline-flex items-center gap-1.5 hover:text-warm-ivory transition-colors"
+                className="tap-target inline-flex items-center gap-1.5 text-xs text-warm-ivory/60 hover:text-warm-ivory transition-colors"
               >
                 <UserPlusIcon className="h-3.5 w-3.5" />
                 New patient? Start here
               </a>
-              <span aria-hidden="true">·</span>
               <a
                 href="/contact"
-                className="tap-target inline-flex items-center gap-1.5 text-alert-light hover:brightness-110 transition"
+                className="tap-target inline-flex items-center gap-1 rounded-full bg-alert px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-warm-ivory hover:brightness-110 transition"
               >
-                <MedicalCrossIcon className="h-3.5 w-3.5" />
+                <MedicalCrossIcon className="h-3 w-3" />
                 Dental emergency
               </a>
-            </p>
+            </div>
           </div>
 
           <div className="lg:col-span-2">
