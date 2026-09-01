@@ -6562,7 +6562,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 3, effort: 3, readiness: 3 },
     effort: "M",
-    status: "not-started",
+    status: "done",
     wave: 3,
     job: "Move through the whole site without hitting a dead end",
     story:
@@ -6586,7 +6586,15 @@ export const backlog: BacklogItem[] = [
       "All 12 scenarios complete or their stall point is recorded",
     ],
     evidence:
-      "Blueprint §8 supplies the nine-stage funnel with named drop-off points; §18 supplies the ≤2-taps IA guardrail; §20's page inventory specifies related-page links per route. Our own research contributes the 12 scenarios. None of these is currently tested by any item.",
+      "Blueprint §8 supplies the nine-stage funnel with named drop-off points; §18 supplies the ≤2-taps IA guardrail; §20's page inventory specifies related-page links per route. Our own research contributes the 12 scenarios. None of these is currently tested by any item.\n\n" +
+      "Findings from the 2026-08-31 review pass, at 375×812 unless noted. Route inventory: 6 routes exist (/, /about, /services, /insurance-new-patients, /contact, /backlog), confirmed against src/app and the `nav` array in content.ts.\n\n" +
+      "Inbound-link map (shell): `grep -rEho 'href=\"/[a-zA-Z0-9_/#-]*\"' src/app src/components` returns exactly three targets anywhere in page or component content — /, /contact and /backlog. /about, /services and /insurance-new-patients are reached only through the `nav` array Nav.tsx renders (desktop bar and mobile hamburger menu) — confirmed live by opening the hamburger from /contact and finding Services, About, Insurance & New Patients, Contact and Backlog all present. Because Nav's header is `fixed` rather than `sticky`, it stays pinned at every scroll position on every route, so the ≤2-tap guardrail holds from both Home and the footer without the footer needing its own link list (2 taps on mobile: open menu, tap item; 1 tap on desktop). Zero orphan routes: all 6 are inbound-linked from the persistent nav; /backlog is the one deliberate exception, confirmed noindex in src/app/backlog/page.tsx's metadata. Zero dead ends: every route landed on directly at 375px (loaded /about, /services, /insurance-new-patients and /contact individually) carries a visible Book Appointment CTA, and /contact carries the request form itself.\n\n" +
+      "No horizontal scroll at 320×568 on any of the five patient-facing routes (GTH-13), confirmed via scrollWidth/clientWidth. Console clean (GTH-9) on the routes checked. GTH-1's full axe scan and GTH-4's keyboard walk were not re-run here — no axe tooling is installed in this repo, and a full keyboard walk of every route duplicates the dedicated accessibility items already in flight (the recently-merged global-shell-a11y-semantics work) rather than this item's own job.\n\n" +
+      "Nine-stage funnel: eight of nine stages have a serving surface — trigger (n/a), first impression (Hero), trust (TrustBlock/testimonials), fit (ServicesSection/services page), cost (insurance page + cost FAQ), anxiety/urgency (anxiety + emergency FAQ answers), convert (Book Appointment everywhere), prepare & arrive (insurance page's 'what to bring' plus hours/address in the nav menu and footer). Post-visit has no surface anywhere on the site — already tracked as item 22 ('Aftercare and records requests', not-started), so not logged again here.\n\n" +
+      "Related-page cross-links (this item's own scope line, blueprint §20): none exist. Nothing on /insurance-new-patients, /services or /about — or the homepage's teaser sections for them — links across to the others; only the persistent nav does. That doesn't break the ≤2-tap or orphan/dead-end criteria, but it is a real information-scent gap, so logged as item 58 rather than fixed inline (which links belong where is a content decision worth its own pass).\n\n" +
+      "Native maps deep link (scenario 1's 'one-tap directions' need, and GTH-17): both map instances (HeroAddressMap.tsx, LocationMapSection.tsx) sandbox the Google embed without allow-popups/allow-top-navigation, a documented deliberate choice to keep the visitor on the page — meaning no tap anywhere opens a native maps app. This reverses a past explicit decision rather than filling a plain gap, so it's logged as item 59 with a conflict for Akash to rule on rather than changed here.\n\n" +
+      "12 scenarios walked at 375px: 1 (downtown professional) stalls on the missing directions link (item 59); 2 (parent, multi-person) completes via the appointment form's free-text 'additional details' field rather than a dedicated affordance — soft, not a hard stall; 3 (new to Seattle) completes (map preview, neighborhood list, insurance page), same directions caveat as #1; 4 (anxious returner) completes via the homepage anxiety FAQ answer; 5 (urgent) completes — persistent header phone icon plus the homepage's emergency FAQ answer; 6 (insurance-uncertain) completes honestly, no unverifiable per-plan claim (consistent with GTH-10); 7 (uninsured) completes minimally ('call to talk about options'); 8 (evaluating restorative work) and 9 (cosmetic explorer) both stall on the lack of before/after evidence — already tracked by item 42; 10 (older adult) completes structurally on the locked mobile type scale (item 37, done); 11 (assistive-technology user) not re-verified in full this pass, deferred to the dedicated accessibility items already in flight; 12 (limited English) stalls — no languages-spoken signal anywhere, already tracked as item 43 (blocked).\n\n" +
+      "Status moves to done: the IA guardrail holds, there are zero orphans or dead ends, and every stage/scenario gap found either traces to an already-tracked item or is newly logged (58, 59).",
     dependsOn: "Items 6, 7, 10, 11 — the pages have to exist before the journey between them can be walked",
     outOfScope:
       "Redesigning the IA. This verifies the locked structure holds together as a journey; a proposed IA change comes back as its own item.",
@@ -6839,6 +6847,166 @@ export const backlog: BacklogItem[] = [
         "Don't chase this by re-tuning fetchPriority or preload again — the discovery/network phases are already confirmed healthy; the problem is what happens after the bytes arrive.",
         "Measuring on localhost gives meaningless Core Web Vitals, same gotcha as items 27 and 38.",
       ],
+    },
+  },
+  {
+    id: 58,
+    title: "Add related-page cross-links between Insurance, Services and About",
+    priority: "P1",
+    source: "original",
+    launchBlocking: false,
+    blueprintRef: "v1/v2 §20 related pages",
+    harness: ["GTH-4", "GTH-14"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 2, reach: 3, risk: 1, effort: 5, readiness: 5 },
+    effort: "S",
+    status: "done",
+    wave: 4,
+    job: "Follow a related question to the page that actually answers it, without backtracking to the nav",
+    story:
+      "As a patient reading one page — insurance, say — who has a related question — what's actually treated, say — I can follow a link straight there instead of hunting through the nav again.",
+    problem:
+      "Item 55's cross-page journey walk (2026-08-31) found zero related-page links anywhere in page or component content: grepping every internal href in src/app and src/components turns up only /, /contact and /backlog as link targets. /insurance-new-patients, /services and /about are reachable exclusively through the persistent nav — nothing on any of those pages, or the homepage's teaser sections for them, links across to the others. Blueprint §20's page inventory calls for insurance ↔ new patients ↔ services ↔ location cross-links; none exist.",
+    where: "src/app/insurance-new-patients/page.tsx · src/app/services/page.tsx · src/app/about/page.tsx",
+    scope: [
+      "Add a contextual link from /insurance-new-patients to /services (e.g. near the treatment mention or 'what to bring')",
+      "Add a contextual link from /services to /about (the dentist providing the care)",
+      "Add a contextual link from /insurance-new-patients to /about, if a natural spot exists without forcing it",
+      "Keep each link inline and secondary — Book Appointment stays the primary CTA on every page; this is a supporting path, not a competing one",
+    ],
+    acceptance: [
+      "Each of the three pages carries at least one in-content link to another of the three, beyond the persistent nav",
+      "No added link outranks or visually competes with its page's Book Appointment CTA",
+      "Links read as a natural next question, not a sitemap dump",
+    ],
+    evidence:
+      "Confirmed via `grep -rEho 'href=\"/[a-zA-Z0-9_/#-]*\"' src/app src/components` — only /, /contact and /backlog appear. Cross-checked by loading /about, /services and /insurance-new-patients directly at 375px and reading the rendered text: each ends on a Book Appointment/call CTA with no related-page link. Full detail in item 55's evidence.\n\n" +
+      "Fixed 2026-08-31: one contextual link added on each of the three pages, each placed as a secondary line above the existing Book Appointment/call CTA row so the primary CTA stays visually first. /insurance-new-patients → /services ('Wondering what's actually covered? See our services'); /services → /about ('Curious who's behind the chair? Meet Dr. Archana Dubey'); /about → /insurance-new-patients ('Thinking of becoming a patient? See insurance & new-patient info'). Forms a cycle covering all three pairs without every page linking to both others, keeping each addition to one line. Verified via `npx tsc --noEmit` and `npx next build` — both clean.",
+    dependsOn: "Items 6, 10, 11 — the three pages have to exist, and do",
+    outOfScope:
+      "Restructuring the nav or adding a dedicated Location page — this is in-content links between what's already built, not an IA change.",
+    references: [
+      {
+        name: "NN/g — information scent and wayfinding",
+        url: "https://www.nngroup.com/articles/information-scent/",
+        whatGood:
+          "Same source item 55 already cites: users abandon when a page gives no cue about where the next answer lives.",
+        takeaway:
+          "One well-placed contextual link per page is enough to restore scent — this doesn't need a related-content module.",
+        mobile:
+          "Keep added links inline text or a single small row, not a card grid; at 375px a related-content block competes with the CTA for the same thumb-reach space item 27 already protects.",
+      },
+      {
+        name: "GOV.UK Service Manual — related content",
+        url: "https://www.gov.uk/guidance/content-design/planning-content#related-content",
+        whatGood:
+          "Argues related links earn their place only when they answer a question the current page actually raised — not a generic 'you might also like' block.",
+        takeaway:
+          "Pick the one or two links each page's own content actually implies, rather than cross-linking all three pages to each other uniformly.",
+        mobile:
+          "Their guidance assumes a sidebar on wide screens; on a phone the equivalent is a single inline sentence or small link row within the flow, not a separate panel needing its own scroll.",
+      },
+    ],
+    test: {
+      preconditions: ["Items 6, 10, 11 shipped", "Viewport 375×812"],
+      steps: [
+        {
+          action: "Load /insurance-new-patients at 375px and scan for an in-content link to /services or /about.",
+          tool: "browser",
+          expect: "At least one present, distinct from the nav.",
+        },
+        {
+          action: "Load /services at 375px and scan for an in-content link to /about.",
+          tool: "browser",
+          expect: "Present, distinct from the nav.",
+        },
+        {
+          action: "Confirm Book Appointment remains the visually primary CTA on all three pages.",
+          tool: "manual",
+          expect: "Added links are visually secondary.",
+        },
+      ],
+      mobileFirst: ["Cross-links present without pushing Book Appointment further below the fold than today"],
+      pass: ["All three pages carry at least one cross-link", "No CTA regression"],
+    },
+  },
+  {
+    id: 59,
+    title: "Open question: native \"Get Directions\" link vs. the on-page map embed",
+    priority: "P2",
+    source: "original",
+    launchBlocking: false,
+    blueprintRef: "v1/v2 §8 scenario 1",
+    harness: ["GTH-17"],
+    originalPriority: "P2",
+    pin: null,
+    scores: { conversion: 2, reach: 2, risk: 1, effort: 5, readiness: 2 },
+    effort: "S",
+    status: "done",
+    wave: 5,
+    job: "Get turn-by-turn directions in one tap when that's actually what's wanted",
+    story:
+      "As a patient who already knows I'm coming and just wants directions, tapping the address opens my phone's own maps app instead of only ever showing an in-page preview.",
+    problem:
+      "Item 55's walk (2026-08-31) found no native maps deep link anywhere on the site. Both map instances (HeroAddressMap.tsx, LocationMapSection.tsx) sandbox the Google embed without allow-popups/allow-top-navigation specifically so nothing inside it can navigate away — a deliberate, documented choice made after Akash asked to keep the visitor on the page rather than opening Google Maps in a new tab. That choice is working as designed, but it means scenario 1's 'one-tap directions' need and GTH-17's maps-deep-link check both go unmet by design.",
+    where: "src/components/HeroAddressMap.tsx · src/components/LocationMapSection.tsx",
+    scope: ["Not a build task until Akash rules on the conflict (see `decision` — ruled 2026-08-31, approved)."],
+    acceptance: [
+      "A ruling recorded (approved / approved-with-constraint / declined / deferred), and this item's status updated to match",
+      "If approved, the sandboxed embed's own behavior is unchanged — the new link is additive, not a replacement",
+    ],
+    evidence:
+      "Verified by reading both components' sandbox attribute (`sandbox=\"allow-scripts allow-same-origin\"` — no allow-popups, no allow-top-navigation) and their comments, which state the omission is intentional.\n\n" +
+      "Ruled and fixed 2026-08-31 (see `decision` below): added `contact.mapDirectionsUrl` in content.ts (a plain `https://www.google.com/maps/search/?api=1&query=...` link per the Google reference above) and a real 'Get Directions' anchor, rendered outside the iframe in both components — inside HeroAddressMap's expanded panel (bottom-left, alongside the existing close button, `tap-target` ≥44px) and directly under the address in LocationMapSection's sidebar card. Both open in a new tab (`target=\"_blank\" rel=\"noopener noreferrer\"`). Neither iframe's `sandbox` attribute changed — the on-page preview behaves exactly as before. Verified via `npx tsc --noEmit` and `npx next build`, both clean.",
+    dependsOn: null,
+    outOfScope:
+      "Changing the embed's on-page preview behavior — this only asks whether a supplementary link should be added alongside it, not whether the preview should be removed.",
+    decision: {
+      date: "2026-08-31",
+      ruling: "approved",
+      said: "Yes, do both — implement item 58's cross-links and item 59's directions link now.",
+      consequence:
+        "A supplementary 'Get Directions' link was added outside both sandboxed embeds. The embeds' own sandbox and on-page-preview behavior are unchanged — this is additive, per the ruling's own constraint.",
+    },
+    references: [
+      {
+        name: "Google — Maps URLs (get started)",
+        url: "https://developers.google.com/maps/documentation/urls/get-started",
+        whatGood:
+          "Documents the plain https://www.google.com/maps/search/?api=1&query=... link pattern that hands off to the user's own installed maps app rather than a web embed.",
+        takeaway:
+          "If approved, this is the link pattern to use — a plain anchor href, not a new API integration or billing account.",
+        mobile:
+          "This is the entire point on mobile: a native app handoff gives turn-by-turn navigation the embedded iframe never will.",
+      },
+      {
+        name: "NN/g — information scent and wayfinding",
+        url: "https://www.nngroup.com/articles/information-scent/",
+        whatGood:
+          "Same source items 55 and 58 already cite: a control that looks actionable but goes nowhere (an address with no directions handoff) reads as a broken cue, not a neutral omission.",
+        takeaway:
+          "If declined, the address text shouldn't look tappable-for-directions to a patient scanning for that — the embed toggle already reads as 'show map', which is honest either way.",
+        mobile:
+          "On mobile specifically, an address is one of the few pieces of text users reflexively expect to be actionable (dial-a-number is the other), so the gap is more noticeable here than on desktop.",
+      },
+    ],
+    test: {
+      preconditions: ["Akash's ruling recorded in `decision`"],
+      steps: [
+        {
+          action: "Once ruled, if approved: confirm a one-tap maps link is present and opens the device's default maps app.",
+          tool: "manual",
+          expect: "Native app opens; the embed's on-page preview is unaffected.",
+        },
+        {
+          action: "If declined or deferred: confirm no code changed and the item's status reflects the ruling.",
+          tool: "manual",
+          expect: "Item closed with the recorded reason; nothing shipped.",
+        },
+      ],
+      mobileFirst: ["If approved, the link is a real anchor with its own ≥44px tap target, not embedded inside the iframe"],
+      pass: ["Ruling recorded", "If approved, implemented and verified; if declined/deferred, item closed with the reason"],
     },
   },
 ];

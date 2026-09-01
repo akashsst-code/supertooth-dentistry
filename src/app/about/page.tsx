@@ -123,7 +123,18 @@ export default function AboutPage() {
             </ul>
           </div>
 
-          <div className="mt-10 flex flex-wrap gap-3">
+          <p className="mt-10 text-sm text-espresso/60">
+            Thinking of becoming a patient?{" "}
+            <Link
+              href="/insurance-new-patients"
+              className="font-medium text-terracotta-dark hover:text-terracotta transition-colors"
+            >
+              See insurance &amp; new-patient info
+            </Link>
+            .
+          </p>
+
+          <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/contact"
               className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-6 py-3 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
