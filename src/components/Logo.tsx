@@ -22,11 +22,23 @@ import toothMark from "../../public/logo/tooth-mark-bold.png";
  */
 export function Logo() {
   return (
-    <Link href="/" className="tap-target flex items-center gap-2.5" aria-label={`${practice.name}, home`}>
-      <Image src={toothMark} alt="" width={32} height={33} className="h-8 w-auto" priority aria-hidden="true" />
+    <Link
+      href="/"
+      className="tap-target flex shrink-0 items-center gap-1.5 min-[375px]:gap-2.5"
+      aria-label={`${practice.name}, home`}
+    >
+      <Image
+        src={toothMark}
+        alt=""
+        width={32}
+        height={33}
+        className="h-6 w-auto min-[375px]:h-8"
+        priority
+        aria-hidden="true"
+      />
       <span className="flex flex-col leading-tight" aria-hidden="true">
-        <span className="font-display text-xl font-normal text-espresso">Supertooth</span>
-        <span className="text-xs font-medium tracking-widest text-espresso/60 uppercase">
+        <span className="font-display text-sm min-[375px]:text-xl font-normal text-espresso">Supertooth</span>
+        <span className="text-[8px] min-[375px]:text-xs font-medium tracking-widest text-espresso/60 uppercase">
           Dentistry
         </span>
       </span>
