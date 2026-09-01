@@ -307,7 +307,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 3, effort: 3, readiness: 5 },
     effort: "M",
-    status: "partial",
+    status: "done",
     wave: 1,
     job: "Evaluate, decide and book — the whole journey, on a phone",
     story:
@@ -333,7 +333,9 @@ export const backlog: BacklogItem[] = [
     ],
     evidence:
       "Internal — build spec Section 2 makes the homepage the full conversion journey, and Section 1 names conversion as the project's goal. Usability tier: NN/g eyetracking finds ~57% of viewing time above the fold and ~74% within the first two screenfuls, so a 12.4-screen page needs deliberate pacing rather than assumed scrolling. The five sub-44px targets were measured directly on production, not inferred.\n\n" +
-      "Findings from the 2026-08-30 review pass: all five sub-44px targets fixed (InsuranceTeaser '+ more', HeroAddressMap address, both NewPatientOffersBlock 'Schedule this offer' links, and the FAQSection emergency phone link — the last one restructured out of a mid-sentence inline link into its own tappable row, since a 44px-tall inline link would have broken the FAQ paragraph's flow). The '+ more' and address fixes were revised once: a real 44px min-height stretched the whole three-line hero trust strip apart visually (Akash's direct review feedback — 'too far off, make it visually closer'), so both were changed to keep their original small visible size with the extra hit area added as an invisible ::after pseudo-element instead — same 44×44px real tappable region, verified by measuring the pseudo-covered area rather than the visible box, with the strip back to its original tight spacing. Fixed header verified genuinely persistent with ≥44px controls at scroll depths 3/5/8/11 screens. No accidental content repetition found — the repeated office/team photos at the same scroll position are deliberate carousel clone-slides for seamless looping, not a redundancy bug. No horizontal overflow at 320px or 375px at any depth. Total scroll depth unchanged at 12.4 screens; TrustBlock is 2.83 screens (just over the ~2.5 guideline) but is justified as-is — it's locked, already-approved content (differentiators + office carousel + bio) and outOfScope rules out redesigning it. Desktop pacing (1280px) surfaced ServicesSection at 4.07 screens, well outside the guideline; logged as item 56 rather than fixed here, since trimming it is a grid-density change, not a mobile-flow repair. Core Web Vitals were NOT measured with real network/CPU throttling in this pass — this session's tooling has no throttle control, and per this item's own gotcha, localhost numbers are meaningless. Needs a throttled Lighthouse or PageSpeed Insights run against the deployed Vercel preview before this item can be marked done.",
+      "Findings from the 2026-08-30 review pass: all five sub-44px targets fixed (InsuranceTeaser '+ more', HeroAddressMap address, both NewPatientOffersBlock 'Schedule this offer' links, and the FAQSection emergency phone link — the last one restructured out of a mid-sentence inline link into its own tappable row, since a 44px-tall inline link would have broken the FAQ paragraph's flow). The '+ more' and address fixes were revised once: a real 44px min-height stretched the whole three-line hero trust strip apart visually (Akash's direct review feedback — 'too far off, make it visually closer'), so both were changed to keep their original small visible size with the extra hit area added as an invisible ::after pseudo-element instead — same 44×44px real tappable region, verified by measuring the pseudo-covered area rather than the visible box, with the strip back to its original tight spacing. Fixed header verified genuinely persistent with ≥44px controls at scroll depths 3/5/8/11 screens. No accidental content repetition found — the repeated office/team photos at the same scroll position are deliberate carousel clone-slides for seamless looping, not a redundancy bug. No horizontal overflow at 320px or 375px at any depth. Total scroll depth unchanged at 12.4 screens; TrustBlock is 2.83 screens (just over the ~2.5 guideline) but is justified as-is — it's locked, already-approved content (differentiators + office carousel + bio) and outOfScope rules out redesigning it. Desktop pacing (1280px) surfaced ServicesSection at 4.07 screens, well outside the guideline; logged as item 56 rather than fixed here, since trimming it is a grid-density change, not a mobile-flow repair. Core Web Vitals were NOT measured with real network/CPU throttling in this pass — this session's tooling has no throttle control, and per this item's own gotcha, localhost numbers are meaningless. Needs a throttled Lighthouse or PageSpeed Insights run against the deployed Vercel preview before this item can be marked done.\n\n" +
+      "Follow-up pass, 2026-08-31 — Core Web Vitals measured against the deployed Vercel preview (https://supertooth-dentistry.vercel.app) with Lighthouse's default mobile throttling (4x CPU slowdown, simulated slow 4G): three runs gave LCP of 3.6s, 2.9s and 2.4s (median 2.9s) — above the 2.5s 'good' threshold from web.dev's own reference cited on this item. CLS was 0 on all three runs (well under the 0.1 threshold). True field INP isn't obtainable pre-launch — the site has no real user traffic yet for Chrome UX Report field data — so max-potential-FID was used as the lab-mode proxy (60-120ms across runs, well under the 200ms INP threshold); this should be re-measured with real INP once the site has field traffic. Root-caused the LCP miss: the hero carousel's LCP image (`HeroCarousel.tsx`) used the `priority` prop, which Next.js 16 deprecated in favor of `preload` — and unlike the old `priority`, `preload` alone no longer implies `fetchPriority=\"high\"` on the rendered `<img>`/preload `<link>`. Verified via the production HTML that `fetchpriority` was in fact missing from both. Fixed by switching to `preload={i === 0}` plus an explicit `fetchPriority={i === 0 ? \"high\" : undefined}`, confirmed present on both tags after the fix.\n\n" +
+      "Re-measured against this fix's own Vercel preview: LCP 3.2s, 2.6s, 2.4s across three runs (median 2.6s) — closer to the 2.5s threshold but not conclusively under it (preview deployments carry their own cold-start variance versus production, so this is directionally right rather than a clean before/after). CLS held at 0. The Lighthouse LCP-breakdown trace shows the fetchPriority fix worked (discovery is no longer the bottleneck) but surfaced a new, unexplained ~960ms 'element render delay' phase eating most of the remaining LCP budget — logged as its own item (57) rather than chased further here, since root-causing it needs investigation this pass didn't scope for. All five item-27 acceptance criteria are now met: tap targets fixed, booking reachable at every depth, scroll depth recorded with outliers justified-or-logged (item 56), Core Web Vitals measured and recorded at 375px on a throttled connection, and the one open finding (the render delay) logged as item 57 with item 38 (the sitewide CWV budget item) as its parent. Status moves to done.",
     dependsOn: null,
     outOfScope:
       "Redesigning the homepage or reordering locked sections. This is a review-and-repair pass against the existing locked order — any reordering proposal comes back as a separate item with its own rationale.",
@@ -4975,7 +4977,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 4, reach: 5, risk: 3, effort: 3, readiness: 5 },
     effort: "M",
-    status: "not-started",
+    status: "partial",
     wave: 2,
     job: "Reach the site at all, on a real connection",
     story:
@@ -4995,7 +4997,8 @@ export const backlog: BacklogItem[] = [
       "Measured against the deployed preview, never localhost",
     ],
     evidence:
-      "Blueprint §24 Build Item 25 and GTH-19. Corroborated by our own finding that mobile is where LCP fails most often, and our homepage is 12.4 screens with 29 images.",
+      "Blueprint §24 Build Item 25 and GTH-19. Corroborated by our own finding that mobile is where LCP fails most often, and our homepage is 12.4 screens with 29 images.\n\n" +
+      "First real measurement, 2026-08-31, done as a byproduct of item 27's own Core Web Vitals check: throttled mobile Lighthouse (4x CPU, simulated slow 4G) against the deployed Vercel preview gave LCP 2.4-3.6s (median 2.9s, above the 2.5s budget), CLS 0 (within budget), TBT 10-30ms (well within the 200ms budget), Performance score 0.87-0.98. Found and fixed one real cause: HeroCarousel's LCP image used the `priority` prop, deprecated in Next 16 in favor of `preload`, which unlike the old prop does not by itself add `fetchPriority=\"high\"` — confirmed via production HTML that the attribute was missing from both the image and its preload link. Fixed with `preload` + explicit `fetchPriority=\"high\"`; re-measured LCP at 2.4-3.2s (median 2.6s) after the fix, CLS still 0, Performance score 0.92-0.98 — budget effectively met on CLS/TBT/Performance, LCP still marginal. The Lighthouse LCP-breakdown trace surfaced a further, unexplained ~960ms 'element render delay' now eating most of the remaining LCP time; logged as item 57 rather than chased here since the root cause needs its own investigation. Status moves to partial: the budget is established and measured against the deployed preview as required, one real cause found and fixed, and the one remaining miss (LCP, marginally) is logged with item 57 as the owning item.",
     dependsOn: null,
     outOfScope: "A rewrite for performance. Measure, fix what's cheap, log the rest.",
     references: [
@@ -6757,6 +6760,78 @@ export const backlog: BacklogItem[] = [
       ],
       gotchas: [
         "This is a pacing fix, not a redesign — don't restyle the cards beyond what's needed to change the grid density.",
+      ],
+    },
+  },
+  {
+    id: 57,
+    title: "Cut HeroCarousel's ~960ms LCP element-render delay",
+    priority: "P1",
+    source: "original",
+    launchBlocking: false,
+    harness: ["GTH-2", "GTH-19"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 2, reach: 5, risk: 2, effort: 3, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 2,
+    job: "See the hero photo appear quickly on a phone, not after a stall",
+    story:
+      "As a patient loading the homepage on a phone, the hero photo that establishes trust paints promptly instead of the page sitting on a mostly-blank screen after the image itself has already downloaded.",
+    problem:
+      "Item 27's Core Web Vitals measurement (2026-08-31, against the deployed Vercel preview) fixed HeroCarousel's missing fetchPriority hint, which brought LCP down from a 2.9s median to a 2.6s median — but that's still marginal against the 2.5s budget item 38 sets. The Lighthouse LCP-breakdown trace shows why: time-to-first-byte, resource-load-delay and resource-load-duration are all small (93ms, 155ms, 150ms) — the image itself arrives fast now — but 'element render delay' alone is ~960ms, meaning the browser has the image bytes and sits on them for nearly a second before the LCP paint is recorded. That phase isn't explained by anything fixed so far.",
+    where: "src/components/HeroCarousel.tsx",
+    scope: [
+      "Reproduce the ~960ms element-render-delay measurement locally with Lighthouse's trace viewer or Chrome DevTools Performance panel, confirmed against the deployed preview (not localhost, per item 38's own gotcha)",
+      "Isolate the cause — candidates worth checking first: the opacity/Ken Burns CSS transition classes applied to the image itself possibly delaying paint registration, main-thread work from mounting all photos in the carousel simultaneously, or hydration cost blocking the paint",
+      "Fix the actual cause without changing how the carousel looks or behaves (crossfade timing, Ken Burns zoom, and photo order are all locked per HeroCarousel.tsx's own comments)",
+      "Re-measure LCP against the deployed preview after the fix",
+    ],
+    acceptance: [
+      "Element-render-delay phase of the LCP breakdown reduced from the ~960ms baseline, root cause identified and stated",
+      "LCP at 375px on a throttled connection clears the 2.5s budget (item 38), median of at least 3 runs",
+      "No visible change to the carousel's crossfade, zoom, or photo order",
+    ],
+    evidence:
+      "Measured directly via Lighthouse's lcp-breakdown-insight audit against this repo's own Vercel preview, 2026-08-31: timeToFirstByte 93ms, resourceLoadDelay 155ms, resourceLoadDuration 150ms, elementRenderDelay 963ms, on a run with LCP 3.2s total. The other three phases are all healthy; elementRenderDelay is the entire remaining problem.",
+    dependsOn: "Item 38 (this is the one open miss against that item's LCP budget) · item 27 (found this while closing out that item's Core Web Vitals check)",
+    outOfScope:
+      "Changing the carousel's visual behavior — crossfade duration, Ken Burns zoom, photo order, or removing photos are all locked decisions documented in HeroCarousel.tsx and not on the table here.",
+    references: [
+      {
+        name: "web.dev — Optimize LCP",
+        url: "https://web.dev/articles/optimize-lcp",
+        whatGood:
+          "Breaks LCP into the same four phases Lighthouse reports (TTFB, load delay, load duration, render delay) with a distinct fix strategy for each — render delay specifically points at render-blocking work and main-thread contention rather than network causes.",
+        takeaway:
+          "Treat this as a render-delay problem, not a network problem — the fetchPriority fix already solved the network side. Look at what's blocking the main thread or delaying style/layout at the moment the image is ready to paint.",
+        mobile:
+          "Render delay is disproportionately a mobile problem because of the CPU throttling (4x slowdown) mobile devices and this item's own measurement apply — the same JS cost that's invisible on a fast desktop CPU shows up as a visible stall here.",
+      },
+    ],
+    test: {
+      preconditions: ["Deployed preview available (not localhost)", "Item 27 and item 38's fetchPriority fix already in place"],
+      steps: [
+        {
+          action: "Run Lighthouse's lcp-breakdown-insight audit against the deployed preview at 375×812, throttled.",
+          tool: "validator",
+          expect: "elementRenderDelay reduced from the ~960ms baseline; TTFB/load-delay/load-duration stay low as they already are.",
+        },
+        {
+          action: "Visually confirm the hero carousel's crossfade, Ken Burns zoom and photo order are unchanged.",
+          tool: "manual",
+          expect: "No visible difference from before the fix.",
+        },
+      ],
+      mobileFirst: [
+        "LCP at 375px on a throttled connection clears 2.5s across a median of at least 3 runs",
+        "elementRenderDelay specifically is reduced from baseline, not just LCP overall",
+      ],
+      pass: ["Render-delay root cause identified and fixed", "LCP budget met", "Carousel behavior unchanged"],
+      gotchas: [
+        "Don't chase this by re-tuning fetchPriority or preload again — the discovery/network phases are already confirmed healthy; the problem is what happens after the bytes arrive.",
+        "Measuring on localhost gives meaningless Core Web Vitals, same gotcha as items 27 and 38.",
       ],
     },
   },
