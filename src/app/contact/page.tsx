@@ -28,7 +28,7 @@ export default function ContactPage() {
   return (
     <>
       <Nav />
-      <main className="pt-16 min-h-screen flex flex-col">
+      <main id="main-content" tabIndex={-1} className="pt-16 min-h-screen flex flex-col">
         <div className="border-b border-sand bg-warm-ivory">
           <div className="mx-auto max-w-2xl px-4 sm:px-6 py-3 flex items-center gap-3">
             <Link

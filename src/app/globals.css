@@ -48,6 +48,62 @@
 
   --background: var(--color-warm-ivory);
   --foreground: var(--color-espresso);
+
+  /* ============================================================
+   * Mobile-first type scale (backlog item 37, blueprint §17)
+   * ============================================================
+   * Authored for the phone value first, then enhanced upward for
+   * desktop below — never the other way around. Overrides Tailwind's
+   * default --text-* tokens so every existing text-xs..text-6xl
+   * utility already in use across components picks this scale up
+   * automatically; no component changes needed to "reference" it.
+   *
+   * Floors: body/inputs never render below 16px (base sits at 17px,
+   * a point above the floor); fine print never renders below 14px
+   * (xs raised from Tailwind's default 12px to meet that floor).
+   * Headline sizes stay within what a 320px viewport can wrap without
+   * forcing horizontal scroll (see AC in backlog item 37).
+   */
+  --text-xs: 0.875rem; /* 14px — fine-print floor (was 12px) */
+  --text-xs--line-height: calc(1.25 / 0.875);
+  --text-sm: 0.875rem; /* 14px */
+  --text-sm--line-height: calc(1.25 / 0.875);
+  --text-base: 1.0625rem; /* 17px — mobile body target (was 16px) */
+  --text-base--line-height: calc(1.5 / 1.0625);
+  --text-lg: 1.1875rem; /* 19px */
+  --text-lg--line-height: calc(1.5 / 1.1875);
+  --text-xl: 1.3125rem; /* 21px */
+  --text-xl--line-height: calc(1.75 / 1.3125);
+  --text-2xl: 1.5625rem; /* 25px */
+  --text-2xl--line-height: calc(2 / 1.5625);
+  --text-3xl: 1.9375rem; /* 31px */
+  --text-3xl--line-height: calc(2.25 / 1.9375);
+  --text-4xl: 2.3125rem; /* 37px */
+  --text-4xl--line-height: calc(2.5 / 2.3125);
+  --text-5xl: 3rem; /* 48px */
+  --text-5xl--line-height: 1.1;
+  --text-6xl: 3.75rem; /* 60px */
+  --text-6xl--line-height: 1.1;
+  --text-7xl: 4.5rem; /* 72px */
+  --text-7xl--line-height: 1.1;
+}
+
+/* Desktop enhancement — scale the same named roles up (~1.2–1.25 step)
+ * once there's room for it. Body and fine print stay put: the mobile
+ * floor is already the right reading size at any viewport. Never goes
+ * below the mobile value above. */
+@media (min-width: 1024px) {
+  :root {
+    --text-sm: 0.9375rem; /* 15px */
+    --text-lg: 1.25rem; /* 20px */
+    --text-xl: 1.5rem; /* 24px */
+    --text-2xl: 1.875rem; /* 30px */
+    --text-3xl: 2.25rem; /* 36px */
+    --text-4xl: 3rem; /* 48px */
+    --text-5xl: 3.75rem; /* 60px */
+    --text-6xl: 4.5rem; /* 72px */
+    --text-7xl: 5.25rem; /* 84px */
+  }
 }
 
 @theme inline {
@@ -80,6 +136,24 @@ p {
 .tap-target {
   min-width: 44px;
   min-height: 44px;
+}
+
+/* Backlog item 30 — visible focus ring, checked against the locked
+ * palette rather than left to browser default. Section backgrounds on
+ * this site swing from light (warm-ivory/sand) to dark (espresso, in
+ * BookingBlock/HeroCarousel/TestimonialsSection/OfficeCarousel/Nav's
+ * mobile menu overlay), so no single ring color reads on all of them —
+ * a terracotta-dark ring alone is close to invisible against espresso.
+ * Halo pattern instead: an inner terracotta-dark ring (visible on light
+ * surfaces) plus an outer warm-ivory ring (visible on dark surfaces),
+ * so at least one ring has AA-level non-text contrast against whatever
+ * is behind the focused element. `:focus-visible` only, so mouse/touch
+ * users never see it.
+ */
+:focus-visible {
+  outline: 2px solid var(--color-terracotta-dark);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--color-warm-ivory);
 }
 
 /* Slow Ken Burns zoom — makes static hero photos read as "videographic"
