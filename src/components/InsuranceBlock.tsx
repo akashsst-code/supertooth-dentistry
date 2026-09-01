@@ -36,7 +36,7 @@ export function InsuranceBlock() {
               className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-terracotta/10 transition-transform group-hover:scale-110"
               aria-hidden="true"
             />
-            <span className="relative inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-terracotta-dark">
+            <span className="relative inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-terracotta-dark">
               <CheckIcon className="shrink-0" /> In-network
             </span>
             <span className="relative font-display text-lg font-semibold italic text-espresso leading-tight">

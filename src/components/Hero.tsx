@@ -49,7 +49,7 @@ export function Hero() {
           Accepting new patients
         </span>
 
-        <h1 className="font-display text-3xl sm:text-6xl font-semibold leading-[1.1] drop-shadow-sm max-w-2xl">
+        <h1 className="font-display text-3xl sm:text-6xl font-semibold leading-[1.2] drop-shadow-sm max-w-2xl">
           {practice.headline}
         </h1>
 
