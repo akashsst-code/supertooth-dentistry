@@ -43,14 +43,23 @@
    * Revised 2026-08-31 per Akash's direct feedback on the first value
    * (#A32E1F, 6.67:1 on ivory): "too blaring." Softened to a more muted
    * clay/brick tone — same earthy family, still exclusively
-   * emergency-reserved, still AA (5.36:1 on warm-ivory, 5.36:1 for
-   * warm-ivory text on it — comfortably above the 4.5:1 floor for
-   * normal text) — without reading as an alarm/stop-sign red. Real
-   * consumer: the "Dental Emergency" quick-action link in
-   * BookingBlock.tsx (icon + text, not a solid-fill block, which also
-   * softens the visual weight independent of the hex change).
+   * emergency-reserved, still AA (5.36:1 on warm-ivory) — without
+   * reading as an alarm/stop-sign red.
    */
   --color-alert: #9c5240;
+
+  /* Lighter tint of --color-alert, same hue/saturation, raised
+   * lightness — for plain-text use on dark (espresso) surfaces, where
+   * --color-alert itself only hits ~2:1 (fails AA). Revised again
+   * 2026-08-31: Akash flagged the emergency link and Book Appointment
+   * read as "the same color" when both were solid pills in the same
+   * row — same problem two values in, since both are necessarily warm
+   * earthy reds by the locked-palette constraint. Fixed by dropping
+   * the solid-fill pill for emergency entirely (plain text now, like
+   * every other secondary link) rather than chasing hue difference
+   * from terracotta. 4.62:1 on espresso — AA for normal text.
+   */
+  --color-alert-light: #cb8f80;
 
   --background: var(--color-warm-ivory);
   --foreground: var(--color-espresso);
@@ -65,6 +74,7 @@
   --color-espresso: var(--color-espresso);
   --color-sand: var(--color-sand);
   --color-alert: var(--color-alert);
+  --color-alert-light: var(--color-alert-light);
   --font-display: var(--font-fraunces);
   --font-sans: var(--font-inter);
 }

@@ -47,24 +47,32 @@ import { CalendarIcon, ClockIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, UserP
  * here once "Book Appointment" (longer than the old "Book Now")
  * pushed this row past one line too.
  *
- * New Patient / Dental Emergency added below the two primary pills,
- * 2026-08-31 (item 48 revision) — deliberately quieter than Book/Call:
- * this is a small boutique practice whose primary job is winning new
- * patients, and Akash asked to keep emergency lower rather than
- * triage-style equal-weight with booking. Item 48's own doors briefly
- * lived in the Hero as three equal full-width rows; pulled back per
- * that feedback.
+ * New Patient / Dental Emergency, 2026-08-31 (item 48 revision) —
+ * deliberately quieter than Book/Call: this is a small boutique
+ * practice whose primary job is winning new patients, and Akash asked
+ * to keep emergency lower rather than triage-style equal-weight with
+ * booking. Item 48's own doors briefly lived in the Hero as three
+ * equal full-width rows; pulled back per that feedback.
  *
- * New Patient is a plain text link (icon + warm-ivory/70 text) — the
- * quietest treatment available. Dental Emergency is a small solid
- * `bg-alert` pill rather than colour-alone text: this section has an
- * espresso background, and the alert token's text-on-ivory contrast
- * numbers (item 46) don't hold as plain text color against espresso
- * (~2:1). A small self-contained pill (ivory text ON the alert fill)
- * keeps AA regardless of the surrounding section's background colour,
- * while staying visually much smaller/quieter than the two primary
- * pills above it. Still points at /contact (item 7's dedicated
- * /emergency page is unbuilt).
+ * Two rounds of tuning on the exact treatment: first pass put both
+ * links directly under the "Quick actions" pills, with Dental
+ * Emergency as its own small solid `bg-alert` pill — Akash flagged
+ * both problems at once: the extra row read as clutter (now 3-4
+ * things stacked in one small area), and the emergency pill and the
+ * terracotta Book Appointment pill "read as the same color" sitting
+ * next to each other (both are necessarily warm earthy reds, per the
+ * locked-palette constraint on item 46's token — hue alone was never
+ * going to separate them cleanly).
+ *
+ * Fixed by dropping pills entirely for both secondary links — one
+ * quiet inline line below Office hours/Location, no bold uppercase
+ * label competing with "Quick actions"/"Office hours"/"Location", so
+ * it reads as a footnote rather than a fourth section. Distinction
+ * for Dental Emergency now comes from `text-alert-light` (a lighter
+ * tint of the same locked hue, sized for AA as plain text against this
+ * section's espresso background — the base `--color-alert` only hits
+ * ~2:1 there) plus its own icon, not from a background fill that could
+ * be visually confused with a button.
  */
 export function BookingBlock() {
   const openHours = hours.find((h) => h.time !== "Closed");
@@ -104,23 +112,6 @@ export function BookingBlock() {
                   {contact.phone}
                 </a>
               </div>
-
-              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
-                <a
-                  href="/insurance-new-patients"
-                  className="tap-target inline-flex items-center gap-1.5 text-xs font-medium text-warm-ivory/70 hover:text-warm-ivory transition-colors"
-                >
-                  <UserPlusIcon className="h-3.5 w-3.5" />
-                  New patient? Start here
-                </a>
-                <a
-                  href="/contact"
-                  className="tap-target inline-flex items-center gap-1 rounded-full bg-alert px-2.5 py-1.5 text-xs font-medium text-warm-ivory hover:brightness-110 transition"
-                >
-                  <MedicalCrossIcon className="h-3.5 w-3.5" />
-                  Dental emergency
-                </a>
-              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-6 max-w-sm">
@@ -145,6 +136,24 @@ export function BookingBlock() {
                 </span>
               </div>
             </div>
+
+            <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-warm-ivory/60">
+              <a
+                href="/insurance-new-patients"
+                className="tap-target inline-flex items-center gap-1.5 hover:text-warm-ivory transition-colors"
+              >
+                <UserPlusIcon className="h-3.5 w-3.5" />
+                New patient? Start here
+              </a>
+              <span aria-hidden="true">·</span>
+              <a
+                href="/contact"
+                className="tap-target inline-flex items-center gap-1.5 text-alert-light hover:brightness-110 transition"
+              >
+                <MedicalCrossIcon className="h-3.5 w-3.5" />
+                Dental emergency
+              </a>
+            </p>
           </div>
 
           <div className="lg:col-span-2">
