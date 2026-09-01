@@ -104,7 +104,7 @@ export function Nav() {
           </nav>
 
           {/* Mobile controls */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex md:hidden items-center gap-1 min-[375px]:gap-2">
             <a
               href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
               aria-label="Call the practice"
@@ -114,7 +114,7 @@ export function Nav() {
             </a>
             <Link
               href="/contact"
-              className="tap-target inline-flex items-center justify-center rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-4 text-sm font-semibold text-warm-ivory whitespace-nowrap"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-2.5 min-[375px]:px-4 text-sm font-semibold text-warm-ivory whitespace-nowrap"
             >
               Schedule
             </Link>
