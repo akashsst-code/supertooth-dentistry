@@ -39,10 +39,23 @@
    * than a generic alert red: a warm brick red in the same earthy
    * family as terracotta, contrast-computed against the real tokens
    * rather than assumed. 6.67:1 on warm-ivory, 7.08:1 for warm-ivory
-   * text on it — AA at any text size, clearly distinct from terracotta
-   * at a glance. Not yet consumed by any component — lands ahead of
-   * items 7/45 (emergency page + reachability) so it's ready when they
-   * ship.
+   * text on it — AA at any text size.
+   *
+   * Went through three rounds on 2026-08-31 chasing the wrong variable
+   * each time — see item 46/48 in backlog.ts for the full history.
+   * Short version: (1) shipped at this value as a full-width Hero
+   * button — "too blaring"; (2) muted the hex instead of the real
+   * problem (prominence/size) — the muted pill then read as "the same
+   * color" as the terracotta Book pill sitting next to it; (3) dropped
+   * to plain light text to escape the color clash — now "hidden."
+   * Landed back on the ORIGINAL, more saturated value: this is
+   * consistent with how other agencies actually treat this (NHS
+   * Digital Service Manual reserves one specific, undiluted red
+   * exclusively for emergency/warning content; GOV.UK's own red is
+   * similarly saturated, not muted — restraint comes from how rarely
+   * and how small it's used, not from watering down the hue). Paired
+   * with a small, deliberately compact badge treatment rather than a
+   * large block — see BookingBlock.tsx.
    */
   --color-alert: #a32e1f;
 

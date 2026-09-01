@@ -33,6 +33,16 @@ import { CalendarIcon, CheckIcon, GoogleGIcon, StarIcon } from "./icons";
  * CTA row, trust strip, and address/insurance sub-components are
  * unchanged from the previous layout (still real content, same
  * tap-to-expand behavior) — only the container around them changed.
+ *
+ * Item 48 ("three clear doors": Book · New patient · Dental emergency)
+ * briefly stacked all three into this CTA row as full-width rows.
+ * Reverted 2026-08-31 per Akash's direct call: this is a small boutique
+ * practice whose primary job is winning new patients, not triaging
+ * three intents at equal weight up front — three stacked doors read as
+ * more clinical/overwhelming than the practice wants its first
+ * impression to be. Book + Call stays the hero ask; New Patient and
+ * Dental Emergency now live lower on the page as secondary entries in
+ * BookingBlock's "Quick actions" row instead of competing here.
  */
 export function Hero() {
   return (

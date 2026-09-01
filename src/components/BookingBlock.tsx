@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { contact, hours } from "@/lib/content";
-import { CalendarIcon, ClockIcon, MapPinIcon, PhoneIcon } from "./icons";
+import { CalendarIcon, ClockIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, UserPlusIcon } from "./icons";
 
 /**
  * Booking block — docs/supertooth-ux-flow.md Section 4 / build-spec
@@ -46,6 +46,28 @@ import { CalendarIcon, ClockIcon, MapPinIcon, PhoneIcon } from "./icons";
  * one line at mobile widths — same fix as Hero's CTA row, applied
  * here once "Book Appointment" (longer than the old "Book Now")
  * pushed this row past one line too.
+ *
+ * New Patient / Dental Emergency, 2026-08-31 (item 48 revision) —
+ * went through several rounds of placement/treatment the same day
+ * before landing here; full history in backlog.ts items 46/48. Short
+ * version of what stuck:
+ *
+ * Dental Emergency is now the third item in "Quick actions", alongside
+ * Book Appointment and Call — Akash's final call, after trying it
+ * every other way (a full-width Hero button, a pill next to Book that
+ * read as "the same color", plain de-emphasized text that then read as
+ * "hidden"). As a compact `bg-alert` badge (undiluted hex, smaller
+ * padding/font than the two primary pills, `items-center` on the row
+ * so it lines up against their taller height) it reads as a real,
+ * visible action without matching Book/Call's size or competing with
+ * them for primacy — restraint through scale within the row, not
+ * through hiding it in a different section.
+ *
+ * New Patient stays separate — a small boutique practice whose
+ * dominant job is winning new patients doesn't need it competing for
+ * space in "Quick actions" alongside the more time-sensitive Book/Call/
+ * Emergency trio, so it's still its own quiet line below Office hours/
+ * Location.
  */
 export function BookingBlock() {
   const openHours = hours.find((h) => h.time !== "Closed");
@@ -69,7 +91,7 @@ export function BookingBlock() {
               <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                 Quick actions
               </p>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <a
                   href="/contact"
                   className="tap-target inline-flex items-center justify-center gap-1 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3.5 py-3.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
@@ -83,6 +105,13 @@ export function BookingBlock() {
                 >
                   <PhoneIcon />
                   {contact.phone}
+                </a>
+                <a
+                  href="/contact"
+                  className="tap-target inline-flex items-center gap-1 rounded-full bg-alert px-2.5 py-2 text-xs font-semibold uppercase tracking-wide text-warm-ivory hover:brightness-110 transition"
+                >
+                  <MedicalCrossIcon className="h-3.5 w-3.5" />
+                  Dental emergency
                 </a>
               </div>
             </div>
@@ -109,6 +138,14 @@ export function BookingBlock() {
                 </span>
               </div>
             </div>
+
+            <a
+              href="/insurance-new-patients"
+              className="tap-target mt-6 inline-flex items-center gap-1.5 text-xs text-warm-ivory/60 hover:text-warm-ivory transition-colors"
+            >
+              <UserPlusIcon className="h-3.5 w-3.5" />
+              New patient? Start here
+            </a>
           </div>
 
           <div className="lg:col-span-2">

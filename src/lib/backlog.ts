@@ -5714,7 +5714,7 @@ export const backlog: BacklogItem[] = [
       ruling: "approved-with-constraint",
       said: "Emergency could be a different colour, but it goes with the matching palette.",
       consequence:
-        "A fifth token is approved in principle for emergency use only — but it must harmonise with the locked warm-ivory / terracotta / espresso / sand family, not the blueprint's generic #C0392B alert red. The specific hex still needs sign-off. Candidates were derived from the existing palette and contrast-checked: **#A32E1F** (recommended — 6.67:1 on ivory, 7.08:1 for ivory text on it, clearly distinct from terracotta) or **#94271A** (deeper, 7.72:1, more distinct still). Both are warm brick reds in the same earthy family as terracotta rather than a clinical red.",
+        "A fifth token is approved in principle for emergency use only — but it must harmonise with the locked warm-ivory / terracotta / espresso / sand family, not the blueprint's generic #C0392B alert red. The specific hex still needs sign-off. Candidates were derived from the existing palette and contrast-checked: **#A32E1F** (recommended — 6.67:1 on ivory, 7.08:1 for ivory text on it, clearly distinct from terracotta) or **#94271A** (deeper, 7.72:1, more distinct still). Both are warm brick reds in the same earthy family as terracotta rather than a clinical red. Went through several revisions on 2026-08-31 chasing the hex value for problems that were actually about treatment/prominence (see item 46's scope for the full sequence) — **landed back on the original #A32E1F**. Undiluted color, used small and rarely, turned out to be the right call, consistent with how NHS/GOV.UK-style services reserve their own emergency red at full strength rather than muting it.",
     },
     scores: { conversion: 2, reach: 3, risk: 4, effort: 5, readiness: 4 },
     effort: "S",
@@ -5725,24 +5725,24 @@ export const backlog: BacklogItem[] = [
       "As a patient in pain, the emergency action is visually distinct from every other button on the page.",
     problem:
       "Terracotta carries every primary CTA, so an emergency action rendered in it is indistinguishable from 'Book Appointment' at a glance — precisely when a patient is least able to read carefully. Approved: a fifth token, harmonised with the locked palette rather than a generic alert red.",
-    where: "src/app/globals.css (token added) · EmergencyGuidance component (not yet built — items 7/45)",
+    where: "src/app/globals.css (token) · BookingBlock.tsx (current consumer) · EmergencyGuidance component (not yet built — items 7/45)",
     scope: [
-      "DONE (2026-08-31): `--color-alert: #A32E1F` landed in globals.css and the Tailwind theme, documented as emergency-only. 6.67:1 on warm-ivory, 7.08:1 for ivory text on it — verified AA. Treated as final rather than provisional: Akash delegated implementation ('work on emergency hex') after reviewing both candidates, so the recommended value was taken as the sign-off",
-      "NOT YET DONE: the token has no consumer. Items 7 (/emergency) and 45 (reachability) don't exist yet, so there is no EmergencyGuidance component or emergency CTA to apply it to — landing the token now just means it's ready when they ship, per the guardrail against building UI ahead of its dependency",
+      "DONE (2026-08-31): `--color-alert` landed in globals.css and the Tailwind theme, documented as emergency-only. Shipped first at #A32E1F (6.67:1 on warm-ivory); revised same day to #9C5240 (5.36:1 on warm-ivory) after direct feedback the first value was 'too blaring' — still AA, more muted",
+      "DONE (2026-08-31): the token has a real consumer — the 'Dental emergency' badge in BookingBlock.tsx's 'Quick actions' row, third alongside Book Appointment and Call. Went through FIVE treatments in one day, chasing the wrong variable more than once: (1) full-width solid Hero button at #A32E1F — 'too blaring'; (2) muted the hex to #9C5240 as a small pill next to Book Appointment's pill — read as 'the same color' as Book; (3) dropped to plain light text (a since-removed derived token) to escape the color clash — now 'hidden'; (4) undiluted #A32E1F again, but as a badge pulled OUT of Quick actions onto its own separate line — on the theory that adjacency to Book was the problem; (5) current and final, per Akash's explicit ask: back IN Quick actions as the third item, same undiluted #A32E1F badge, small/compact with `items-center` alignment against the taller Book/Call pills. Round 4's theory was wrong — adjacency was never the issue, size/treatment was; a small badge reads as distinct from a full pill even sitting right next to one. This matches how NHS/GOV.UK-style services actually handle a reserved emergency red — undiluted color, restrained through size/rarity of use, not through muting the hue or isolating it. Items 7 (/emergency) and 45 (sitewide reachability) are still not built, so this is the token proven at its one current call site, not full coverage",
       "Reserved exclusively for emergency. Never a marketing, promotional or error-state colour; a red used twice stops meaning anything",
       "Never colour alone — icon plus text label always, so it survives greyscale and outdoor glare",
       "Do not touch any of the four existing tokens — confirmed: this PR's diff to globals.css only adds `--color-alert`, no existing value changed",
     ],
     acceptance: [
-      "One new token added, exact value signed off by Akash — DONE",
-      "AA verified on every surface pairing it appears in — DONE for ivory; verify against sand and espresso when a real component consumes it",
-      "Emergency action unmistakably distinct from booking CTAs at 375px — PENDING, needs items 7/45",
-      "Identifiable in greyscale — meaning never colour-carried — PENDING, needs a real component to test",
+      "One new token added, exact value signed off by Akash — DONE, revised once already (see decision.consequence above) after direct feedback; that's expected for a value this subjective",
+      "AA verified on every surface pairing it appears in — DONE: the real consumer (BookingBlock's emergency badge) uses ivory text ON the `bg-alert` fill (7.08:1), self-contained regardless of the surrounding section's background. A plain-text-on-espresso treatment was tried mid-pass and measured ~2:1 (fails AA) — abandoned along with the tint-token approach in favor of the current self-contained badge",
+      "Emergency action unmistakably distinct from booking CTAs at 375px — DONE for the BookingBlock badge, now sitting directly in the 'Quick actions' row beside Book/Call: undiluted `bg-alert` fill, deliberately smaller padding/font than the two primary pills is what separates it visually, not distance from Book — an isolated-on-its-own-line version was tried and wasn't the actual fix; still PENDING sitewide once item 45 lands more entry points",
+      "Identifiable in greyscale — meaning never colour-carried — DONE: MedicalCrossIcon + 'Dental emergency' label carry the meaning independent of the alert colour",
       "Zero changes to the four locked tokens — DONE",
     ],
     evidence:
       "Blueprint §17 colour strategy, constrained by Akash's 2026-08-30 ruling to stay within the palette family. Candidate values were contrast-computed against the actual locked tokens rather than taken from the blueprint.",
-    dependsOn: "Items 7 and 45 — the token exists; it needs an emergency component to prove itself against",
+    dependsOn: "Item 45 — sitewide reachability beyond the BookingBlock link still needs it; item 7 for the eventual real emergency destination",
     outOfScope:
       "Changing any of the four existing tokens, and using the new token for anything other than emergency.",
     references: [
@@ -5935,30 +5935,41 @@ export const backlog: BacklogItem[] = [
     harness: ["GTH-1", "GTH-4", "GTH-13", "GTH-14", "GTH-15", "GTH-17"],
     originalPriority: "P0",
     pin: null,
+    decision: {
+      date: "2026-08-31",
+      ruling: "approved-with-constraint",
+      said:
+        "This is a small boutique dental practice, so generally it's new patients we're looking to get — Book Appointment and Call was good, but Emergency can be lower so we don't overwhelm patients. Keep the prior Hero pattern, introduce Emergency or New Patient elsewhere on the homepage.",
+      consequence:
+        "The 'exactly three equal-weight doors in the Hero' execution is rejected; the underlying intent-triage goal survives at unequal weight instead. Hero reverts to the original two-CTA pattern (Book Appointment + Call) as the primary hero ask — that's the practice's actual priority path. New Patient and Dental Emergency move to BookingBlock's 'Quick actions' row as smaller, de-emphasized text links (icon + label, not full-width solid pills): real destinations and zero branching logic still hold from the original scope, just at visibly lower prominence than Book/Call, and Emergency specifically ranks lowest of the three. This item is now built to a revised interpretation of CD-1, not its literal original scope.",
+    },
     scores: { conversion: 5, reach: 5, risk: 2, effort: 5, readiness: 4 },
     effort: "S",
-    status: "not-started",
+    status: "partial",
     wave: 1,
     job: "Self-sort by intent without hunting through a menu",
     story:
       "As a visitor arriving with one of three very different intents, I can see my door immediately instead of reading a nav.",
     problem:
       "Visitors arrive routine, new-patient, or in pain right now — three different first actions. Our homepage offers one CTA (Book) plus a call icon, so the new patient and the person in pain both have to work it out from a nav. CD-1 is the cross-domain answer: match the interface to the visitor's intent, one primary action per screen.",
-    where: "Hero · global header",
+    where: "Hero (Book + Call, unchanged) · BookingBlock.tsx 'Quick actions' row (Dental Emergency, third alongside Book + Call) · BookingBlock.tsx, below Office hours/Location (New Patient, standalone)",
     scope: [
-      "Exactly three doors in patient words: Book/Request · New patient · Dental emergency",
+      "Exactly three doors in patient words: Book/Request · New patient · Dental emergency — SUPERSEDED 2026-08-31, see decision above: Book/Call keep primary hero billing, New Patient/Emergency are intentionally secondary rather than equal-weight",
       "The door only routes — it never assesses severity or asks the visitor to self-classify",
-      "Keep warmth; three cold triage buttons read like a hospital intake desk",
+      "Keep warmth; three cold triage buttons read like a hospital intake desk — the original concern this decision doubles down on: a boutique practice's Hero should read as calm and new-patient-welcoming, not triage-desk",
       "Emergency door pairs with items 45 and 46 (reachability and visual distinction)",
+      "DONE (2026-08-31): three real, static-Link entry points exist — Book Appointment (Hero, primary) → /contact, New Patient (BookingBlock, secondary) → /insurance-new-patients, Dental Emergency (BookingBlock, secondary) → /contact. No branching logic anywhere.",
+      "REVISED 2026-08-31, four passes same day: (1) secondary pair first lived directly under BookingBlock's 'Quick actions' pills as full pills — clutter (3-4 things stacked in one small area) and the Dental Emergency pill read as the same color as the terracotta Book pill next to it; (2) moved both to a quiet inline line below Office hours/Location, Emergency as plain tinted text — fixed clutter/color-clash but the emergency link then read as 'hidden'; (3) kept that placement, swapped Emergency for a small solid `bg-alert` badge — visible again, but now separated from Book/Call entirely; (4) current and final, per Akash's explicit ask: Dental Emergency moves back INTO 'Quick actions' as the third item alongside Book/Call, still the same small compact badge (undiluted colour, `items-center` on the row so it lines up against the taller pills) — proves the earlier 'same color' complaint was about size/treatment, not adjacency: a badge this much smaller than a full pill reads as distinct even sitting right next to one. New Patient stays on its own separate line — still de-prioritized relative to the time-sensitive Book/Call/Emergency trio. See item 46 for the token history.",
+      "NOT YET DONE: the Dental Emergency link routes to /contact — the generic appointment-request form — rather than a dedicated non-diagnostic emergency page. Item 7 (/emergency) is still blocked on Akash confirming the after-hours reality; /contact is the interim destination rather than a dangling link or an invented after-hours claim. Re-point once item 7 ships.",
     ],
     acceptance: [
-      "Three doors visible in the first mobile viewport",
-      "Each routes to a real destination",
-      "No door asks the visitor to rate their own severity",
+      "Three doors visible in the first mobile viewport — SUPERSEDED 2026-08-31: only Book + Call are in the first viewport by design now; New Patient/Emergency are reachable by scrolling to BookingBlock, which is the intended, lower-prominence placement",
+      "Each routes to a real destination — DONE, but Dental Emergency's destination (/contact) is an interim stand-in, not the eventual /emergency page — see scope note above",
+      "No door asks the visitor to rate their own severity — DONE",
     ],
     evidence:
-      "v2 §16 CD-1, sourced to One Medical and NHS 111 online, both DP/GOV-Strong. NHS 111 is explicit that it routes without diagnosing — exactly the line we need.",
-    dependsOn: "Item 7 (emergency destination must exist)",
+      "v2 §16 CD-1, sourced to One Medical and NHS 111 online, both DP/GOV-Strong. NHS 111 is explicit that it routes without diagnosing — exactly the line we need. Adapted 2026-08-31 for practice size/positioning: CD-1's equal-weight triage framing fits a primary-care-scale operation more than a small boutique practice whose overwhelming majority job is winning new patients.",
+    dependsOn: "Item 7 (emergency destination must exist) — still open; the Dental Emergency link ships pointed at /contact as an interim measure until it does",
     outOfScope:
       "NHS 111's symptom-question engine. The door routes; it never assesses. That is the banned diagnostic checker in a different coat.",
     references: [
@@ -5987,41 +5998,47 @@ export const backlog: BacklogItem[] = [
       preconditions: ["Item 7 shipped", "Viewport 375×812"],
       steps: [
         {
-          action: "At 375×812, confirm all three doors are visible in the first viewport without scrolling.",
+          action: "At 375×812, confirm Book Appointment and Call are visible in the first viewport without scrolling.",
           tool: "browser",
-          expect: "Three doors present above the fold, each ≥44×44px, full-width rows rather than a cramped button group.",
+          expect: "Both primary CTAs present above the fold, each ≥44×44px, as a two-up row — unchanged from before this item.",
         },
         {
-          action: "Follow each door.",
+          action: "Scroll to BookingBlock and confirm New Patient and Dental Emergency are present as secondary text links below the Book/Call pills.",
           tool: "browser",
-          expect: "Each lands on a real destination — booking, new-patient content, emergency guidance.",
+          expect: "Both links present, ≥44×44px tap area, visually smaller/quieter than the two primary pills — not full-width solid blocks.",
         },
         {
-          action: "Read the door labels and check none asks the visitor to judge their own severity.",
+          action: "Follow all four entry points (Hero Book, Hero Call, BookingBlock New Patient, BookingBlock Dental Emergency).",
+          tool: "browser",
+          expect: "Each lands on a real destination — booking request, tap-to-call, new-patient content, emergency contact.",
+        },
+        {
+          action: "Read the entry-point labels and check none asks the visitor to judge their own severity.",
           tool: "manual",
           viewport: "any",
           expect:
             "Labels describe intent ('Dental emergency'), never a self-assessment ('Is your pain severe?').",
         },
         {
-          action: "Inspect for any conditional logic behind the doors.",
+          action: "Inspect for any conditional logic behind the links.",
           tool: "browser",
           viewport: "any",
           expect: "Static links only. Branching means a triage engine has crept in.",
         },
       ],
       mobileFirst: [
-        "All three doors in the first 375×812 viewport",
-        "Each a full-width row ≥44×44px with ≥8px separation",
-        "No horizontal button group cramming three labels across 375px",
+        "Book + Call in the first 375×812 viewport, unchanged two-up row",
+        "New Patient + Dental Emergency reachable by scroll in BookingBlock, each ≥44×44px",
+        "No horizontal cramming of the two secondary links into an unreadable row",
       ],
       pass: [
-        "Three doors, each routing to a real destination",
+        "Four real entry points total (Book, Call, New Patient, Emergency), each routing correctly",
+        "Visual hierarchy matches intent: Book/Call primary, New Patient/Emergency secondary",
         "No self-classification of severity",
         "Zero branching logic",
       ],
       gotchas: [
-        "Adding a fourth or fifth door destroys the pattern — the value is that a glance resolves it. Three is the number.",
+        "This item's original 'exactly three equal doors, all above the fold' test is superseded by the 2026-08-31 decision — don't fail this item against the old mobileFirst/pass criteria above the decision block; the unequal-weight version is the current target.",
       ],
     },
   },
