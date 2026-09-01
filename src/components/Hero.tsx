@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { practice, reviews } from "@/lib/content";
+import { contact, practice, reviews } from "@/lib/content";
 import { HeroAddressMap } from "./HeroAddressMap";
 import { HeroCarousel } from "./HeroCarousel";
 import { InsuranceTeaser } from "./InsuranceTeaser";
-import { CalendarIcon, CheckIcon, GoogleGIcon, MedicalCrossIcon, StarIcon, UserPlusIcon } from "./icons";
+import { CalendarIcon, CheckIcon, GoogleGIcon, StarIcon } from "./icons";
 
 /**
  * Hero — photo-first redesign (per Akash, referencing 2thstudio.com's
@@ -30,26 +30,19 @@ import { CalendarIcon, CheckIcon, GoogleGIcon, MedicalCrossIcon, StarIcon, UserP
  * still holds — insurance signal + both CTAs stay visible on load, just
  * overlaid on the photo instead of living in a separate side panel.
  *
- * Trust strip and address/insurance sub-components are unchanged from
- * the previous layout (still real content, same tap-to-expand behavior)
- * — only the container around them changed.
+ * CTA row, trust strip, and address/insurance sub-components are
+ * unchanged from the previous layout (still real content, same
+ * tap-to-expand behavior) — only the container around them changed.
  *
- * CTA row replaced with backlog item 48's "three clear doors" (Book ·
- * New patient · Dental emergency) — the old two-up Book+Call row only
- * served the routine-booking intent, leaving the new-patient and
- * in-pain-right-now visitors to work it out from the nav. Stacked as
- * full-width rows (not a horizontal button group) per the item's own
- * mobile-first test: cramming three labels into one 375px-wide row
- * fails it. The direct tel: CTA that lived here is dropped — the phone
- * number stays one tap away via Nav's mobile call icon and further down
- * the page in BookingBlock/Footer, and per the item's own gotcha, a
- * fourth door "destroys the pattern."
- *
- * The emergency door currently points at /contact rather than a
- * dedicated non-diagnostic emergency page — item 7 (`/emergency`) is
- * still blocked on Akash confirming the after-hours reality, and this
- * item's own acceptance criteria forbid a door with no real destination.
- * Interim call per Akash 2026-08-31; revisit once item 7 ships.
+ * Item 48 ("three clear doors": Book · New patient · Dental emergency)
+ * briefly stacked all three into this CTA row as full-width rows.
+ * Reverted 2026-08-31 per Akash's direct call: this is a small boutique
+ * practice whose primary job is winning new patients, not triaging
+ * three intents at equal weight up front — three stacked doors read as
+ * more clinical/overwhelming than the practice wants its first
+ * impression to be. Book + Call stays the hero ask; New Patient and
+ * Dental Emergency now live lower on the page as secondary entries in
+ * BookingBlock's "Quick actions" row instead of competing here.
  */
 export function Hero() {
   return (
@@ -117,37 +110,36 @@ export function Hero() {
           <HeroAddressMap />
         </div>
 
-        {/*
-         * Three clear doors (item 48) — full-width stacked rows, each a
-         * real static Link (no branching/self-assessment logic), each
-         * ≥44px tall via tap-target with ≥8px (gap-2) separation. Order
-         * matches the item's own patient-words phrasing: Book · New
-         * patient · Dental emergency.
-         */}
-        <div className="mt-5 flex flex-col gap-2">
+        <div className="mt-5 flex flex-row flex-wrap gap-1.5 sm:gap-2">
           <Link
             href="/contact"
-            className="tap-target inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-4 py-3.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
+            className="tap-target grow shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition sm:px-6"
           >
             <CalendarIcon />
             Book Appointment
           </Link>
-          <Link
-            href="/insurance-new-patients"
-            className="tap-target inline-flex items-center justify-center gap-2 rounded-full border border-warm-ivory/40 px-4 py-3.5 text-sm font-semibold text-warm-ivory hover:border-warm-ivory/70 transition-colors"
+          <a
+            href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
+            className="tap-target shrink-0 inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full border border-warm-ivory/40 px-3 py-3.5 text-sm font-semibold text-warm-ivory hover:border-warm-ivory/70 transition-colors sm:px-6"
           >
-            <UserPlusIcon />
-            New Patient
-          </Link>
-          <Link
-            href="/contact"
-            className="tap-target inline-flex items-center justify-center gap-2 rounded-full bg-alert px-4 py-3.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
-          >
-            <MedicalCrossIcon />
-            Dental Emergency
-          </Link>
+            <PhoneIcon />
+            {contact.phone}
+          </a>
         </div>
       </div>
     </section>
+  );
+}
+
+function PhoneIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.8c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1L6.6 10.8z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

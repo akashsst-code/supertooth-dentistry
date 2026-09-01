@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { contact, hours } from "@/lib/content";
-import { CalendarIcon, ClockIcon, MapPinIcon, PhoneIcon } from "./icons";
+import { CalendarIcon, ClockIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, UserPlusIcon } from "./icons";
 
 /**
  * Booking block — docs/supertooth-ux-flow.md Section 4 / build-spec
@@ -46,6 +46,25 @@ import { CalendarIcon, ClockIcon, MapPinIcon, PhoneIcon } from "./icons";
  * one line at mobile widths — same fix as Hero's CTA row, applied
  * here once "Book Appointment" (longer than the old "Book Now")
  * pushed this row past one line too.
+ *
+ * New Patient / Dental Emergency added below the two primary pills,
+ * 2026-08-31 (item 48 revision) — deliberately quieter than Book/Call:
+ * this is a small boutique practice whose primary job is winning new
+ * patients, and Akash asked to keep emergency lower rather than
+ * triage-style equal-weight with booking. Item 48's own doors briefly
+ * lived in the Hero as three equal full-width rows; pulled back per
+ * that feedback.
+ *
+ * New Patient is a plain text link (icon + warm-ivory/70 text) — the
+ * quietest treatment available. Dental Emergency is a small solid
+ * `bg-alert` pill rather than colour-alone text: this section has an
+ * espresso background, and the alert token's text-on-ivory contrast
+ * numbers (item 46) don't hold as plain text color against espresso
+ * (~2:1). A small self-contained pill (ivory text ON the alert fill)
+ * keeps AA regardless of the surrounding section's background colour,
+ * while staying visually much smaller/quieter than the two primary
+ * pills above it. Still points at /contact (item 7's dedicated
+ * /emergency page is unbuilt).
  */
 export function BookingBlock() {
   const openHours = hours.find((h) => h.time !== "Closed");
@@ -83,6 +102,23 @@ export function BookingBlock() {
                 >
                   <PhoneIcon />
                   {contact.phone}
+                </a>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <a
+                  href="/insurance-new-patients"
+                  className="tap-target inline-flex items-center gap-1.5 text-xs font-medium text-warm-ivory/70 hover:text-warm-ivory transition-colors"
+                >
+                  <UserPlusIcon className="h-3.5 w-3.5" />
+                  New patient? Start here
+                </a>
+                <a
+                  href="/contact"
+                  className="tap-target inline-flex items-center gap-1 rounded-full bg-alert px-2.5 py-1.5 text-xs font-medium text-warm-ivory hover:brightness-110 transition"
+                >
+                  <MedicalCrossIcon className="h-3.5 w-3.5" />
+                  Dental emergency
                 </a>
               </div>
             </div>

@@ -38,13 +38,19 @@
    * stops meaning anything). Derived from the locked palette rather
    * than a generic alert red: a warm brick red in the same earthy
    * family as terracotta, contrast-computed against the real tokens
-   * rather than assumed. 6.67:1 on warm-ivory, 7.08:1 for warm-ivory
-   * text on it — AA at any text size, clearly distinct from terracotta
-   * at a glance. Not yet consumed by any component — lands ahead of
-   * items 7/45 (emergency page + reachability) so it's ready when they
-   * ship.
+   * rather than assumed.
+   *
+   * Revised 2026-08-31 per Akash's direct feedback on the first value
+   * (#A32E1F, 6.67:1 on ivory): "too blaring." Softened to a more muted
+   * clay/brick tone — same earthy family, still exclusively
+   * emergency-reserved, still AA (5.36:1 on warm-ivory, 5.36:1 for
+   * warm-ivory text on it — comfortably above the 4.5:1 floor for
+   * normal text) — without reading as an alarm/stop-sign red. Real
+   * consumer: the "Dental Emergency" quick-action link in
+   * BookingBlock.tsx (icon + text, not a solid-fill block, which also
+   * softens the visual weight independent of the hex change).
    */
-  --color-alert: #a32e1f;
+  --color-alert: #9c5240;
 
   --background: var(--color-warm-ivory);
   --foreground: var(--color-espresso);
