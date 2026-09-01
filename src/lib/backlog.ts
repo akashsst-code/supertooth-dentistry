@@ -6218,7 +6218,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 3, reach: 3, risk: 2, effort: 5, readiness: 4 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 4,
     job: "Understand what my plan's words actually mean for me",
     story:
@@ -6227,10 +6227,9 @@ export const backlog: BacklogItem[] = [
       "Patients confuse deductible with annual maximum, and copay with coinsurance — on top of the accepted-vs-in-network confusion item 6 covers. v2's cross-domain scan shows this is a solved problem elsewhere: a five-term glossary with a one-line 'what this means for you', placed next to the decision it affects rather than on a separate jargon page.",
     where: "/insurance-new-patients",
     scope: [
-      "Five terms only: premium, deductible, coinsurance, copay, annual maximum",
-      "One plain line each, plus what it means for the patient's bill",
-      "Placed next to the coverage content, not on a separate glossary page",
-      "Include the crisp in-network line: they've already agreed to lower negotiated rates, so you pay less",
+      "SHIPPED (2026-09-01): five short reflowing blocks (premium, deductible, copay, coinsurance, annual maximum), each with a plain definition plus what it means for the patient's bill — rendered inline via BenefitsGlossary, directly below the accepted-vs-in-network block and above the carrier list, not a separate page",
+      "SHIPPED: the crisp in-network line tightened in place — 'we've already agreed to lower rates with your plan, so you pay less' — in the existing accepted-vs-in-network copy rather than duplicated in the glossary",
+      "No ACA metal-tier machinery included, per scope",
     ],
     acceptance: [
       "Five terms, each with a plain-language definition",

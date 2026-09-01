@@ -452,6 +452,41 @@ export const faqs = [
   },
 ];
 
+// Backlog item 51 — plain-language benefits glossary. Five terms only
+// (blueprint v2 §16 CD-5, sourced to HealthCare.gov and Oscar Health):
+// each pairs a plain definition with what it means for the patient's
+// bill, since a definition alone doesn't resolve the confusion — the
+// cost consequence does. Deliberately no ACA metal-tier machinery;
+// dental coverage doesn't have that shape. Rendered inline next to the
+// coverage content on /insurance-new-patients, not a separate page.
+export const benefitsGlossary = [
+  {
+    term: "Premium",
+    definition: "The amount you or your employer pays to keep your dental plan active.",
+    meaning: "This is paid whether or not you visit us — it doesn't change your bill for a specific treatment.",
+  },
+  {
+    term: "Deductible",
+    definition: "What you pay out of pocket before your plan starts covering costs.",
+    meaning: "Until you've spent this much in a plan year, you're paying the full cost yourself.",
+  },
+  {
+    term: "Copay",
+    definition: "A fixed dollar amount you pay for a covered service, regardless of the total cost.",
+    meaning: "You'll know this number in advance — it doesn't change based on what the visit actually costs.",
+  },
+  {
+    term: "Coinsurance",
+    definition: "Your share of a covered cost, shown as a percentage rather than a flat amount.",
+    meaning: "The bill moves with the cost of treatment — a bigger procedure means a bigger share for you.",
+  },
+  {
+    term: "Annual maximum",
+    definition: "The most your plan will pay toward your dental care in a plan year.",
+    meaning: "Once you hit this amount, you cover 100% of any further cost until the year resets.",
+  },
+];
+
 // Backlog item 1 (2026-08-31): /services, /about and /insurance-new-patients
 // 404'd — linked here with no page behind them. First pass removed the
 // links; Akash's direct correction was to build the pages instead, so
