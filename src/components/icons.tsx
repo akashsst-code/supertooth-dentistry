@@ -132,6 +132,21 @@ export function ExpandIcon({ className }: { className?: string }) {
   );
 }
 
+/** "Get Directions" external-link mark — item 59, next to both map embeds. */
+export function ExternalLinkIcon({ className }: { className?: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M18 13v6a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h6M15 3h6v6M10 14L21 3"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /** Office-carousel lightbox close control. */
 export function CloseIcon({ className }: { className?: string }) {
   return (

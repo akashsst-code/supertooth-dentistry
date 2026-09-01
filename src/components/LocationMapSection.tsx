@@ -1,6 +1,6 @@
-import { MapPinIcon, PinDotIcon } from "./icons";
+import { ExternalLinkIcon, MapPinIcon, PinDotIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
-import { contact, practice, serviceAreas } from "@/lib/content";
+import { contact, mapDirectionsUrl, practice, serviceAreas } from "@/lib/content";
 
 /**
  * Map + "areas we serve" — new section, positioned after Services per
@@ -15,6 +15,11 @@ import { contact, practice, serviceAreas } from "@/lib/content";
  * only `practice.neighborhood` is confirmed, the rest are
  * plausible-by-proximity placeholders pending Akash's actual
  * service-area confirmation (see content.ts serviceAreas comment).
+ *
+ * Item 59 — "Get Directions" link added below the address, real anchor
+ * outside the iframe (`mapDirectionsUrl`, content.ts). Same rationale as
+ * HeroAddressMap.tsx: the embed itself stays sandboxed against navigating
+ * away, this is a purely additive one-tap handoff to a native maps app.
  */
 export function LocationMapSection() {
   return (
@@ -45,6 +50,15 @@ export function LocationMapSection() {
             <div>
               <p className="font-medium text-espresso">{contact.address}</p>
               <p className="text-sm text-espresso/70">{contact.parkingNote}</p>
+              <a
+                href={mapDirectionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tap-target mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-terracotta-dark hover:text-terracotta transition-colors"
+              >
+                Get Directions
+                <ExternalLinkIcon />
+              </a>
             </div>
           </div>
 

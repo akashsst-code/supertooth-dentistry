@@ -23,7 +23,7 @@ export default function ServicesPage() {
   return (
     <>
       <Nav />
-      <main className="pt-16">
+      <main id="main-content" tabIndex={-1} className="pt-16">
         <div className="border-b border-sand bg-warm-ivory">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 py-3 flex items-center gap-3">
             <Link
@@ -64,6 +64,13 @@ export default function ServicesPage() {
         <ServicesSection />
 
         <div className="mx-auto max-w-3xl px-4 sm:px-6 pb-16 sm:pb-20 -mt-4">
+          <p className="text-sm text-espresso/60 !mb-6">
+            Curious who&apos;s behind the chair?{" "}
+            <Link href="/about" className="font-medium text-terracotta-dark hover:text-terracotta transition-colors">
+              Meet Dr. Archana Dubey
+            </Link>
+            .
+          </p>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/contact"
