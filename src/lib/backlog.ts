@@ -730,7 +730,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 4, reach: 5, risk: 4, effort: 5, readiness: 2 },
     effort: "S",
-    status: "blocked",
+    status: "done",
     wave: 1,
     job: "Reach a human · confirm the practice is real",
     story:
@@ -742,6 +742,7 @@ export const backlog: BacklogItem[] = [
       "Confirm the single correct number with Akash",
       "Make site, GBP and directory listings agree exactly — name, address and phone",
       "Confirm hours (Tue–Fri 7:00–4:30) match the GBP too",
+      "DONE (2026-09-01): Akash confirmed (206) 593-3131 is correct. `contact.phone` in content.ts (the single source of truth every Nav/Footer/BookingBlock/FAQSection tel: link already reads from) updated to it — grepping src/ for phone-shaped strings turns up no second distinct number. Checked directly against the live GBP listing: name, address, and the Tue-Fri 7:00-4:30 hours already in `hours` all match character-for-character",
     ],
     acceptance: [
       "One number appears everywhere on the site",
@@ -1264,7 +1265,7 @@ export const backlog: BacklogItem[] = [
       "Scores 37/50 — P0 on merit. Also pinned on patient-safety grounds: incorrect or missing red-flag guidance for spreading swelling or airway compromise is a clinical harm, not a conversion miss.",
     scores: { conversion: 4, reach: 3, risk: 5, effort: 3, readiness: 2 },
     effort: "M",
-    status: "blocked",
+    status: "done",
     wave: 2,
     job: "Handle an urgent dental need",
     story:
@@ -1279,6 +1280,7 @@ export const backlog: BacklogItem[] = [
       "Honest after-hours statement — what is and isn't available, and when the office opens",
       "One-tap call, prominent",
       "Optionally note that ERs rarely staff dentists and generally treat the symptom, not the tooth",
+      "DONE (2026-09-01): shipped as src/app/emergency/page.tsx, sourced from content.ts `emergencyGuidance`. Akash confirmed the after-hours reality: call, or schedule online now — no answering service, so `afterHours` states exactly that with no response-time promise. Tier 1 renders first (DOM and visual order) directly under the page heading, verified at 375×812 to render well within the first viewport alongside the one-tap `tel:` control and a Schedule-now link. Linked from the mobile hamburger menu, the footer, and BookingBlock's \"Dental emergency\" quick action (previously a /contact placeholder). v2 items intentionally not built",
       "v2: adopt the \"when unsure, default up\" rule — safer to be evaluated and sent home than to delay (NHS 111 / Bond Vet routing model, borrowed as static cited content, never as a question engine)",
       "v2: add a short \"what to have ready when you call\" list — what happened, when, symptoms, medications",
       "v2 anti-pattern: exactly ONE emergency number sitewide. An observed site listed three, which in a crisis is unusable",
@@ -2158,7 +2160,7 @@ export const backlog: BacklogItem[] = [
       "Scores 31/50, which would place it in P1 — pinned to P0 because the build spec lists privacy disclosures as build-blocking before go-live, and an accessibility statement is the documented route for a disabled patient to report a barrier. Legal/ethical floor beats score.",
     scores: { conversion: 1, reach: 3, risk: 5, effort: 5, readiness: 2 },
     effort: "S",
-    status: "blocked",
+    status: "partial",
     wave: 3,
     job: "Trust the practice with my information",
     story: "As a patient, I can see how my information is handled and how to report a barrier.",
@@ -2169,6 +2171,7 @@ export const backlog: BacklogItem[] = [
       "Privacy policy — practice-supplied or counsel-reviewed",
       "SMS/texting disclosure if the practice texts patients",
       "Accessibility statement with a real contact route for reporting barriers",
+      "PARTIAL (2026-09-01): both routes now live, both linked in the footer, both render as real HTML (no PDF) with a one-tap tel: feedback route on /accessibility — but this does NOT close the item. /privacy's text is an explicitly-labeled DRAFT (content.ts `privacyPolicy.sections`, informed by comparable practice sites and the HHS model notices, banner visible on the page itself) — it is not yet practice-approved or counsel-reviewed, which this item's own acceptance criteria requires. /accessibility states WCAG 2.2 AA as the target and is honest that item 14's audit hasn't run yet, consistent with that item's own reference note that a first draft is fine to generate directly. Still needs: Akash/counsel sign-off on the privacy text, and an explicit SMS-disclosure decision if that changes",
       "Footer links to both",
     ],
     acceptance: [
@@ -2295,7 +2298,7 @@ export const backlog: BacklogItem[] = [
       "Scores 42/50 — third highest, so P0 on merit. Also pinned: testimonial attribution is a HIPAA constraint locked in the build spec, and invented patient quotes would be a fabrication.",
     scores: { conversion: 4, reach: 4, risk: 5, effort: 5, readiness: 2 },
     effort: "S",
-    status: "blocked",
+    status: "done",
     wave: 3,
     job: "Evaluate reviews without being overwhelmed",
     story: "As a patient, I read real things real patients said.",
@@ -2304,6 +2307,7 @@ export const backlog: BacklogItem[] = [
     where: "src/lib/content.ts · src/components/TestimonialsSection.tsx",
     scope: [
       "Pull three real reviews from the Google Business Profile",
+      "DONE (2026-09-01): pulled the current top three reviews directly from the live GBP listing (Elise T., Vandana S., Berri R. — first-name + last-initial per the HIPAA format, `Placeholder` wrapping removed now that these are real). Quotes are trimmed to the last complete sentence available before Google's own truncation point rather than cut mid-sentence, wording otherwise verbatim. Rating stayed 4.9; count corrected 487 -> 427 against the live listing",
       "First name + last initial only — never a full patient name without written authorization",
       "Confirm the real rating and count against the live GBP",
       "v2: show the aggregate count and its date — dated aggregates read as more credible than a bare star rating",
