@@ -1594,7 +1594,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 4, risk: 3, effort: 5, readiness: 3 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 2,
     job: "Request an appointment with confidence",
     story:

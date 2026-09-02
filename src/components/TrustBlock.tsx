@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { BadgeIcon, ClockIcon, CrownIcon, ShieldCheckIcon } from "./icons";
+import { CredentialBadges } from "./CredentialBadges";
+import { ClockIcon, CrownIcon, ShieldCheckIcon } from "./icons";
 import { BookingCtaRow, ExpandCard, InsuranceExpandCard } from "./InsuranceExpandCard";
 import { OfficeCarousel } from "./OfficeCarousel";
-import { Placeholder } from "./Placeholder";
-import { archana, credentials, differentiators, officeBlurb } from "@/lib/content";
+import { archana, differentiators, officeBlurb } from "@/lib/content";
 
 /**
  * Icon per differentiator, keyed by array position rather than added to
@@ -14,14 +14,6 @@ import { archana, credentials, differentiators, officeBlurb } from "@/lib/conten
  * crowns, in-network.
  */
 const differentiatorIcons = [ClockIcon, CrownIcon, ShieldCheckIcon];
-
-function TrustBadge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full bg-sand px-3 py-1 text-xs font-medium text-espresso">
-      {children}
-    </span>
-  );
-}
 
 /**
  * Trust block — locked in docs/supertooth-ux-flow.md Section 2, ordered
@@ -139,31 +131,12 @@ export function TrustBlock() {
             </h3>
             <p className="mt-4 text-sm italic text-espresso/80">&ldquo;{archana.quote}&rdquo;</p>
             <p className="mt-4 text-sm text-espresso/70">{archana.bio}</p>
-            <div className="mt-5 flex flex-wrap gap-2 justify-center sm:justify-start">
-              {archana.badges.map((badge) => (
-                <TrustBadge key={badge}>{badge}</TrustBadge>
-              ))}
-            </div>
-            <p className="mt-4 text-xs text-espresso/50">{archana.certifications}</p>
 
-            {/* Training & affiliations — kept with the bio, not a separate
-                section (see the top-of-file comment). Real org names not
-                yet confirmed, so every entry renders through <Placeholder>. */}
-            <div className="mt-5 pt-5 border-t border-sand">
-              <p className="text-xs font-semibold uppercase tracking-wide text-espresso/60 mb-3">
-                Training &amp; affiliations
-              </p>
-              <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                {credentials.map((c, i) => (
-                  <span
-                    key={i}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-xs font-medium text-espresso"
-                  >
-                    <BadgeIcon className="shrink-0 text-terracotta" />
-                    <Placeholder>{c}</Placeholder>
-                  </span>
-                ))}
-              </div>
+            {/* Credentials + training/affiliations — kept with the bio,
+                not a separate section (see the top-of-file comment). Real
+                data supplied by Akash 2026-09-01 (content.ts credentialBadges). */}
+            <div className="mt-6 pt-5 border-t border-sand">
+              <CredentialBadges />
             </div>
           </div>
         </div>
