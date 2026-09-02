@@ -195,6 +195,7 @@ export function AppointmentForm() {
           <Field
             name="firstName"
             label="First name"
+            inputMode="text"
             autoComplete="given-name"
             value={values.firstName}
             error={visibleErrors.firstName}
@@ -207,6 +208,7 @@ export function AppointmentForm() {
           <Field
             name="lastName"
             label="Last name"
+            inputMode="text"
             autoComplete="family-name"
             value={values.lastName}
             error={visibleErrors.lastName}
@@ -222,6 +224,7 @@ export function AppointmentForm() {
           name="email"
           label="Email"
           type="email"
+          inputMode="email"
           autoComplete="email"
           value={values.email}
           error={visibleErrors.email}
@@ -236,6 +239,7 @@ export function AppointmentForm() {
           name="phone"
           label="Phone number"
           type="tel"
+          inputMode="tel"
           autoComplete="tel"
           value={values.phone}
           error={visibleErrors.phone}
@@ -294,6 +298,7 @@ function Field({
   onBlur,
   inputRef,
   type = "text",
+  inputMode,
   autoComplete,
 }: {
   name: FieldName;
@@ -304,6 +309,7 @@ function Field({
   onBlur: () => void;
   inputRef: (el: HTMLInputElement | null) => void;
   type?: string;
+  inputMode?: "text" | "email" | "tel" | "numeric" | "decimal" | "search" | "url" | "none";
   autoComplete?: string;
 }) {
   const errorId = `${name}-error`;
@@ -318,6 +324,7 @@ function Field({
         id={name}
         name={name}
         type={type}
+        inputMode={inputMode}
         autoComplete={autoComplete}
         value={value}
         onChange={(e) => onChange(e.target.value)}
