@@ -90,14 +90,14 @@ export function LocationMapSection() {
           <div className="flex gap-2">
             <a
               href="/contact"
-              className="tap-target flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-4 py-3 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
+              className="tap-target grow shrink-0 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-4 py-3 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
             >
               <CalendarIcon />
               Book Appointment
             </a>
             <a
               href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-              className="tap-target flex flex-1 items-center justify-center gap-1.5 rounded-full border border-espresso/15 px-4 py-3 text-sm font-semibold text-espresso hover:border-terracotta/50 hover:text-terracotta-dark transition-colors"
+              className="tap-target shrink-0 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-espresso/15 px-4 py-3 text-sm font-semibold text-espresso hover:border-terracotta/50 hover:text-terracotta-dark transition-colors"
             >
               <PhoneIcon />
               Call
