@@ -274,31 +274,53 @@ export const officeBlurb =
 // nothing paraphrased or invented. Item 20 (API-fed live reviews)
 // supersedes this with a live feed later; this is a manual point-in-time
 // pull.
+// `meta` and `postedAt` are the reviewer's real "Local Guide · N reviews"
+// line and the review's real relative timestamp, straight off the GBP
+// listing at the same pull — used by the Google-widget-style card variant
+// (see TestimonialsSection.tsx) to read as authentically Google rather
+// than a generic quote card. `initial` backs that variant's avatar circle
+// (no real photo available, so a colored initial is the honest fallback
+// real widgets also use for reviewers without a profile photo).
 export const testimonials = [
   {
     quote:
       "I've always hated the dentist, but love coming to Supertooth Dentistry. Dr. Archana is sweet, knowledgeable and makes me feel comfortable. Her staff is wonderful too!",
     name: "Elise T.",
+    initial: "E",
+    meta: "Local Guide · 33 reviews",
+    postedAt: "2 months ago",
   },
   {
     quote:
       "I had an excellent experience with Dr. Dubey and her team. I went in for a deep cleaning and later had to get a cavity filled. Dr. Dubey was very thorough and explained every step of the process, which helped ease my anxiety.",
     name: "Vandana S.",
+    initial: "V",
+    meta: "Local Guide · 123 reviews",
+    postedAt: "a year ago",
   },
   {
     quote:
       "Supertooth is always kind, caring, thorough, and efficient. I've been going to there for 5+ years and have always had a good experience. The team has continuously gotten ahead of any dental issues I have before they became too problematic.",
     name: "Berri R.",
+    initial: "B",
+    meta: "Local Guide · 34 reviews",
+    postedAt: "10 months ago",
   },
   {
     quote:
       "I never thought I'd say this, but I now love going to the dentist. Supertooth in Queen Anne feels like walking into a friend's house, warm, welcoming, and genuinely caring. The team is fantastic, the space is beautiful, and the care is excellent. Couldn't recommend them more.",
     name: "Dawn B.",
+    initial: "D",
+    meta: "6 reviews",
+    postedAt: "8 months ago",
   },
   {
     quote:
       "Dr. Archana Dubey is one of the best dentists I've ever been to. She is incredibly patient, helpful, and friendly. I highly recommend her to anyone looking for a dentist who is genuinely considerate of your budget and transparent about all costs. She takes the time to ensure you understand everything, which I really appreciated.",
     name: "Karthik B.",
+    initial: "K",
+    meta: "6 reviews",
+    postedAt: "11 months ago",
   },
 ];
 

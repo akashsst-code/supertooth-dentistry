@@ -1,10 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { GoogleGIcon, PauseIcon, PlayIcon, QuoteIcon, StarIcon } from "./icons";
+import { GoogleGIcon, PauseIcon, PlayIcon, StarIcon } from "./icons";
 import { reviews, testimonials } from "@/lib/content";
 
 const PIXELS_PER_SECOND = 22; // slower than the office reel — text needs more read time than a photo
+
+// Avatar-roundel fill for the Google-widget-style card preview — locked
+// palette tokens only (opacity/tint variants), no new hex values.
+const AVATAR_COLORS = ["bg-terracotta", "bg-espresso", "bg-terracotta-dark", "bg-espresso/70", "bg-terracotta/70"];
 
 /**
  * "What patients are saying" — positioned right after the office blurb,
@@ -151,15 +155,49 @@ export function TestimonialsSection() {
                   aria-hidden="true"
                 />
 
-                <div className="rounded-2xl bg-warm-ivory/10 border border-warm-ivory/15 p-6 flex flex-col">
-                  <QuoteIcon className="text-terracotta mb-3" />
-                  <p className="text-warm-ivory/90 text-sm">{t.quote}</p>
-                  <div className="mt-5 flex items-center justify-between">
-                    <span className="text-sm font-medium text-warm-ivory">{t.name}</span>
-                    <span className="flex gap-0.5 text-terracotta">
-                      <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
+                {/* PREVIEW: Google-widget-style card, swapped in to compare
+                    against the custom quote-card look above. White/light
+                    surface (real Google review cards are light, even
+                    embedded on a dark page), an avatar-initial roundel
+                    (real widgets fall back to exactly this when a
+                    reviewer has no profile photo), the real "Local Guide ·
+                    N reviews" meta line and real relative timestamp
+                    pulled at the same time as the quotes, and a small "G"
+                    mark reading as "posted on Google" rather than this
+                    site's own custom quote-mark branding. Name stays
+                    first-name + last-initial — an actual live widget
+                    would show Google's full public display name (that's
+                    Google's own platform content, not this site curating
+                    a named patient into its own marketing copy, which is
+                    the more defensible case for full names per the HIPAA
+                    discussion) but this is a static restyle of already-
+                    curated quotes, not a live embed, so the redacted
+                    format stays until/unless a real widget is built. */}
+                <div className="rounded-2xl bg-warm-ivory text-espresso p-5 flex flex-col shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-display font-semibold text-warm-ivory ${
+                        AVATAR_COLORS[i % AVATAR_COLORS.length]
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {t.initial}
                     </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-espresso truncate">{t.name}</p>
+                      <p className="text-xs text-espresso/50 truncate">{t.meta}</p>
+                    </div>
+                    <GoogleGIcon className="h-4 w-4 shrink-0" />
                   </div>
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <span className="flex gap-0.5 text-terracotta">
+                      <StarIcon className="h-3.5 w-3.5" /> <StarIcon className="h-3.5 w-3.5" />{" "}
+                      <StarIcon className="h-3.5 w-3.5" /> <StarIcon className="h-3.5 w-3.5" />{" "}
+                      <StarIcon className="h-3.5 w-3.5" />
+                    </span>
+                    <span className="text-xs text-espresso/45">{t.postedAt}</span>
+                  </div>
+                  <p className="text-sm text-espresso/80 leading-relaxed">{t.quote}</p>
                 </div>
               </div>
             ))}
