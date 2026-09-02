@@ -10,12 +10,15 @@ const cardIcons = [ClockIcon, CrownIcon, SparkleIcon, ToothIcon];
  * uniform-tile round (every photo shares one `aspect-[4/3]` box with
  * `object-cover`, so sizing is uniform regardless of the source image's
  * own proportions — see content.ts for the photo swap and the `real`
- * flag rationale for cosmetic/restorative), but back to a single-column
- * stack with the connecting thread + node dot down the left edge
- * (Akash: bring that connection back) instead of the brief 2-column
- * grid detour — a 2-up grid has no natural "next" direction for a line
- * to trace, so it went back to one column, same as the original
- * timeline layout.
+ * flag rationale for cosmetic/restorative).
+ *
+ * The connecting thread moved from a left-side gutter to straight down
+ * the horizontal center (Akash: tiles should sit centered on screen,
+ * not shifted right to make room for a side gutter — the line can run
+ * over the photo instead). It's one continuous line behind the stack,
+ * `z-10` so it paints over each photo rather than being clipped by that
+ * photo's own `overflow-hidden` card, with a node dot straddling the
+ * top edge of every card.
  *
  * Still exactly 4 items, no links (no click-throughs for now).
  */
@@ -32,16 +35,16 @@ export function ServicesSection() {
 
         <div className="relative">
           <div
-            className="absolute left-4 sm:left-6 top-5 bottom-5 w-px bg-espresso/10"
+            className="absolute left-1/2 top-0 bottom-0 z-10 w-px -translate-x-1/2 bg-warm-ivory shadow-[0_0_5px_1px_rgba(61,50,38,0.25)]"
             aria-hidden="true"
           />
           <div className="flex flex-col gap-10 sm:gap-14">
             {services.map((s, i) => {
               const Icon = cardIcons[i] ?? ClockIcon;
               return (
-                <div key={s.title} className="relative pl-10 sm:pl-16">
+                <div key={s.title} className="relative">
                   <span
-                    className="absolute left-4 sm:left-6 top-5 -translate-x-1/2 h-2 w-2 rounded-full border-[1.5px] border-terracotta bg-warm-ivory"
+                    className="absolute left-1/2 top-0 z-10 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[1.5px] border-terracotta bg-warm-ivory"
                     aria-hidden="true"
                   />
                   <div className="group flex flex-col overflow-hidden rounded-2xl border border-sand bg-warm-ivory shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
