@@ -1,5 +1,41 @@
+import Link from "next/link";
 import { contact, practice } from "@/lib/content";
 import { CalendarIcon } from "./icons";
+
+/**
+ * Legal/utility row — backlog items 7 and 12. Item 7 requires /emergency
+ * linked in the footer; item 12 requires /privacy and /accessibility
+ * linked in the footer, both routes ≥44×44px with ≥8px separation. Kept
+ * as its own small row below the two primary CTAs so none of the three
+ * compete with Book Appointment / Call for visual weight.
+ */
+function LegalLinks() {
+  return (
+    <nav aria-label="Legal and safety" className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1">
+      <Link
+        href="/emergency"
+        className="tap-target inline-flex items-center px-2 text-xs font-semibold text-alert hover:underline"
+      >
+        Dental emergency
+      </Link>
+      <span className="text-espresso/20" aria-hidden="true">
+        ·
+      </span>
+      <Link href="/privacy" className="tap-target inline-flex items-center px-2 text-xs text-espresso/60 hover:text-terracotta-dark transition-colors">
+        Privacy
+      </Link>
+      <span className="text-espresso/20" aria-hidden="true">
+        ·
+      </span>
+      <Link
+        href="/accessibility"
+        className="tap-target inline-flex items-center px-2 text-xs text-espresso/60 hover:text-terracotta-dark transition-colors"
+      >
+        Accessibility
+      </Link>
+    </nav>
+  );
+}
 
 /**
  * This is a reference footer, not a second booking section: BookingBlock
@@ -53,8 +89,11 @@ function MobileFooter() {
         </div>
       </div>
 
-      <div className="border-t border-sand px-6 py-4 text-center text-xs text-espresso/50">
-        © {new Date().getFullYear()} {practice.name}
+      <div className="border-t border-sand px-6 py-4 flex flex-col items-center gap-3">
+        <LegalLinks />
+        <p className="text-center text-xs text-espresso/50">
+          © {new Date().getFullYear()} {practice.name}
+        </p>
       </div>
     </div>
   );
@@ -91,8 +130,11 @@ function DesktopFooter() {
       </div>
 
       <div className="border-t border-sand">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-5 text-xs text-espresso/50">
-          © {new Date().getFullYear()} {practice.name}. All rights reserved.
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-5 flex items-center justify-between gap-4 flex-wrap">
+          <p className="text-xs text-espresso/50">
+            © {new Date().getFullYear()} {practice.name}. All rights reserved.
+          </p>
+          <LegalLinks />
         </div>
       </div>
     </div>

@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { GoogleGIcon, PauseIcon, PlayIcon, QuoteIcon, StarIcon } from "./icons";
-import { Placeholder } from "./Placeholder";
+import { GoogleGIcon, PauseIcon, PlayIcon, StarIcon } from "./icons";
 import { reviews, testimonials } from "@/lib/content";
 
 const PIXELS_PER_SECOND = 22; // slower than the office reel — text needs more read time than a photo
+
+// Avatar-roundel fill for the Google-widget-style card preview — locked
+// palette tokens only (opacity/tint variants), no new hex values.
+const AVATAR_COLORS = ["bg-terracotta", "bg-espresso", "bg-terracotta-dark", "bg-espresso/70", "bg-terracotta/70"];
 
 /**
  * "What patients are saying" — positioned right after the office blurb,
@@ -89,35 +92,45 @@ export function TestimonialsSection() {
   return (
     <section className="bg-espresso text-warm-ivory">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
+        <div className="relative flex flex-wrap items-end justify-between gap-4 mb-12 pr-14">
+          {/* Pause/play — WCAG 2.2.2 requires a way to stop auto-moving
+              content, but it doesn't need to sit inside the rating badge's
+              row competing for space with it. Anchored to this row's own
+              corner instead, clear of both the heading and the badge. */}
+          <button
+            type="button"
+            onClick={() => setUserPaused((p) => !p)}
+            aria-label={userPaused ? "Resume testimonial scroll" : "Pause testimonial scroll"}
+            aria-pressed={userPaused}
+            className="tap-target absolute top-0 right-0 inline-flex items-center justify-center rounded-full border border-warm-ivory/20 text-warm-ivory/70 hover:text-warm-ivory hover:border-warm-ivory/40 transition-colors"
+          >
+            {userPaused ? <PlayIcon /> : <PauseIcon />}
+          </button>
+
           <h2 className="font-display text-2xl sm:text-3xl font-semibold">What patients are saying</h2>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-warm-ivory/70 text-sm font-medium">
-              <GoogleGIcon />
-              <span className="flex gap-0.5 text-terracotta">
-                <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
-              </span>
-              <span className="font-display text-base font-semibold text-warm-ivory">
-                <Placeholder tone="dark">{reviews.rating}</Placeholder>
-              </span>
-              <span>
-                (<Placeholder tone="dark">{reviews.count}</Placeholder>)
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setUserPaused((p) => !p)}
-              aria-label={userPaused ? "Resume testimonial scroll" : "Pause testimonial scroll"}
-              aria-pressed={userPaused}
-              className="tap-target inline-flex items-center justify-center rounded-full border border-warm-ivory/20 text-warm-ivory/70 hover:text-warm-ivory hover:border-warm-ivory/40 transition-colors"
-            >
-              {userPaused ? <PlayIcon /> : <PauseIcon />}
-            </button>
+          {/* Rating badge — was a bare 16px icon sitting directly on the
+              dark section with no container of its own, easy to miss and
+              too small for the Google "G"'s four brand colors to read
+              clearly. Sized up and given a proper white roundel + bordered
+              pill so both the badge and the logo's color read at a glance. */}
+          <div className="flex items-center gap-2.5 rounded-full bg-warm-ivory/10 border border-warm-ivory/25 pl-2 pr-4 py-2 text-warm-ivory/90 text-sm font-medium">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warm-ivory">
+              <GoogleGIcon className="h-5 w-5" />
+            </span>
+            <span className="flex gap-0.5 text-terracotta">
+              <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
+            </span>
+            <span className="font-display text-base font-semibold text-warm-ivory">{reviews.rating}</span>
+            <span>({reviews.count})</span>
           </div>
         </div>
 
         <div className="overflow-hidden">
-          <div ref={trackRef} className="relative flex gap-10 w-max pt-9" style={{ willChange: "transform" }}>
+          <div
+            ref={trackRef}
+            className="relative flex items-start gap-10 w-max pt-9"
+            style={{ willChange: "transform" }}
+          >
             {/* The connecting rail — a child of the scrolling track itself,
                 so it moves with the cards and the "chain" stays unbroken
                 through the loop. */}
@@ -142,19 +155,50 @@ export function TestimonialsSection() {
                   aria-hidden="true"
                 />
 
-                <div className="rounded-2xl bg-warm-ivory/10 border border-warm-ivory/15 p-6 flex flex-col h-full">
-                  <QuoteIcon className="text-terracotta mb-3" />
-                  <p className="text-warm-ivory/90 text-sm flex-1">
-                    <Placeholder tone="dark">{t.quote}</Placeholder>
-                  </p>
-                  <div className="mt-5 flex items-center justify-between">
-                    <span className="text-sm font-medium text-warm-ivory">
-                      <Placeholder tone="dark">{t.name}</Placeholder>
+                {/* PREVIEW: Google-widget-style card, swapped in to compare
+                    against the custom quote-card look above. Started as a
+                    white/light surface (real Google review cards are
+                    light) but Akash asked to keep this site's own
+                    translucent-on-espresso card color instead — so the
+                    Google-specific parts are just the structure: an
+                    avatar-initial roundel (real widgets fall back to
+                    exactly this when a reviewer has no profile photo),
+                    the real "Local Guide · N reviews" meta line pulled at
+                    the same time as the quotes, and a small "G" mark
+                    reading as "posted on Google" rather than this site's
+                    own custom quote-mark branding. Name stays first-name
+                    + last-initial — an actual live widget would show
+                    Google's full public display name (that's Google's
+                    own platform content, not this site curating a named
+                    patient into its own marketing copy, which is the more
+                    defensible case for full names per the HIPAA
+                    discussion) but this is a static restyle of already-
+                    curated quotes, not a live embed, so the redacted
+                    format stays until/unless a real widget is built. */}
+                <div className="rounded-2xl bg-warm-ivory/10 border border-warm-ivory/15 p-5 flex flex-col">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-display font-semibold text-warm-ivory ${
+                        AVATAR_COLORS[i % AVATAR_COLORS.length]
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {t.initial}
                     </span>
+                    <div className="min-w-0 flex-1">
+                      <span className="block text-sm font-medium text-warm-ivory truncate">{t.name}</span>
+                      <span className="block text-xs text-warm-ivory/50 truncate">{t.meta}</span>
+                    </div>
+                    <GoogleGIcon className="h-4 w-4 shrink-0" />
+                  </div>
+                  <div className="flex items-center gap-1.5 mb-3">
                     <span className="flex gap-0.5 text-terracotta">
-                      <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
+                      <StarIcon className="h-3.5 w-3.5" /> <StarIcon className="h-3.5 w-3.5" />{" "}
+                      <StarIcon className="h-3.5 w-3.5" /> <StarIcon className="h-3.5 w-3.5" />{" "}
+                      <StarIcon className="h-3.5 w-3.5" />
                     </span>
                   </div>
+                  <p className="text-sm text-warm-ivory/90 leading-relaxed mb-0">{t.quote}</p>
                 </div>
               </div>
             ))}

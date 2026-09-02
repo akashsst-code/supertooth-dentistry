@@ -21,11 +21,14 @@ export const practice = {
 };
 
 export const contact = {
-  // Main line, full address, and hours below are real — sourced from the
-  // practice's existing site (gray-rail-265889.hostingersite.com), the
-  // same source already trusted for Dr. Archana's bio (see `archana`
-  // below and docs/supertooth-webflow-build-spec.md Status section).
-  phone: "(206) 687-7571",
+  // Backlog item 3 — the practice's source site showed two conflicting
+  // numbers, (206) 593-3131 and (206) 687-7571 (docs/supertooth-
+  // webflow-build-spec.md Status section, docs/supertooth-patient-
+  // needs-research.md). Akash confirmed (206) 593-3131 is correct
+  // 2026-09-01, matching the live Google Business Profile listing
+  // checked directly (same 593-3131 number, same address) — one number,
+  // everywhere, matching GBP per the NAP-consistency requirement.
+  phone: "(206) 593-3131",
   address: "133 Queen Anne Ave N, Suite A, Seattle, WA 98109",
   // Akash's exact wording (given directly in chat), not scraped.
   parkingNote: "Bus stop on the same block. Street parking available on nearby streets.",
@@ -92,9 +95,15 @@ export const differentiators = [
   },
 ];
 
+// Backlog item 13 — checked directly against the live Google Business
+// Profile ("Supertooth Dentistry", 133 Queen Anne Ave N Unit A) on
+// 2026-09-01. Rating matched the prior placeholder exactly; count did
+// not (487 -> 427) and is corrected here. Item 20 (API-fed live rating)
+// still applies for keeping this in sync going forward — this is a
+// manual point-in-time verification, not a live feed.
 export const reviews = {
-  rating: "4.9", // unconfirmed per prior Webflow-build audit — verify before launch
-  count: "487", // unconfirmed per prior Webflow-build audit — verify before launch
+  rating: "4.9",
+  count: "427",
 };
 
 // Each offer is one line of text + a half-card photo (per Akash's
@@ -247,16 +256,69 @@ export const team = [
 export const officeBlurb =
   "Step inside and it feels less like a dental office and more like a quiet reset — comfortable treatment rooms, same-day crown technology on-site, and a team that walks you through every step before it happens.";
 
-// "What patients are saying" — real Google rating/count already exist
-// above (reviews). These quote slots are structural placeholders only:
-// real patient testimonials cannot be invented (HIPAA / no-unverifiable-
-// claims, docs/supertooth-webflow-build-spec.md Section 7) — render each
-// through <Placeholder> until Akash supplies real reviews in first-name +
-// last-initial format.
+// "What patients are saying" — backlog item 13. Real Google rating/count
+// already exist above (reviews). These five are the top reviews pulled
+// directly from the live Google Business Profile ("Supertooth Dentistry",
+// 133 Queen Anne Ave N Unit A) — the first three on 2026-09-01, two more
+// added the same day at Akash's request — all 5-star (verified per-review
+// against the star-fill markup, not just assumed from the aggregate).
+// Reviewer names are redacted to first-name + last-initial per the HIPAA
+// attribution rule (docs/supertooth-webflow-build-spec.md Section 7) —
+// same format this field already used as its placeholder. Quotes are
+// either used in full (Dawn B., Karthik B. had no Google truncation) or
+// trimmed to the last complete sentence available before Google's own
+// "... More" truncation point — wording within that trim is verbatim,
+// nothing paraphrased or invented. Item 20 (API-fed live reviews)
+// supersedes this with a live feed later; this is a manual point-in-time
+// pull.
+// `meta` and `postedAt` are the reviewer's real "Local Guide · N reviews"
+// line and the review's real relative timestamp, straight off the GBP
+// listing at the same pull — used by the Google-widget-style card variant
+// (see TestimonialsSection.tsx) to read as authentically Google rather
+// than a generic quote card. `initial` backs that variant's avatar circle
+// (no real photo available, so a colored initial is the honest fallback
+// real widgets also use for reviewers without a profile photo).
 export const testimonials = [
-  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
-  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
-  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
+  {
+    quote:
+      "I've always hated the dentist, but love coming to Supertooth Dentistry. Dr. Archana is sweet, knowledgeable and makes me feel comfortable. Her staff is wonderful too!",
+    name: "Elise T.",
+    initial: "E",
+    meta: "Local Guide · 33 reviews",
+    postedAt: "2 months ago",
+  },
+  {
+    quote:
+      "I had an excellent experience with Dr. Dubey and her team. I went in for a deep cleaning and later had to get a cavity filled. Dr. Dubey was very thorough and explained every step of the process, which helped ease my anxiety.",
+    name: "Vandana S.",
+    initial: "V",
+    meta: "Local Guide · 123 reviews",
+    postedAt: "a year ago",
+  },
+  {
+    quote:
+      "Supertooth is always kind, caring, thorough, and efficient. I've been going to there for 5+ years and have always had a good experience. The team has continuously gotten ahead of any dental issues I have before they became too problematic.",
+    name: "Berri R.",
+    initial: "B",
+    meta: "Local Guide · 34 reviews",
+    postedAt: "10 months ago",
+  },
+  {
+    quote:
+      "I never thought I'd say this, but I now love going to the dentist. Supertooth in Queen Anne feels like walking into a friend's house, warm, welcoming, and genuinely caring. The team is fantastic, the space is beautiful, and the care is excellent. Couldn't recommend them more.",
+    name: "Dawn B.",
+    initial: "D",
+    meta: "6 reviews",
+    postedAt: "8 months ago",
+  },
+  {
+    quote:
+      "Dr. Archana Dubey is one of the best dentists I've ever been to. She is incredibly patient, helpful, and friendly. I highly recommend her to anyone looking for a dentist who is genuinely considerate of your budget and transparent about all costs. She takes the time to ensure you understand everything, which I really appreciated.",
+    name: "Karthik B.",
+    initial: "K",
+    meta: "6 reviews",
+    postedAt: "11 months ago",
+  },
 ];
 
 /**
@@ -296,85 +358,68 @@ export const credentialBadges: CredentialBadge[] = [
 ];
 
 // Homepage services teaser — trimmed to exactly 4 per Akash's call to
-// match smilemakersfortworth.com's 4-big-item pattern. Same-day crowns
-// and same-day appointments are already-locked real differentiators (see
-// differentiators above); the description text for cosmetic/restorative
-// is still a structural placeholder pending Akash's confirmed service
-// list (build-spec Section 8) even though the photos backing them are
-// now real.
+// match smilemakersfortworth.com's 4-big-item pattern.
 //
-// `image` is real marketing photography Akash supplied directly
-// (same-day onlay before/after, implant x-ray before/after, in-office
-// Zoom whitening before/after) — matched by content to the closest of
-// the 4 categories (same-day onlay -> same-day crowns; implant ->
-// restorative care; whitening -> cosmetic dentistry). No photo was
-// supplied for general/preventive care, so that card uses a temporary
-// Unsplash stand-in instead (per Akash's "bring images where we don't
-// have" call) — swap for real photography later, same as the other 3;
-// ServicesSection.tsx's icon-tile fallback still exists for any future
-// service entry that ships with no `image` at all.
+// Round 4 (2026-09-01): Akash asked for the 4 tiles to render the same
+// size (matching the "same-day crowns" card) and for patient-facing
+// photography instead of the raw clinical shots ("don't show broken
+// crowns"). The previous round's real marketing photography (same-day
+// onlay, implant x-ray, in-office whitening before/afters) was Akash's
+// own supplied clinical macro/x-ray photography — each cropped to a
+// different natural size (1320x730 / 1251x670 / 1200x1137), which is
+// why the tiles were uneven, and extreme macro intraoral shots and a raw
+// implant x-ray read as clinical rather than reassuring to a patient
+// audience. Swapped all 4 for tasteful, patient-facing stock photography
+// in the same warm/modern tone as the general-preventive card already
+// used — same Unsplash hotlink pattern as `offers` below, one shared
+// `aspect-[4/3]` box in ServicesSection.tsx so every tile matches. The 3
+// original clinical files still live in `public/services/` if real
+// photography is preferred later; ServicesSection.tsx's icon-tile
+// fallback still exists for any future service entry with no `image`.
 //
-// The 3 supplied files are full Instagram-post-style graphics (a big
-// title, our own logo, a brand/product badge, all above the actual
-// before/after photos) — cropping those into a small `aspect-[4/5]`
-// card via `object-cover` read as "elongated"/unnatural (Akash) since
-// it either cut the photos off mid-frame or squeezed a whole poster
-// into a thumbnail. `*-crop.jpg` variants below are cropped to just the
-// labeled before/after photos (title/logo/badge removed) — same source
-// photography, not new/different images. `width`/`height` are set so
-// ServicesSection.tsx can render them at their natural aspect ratio
-// instead of force-cropping again.
-//
-// Two other supplied images (Invisalign Gold Provider badge, Masseter
-// Botox before/after) don't map to any of these 4 categories and aren't
-// used here — worth a follow-up on where those belong (e.g. Botox next
-// to Dr. Archana's "Certified Botox Provider" credential, Invisalign
-// alongside the existing $500-off offer).
+// `real` for cosmetic dentistry and restorative care flipped from
+// false -> true here: both are independently confirmed by Dr. Archana's
+// already-real bio below (`archana.bio`, sourced from the practice's
+// existing site) — "she specializes in esthetic and restorative
+// dentistry — implants, crowns, veneers, smile design, and
+// implant-supported dentures" covers every claim in both cards' detail
+// text. Flag to Akash to confirm before launch in case that bio line
+// doesn't fully match current in-house capability.
 export const services = [
   {
     title: "General & preventive care",
     detail: "Cleanings, exams, and same-day appointments when you need them.",
     real: true,
-    // No real photo supplied yet for this category (see comment above) —
-    // temporary Unsplash stand-in per Akash's "bring images where we
-    // don't have" call, same pattern as the NewPatientOffersBlock photos.
-    // Swap for real practice photography once available.
     image: {
-      src: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80",
-      alt: "Dental cleaning and checkup",
+      src: "https://images.unsplash.com/photo-1663755489920-5e09f66d011a?auto=format&fit=crop&w=1200&q=80",
+      alt: "Dentist and patient sharing a smile during a routine checkup",
     },
   },
   {
     title: "Same-day crowns",
-    detail: "In-house technology — no second visit, no temporary crown.",
+    detail: "Digitally scanned and milled in-house — no second visit, no temporary crown.",
     real: true,
     image: {
-      src: "/services/same-day-crown-onlay-crop.jpg",
-      alt: "Same-day onlay, before and after",
-      width: 1320,
-      height: 730,
+      src: "https://images.unsplash.com/photo-1667133295315-820bb6481730?auto=format&fit=crop&w=1200&q=80",
+      alt: "Dentist using a digital scanner to design a same-day crown chairside",
     },
   },
   {
     title: "Cosmetic dentistry",
-    detail: "Veneers, whitening, and smile design.",
-    real: false,
+    detail: "Veneers, in-office whitening, and full smile design.",
+    real: true,
     image: {
-      src: "/services/teeth-whitening-crop.jpg",
-      alt: "In-office Zoom teeth whitening, before and after",
-      width: 1200,
-      height: 1137,
+      src: "https://images.unsplash.com/photo-1777331903190-341a3dd0441b?auto=format&fit=crop&w=1200&q=80",
+      alt: "Dentist consulting with a smiling patient about cosmetic treatment options",
     },
   },
   {
     title: "Restorative care",
-    detail: "Crowns, bridges, and implant restorations.",
-    real: false,
+    detail: "Crowns, bridges, dentures, and dental implants — rebuilding function, not just looks.",
+    real: true,
     image: {
-      src: "/services/implant-dentistry-crop.jpg",
-      alt: "Dental implant, before and after x-ray",
-      width: 1251,
-      height: 670,
+      src: "https://images.unsplash.com/photo-1771442873035-474765b40ac6?auto=format&fit=crop&w=1200&q=80",
+      alt: "Gloved hand holding a dental implant and crown model",
     },
   },
 ];
@@ -523,3 +568,98 @@ export const nav = [
   { label: "Insurance & New Patients", href: "/insurance-new-patients" },
   { label: "Contact", href: "/contact" },
 ];
+
+// Backlog item 7 — /emergency, v1 scope only (the v2 items in that
+// backlog entry — a "what to have ready" checklist, NHS-style "when
+// unsure, default up" framing — are deliberately not included here).
+// Tier 1/2/3 structure and the specific first-aid actions are sourced
+// from ADA MouthHealthy per that item's evidence citation; do not
+// paraphrase loosely or add advice it doesn't support. `afterHours` is
+// Akash's own confirmed after-hours reality (2026-09-01): call, or book
+// online — no answering service, no voicemail-specific promise, and
+// deliberately no response-time commitment (item 7 acceptance: "No
+// invented response-time promise anywhere on the page").
+export const emergencyGuidance = {
+  tiers: [
+    {
+      tier: "911 or the ER",
+      when: "Call 911 or go to the nearest emergency room right away if you have any of these:",
+      symptoms: [
+        "Swelling that is spreading to your neck or eye",
+        "Fever along with facial swelling",
+        "Trouble breathing or swallowing",
+      ],
+    },
+    {
+      tier: "Call us",
+      when: "Call us as soon as you can for:",
+      symptoms: [
+        "A knocked-out, cracked, or broken tooth",
+        "A lost filling or crown",
+        "Dental pain",
+        "Swelling without any of the red flags above",
+      ],
+    },
+    {
+      tier: "While you wait",
+      when: "Until you're seen:",
+      symptoms: [
+        "Rinse gently with warm water",
+        "Use a cold compress on any swelling",
+        "Do not place aspirin or any other painkiller directly on the tooth or gum — it can burn the tissue",
+      ],
+    },
+  ],
+  afterHours:
+    "If it's outside office hours, call us — or schedule your next available appointment online right now.",
+  erNote:
+    "An emergency room can treat pain and infection, but only a dentist can fix the underlying problem — plan to follow up with us as soon as you can.",
+};
+
+// Backlog item 12 — /privacy and /accessibility. The item's own scope
+// is explicit that privacy text must be "practice-supplied or
+// counsel-reviewed" and out-of-scope is "writing legal text ourselves" —
+// this draft exists so the route and layout exist now, informed by how
+// comparable Seattle-area dental-practice sites and the HHS model
+// notices structure this content, but it is NOT the practice-approved
+// version item 12's acceptance criteria requires. `draft: true` drives
+// a visible banner on the page; flip it once Akash/counsel approves
+// real text, per the same real/placeholder convention used elsewhere
+// in this file.
+export const privacyPolicy = {
+  draft: true,
+  lastUpdated: "2026-09-01",
+  sections: [
+    {
+      heading: "Information we collect",
+      body: "When you request an appointment or contact us through this site, we collect the information you provide — name, phone number, email, and anything you tell us about the reason for your visit. We do not sell or rent this information to anyone.",
+    },
+    {
+      heading: "How we use it",
+      body: "We use your information to respond to your request, schedule and manage appointments, and communicate with you about your care. Health information you share with our clinical team is handled under our HIPAA Notice of Privacy Practices, available at our office.",
+    },
+    {
+      heading: "SMS / text messaging",
+      body: "Not applicable — we don't currently send appointment texts. If that changes, this section will state what you're opted into, how often we'll text, and how to stop at any time.",
+    },
+    {
+      heading: "Cookies and analytics",
+      body: "This site may use basic, privacy-respecting analytics to understand which pages are useful to visitors. We do not use this data to identify you personally.",
+    },
+    {
+      heading: "Your choices",
+      body: "You can ask us what information we have about you, ask us to correct it, or ask us to delete it, by contacting us using the information below.",
+    },
+  ],
+};
+
+export const accessibilityStatement = {
+  conformanceTarget: "WCAG 2.2 Level AA",
+  lastUpdated: "2026-09-01",
+  commitment:
+    "Super Tooth Dentistry is committed to making this website usable by everyone, including people who use assistive technology.",
+  knownLimitations: [
+    "A full accessibility audit against WCAG 2.2 AA has not yet been completed (tracked internally as backlog item 14) — some issues may exist that we haven't found yet.",
+    "Some third-party embeds (such as the Google Maps location panel) are outside our direct control and may not fully meet this standard.",
+  ],
+};

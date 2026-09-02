@@ -730,7 +730,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 4, reach: 5, risk: 4, effort: 5, readiness: 2 },
     effort: "S",
-    status: "blocked",
+    status: "done",
     wave: 1,
     job: "Reach a human · confirm the practice is real",
     story:
@@ -742,6 +742,7 @@ export const backlog: BacklogItem[] = [
       "Confirm the single correct number with Akash",
       "Make site, GBP and directory listings agree exactly — name, address and phone",
       "Confirm hours (Tue–Fri 7:00–4:30) match the GBP too",
+      "DONE (2026-09-01): Akash confirmed (206) 593-3131 is correct. `contact.phone` in content.ts (the single source of truth every Nav/Footer/BookingBlock/FAQSection tel: link already reads from) updated to it — grepping src/ for phone-shaped strings turns up no second distinct number. Checked directly against the live GBP listing: name, address, and the Tue-Fri 7:00-4:30 hours already in `hours` all match character-for-character",
     ],
     acceptance: [
       "One number appears everywhere on the site",
@@ -1264,7 +1265,7 @@ export const backlog: BacklogItem[] = [
       "Scores 37/50 — P0 on merit. Also pinned on patient-safety grounds: incorrect or missing red-flag guidance for spreading swelling or airway compromise is a clinical harm, not a conversion miss.",
     scores: { conversion: 4, reach: 3, risk: 5, effort: 3, readiness: 2 },
     effort: "M",
-    status: "blocked",
+    status: "done",
     wave: 2,
     job: "Handle an urgent dental need",
     story:
@@ -1279,6 +1280,7 @@ export const backlog: BacklogItem[] = [
       "Honest after-hours statement — what is and isn't available, and when the office opens",
       "One-tap call, prominent",
       "Optionally note that ERs rarely staff dentists and generally treat the symptom, not the tooth",
+      "DONE (2026-09-01): shipped as src/app/emergency/page.tsx, sourced from content.ts `emergencyGuidance`. Akash confirmed the after-hours reality: call, or schedule online now — no answering service, so `afterHours` states exactly that with no response-time promise. Tier 1 renders first (DOM and visual order) directly under the page heading, verified at 375×812 to render well within the first viewport alongside the one-tap `tel:` control and a Schedule-now link. Linked from the mobile hamburger menu, the footer, and BookingBlock's \"Dental emergency\" quick action (previously a /contact placeholder). v2 items intentionally not built",
       "v2: adopt the \"when unsure, default up\" rule — safer to be evaluated and sent home than to delay (NHS 111 / Bond Vet routing model, borrowed as static cited content, never as a question engine)",
       "v2: add a short \"what to have ready when you call\" list — what happened, when, symptoms, medications",
       "v2 anti-pattern: exactly ONE emergency number sitewide. An observed site listed three, which in a crisis is unusable",
@@ -2158,7 +2160,7 @@ export const backlog: BacklogItem[] = [
       "Scores 31/50, which would place it in P1 — pinned to P0 because the build spec lists privacy disclosures as build-blocking before go-live, and an accessibility statement is the documented route for a disabled patient to report a barrier. Legal/ethical floor beats score.",
     scores: { conversion: 1, reach: 3, risk: 5, effort: 5, readiness: 2 },
     effort: "S",
-    status: "blocked",
+    status: "partial",
     wave: 3,
     job: "Trust the practice with my information",
     story: "As a patient, I can see how my information is handled and how to report a barrier.",
@@ -2169,6 +2171,7 @@ export const backlog: BacklogItem[] = [
       "Privacy policy — practice-supplied or counsel-reviewed",
       "SMS/texting disclosure if the practice texts patients",
       "Accessibility statement with a real contact route for reporting barriers",
+      "PARTIAL (2026-09-01): both routes now live, both linked in the footer, both render as real HTML (no PDF) with a one-tap tel: feedback route on /accessibility — but this does NOT close the item. /privacy's text is an explicitly-labeled DRAFT (content.ts `privacyPolicy.sections`, informed by comparable practice sites and the HHS model notices, banner visible on the page itself) — it is not yet practice-approved or counsel-reviewed, which this item's own acceptance criteria requires. /accessibility states WCAG 2.2 AA as the target and is honest that item 14's audit hasn't run yet, consistent with that item's own reference note that a first draft is fine to generate directly. Still needs: Akash/counsel sign-off on the privacy text, and an explicit SMS-disclosure decision if that changes",
       "Footer links to both",
     ],
     acceptance: [
@@ -2295,7 +2298,7 @@ export const backlog: BacklogItem[] = [
       "Scores 42/50 — third highest, so P0 on merit. Also pinned: testimonial attribution is a HIPAA constraint locked in the build spec, and invented patient quotes would be a fabrication.",
     scores: { conversion: 4, reach: 4, risk: 5, effort: 5, readiness: 2 },
     effort: "S",
-    status: "blocked",
+    status: "done",
     wave: 3,
     job: "Evaluate reviews without being overwhelmed",
     story: "As a patient, I read real things real patients said.",
@@ -2304,6 +2307,7 @@ export const backlog: BacklogItem[] = [
     where: "src/lib/content.ts · src/components/TestimonialsSection.tsx",
     scope: [
       "Pull three real reviews from the Google Business Profile",
+      "DONE (2026-09-01): pulled the current top three reviews directly from the live GBP listing (Elise T., Vandana S., Berri R. — first-name + last-initial per the HIPAA format, `Placeholder` wrapping removed now that these are real). Quotes are trimmed to the last complete sentence available before Google's own truncation point rather than cut mid-sentence, wording otherwise verbatim. Rating stayed 4.9; count corrected 487 -> 427 against the live listing",
       "First name + last initial only — never a full patient name without written authorization",
       "Confirm the real rating and count against the live GBP",
       "v2: show the aggregate count and its date — dated aggregates read as more credible than a bare star rating",
@@ -5614,6 +5618,7 @@ export const backlog: BacklogItem[] = [
       "The header already carries a call control, which covers part of the urgent job — establish whether that is sufficient or whether emergency needs its own distinct entry",
       "Verify one-tap reachability from every route, at every matrix width",
       "Pairs with item 46: whatever the entry is, it must be visually distinguishable from the booking CTA",
+      "TRIED AND REJECTED (2026-09-01): built a dedicated icon-only Dental Emergency link in the fixed header — mobile icon beside Call/Schedule/Menu, desktop badge before Book Appointment (both bg-alert, MedicalCrossIcon, per item 46's treatment). Fitting a fourth mobile control also required hiding Logo's wordmark across the whole mobile range and making the desktop badge icon-only below lg to avoid overflowing the header at 320px and 768px (both measured, not guessed). Akash reviewed and didn't want emergency in the top nav at all — reverted in full (Nav.tsx and Logo.tsx both back to their pre-item-45 state). Back to not-started: reachability currently falls back to the hamburger-menu link only (item 7's original minimum, one extra tap on mobile, no desktop entry), which does not satisfy this item's one-tap acceptance criterion. Next candidate needs Akash's steer: a persistent in-page affordance, the footer, or something else — header placement is now a tried-and-rejected option, not an open one",
     ],
     acceptance: [
       "Emergency guidance reachable in one tap from every route at 375px",
@@ -5625,7 +5630,7 @@ export const backlog: BacklogItem[] = [
       "Blueprint §17/§19/§22 argued for a bottom bar; the ruling declined it. What survives is the underlying requirement — item 27 measured the fixed header persisting with a 44px Schedule control, so Call and Book are covered, and emergency is the genuine remaining gap.",
     dependsOn: "Item 7 (emergency page must exist to link to) · item 46 (visual distinction)",
     outOfScope:
-      "A sticky bottom bar. Ruled out 2026-08-30. Reopen only with measured evidence that one-tap emergency access is unachievable without one.",
+      "A sticky bottom bar. Ruled out 2026-08-30. Reopen only with measured evidence that one-tap emergency access is unachievable without one. Also out: an emergency entry in the fixed top nav (mobile or desktop) — built and reviewed 2026-09-01, Akash didn't want it there.",
     references: [
       {
         name: "NN/g — thumb zone and mobile reachability",
@@ -5732,11 +5737,12 @@ export const backlog: BacklogItem[] = [
       "Reserved exclusively for emergency. Never a marketing, promotional or error-state colour; a red used twice stops meaning anything",
       "Never colour alone — icon plus text label always, so it survives greyscale and outdoor glare",
       "Do not touch any of the four existing tokens — confirmed: this PR's diff to globals.css only adds `--color-alert`, no existing value changed",
+      "TRIED (2026-09-01): item 45 built sitewide header entries (mobile icon, desktop badge) using this same undiluted `bg-alert` treatment. Akash reviewed and rejected emergency living in the top nav at all — reverted. Still just the one BookingBlock call site; sitewide coverage is unresolved again pending item 45's next attempt",
     ],
     acceptance: [
       "One new token added, exact value signed off by Akash — DONE, revised once already (see decision.consequence above) after direct feedback; that's expected for a value this subjective",
       "AA verified on every surface pairing it appears in — DONE: the real consumer (BookingBlock's emergency badge) uses ivory text ON the `bg-alert` fill (7.08:1), self-contained regardless of the surrounding section's background. A plain-text-on-espresso treatment was tried mid-pass and measured ~2:1 (fails AA) — abandoned along with the tint-token approach in favor of the current self-contained badge",
-      "Emergency action unmistakably distinct from booking CTAs at 375px — DONE for the BookingBlock badge, now sitting directly in the 'Quick actions' row beside Book/Call: undiluted `bg-alert` fill, deliberately smaller padding/font than the two primary pills is what separates it visually, not distance from Book — an isolated-on-its-own-line version was tried and wasn't the actual fix; still PENDING sitewide once item 45 lands more entry points",
+      "Emergency action unmistakably distinct from booking CTAs at 375px — DONE for the BookingBlock badge, now sitting directly in the 'Quick actions' row beside Book/Call: undiluted `bg-alert` fill, deliberately smaller padding/font than the two primary pills is what separates it visually, not distance from Book — an isolated-on-its-own-line version was tried and wasn't the actual fix; still PENDING sitewide — item 45's header attempt was rejected, so this needs a different entry point",
       "Identifiable in greyscale — meaning never colour-carried — DONE: MedicalCrossIcon + 'Dental emergency' label carry the meaning independent of the alert colour",
       "Zero changes to the four locked tokens — DONE",
     ],

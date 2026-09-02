@@ -107,7 +107,7 @@ export function BookingBlock() {
                   {contact.phone}
                 </a>
                 <a
-                  href="/contact"
+                  href="/emergency"
                   className="tap-target inline-flex items-center gap-1 rounded-full bg-alert px-2.5 py-2 text-xs font-semibold uppercase tracking-wide text-warm-ivory hover:brightness-110 transition"
                 >
                   <MedicalCrossIcon className="h-3.5 w-3.5" />
