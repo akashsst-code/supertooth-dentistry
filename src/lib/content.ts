@@ -228,9 +228,6 @@ export const archana = {
   quote:
     "My philosophy is to combine the precision of modern dental science with the warmth of human care, enhancing every smile with thoughtful, personalized treatment.",
   bio: "Dr. Dubey discovered her passion for dentistry in 2007 and has been practicing since 2012, with a DDS from the University of Colorado and a Master's in Prosthodontics from India. She specializes in esthetic and restorative dentistry — implants, crowns, veneers, smile design, and implant-supported dentures — and is especially passionate about creating joyful dental experiences for patients of every age, from children to seniors.",
-  badges: ["15+ years experience", "University of Colorado", "Invisalign certified"],
-  certifications:
-    "Certified Invisalign Provider · Certified Botox Provider · Nationally recognized scientific research",
 };
 
 export const team = [
@@ -262,16 +259,40 @@ export const testimonials = [
   { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
 ];
 
-// Dr. Archana's professional affiliations/certifications — distinct from
-// the archana.badges credential chips above (those are already-confirmed
-// bio facts). Rendered inside her bio card in TrustBlock ("training &
-// affiliations along with her bio space" — Akash), not a standalone
-// section. Real org names not yet confirmed, so every entry is a
-// placeholder pending Akash.
-export const credentials = [
-  "Professional association membership — pending confirmation",
-  "Professional association membership — pending confirmation",
-  "Continuing-education / certification — pending confirmation",
+/**
+ * Dr. Archana's credentials — experience/education, certifications/
+ * training, and professional-association memberships — rendered as
+ * compact grouped pills inside her bio card in TrustBlock ("training &
+ * affiliations along with her bio space" — Akash), not a standalone
+ * section. Real data supplied directly by Akash 2026-09-01 (replaces the
+ * earlier `archana.badges`/`archana.certifications` flat-pill row and
+ * the placeholder `credentials` list, both retired by this same change).
+ *
+ * `group` is what drives the compact layout Akash asked for ("pills ...
+ * grouped with few items logically together" — a first pass as a tall
+ * one-per-row medallion list read as too much space for what's
+ * fundamentally a scan-and-move-on trust signal): 3 groups instead of a
+ * flat list of 8, each rendered as its own labeled row of inline pills.
+ * `icon`/`group` are presentation keys only (`icon` picks a glyph from
+ * icons.tsx, `group` picks which labeled pill row) — the actual content
+ * is `title`/`detail`.
+ */
+export type CredentialBadge = {
+  icon: "star" | "graduationCap" | "aligner" | "syringe" | "badge" | "implant" | "shieldCheck";
+  title: string;
+  detail: string;
+  group: "Experience & Education" | "Certifications & Training" | "Professional Memberships";
+};
+
+export const credentialBadges: CredentialBadge[] = [
+  { icon: "star", title: "15+ Years Experience", detail: "Practicing dentistry since 2012", group: "Experience & Education" },
+  { icon: "graduationCap", title: "DDS, University of Colorado", detail: "Doctor of Dental Surgery", group: "Experience & Education" },
+  { icon: "aligner", title: "Certified Invisalign Provider", detail: "Clear aligner treatment", group: "Certifications & Training" },
+  { icon: "aligner", title: "AACA Gold Status Provider", detail: "American Academy of Clear Aligners", group: "Certifications & Training" },
+  { icon: "syringe", title: "Certified Botox Provider", detail: "American Academy of Facial Esthetics (AAFE)", group: "Certifications & Training" },
+  { icon: "implant", title: "Trained in Implant Dentistry", detail: "Implant placement & restoration", group: "Certifications & Training" },
+  { icon: "badge", title: "Member, AGD", detail: "Academy of General Dentistry", group: "Professional Memberships" },
+  { icon: "shieldCheck", title: "Member, ADA", detail: "American Dental Association", group: "Professional Memberships" },
 ];
 
 // Homepage services teaser — trimmed to exactly 4 per Akash's call to

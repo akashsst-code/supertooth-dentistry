@@ -258,3 +258,63 @@ export function MedicalCrossIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+/** Degree/education credential — CredentialBadges (TrustBlock bio card). */
+export function GraduationCapIcon({ className }: { className?: string }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path d="M12 4L2 9l10 5 10-5-10-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path
+        d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M22 9v5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Clear-aligner credential (Invisalign, AACA) — CredentialBadges. */
+export function AlignerIcon({ className }: { className?: string }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M12 3.5c-3.8 0-7 1.8-7 5.5 0 4.8 2.3 11.5 4.2 11.5 1.2 0 1.4-2.8 2.8-2.8s1.6 2.8 2.8 2.8c1.9 0 4.2-6.7 4.2-11.5 0-3.7-3.2-5.5-7-5.5z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Botox/facial-esthetics credential — CredentialBadges. */
+export function SyringeIcon({ className }: { className?: string }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M4 20l3-8 9-9 4 4-9 9-8 3z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      <path d="M12 6l4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="7" cy="17" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Implant-dentistry training credential — CredentialBadges. */
+export function ImplantIcon({ className }: { className?: string }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path d="M8 3h8l-1.2 4.5H9.2L8 3z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M9.2 7.5v3.5M14.8 7.5v3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M8.8 11h6.4l-1.1 9-2.1 2-2.1-2-1.1-9z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M9.3 14h5.4M9.6 17h4.8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
