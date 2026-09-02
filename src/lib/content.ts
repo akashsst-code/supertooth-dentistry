@@ -468,11 +468,37 @@ export const serviceAreas = [
 //    removed from `contact` above. FAQSection.tsx interpolates the one
 //    confirmed real number (`contact.phone`) instead, so there's a single
 //    source of truth and no second, possibly-conflicting number.
+//
+// Parity pass (2026-09-02): the source site has 13 real FAQ items (plus
+// an "SMS Privacy Policy" block that's a legal disclosure, not an FAQ —
+// still correctly excluded here). This file originally ported 9; the
+// remaining 4 (philosophy, new-patient offers, other forms, procedures)
+// are added below, each still going through the same rewrite-and-trim
+// pass as the original 9 rather than being copy-pasted. None of the four
+// contain a link or image — Akash flagged the source site's insurance
+// FAQ as an example of the pattern to avoid (an FAQ answer that hands the
+// visitor off to another page instead of just answering), so every entry
+// in this array stays self-contained plain text; "What procedures do you
+// offer?" mentions the Services section by name instead of linking to it.
 export const faqs = [
+  {
+    question: "What is Super Tooth's philosophy?",
+    // Trimmed against the specific "10x lower radiation than conventional
+    // x-rays" claim in the source site's answer — an unverifiable comparison
+    // (build-principles Section 8), not a made-up substitute for it.
+    answer:
+      "Care, skill, and choice. We use modern, gentle techniques and take the time to walk you through your options so you can make the choice that's right for you.",
+  },
   {
     question: "Do you accept my dental insurance?",
     answer:
       "We're in-network with most major dental insurance plans and handle the paperwork for you. We also offer interest-free financing for any treatment cost insurance doesn't cover.",
+  },
+  {
+    question: "Do you offer any new-patient offers?",
+    // Deliberately no dollar amount here — see the file-level comment
+    // above on why specific offer numbers stay out of the FAQ text.
+    answer: "We periodically run new-patient offers — ask when you call or book, since current offers can change.",
   },
   {
     question: "What should I bring to my first appointment?",
@@ -480,9 +506,20 @@ export const faqs = [
       "Bring your insurance card and a photo ID, and come ready to share your health history and any medications you're taking. We'll also have you fill out some brief new-patient paperwork when you arrive.",
   },
   {
+    question: "What other forms will I need to fill out, and when?",
+    answer:
+      "At your first visit, we'll have you fill out new-patient paperwork covering your insurance and general health information — no need to fill anything out ahead of time.",
+  },
+  {
     question: "What happens during a comprehensive exam?",
     answer:
       "We review your dental history, do a thorough exam of your teeth, gums, and jaw, and walk you through any treatment options we find — so you leave with a clear picture of your oral health, not just a cleaning.",
+  },
+  {
+    question: "What procedures do you offer?",
+    // Self-contained on purpose — no link out, see file-level comment above.
+    answer:
+      "A full range of general, cosmetic, and restorative dental care, from cleanings and fillings to crowns, Invisalign, and implants. See Services on this site for the complete list.",
   },
   {
     question: "When should my child have their first dental visit?",
