@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { contact, mapDirectionsUrl, practice } from "@/lib/content";
-import { CalendarIcon, ExternalLinkIcon } from "./icons";
+import { contact, practice } from "@/lib/content";
+import { CalendarIcon } from "./icons";
 
 /**
  * Legal/utility row — backlog items 7 and 12. Item 7 requires /emergency
@@ -55,10 +55,8 @@ function LegalLinks() {
  * accent rule under the practice name gives the brand mark a little
  * presence instead of being just another line of plain text.
  *
- * The address is now also a "Get Directions" handoff (item 59's already-
- * approved `mapDirectionsUrl` pattern, extended here) rather than plain
- * text with no action behind it — the last NAP mention on the page
- * shouldn't be a dead end.
+ * A "Get Directions" link was tried on the address here and removed
+ * again per Akash's direct feedback — plain text, same as before.
  */
 export function Footer() {
   return (
@@ -76,15 +74,6 @@ function MobileFooter() {
         <p className="font-display text-xl font-semibold">{practice.name}</p>
         <span className="h-0.5 w-8 rounded-full bg-terracotta" />
         <p className="text-sm text-espresso/70">{contact.address}</p>
-        <a
-          href={mapDirectionsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="tap-target inline-flex items-center gap-1 text-xs font-semibold text-terracotta-dark hover:text-terracotta transition-colors"
-        >
-          Get Directions
-          <ExternalLinkIcon className="h-3 w-3" />
-        </a>
         <div className="mt-2 flex flex-wrap justify-center gap-1.5">
           <a
             href="/contact"
@@ -123,15 +112,6 @@ function DesktopFooter() {
           <p className="text-sm text-espresso/70">
             {contact.address} · {contact.parkingNote}
           </p>
-          <a
-            href={mapDirectionsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="tap-target mt-1 inline-flex items-center gap-1 text-xs font-semibold text-terracotta-dark hover:text-terracotta transition-colors"
-          >
-            Get Directions
-            <ExternalLinkIcon className="h-3 w-3" />
-          </a>
         </div>
 
         <div className="flex items-center gap-3">
