@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { InsuranceBlock } from "@/components/InsuranceBlock";
+import { BenefitsGlossary } from "@/components/BenefitsGlossary";
 import { Placeholder } from "@/components/Placeholder";
 import { CalendarIcon, PhoneIcon } from "@/components/icons";
 import { contact, faqs } from "@/lib/content";
@@ -85,9 +86,9 @@ export default function InsuranceNewPatientsPage() {
             <p className="text-espresso/80 leading-relaxed !mb-3">
               Most dental offices will accept your insurance and submit claims on your behalf —
               that&apos;s different from being in-network, where the office has agreed to your
-              plan&apos;s negotiated rates. Being in-network usually means a lower cost to you;
-              being out-of-network can still mean the practice files your claim, but your plan may
-              cover less of the bill.
+              plan&apos;s negotiated rates. In-network means we&apos;ve already agreed to lower
+              rates with your plan, so you pay less; being out-of-network can still mean the
+              practice files your claim, but your plan may cover less of the bill.
             </p>
             <p className="text-espresso/80 leading-relaxed !mb-0">
               Plans vary even within the same insurance carrier, so the most reliable way to know
@@ -95,6 +96,10 @@ export default function InsuranceNewPatientsPage() {
               visit.
             </p>
           </div>
+        </div>
+
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 pb-10">
+          <BenefitsGlossary />
         </div>
 
         <InsuranceBlock />
