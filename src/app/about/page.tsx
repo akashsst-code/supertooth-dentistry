@@ -3,9 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { Placeholder } from "@/components/Placeholder";
-import { CalendarIcon, PhoneIcon, BadgeIcon } from "@/components/icons";
-import { archana, credentials, contact } from "@/lib/content";
+import { CredentialBadges } from "@/components/CredentialBadges";
+import { CalendarIcon, PhoneIcon } from "@/components/icons";
+import { archana, contact } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About Dr. Archana Dubey | Super Tooth Dentistry",
@@ -27,10 +27,10 @@ export const metadata: Metadata = {
  * is "1 profile/dentist + philosophy," so the honest minimum is to wait
  * for real names rather than render placeholder ones.
  *
- * `credentials` (professional affiliations, distinct from the badges
- * pulled from her real bio) are all still unconfirmed per their own
- * content.ts strings — rendered through <Placeholder>, same convention
- * as every other unconfirmed field on the site.
+ * Credential/training-and-affiliation badges (content.ts
+ * `credentialBadges`) are the same real data and the same
+ * <CredentialBadges> component TrustBlock uses on the homepage, so both
+ * surfaces stay in sync.
  */
 export default function AboutPage() {
   return (
@@ -91,36 +91,13 @@ export default function AboutPage() {
                 {archana.tagline}
               </h2>
 
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {archana.badges.map((b) => (
-                  <li
-                    key={b}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-xs font-medium text-espresso"
-                  >
-                    <BadgeIcon className="shrink-0 text-terracotta-dark" />
-                    {b}
-                  </li>
-                ))}
-              </ul>
-
-              <p className="mt-5 text-sm italic text-espresso/80">&ldquo;{archana.quote}&rdquo;</p>
+              <p className="mt-4 text-sm italic text-espresso/80">&ldquo;{archana.quote}&rdquo;</p>
               <p className="mt-4 text-espresso/80 leading-relaxed">{archana.bio}</p>
-
-              <p className="mt-5 text-sm text-espresso/70">{archana.certifications}</p>
             </div>
           </div>
 
           <div className="mt-10 rounded-2xl border border-sand bg-sand/30 p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta-dark mb-3">
-              Professional affiliations
-            </p>
-            <ul className="flex flex-col gap-2">
-              {credentials.map((c, i) => (
-                <li key={i} className="text-sm text-espresso/80">
-                  <Placeholder>{c}</Placeholder>
-                </li>
-              ))}
-            </ul>
+            <CredentialBadges />
           </div>
 
           <p className="mt-10 text-sm text-espresso/60">
