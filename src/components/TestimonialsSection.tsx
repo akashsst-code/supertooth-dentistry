@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { GoogleGIcon, PauseIcon, PlayIcon, QuoteIcon, StarIcon } from "./icons";
-import { Placeholder } from "./Placeholder";
 import { reviews, testimonials } from "@/lib/content";
 
 const PIXELS_PER_SECOND = 22; // slower than the office reel — text needs more read time than a photo
@@ -97,12 +96,8 @@ export function TestimonialsSection() {
               <span className="flex gap-0.5 text-terracotta">
                 <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
               </span>
-              <span className="font-display text-base font-semibold text-warm-ivory">
-                <Placeholder tone="dark">{reviews.rating}</Placeholder>
-              </span>
-              <span>
-                (<Placeholder tone="dark">{reviews.count}</Placeholder>)
-              </span>
+              <span className="font-display text-base font-semibold text-warm-ivory">{reviews.rating}</span>
+              <span>({reviews.count})</span>
             </div>
             <button
               type="button"
@@ -144,13 +139,9 @@ export function TestimonialsSection() {
 
                 <div className="rounded-2xl bg-warm-ivory/10 border border-warm-ivory/15 p-6 flex flex-col h-full">
                   <QuoteIcon className="text-terracotta mb-3" />
-                  <p className="text-warm-ivory/90 text-sm flex-1">
-                    <Placeholder tone="dark">{t.quote}</Placeholder>
-                  </p>
+                  <p className="text-warm-ivory/90 text-sm flex-1">{t.quote}</p>
                   <div className="mt-5 flex items-center justify-between">
-                    <span className="text-sm font-medium text-warm-ivory">
-                      <Placeholder tone="dark">{t.name}</Placeholder>
-                    </span>
+                    <span className="text-sm font-medium text-warm-ivory">{t.name}</span>
                     <span className="flex gap-0.5 text-terracotta">
                       <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
                     </span>

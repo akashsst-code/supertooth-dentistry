@@ -206,6 +206,23 @@ export function Nav() {
               <PhoneIcon /> {contact.phone}
             </a>
 
+            {/* Backlog item 7 — one tap from the mobile menu, per that
+                item's own reachability acceptance criteria. Deliberately
+                NOT in the `nav` array (same reasoning as /backlog below):
+                that array is the locked four-item patient nav shared with
+                desktop, and a fifth item there would also need a desktop
+                slot this item never asked for. Item 45 (emergency
+                reachability, visual-distinction pass) is where this gets
+                a more deliberate treatment — this is the minimum needed
+                to satisfy item 7 today. */}
+            <Link
+              href="/emergency"
+              onClick={() => setOpen(false)}
+              className="tap-target inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-alert"
+            >
+              Dental emergency?
+            </Link>
+
             {/* Internal working links — deliberately NOT in the `nav` array
                 in content.ts. That array is the patient-facing wayfinding
                 surface locked in docs/supertooth-navigation-requirements.md,

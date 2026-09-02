@@ -21,11 +21,14 @@ export const practice = {
 };
 
 export const contact = {
-  // Main line, full address, and hours below are real — sourced from the
-  // practice's existing site (gray-rail-265889.hostingersite.com), the
-  // same source already trusted for Dr. Archana's bio (see `archana`
-  // below and docs/supertooth-webflow-build-spec.md Status section).
-  phone: "(206) 687-7571",
+  // Backlog item 3 — the practice's source site showed two conflicting
+  // numbers, (206) 593-3131 and (206) 687-7571 (docs/supertooth-
+  // webflow-build-spec.md Status section, docs/supertooth-patient-
+  // needs-research.md). Akash confirmed (206) 593-3131 is correct
+  // 2026-09-01, matching the live Google Business Profile listing
+  // checked directly (same 593-3131 number, same address) — one number,
+  // everywhere, matching GBP per the NAP-consistency requirement.
+  phone: "(206) 593-3131",
   address: "133 Queen Anne Ave N, Suite A, Seattle, WA 98109",
   // Akash's exact wording (given directly in chat), not scraped.
   parkingNote: "Bus stop on the same block. Street parking available on nearby streets.",
@@ -92,9 +95,15 @@ export const differentiators = [
   },
 ];
 
+// Backlog item 13 — checked directly against the live Google Business
+// Profile ("Supertooth Dentistry", 133 Queen Anne Ave N Unit A) on
+// 2026-09-01. Rating matched the prior placeholder exactly; count did
+// not (487 -> 427) and is corrected here. Item 20 (API-fed live rating)
+// still applies for keeping this in sync going forward — this is a
+// manual point-in-time verification, not a live feed.
 export const reviews = {
-  rating: "4.9", // unconfirmed per prior Webflow-build audit — verify before launch
-  count: "487", // unconfirmed per prior Webflow-build audit — verify before launch
+  rating: "4.9",
+  count: "427",
 };
 
 // Each offer is one line of text + a half-card photo (per Akash's
@@ -250,16 +259,34 @@ export const team = [
 export const officeBlurb =
   "Step inside and it feels less like a dental office and more like a quiet reset — comfortable treatment rooms, same-day crown technology on-site, and a team that walks you through every step before it happens.";
 
-// "What patients are saying" — real Google rating/count already exist
-// above (reviews). These quote slots are structural placeholders only:
-// real patient testimonials cannot be invented (HIPAA / no-unverifiable-
-// claims, docs/supertooth-webflow-build-spec.md Section 7) — render each
-// through <Placeholder> until Akash supplies real reviews in first-name +
-// last-initial format.
+// "What patients are saying" — backlog item 13. Real Google rating/count
+// already exist above (reviews). These three are the top reviews pulled
+// directly from the live Google Business Profile ("Supertooth Dentistry",
+// 133 Queen Anne Ave N Unit A) on 2026-09-01, all 5-star. Reviewer names
+// are redacted to first-name + last-initial per the HIPAA attribution
+// rule (docs/supertooth-webflow-build-spec.md Section 7) — same format
+// this field already used as its placeholder. Quotes are trimmed to the
+// last complete sentence available before Google's own "... More"
+// truncation point, rather than including a cut-off fragment — wording
+// within that trim is verbatim, nothing paraphrased or invented. Item 20
+// (API-fed live reviews) supersedes this with a live feed later; this is
+// a manual point-in-time pull.
 export const testimonials = [
-  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
-  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
-  { quote: "Patient quote pending — pull a top review from the Google Business Profile", name: "First L." },
+  {
+    quote:
+      "I've always hated the dentist, but love coming to Supertooth Dentistry. Dr. Archana is sweet, knowledgeable and makes me feel comfortable. Her staff is wonderful too!",
+    name: "Elise T.",
+  },
+  {
+    quote:
+      "I had an excellent experience with Dr. Dubey and her team. I went in for a deep cleaning and later had to get a cavity filled. Dr. Dubey was very thorough and explained every step of the process, which helped ease my anxiety.",
+    name: "Vandana S.",
+  },
+  {
+    quote:
+      "Supertooth is always kind, caring, thorough, and efficient. I've been going to there for 5+ years and have always had a good experience. The team has continuously gotten ahead of any dental issues I have before they became too problematic.",
+    name: "Berri R.",
+  },
 ];
 
 // Dr. Archana's professional affiliations/certifications — distinct from
@@ -502,3 +529,98 @@ export const nav = [
   { label: "Insurance & New Patients", href: "/insurance-new-patients" },
   { label: "Contact", href: "/contact" },
 ];
+
+// Backlog item 7 — /emergency, v1 scope only (the v2 items in that
+// backlog entry — a "what to have ready" checklist, NHS-style "when
+// unsure, default up" framing — are deliberately not included here).
+// Tier 1/2/3 structure and the specific first-aid actions are sourced
+// from ADA MouthHealthy per that item's evidence citation; do not
+// paraphrase loosely or add advice it doesn't support. `afterHours` is
+// Akash's own confirmed after-hours reality (2026-09-01): call, or book
+// online — no answering service, no voicemail-specific promise, and
+// deliberately no response-time commitment (item 7 acceptance: "No
+// invented response-time promise anywhere on the page").
+export const emergencyGuidance = {
+  tiers: [
+    {
+      tier: "911 or the ER",
+      when: "Call 911 or go to the nearest emergency room right away if you have any of these:",
+      symptoms: [
+        "Swelling that is spreading to your neck or eye",
+        "Fever along with facial swelling",
+        "Trouble breathing or swallowing",
+      ],
+    },
+    {
+      tier: "Call us",
+      when: "Call us as soon as you can for:",
+      symptoms: [
+        "A knocked-out, cracked, or broken tooth",
+        "A lost filling or crown",
+        "Dental pain",
+        "Swelling without any of the red flags above",
+      ],
+    },
+    {
+      tier: "While you wait",
+      when: "Until you're seen:",
+      symptoms: [
+        "Rinse gently with warm water",
+        "Use a cold compress on any swelling",
+        "Do not place aspirin or any other painkiller directly on the tooth or gum — it can burn the tissue",
+      ],
+    },
+  ],
+  afterHours:
+    "If it's outside office hours, call us — or schedule your next available appointment online right now.",
+  erNote:
+    "An emergency room can treat pain and infection, but only a dentist can fix the underlying problem — plan to follow up with us as soon as you can.",
+};
+
+// Backlog item 12 — /privacy and /accessibility. The item's own scope
+// is explicit that privacy text must be "practice-supplied or
+// counsel-reviewed" and out-of-scope is "writing legal text ourselves" —
+// this draft exists so the route and layout exist now, informed by how
+// comparable Seattle-area dental-practice sites and the HHS model
+// notices structure this content, but it is NOT the practice-approved
+// version item 12's acceptance criteria requires. `draft: true` drives
+// a visible banner on the page; flip it once Akash/counsel approves
+// real text, per the same real/placeholder convention used elsewhere
+// in this file.
+export const privacyPolicy = {
+  draft: true,
+  lastUpdated: "2026-09-01",
+  sections: [
+    {
+      heading: "Information we collect",
+      body: "When you request an appointment or contact us through this site, we collect the information you provide — name, phone number, email, and anything you tell us about the reason for your visit. We do not sell or rent this information to anyone.",
+    },
+    {
+      heading: "How we use it",
+      body: "We use your information to respond to your request, schedule and manage appointments, and communicate with you about your care. Health information you share with our clinical team is handled under our HIPAA Notice of Privacy Practices, available at our office.",
+    },
+    {
+      heading: "SMS / text messaging",
+      body: "Not applicable — we don't currently send appointment texts. If that changes, this section will state what you're opted into, how often we'll text, and how to stop at any time.",
+    },
+    {
+      heading: "Cookies and analytics",
+      body: "This site may use basic, privacy-respecting analytics to understand which pages are useful to visitors. We do not use this data to identify you personally.",
+    },
+    {
+      heading: "Your choices",
+      body: "You can ask us what information we have about you, ask us to correct it, or ask us to delete it, by contacting us using the information below.",
+    },
+  ],
+};
+
+export const accessibilityStatement = {
+  conformanceTarget: "WCAG 2.2 Level AA",
+  lastUpdated: "2026-09-01",
+  commitment:
+    "Super Tooth Dentistry is committed to making this website usable by everyone, including people who use assistive technology.",
+  knownLimitations: [
+    "A full accessibility audit against WCAG 2.2 AA has not yet been completed (tracked internally as backlog item 14) — some issues may exist that we haven't found yet.",
+    "Some third-party embeds (such as the Google Maps location panel) are outside our direct control and may not fully meet this standard.",
+  ],
+};
