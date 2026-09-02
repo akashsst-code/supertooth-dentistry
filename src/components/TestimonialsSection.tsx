@@ -87,41 +87,46 @@ export function TestimonialsSection() {
 
   return (
     <section className="bg-espresso text-warm-ivory">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
+        {/* Pause/play — WCAG 2.2.2 requires a way to stop auto-moving
+            content, but it doesn't need to sit inside the rating badge's
+            row competing for space with it. Tucked into its own corner
+            instead, clear of both the heading and the badge. */}
+        <button
+          type="button"
+          onClick={() => setUserPaused((p) => !p)}
+          aria-label={userPaused ? "Resume testimonial scroll" : "Pause testimonial scroll"}
+          aria-pressed={userPaused}
+          className="tap-target absolute top-4 right-4 sm:top-6 sm:right-6 inline-flex items-center justify-center rounded-full border border-warm-ivory/20 text-warm-ivory/70 hover:text-warm-ivory hover:border-warm-ivory/40 transition-colors"
+        >
+          {userPaused ? <PlayIcon /> : <PauseIcon />}
+        </button>
+
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-12 pr-14">
           <h2 className="font-display text-2xl sm:text-3xl font-semibold">What patients are saying</h2>
-          <div className="flex items-center gap-3">
-            {/* Rating badge — was a bare icon + text row that read as
-                "hidden" against the dark section (the Google "G" is
-                designed for a light backdrop, and the row had no visual
-                container of its own). Given a proper chip: a white
-                roundel behind the "G" so its four brand colors read
-                correctly, and a bordered pill around the whole cluster
-                so it reads as a badge, not stray text. */}
-            <div className="flex items-center gap-2 rounded-full bg-warm-ivory/10 border border-warm-ivory/25 pl-1.5 pr-3.5 py-1.5 text-warm-ivory/90 text-sm font-medium">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-warm-ivory">
-                <GoogleGIcon className="h-4 w-4" />
-              </span>
-              <span className="flex gap-0.5 text-terracotta">
-                <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
-              </span>
-              <span className="font-display text-base font-semibold text-warm-ivory">{reviews.rating}</span>
-              <span>({reviews.count})</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setUserPaused((p) => !p)}
-              aria-label={userPaused ? "Resume testimonial scroll" : "Pause testimonial scroll"}
-              aria-pressed={userPaused}
-              className="tap-target inline-flex items-center justify-center rounded-full border border-warm-ivory/20 text-warm-ivory/70 hover:text-warm-ivory hover:border-warm-ivory/40 transition-colors"
-            >
-              {userPaused ? <PlayIcon /> : <PauseIcon />}
-            </button>
+          {/* Rating badge — was a bare 16px icon sitting directly on the
+              dark section with no container of its own, easy to miss and
+              too small for the Google "G"'s four brand colors to read
+              clearly. Sized up and given a proper white roundel + bordered
+              pill so both the badge and the logo's color read at a glance. */}
+          <div className="flex items-center gap-2.5 rounded-full bg-warm-ivory/10 border border-warm-ivory/25 pl-2 pr-4 py-2 text-warm-ivory/90 text-sm font-medium">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warm-ivory">
+              <GoogleGIcon className="h-5 w-5" />
+            </span>
+            <span className="flex gap-0.5 text-terracotta">
+              <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
+            </span>
+            <span className="font-display text-base font-semibold text-warm-ivory">{reviews.rating}</span>
+            <span>({reviews.count})</span>
           </div>
         </div>
 
         <div className="overflow-hidden">
-          <div ref={trackRef} className="relative flex gap-10 w-max pt-9" style={{ willChange: "transform" }}>
+          <div
+            ref={trackRef}
+            className="relative flex items-start gap-10 w-max pt-9"
+            style={{ willChange: "transform" }}
+          >
             {/* The connecting rail — a child of the scrolling track itself,
                 so it moves with the cards and the "chain" stays unbroken
                 through the loop. */}
@@ -146,9 +151,9 @@ export function TestimonialsSection() {
                   aria-hidden="true"
                 />
 
-                <div className="rounded-2xl bg-warm-ivory/10 border border-warm-ivory/15 p-6 flex flex-col h-full">
+                <div className="rounded-2xl bg-warm-ivory/10 border border-warm-ivory/15 p-6 flex flex-col">
                   <QuoteIcon className="text-terracotta mb-3" />
-                  <p className="text-warm-ivory/90 text-sm flex-1">{t.quote}</p>
+                  <p className="text-warm-ivory/90 text-sm">{t.quote}</p>
                   <div className="mt-5 flex items-center justify-between">
                     <span className="text-sm font-medium text-warm-ivory">{t.name}</span>
                     <span className="flex gap-0.5 text-terracotta">
