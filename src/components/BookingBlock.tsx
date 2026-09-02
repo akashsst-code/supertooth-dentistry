@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { contact, hours } from "@/lib/content";
-import { CalendarIcon, ClockIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, UserPlusIcon } from "./icons";
+import { contact, hours, reviews } from "@/lib/content";
+import { CalendarIcon, ClockIcon, GoogleGIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, StarIcon } from "./icons";
 
 /**
  * Booking block — docs/supertooth-ux-flow.md Section 4 / build-spec
@@ -27,12 +27,35 @@ import { CalendarIcon, ClockIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, UserP
  *
  * Everything here is left-aligned, never centered — Akash flagged that
  * centered text on mobile made the eye jump around instead of scanning
- * down a single edge. "Office hours" and "Location" sit in a genuine
- * two-column grid (not a wrapped row) so they read as a small scannable
- * spec sheet next to the CTAs, same pattern as the labeled "Quick
- * actions" group above them. Only open hours are shown here (the
- * "Closed" row still exists in `hours` for Nav's full listing) since a
- * closed day isn't actionable next to a booking CTA.
+ * down a single edge. "Office hours" and "Location" are stacked (not
+ * side-by-side) — a two-column layout was tried first but squeezed the
+ * hours string into an awkward mid-phrase wrap at this section's actual
+ * available width; full-width stacked rows read cleaner and don't wrap.
+ *
+ * Backlog item 34 ("prominent, honest, badged hours") — the 7:00 AM open
+ * is stated inline in the "Visit us" eyebrow line rather than only living
+ * inside the two-column list below, and that list now states both rows
+ * (open AND the Sat–Mon closed row) instead of hiding the closed one —
+ * the earlier "closed isn't actionable" reasoning gave an incomplete
+ * picture next to a booking CTA, which is exactly what item 34's job
+ * story flags. A separate pill/badge for the open hour was tried first
+ * and reverted per Akash's direct feedback ("floating") — plain text in
+ * the same eyebrow reads as one line, not a bolted-on chip. Deliberately
+ * still a static list, not a live "open now/closed" indicator — that's
+ * explicitly out of scope for item 34 per the locked navigation
+ * requirements (a static hours list is the accepted v1).
+ *
+ * Trust proof (real Google rating + review count, plain text — same
+ * non-link pattern Hero.tsx and TestimonialsSection.tsx already use, no
+ * new UI convention) sits right under the reassurance line so it's read
+ * in the same glance as the Book button, not just further up the page.
+ *
+ * Office hours / Location use a fixed icon-column grid (not a flex row)
+ * so a wrapped second line indents under the first line's text instead
+ * of sliding under the icon — narrow flex rows were wrapping "AM"/"PM"
+ * onto their own line, which read as broken. No "Get Directions" link
+ * here (tried, then removed per Akash's direct feedback) — the address
+ * is plain text, same as before this pass.
  *
  * Phone button shows the number itself, not the word "Call" — same
  * "be explicit" call Akash made for the Hero CTA — and both CTAs share
@@ -63,32 +86,42 @@ import { CalendarIcon, ClockIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, UserP
  * them for primacy — restraint through scale within the row, not
  * through hiding it in a different section.
  *
- * New Patient stays separate — a small boutique practice whose
- * dominant job is winning new patients doesn't need it competing for
- * space in "Quick actions" alongside the more time-sensitive Book/Call/
- * Emergency trio, so it's still its own quiet line below Office hours/
- * Location.
+ * "New patient? Start here" line removed per Akash's direct feedback —
+ * `/insurance-new-patients` stays reachable via the persistent nav.
  */
 export function BookingBlock() {
   const openHours = hours.find((h) => h.time !== "Closed");
 
   return (
     <section id="booking" className="bg-espresso text-warm-ivory">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
-        <div className="grid lg:grid-cols-5 gap-10 lg:gap-12 items-center">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
+        <div className="grid lg:grid-cols-5 gap-8 lg:gap-10 items-center">
           <div className="lg:col-span-3 text-left">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-              Visit us
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+              Visit us{openHours && ` · Open from ${openHours.time.split(" – ")[0]}`}
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-semibold mb-4">
+            <h2 className="font-display text-2xl sm:text-3xl font-semibold mb-2">
               Ready to book your visit?
             </h2>
-            <p className="text-warm-ivory/80 max-w-xl mb-8">
+            <p className="text-warm-ivory/80 max-w-xl mb-3">
               Reach out and we&apos;ll find a time that works — same-day slots are often available.
             </p>
 
-            <div className="mb-8">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+            <p className="mb-5 inline-flex items-center gap-1.5 text-sm text-warm-ivory/85">
+              <GoogleGIcon />
+              <span className="flex gap-px text-terracotta">
+                <StarIcon className="h-3.5 w-3.5" />
+                <StarIcon className="h-3.5 w-3.5" />
+                <StarIcon className="h-3.5 w-3.5" />
+                <StarIcon className="h-3.5 w-3.5" />
+                <StarIcon className="h-3.5 w-3.5" />
+              </span>
+              <strong className="text-warm-ivory font-semibold">{reviews.rating}</strong>({reviews.count}{" "}
+              Google reviews)
+            </p>
+
+            <div className="mb-6">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                 Quick actions
               </p>
               <div className="flex flex-wrap items-center gap-1.5">
@@ -116,36 +149,32 @@ export function BookingBlock() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 max-w-sm">
-              {openHours && (
-                <div>
-                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
-                    Office hours
-                  </p>
-                  <span className="flex items-start gap-2 text-sm text-warm-ivory/80">
-                    <ClockIcon className="mt-0.5 shrink-0" />
-                    {openHours.days} · {openHours.time}
-                  </span>
-                </div>
-              )}
+            <div className="flex flex-col gap-3 max-w-sm">
               <div>
-                <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                  Office hours
+                </p>
+                <div className="flex flex-col gap-1">
+                  {hours.map((h) => (
+                    <div key={h.days} className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-warm-ivory/80">
+                      <ClockIcon className="mt-0.5 shrink-0" />
+                      <span>
+                        {h.days} · {h.time}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                   Location
                 </p>
-                <span className="flex items-start gap-2 text-sm text-warm-ivory/80">
+                <div className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-warm-ivory/80">
                   <MapPinIcon className="mt-0.5 shrink-0" />
-                  {contact.address}
-                </span>
+                  <span>{contact.address}</span>
+                </div>
               </div>
             </div>
-
-            <a
-              href="/insurance-new-patients"
-              className="tap-target mt-6 inline-flex items-center gap-1.5 text-xs text-warm-ivory/60 hover:text-warm-ivory transition-colors"
-            >
-              <UserPlusIcon className="h-3.5 w-3.5" />
-              New patient? Start here
-            </a>
           </div>
 
           <div className="lg:col-span-2">

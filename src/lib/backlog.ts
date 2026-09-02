@@ -1265,7 +1265,7 @@ export const backlog: BacklogItem[] = [
       "Scores 37/50 — P0 on merit. Also pinned on patient-safety grounds: incorrect or missing red-flag guidance for spreading swelling or airway compromise is a clinical harm, not a conversion miss.",
     scores: { conversion: 4, reach: 3, risk: 5, effort: 3, readiness: 2 },
     effort: "M",
-    status: "done",
+    status: "partial",
     wave: 2,
     job: "Handle an urgent dental need",
     story:
@@ -1281,6 +1281,7 @@ export const backlog: BacklogItem[] = [
       "One-tap call, prominent",
       "Optionally note that ERs rarely staff dentists and generally treat the symptom, not the tooth",
       "DONE (2026-09-01): shipped as src/app/emergency/page.tsx, sourced from content.ts `emergencyGuidance`. Akash confirmed the after-hours reality: call, or schedule online now — no answering service, so `afterHours` states exactly that with no response-time promise. Tier 1 renders first (DOM and visual order) directly under the page heading, verified at 375×812 to render well within the first viewport alongside the one-tap `tel:` control and a Schedule-now link. Linked from the mobile hamburger menu, the footer, and BookingBlock's \"Dental emergency\" quick action (previously a /contact placeholder). v2 items intentionally not built",
+      "REVISED (2026-09-02): the footer link is gone — Akash reviewed a live-preview screenshot and asked to cut the footer down to just Privacy/Accessibility, dropping the repeated brand/address/CTA block and the \"Dental emergency\" link along with it (Footer.tsx rewritten). Reachability now rests on BookingBlock's \"Quick actions\" pill (one section above the footer, still a real undiluted-`alert` button) and the mobile hamburger menu — both still one tap, so the underlying job story still holds, but this item's own acceptance line (\"footer\" specifically) no longer does. Status dropped to `partial` to keep that honest rather than leaving `done` stale.",
       "v2: adopt the \"when unsure, default up\" rule — safer to be evaluated and sent home than to delay (NHS 111 / Bond Vet routing model, borrowed as static cited content, never as a question engine)",
       "v2: add a short \"what to have ready when you call\" list — what happened, when, symptoms, medications",
       "v2 anti-pattern: exactly ONE emergency number sitewide. An observed site listed three, which in a crisis is unusable",
@@ -4600,7 +4601,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 4, reach: 4, risk: 2, effort: 5, readiness: 2 },
     effort: "S",
-    status: "blocked",
+    status: "partial",
     wave: 2,
     job: "Fit dental care around my working day",
     story:
@@ -4613,6 +4614,7 @@ export const backlog: BacklogItem[] = [
       "State closed days honestly rather than omitting them",
       "One source of truth — hours identical across every surface and matching the Google Business Profile",
       "Only badge what is true: no weekend badge if there are no weekend hours",
+      "PARTIAL (2026-09-02): dependsOn resolved by item 3's GBP check (hours already confirmed to match). BookingBlock.tsx now states the 7:00 AM open inline in the 'Visit us' eyebrow ('Visit us · Open from 7:00 AM' — a separate pill badge was tried first and reverted per Akash's direct 'floating' feedback), and the hours list below now states both rows honestly — the open range AND 'Saturday – Monday · Closed' — instead of hiding the closed one, in full-width stacked rows (not a cramped two-column grid) so the string doesn't wrap mid-phrase. All from the single `hours` array in content.ts, so this stays one source of truth by construction; no new duplicate hours string was introduced. Still open: Nav and LocationMapSection (the other two `where` surfaces) don't carry the early-open mention yet — wasn't part of this PR's scope.",
     ],
     acceptance: [
       "Hours identical on every surface and matching the GBP",
