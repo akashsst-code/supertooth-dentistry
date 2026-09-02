@@ -195,7 +195,6 @@ export function TestimonialsSection() {
                       <StarIcon className="h-3.5 w-3.5" /> <StarIcon className="h-3.5 w-3.5" />{" "}
                       <StarIcon className="h-3.5 w-3.5" />
                     </span>
-                    <span className="text-xs text-espresso/45">{t.postedAt}</span>
                   </div>
                   <p className="text-sm text-espresso/80 leading-relaxed mb-0">{t.quote}</p>
                 </div>
