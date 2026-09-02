@@ -32,7 +32,7 @@ export function ServicesSection() {
 
         <div className="relative">
           <div
-            className="absolute left-4 sm:left-6 top-4 bottom-4 w-px bg-terracotta/30"
+            className="absolute left-4 sm:left-6 top-5 bottom-5 w-px bg-espresso/10"
             aria-hidden="true"
           />
           <div className="flex flex-col gap-10 sm:gap-14">
@@ -41,7 +41,7 @@ export function ServicesSection() {
               return (
                 <div key={s.title} className="relative pl-10 sm:pl-16">
                   <span
-                    className="absolute left-4 sm:left-6 top-4 -translate-x-1/2 h-3 w-3 rounded-full bg-terracotta"
+                    className="absolute left-4 sm:left-6 top-5 -translate-x-1/2 h-2 w-2 rounded-full border-[1.5px] border-terracotta bg-warm-ivory"
                     aria-hidden="true"
                   />
                   <div className="group flex flex-col overflow-hidden rounded-2xl border border-sand bg-warm-ivory shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
