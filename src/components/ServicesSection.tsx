@@ -22,10 +22,10 @@ const connectorOffsets = [-22, 18, -14];
  *
  * The connecting thread lives only in the gap *between* cards now —
  * Akash: nothing should sit on the photo itself, the previous round's
- * line-through-the-image treatment. Each gap gets its own short
- * connector (line + a dot at each end) instead of one continuous line,
- * offset by a different `connectorOffsets` value per gap so the path
- * zigzags down the page rather than reading as one straight line.
+ * line-through-the-image treatment. Each gap gets its own short line
+ * segment (no end dots — plain lines only) instead of one continuous
+ * line, offset by a different `connectorOffsets` value per gap so the
+ * path zigzags down the page rather than reading as one straight line.
  *
  * Still exactly 4 items, no links (no click-throughs for now).
  */
@@ -49,14 +49,6 @@ export function ServicesSection() {
                   <div className="relative h-10 sm:h-14" aria-hidden="true">
                     <span
                       className="absolute top-0 bottom-0 w-px bg-espresso/15"
-                      style={{ left: `calc(50% + ${connectorOffsets[i - 1]}px)` }}
-                    />
-                    <span
-                      className="absolute top-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-[1.5px] border-terracotta bg-warm-ivory"
-                      style={{ left: `calc(50% + ${connectorOffsets[i - 1]}px)` }}
-                    />
-                    <span
-                      className="absolute bottom-0 h-2 w-2 -translate-x-1/2 translate-y-1/2 rounded-full border-[1.5px] border-terracotta bg-warm-ivory"
                       style={{ left: `calc(50% + ${connectorOffsets[i - 1]}px)` }}
                     />
                   </div>
