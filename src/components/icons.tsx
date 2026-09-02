@@ -318,17 +318,3 @@ export function ImplantIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-
-/** Decorative laurel flanking a featured credential medallion — CredentialBadges. Purely ornamental, not a real org's mark. */
-export function LaurelIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 64 64" className={className} aria-hidden="true" fill="none">
-      <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <path d="M8 44c5-9 5-19 1-30" />
-        <path d="M10 17c3 2 3 5.5 0 8M11 25c3 2 3 5.5 0 8M12 33c3 2 3 5.5 0 8" />
-        <path d="M56 44c-5-9-5-19-1-30" />
-        <path d="M54 17c-3 2-3 5.5 0 8M53 25c-3 2-3 5.5 0 8M52 33c-3 2-3 5.5 0 8" />
-      </g>
-    </svg>
-  );
-}
