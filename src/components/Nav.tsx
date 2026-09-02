@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Logo } from "./Logo";
+import { MedicalCrossIcon } from "./icons";
 import { contact, hours, nav } from "@/lib/content";
 
 /**
@@ -113,6 +114,26 @@ export function Nav() {
               </span>
             </Link>
 
+            {/* Backlog item 45 — one-tap emergency reachability from every
+                route, without a bottom bar (Akash declined one, 2026-08-30).
+                Small and undiluted per item 46's landed treatment: a compact
+                bg-alert badge, not a full pill, so it reads as distinct from
+                Book Appointment rather than a second competing CTA.
+                Icon-only at md: this row already overflowed at 768px with
+                a labeled badge added (measured — "Book Appointment" and the
+                badge itself both clipped past the viewport edge, on top of
+                the pre-existing 768–790px crowding this file already
+                documents). Label returns at lg, same as the Backlog link
+                above. aria-label carries the name at every width. */}
+            <Link
+              href="/emergency"
+              aria-label="Dental emergency guidance"
+              className="tap-target inline-flex items-center gap-1.5 rounded-full bg-alert px-2.5 lg:px-3 py-2 text-xs font-semibold uppercase tracking-wide text-warm-ivory hover:brightness-110 transition"
+            >
+              <MedicalCrossIcon className="h-3.5 w-3.5" />
+              <span className="hidden lg:inline">Emergency</span>
+            </Link>
+
             <Link
               href="/contact"
               className="tap-target inline-flex items-center justify-center rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-5 py-2.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
@@ -123,6 +144,20 @@ export function Nav() {
 
           {/* Mobile controls */}
           <div className="flex md:hidden items-center gap-1 min-[375px]:gap-2">
+            {/* Backlog item 45 — the fixed header is the one persistent
+                surface on every route and every scroll depth (verified by
+                item 27), so this is where sitewide one-tap emergency
+                reachability has to live now that a bottom bar is ruled out.
+                Icon-only to fit beside Call/Schedule/Menu in a 320px header;
+                meaning carries through the cross icon + aria-label, not
+                colour alone (WCAG 1.4.1, per item 46). */}
+            <Link
+              href="/emergency"
+              aria-label="Dental emergency guidance"
+              className="tap-target inline-flex items-center justify-center rounded-full bg-alert text-warm-ivory"
+            >
+              <MedicalCrossIcon className="h-4 w-4" />
+            </Link>
             <a
               href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
               aria-label="Call the practice"
