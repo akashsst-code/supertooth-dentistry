@@ -315,85 +315,68 @@ export const credentials = [
 ];
 
 // Homepage services teaser — trimmed to exactly 4 per Akash's call to
-// match smilemakersfortworth.com's 4-big-item pattern. Same-day crowns
-// and same-day appointments are already-locked real differentiators (see
-// differentiators above); the description text for cosmetic/restorative
-// is still a structural placeholder pending Akash's confirmed service
-// list (build-spec Section 8) even though the photos backing them are
-// now real.
+// match smilemakersfortworth.com's 4-big-item pattern.
 //
-// `image` is real marketing photography Akash supplied directly
-// (same-day onlay before/after, implant x-ray before/after, in-office
-// Zoom whitening before/after) — matched by content to the closest of
-// the 4 categories (same-day onlay -> same-day crowns; implant ->
-// restorative care; whitening -> cosmetic dentistry). No photo was
-// supplied for general/preventive care, so that card uses a temporary
-// Unsplash stand-in instead (per Akash's "bring images where we don't
-// have" call) — swap for real photography later, same as the other 3;
-// ServicesSection.tsx's icon-tile fallback still exists for any future
-// service entry that ships with no `image` at all.
+// Round 4 (2026-09-01): Akash asked for the 4 tiles to render the same
+// size (matching the "same-day crowns" card) and for patient-facing
+// photography instead of the raw clinical shots ("don't show broken
+// crowns"). The previous round's real marketing photography (same-day
+// onlay, implant x-ray, in-office whitening before/afters) was Akash's
+// own supplied clinical macro/x-ray photography — each cropped to a
+// different natural size (1320x730 / 1251x670 / 1200x1137), which is
+// why the tiles were uneven, and extreme macro intraoral shots and a raw
+// implant x-ray read as clinical rather than reassuring to a patient
+// audience. Swapped all 4 for tasteful, patient-facing stock photography
+// in the same warm/modern tone as the general-preventive card already
+// used — same Unsplash hotlink pattern as `offers` below, one shared
+// `aspect-[4/3]` box in ServicesSection.tsx so every tile matches. The 3
+// original clinical files still live in `public/services/` if real
+// photography is preferred later; ServicesSection.tsx's icon-tile
+// fallback still exists for any future service entry with no `image`.
 //
-// The 3 supplied files are full Instagram-post-style graphics (a big
-// title, our own logo, a brand/product badge, all above the actual
-// before/after photos) — cropping those into a small `aspect-[4/5]`
-// card via `object-cover` read as "elongated"/unnatural (Akash) since
-// it either cut the photos off mid-frame or squeezed a whole poster
-// into a thumbnail. `*-crop.jpg` variants below are cropped to just the
-// labeled before/after photos (title/logo/badge removed) — same source
-// photography, not new/different images. `width`/`height` are set so
-// ServicesSection.tsx can render them at their natural aspect ratio
-// instead of force-cropping again.
-//
-// Two other supplied images (Invisalign Gold Provider badge, Masseter
-// Botox before/after) don't map to any of these 4 categories and aren't
-// used here — worth a follow-up on where those belong (e.g. Botox next
-// to Dr. Archana's "Certified Botox Provider" credential, Invisalign
-// alongside the existing $500-off offer).
+// `real` for cosmetic dentistry and restorative care flipped from
+// false -> true here: both are independently confirmed by Dr. Archana's
+// already-real bio below (`archana.bio`, sourced from the practice's
+// existing site) — "she specializes in esthetic and restorative
+// dentistry — implants, crowns, veneers, smile design, and
+// implant-supported dentures" covers every claim in both cards' detail
+// text. Flag to Akash to confirm before launch in case that bio line
+// doesn't fully match current in-house capability.
 export const services = [
   {
     title: "General & preventive care",
     detail: "Cleanings, exams, and same-day appointments when you need them.",
     real: true,
-    // No real photo supplied yet for this category (see comment above) —
-    // temporary Unsplash stand-in per Akash's "bring images where we
-    // don't have" call, same pattern as the NewPatientOffersBlock photos.
-    // Swap for real practice photography once available.
     image: {
-      src: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80",
-      alt: "Dental cleaning and checkup",
+      src: "https://images.unsplash.com/photo-1663755489920-5e09f66d011a?auto=format&fit=crop&w=1200&q=80",
+      alt: "Dentist and patient sharing a smile during a routine checkup",
     },
   },
   {
     title: "Same-day crowns",
-    detail: "In-house technology — no second visit, no temporary crown.",
+    detail: "Digitally scanned and milled in-house — no second visit, no temporary crown.",
     real: true,
     image: {
-      src: "/services/same-day-crown-onlay-crop.jpg",
-      alt: "Same-day onlay, before and after",
-      width: 1320,
-      height: 730,
+      src: "https://images.unsplash.com/photo-1667133295315-820bb6481730?auto=format&fit=crop&w=1200&q=80",
+      alt: "Dentist using a digital scanner to design a same-day crown chairside",
     },
   },
   {
     title: "Cosmetic dentistry",
-    detail: "Veneers, whitening, and smile design.",
-    real: false,
+    detail: "Veneers, in-office whitening, and full smile design.",
+    real: true,
     image: {
-      src: "/services/teeth-whitening-crop.jpg",
-      alt: "In-office Zoom teeth whitening, before and after",
-      width: 1200,
-      height: 1137,
+      src: "https://images.unsplash.com/photo-1777331903190-341a3dd0441b?auto=format&fit=crop&w=1200&q=80",
+      alt: "Dentist consulting with a smiling patient about cosmetic treatment options",
     },
   },
   {
     title: "Restorative care",
-    detail: "Crowns, bridges, and implant restorations.",
-    real: false,
+    detail: "Crowns, bridges, dentures, and dental implants — rebuilding function, not just looks.",
+    real: true,
     image: {
-      src: "/services/implant-dentistry-crop.jpg",
-      alt: "Dental implant, before and after x-ray",
-      width: 1251,
-      height: 670,
+      src: "https://images.unsplash.com/photo-1771442873035-474765b40ac6?auto=format&fit=crop&w=1200&q=80",
+      alt: "Gloved hand holding a dental implant and crown model",
     },
   },
 ];
