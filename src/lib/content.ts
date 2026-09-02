@@ -260,17 +260,20 @@ export const officeBlurb =
   "Step inside and it feels less like a dental office and more like a quiet reset — comfortable treatment rooms, same-day crown technology on-site, and a team that walks you through every step before it happens.";
 
 // "What patients are saying" — backlog item 13. Real Google rating/count
-// already exist above (reviews). These three are the top reviews pulled
+// already exist above (reviews). These five are the top reviews pulled
 // directly from the live Google Business Profile ("Supertooth Dentistry",
-// 133 Queen Anne Ave N Unit A) on 2026-09-01, all 5-star. Reviewer names
-// are redacted to first-name + last-initial per the HIPAA attribution
-// rule (docs/supertooth-webflow-build-spec.md Section 7) — same format
-// this field already used as its placeholder. Quotes are trimmed to the
-// last complete sentence available before Google's own "... More"
-// truncation point, rather than including a cut-off fragment — wording
-// within that trim is verbatim, nothing paraphrased or invented. Item 20
-// (API-fed live reviews) supersedes this with a live feed later; this is
-// a manual point-in-time pull.
+// 133 Queen Anne Ave N Unit A) — the first three on 2026-09-01, two more
+// added the same day at Akash's request — all 5-star (verified per-review
+// against the star-fill markup, not just assumed from the aggregate).
+// Reviewer names are redacted to first-name + last-initial per the HIPAA
+// attribution rule (docs/supertooth-webflow-build-spec.md Section 7) —
+// same format this field already used as its placeholder. Quotes are
+// either used in full (Dawn B., Karthik B. had no Google truncation) or
+// trimmed to the last complete sentence available before Google's own
+// "... More" truncation point — wording within that trim is verbatim,
+// nothing paraphrased or invented. Item 20 (API-fed live reviews)
+// supersedes this with a live feed later; this is a manual point-in-time
+// pull.
 export const testimonials = [
   {
     quote:
@@ -286,6 +289,16 @@ export const testimonials = [
     quote:
       "Supertooth is always kind, caring, thorough, and efficient. I've been going to there for 5+ years and have always had a good experience. The team has continuously gotten ahead of any dental issues I have before they became too problematic.",
     name: "Berri R.",
+  },
+  {
+    quote:
+      "I never thought I'd say this, but I now love going to the dentist. Supertooth in Queen Anne feels like walking into a friend's house, warm, welcoming, and genuinely caring. The team is fantastic, the space is beautiful, and the care is excellent. Couldn't recommend them more.",
+    name: "Dawn B.",
+  },
+  {
+    quote:
+      "Dr. Archana Dubey is one of the best dentists I've ever been to. She is incredibly patient, helpful, and friendly. I highly recommend her to anyone looking for a dentist who is genuinely considerate of your budget and transparent about all costs. She takes the time to ensure you understand everything, which I really appreciated.",
+    name: "Karthik B.",
   },
 ];
 

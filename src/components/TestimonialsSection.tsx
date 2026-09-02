@@ -91,8 +91,17 @@ export function TestimonialsSection() {
         <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
           <h2 className="font-display text-2xl sm:text-3xl font-semibold">What patients are saying</h2>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-warm-ivory/70 text-sm font-medium">
-              <GoogleGIcon />
+            {/* Rating badge — was a bare icon + text row that read as
+                "hidden" against the dark section (the Google "G" is
+                designed for a light backdrop, and the row had no visual
+                container of its own). Given a proper chip: a white
+                roundel behind the "G" so its four brand colors read
+                correctly, and a bordered pill around the whole cluster
+                so it reads as a badge, not stray text. */}
+            <div className="flex items-center gap-2 rounded-full bg-warm-ivory/10 border border-warm-ivory/25 pl-1.5 pr-3.5 py-1.5 text-warm-ivory/90 text-sm font-medium">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-warm-ivory">
+                <GoogleGIcon className="h-4 w-4" />
+              </span>
               <span className="flex gap-0.5 text-terracotta">
                 <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
               </span>
