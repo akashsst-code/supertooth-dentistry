@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type ReactNode } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
 import { CalendarIcon, PhoneIcon, ShieldCheckIcon } from "./icons";
 import { contact, insuranceCarriers } from "@/lib/content";
 
@@ -36,15 +36,37 @@ export function ExpandCard({
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const panelId = useId();
+  const headerRef = useRef<HTMLButtonElement>(null);
+
+  /**
+   * On expand, bring the header back into view if the animation pushed it
+   * off-screen (e.g. a card above it just grew) — "after expanding, scroll
+   * the header to the top so it doesn't open below the fold" (mobile
+   * pattern spec, accordion contract #4). `block: "nearest"` only moves
+   * the viewport when the header isn't already visible, so opening a card
+   * that's comfortably in view doesn't cause a surprise jump.
+   */
+  function toggle() {
+    setOpen((o) => {
+      const next = !o;
+      if (next) {
+        requestAnimationFrame(() => headerRef.current?.scrollIntoView({ block: "nearest" }));
+      }
+      return next;
+    });
+  }
 
   return (
     <div
       className={`rounded-2xl bg-espresso bg-[radial-gradient(130%_140%_at_12%_0%,rgba(250,248,244,0.07),transparent_50%),radial-gradient(120%_120%_at_100%_100%,rgba(193,99,62,0.18),transparent_55%)] border border-warm-ivory/10 overflow-hidden ${className}`}
     >
       <button
+        ref={headerRef}
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggle}
         aria-expanded={open}
+        aria-controls={panelId}
         className="tap-target w-full flex items-center gap-3 p-4 text-left"
       >
         <span className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-warm-ivory/10 text-terracotta">
@@ -63,8 +85,10 @@ export function ExpandCard({
       </button>
 
       <div
-        className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        id={panelId}
+        inert={!open}
+        className={`grid transition-[grid-template-rows] ease-[cubic-bezier(0,0,0,1)] motion-reduce:!duration-0 ${
+          open ? "grid-rows-[1fr] duration-[240ms]" : "grid-rows-[0fr] duration-[180ms]"
         }`}
       >
         <div className="overflow-hidden">
