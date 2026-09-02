@@ -19,7 +19,7 @@ function CredentialPill({ badge }: { badge: CredentialBadge }) {
   return (
     <span
       title={badge.detail}
-      className="inline-flex items-center gap-1.5 rounded-full border border-sand bg-warm-ivory px-3 py-1.5 text-xs font-medium text-espresso"
+      className="flex items-center gap-1.5 rounded-full border border-espresso/12 bg-sand px-3 py-1.5 text-xs font-medium text-espresso"
     >
       <Icon className="shrink-0 text-terracotta-dark" />
       {badge.title}
@@ -40,10 +40,20 @@ function CredentialPill({ badge }: { badge: CredentialBadge }) {
  * page, almost like pills or pill grouped with few items logically
  * together" — Akash). Grouped into 3 labeled rows (Experience &
  * Education, Certifications & Training, Professional Memberships)
- * instead of 8 flat items, each item a single-line pill with an icon;
- * the fuller org name still exists as a native title-attribute tooltip
- * rather than a second visible line, since that's what was taking up
- * the vertical space.
+ * instead of 8 flat items, each item a pill with an icon; the fuller
+ * org name still exists as a native title-attribute tooltip rather than
+ * a second visible line, since that's what was taking up the vertical
+ * space.
+ *
+ * Pills render in a `grid-cols-1 sm:grid-cols-2` per group, not a
+ * `flex-wrap` row — a follow-up fix after the first pill pass read as
+ * "disorganized" (Akash): flex-wrap let a short pill ("Member, AGD")
+ * sit next to a long one, producing a ragged, uneven-width row. A grid
+ * makes every pill in a row the same width instead. Single-column below
+ * `sm:` specifically — forcing 2 columns at phone width squeezed pills
+ * enough that their text wrapped to 2-3 lines, ballooning the "small
+ * pill" into a tall oval, which is the opposite of what compressing
+ * this section was for.
  */
 export function CredentialBadges() {
   const groups = groupOrder
@@ -55,7 +65,7 @@ export function CredentialBadges() {
       {groups.map(({ group, items }) => (
         <div key={group}>
           <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-espresso/50">{group}</p>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
             {items.map((badge) => (
               <CredentialPill key={badge.title} badge={badge} />
             ))}

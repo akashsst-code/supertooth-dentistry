@@ -289,7 +289,7 @@ export const credentialBadges: CredentialBadge[] = [
   { icon: "graduationCap", title: "DDS, University of Colorado", detail: "Doctor of Dental Surgery", group: "Experience & Education" },
   { icon: "aligner", title: "Certified Invisalign Provider", detail: "Clear aligner treatment", group: "Certifications & Training" },
   { icon: "aligner", title: "AACA Gold Status Provider", detail: "American Academy of Clear Aligners", group: "Certifications & Training" },
-  { icon: "syringe", title: "Certified Botox Provider (AAFE)", detail: "American Academy of Facial Esthetics", group: "Certifications & Training" },
+  { icon: "syringe", title: "Certified Botox Provider", detail: "American Academy of Facial Esthetics (AAFE)", group: "Certifications & Training" },
   { icon: "implant", title: "Trained in Implant Dentistry", detail: "Implant placement & restoration", group: "Certifications & Training" },
   { icon: "badge", title: "Member, AGD", detail: "Academy of General Dentistry", group: "Professional Memberships" },
   { icon: "shieldCheck", title: "Member, ADA", detail: "American Dental Association", group: "Professional Memberships" },
