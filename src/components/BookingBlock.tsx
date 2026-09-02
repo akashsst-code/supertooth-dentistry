@@ -94,20 +94,20 @@ export function BookingBlock() {
 
   return (
     <section id="booking" className="bg-espresso text-warm-ivory">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
-        <div className="grid lg:grid-cols-5 gap-10 lg:gap-12 items-center">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
+        <div className="grid lg:grid-cols-5 gap-8 lg:gap-10 items-center">
           <div className="lg:col-span-3 text-left">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
               Visit us{openHours && ` · Open from ${openHours.time.split(" – ")[0]}`}
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-semibold mb-4">
+            <h2 className="font-display text-2xl sm:text-3xl font-semibold mb-2">
               Ready to book your visit?
             </h2>
-            <p className="text-warm-ivory/80 max-w-xl mb-4">
+            <p className="text-warm-ivory/80 max-w-xl mb-3">
               Reach out and we&apos;ll find a time that works — same-day slots are often available.
             </p>
 
-            <p className="mb-8 inline-flex items-center gap-1.5 text-sm text-warm-ivory/85">
+            <p className="mb-5 inline-flex items-center gap-1.5 text-sm text-warm-ivory/85">
               <GoogleGIcon />
               <span className="flex gap-px text-terracotta">
                 <StarIcon className="h-3.5 w-3.5" />
@@ -120,8 +120,8 @@ export function BookingBlock() {
               Google reviews)
             </p>
 
-            <div className="mb-8">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+            <div className="mb-6">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                 Quick actions
               </p>
               <div className="flex flex-wrap items-center gap-1.5">
@@ -149,12 +149,12 @@ export function BookingBlock() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-5 max-w-sm">
+            <div className="flex flex-col gap-3 max-w-sm">
               <div>
-                <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                   Office hours
                 </p>
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1">
                   {hours.map((h) => (
                     <div key={h.days} className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-warm-ivory/80">
                       <ClockIcon className="mt-0.5 shrink-0" />
@@ -166,7 +166,7 @@ export function BookingBlock() {
                 </div>
               </div>
               <div>
-                <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                   Location
                 </p>
                 <div className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-warm-ivory/80">

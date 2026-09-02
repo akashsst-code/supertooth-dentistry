@@ -44,8 +44,9 @@ function LegalLinks() {
  * Appointment + phone) — per Akash's call, the very last thing on the
  * page should give a reader who scrolled all the way down something to
  * act on immediately, not just brand/legal info. Kept to exactly two
- * buttons + brand/address/copyright, spacing tightened (py-8 vs the
- * prior py-10, no extra gap under the CTAs) so re-adding the buttons
+ * buttons + brand/address/copyright, spacing tightened progressively
+ * (most recently per Akash's direct "compress, make it tight" pass —
+ * py-8→py-6/py-4→py-3 across both variants) so re-adding the buttons
  * doesn't reopen the "too much space, no clear last action" problem.
  *
  * Mobile matches desktop's light (Warm Ivory) theme instead of
@@ -70,11 +71,11 @@ export function Footer() {
 function MobileFooter() {
   return (
     <div className="md:hidden bg-warm-ivory text-espresso border-t border-sand">
-      <div className="px-6 py-8 flex flex-col items-center gap-2 text-center">
+      <div className="px-6 py-6 flex flex-col items-center gap-1.5 text-center">
         <p className="font-display text-xl font-semibold">{practice.name}</p>
         <span className="h-0.5 w-8 rounded-full bg-terracotta" />
         <p className="text-sm text-espresso/70">{contact.address}</p>
-        <div className="mt-2 flex flex-wrap justify-center gap-1.5">
+        <div className="mt-1.5 flex flex-wrap justify-center gap-1.5">
           <a
             href="/contact"
             className="tap-target inline-flex items-center justify-center gap-1 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3 py-2.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
@@ -92,7 +93,7 @@ function MobileFooter() {
         </div>
       </div>
 
-      <div className="border-t border-sand px-6 py-4 flex flex-col items-center gap-3">
+      <div className="border-t border-sand px-6 py-3 flex flex-col items-center gap-2">
         <LegalLinks />
         <p className="text-center text-xs text-espresso/50">
           © {new Date().getFullYear()} {practice.name}
@@ -105,10 +106,10 @@ function MobileFooter() {
 function DesktopFooter() {
   return (
     <div className="hidden md:block border-t border-sand bg-warm-ivory">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 flex items-center justify-between gap-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-6 flex items-center justify-between gap-8">
         <div>
           <p className="font-display text-lg font-semibold text-espresso">{practice.name}</p>
-          <span className="mt-2 mb-2 block h-0.5 w-8 rounded-full bg-terracotta" />
+          <span className="mt-1.5 mb-1.5 block h-0.5 w-8 rounded-full bg-terracotta" />
           <p className="text-sm text-espresso/70">
             {contact.address} · {contact.parkingNote}
           </p>
@@ -133,7 +134,7 @@ function DesktopFooter() {
       </div>
 
       <div className="border-t border-sand">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-5 flex items-center justify-between gap-4 flex-wrap">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
           <p className="text-xs text-espresso/50">
             © {new Date().getFullYear()} {practice.name}. All rights reserved.
           </p>
