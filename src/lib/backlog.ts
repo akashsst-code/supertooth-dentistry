@@ -5605,7 +5605,7 @@ export const backlog: BacklogItem[] = [
     },
     scores: { conversion: 4, reach: 5, risk: 3, effort: 5, readiness: 5 },
     effort: "S",
-    status: "done",
+    status: "not-started",
     wave: 2,
     job: "Reach emergency help fast, from anywhere, on a phone",
     story:
@@ -5618,20 +5618,19 @@ export const backlog: BacklogItem[] = [
       "The header already carries a call control, which covers part of the urgent job — establish whether that is sufficient or whether emergency needs its own distinct entry",
       "Verify one-tap reachability from every route, at every matrix width",
       "Pairs with item 46: whatever the entry is, it must be visually distinguishable from the booking CTA",
-      "DONE (2026-09-01): the call control was judged insufficient — the fixed header now carries a dedicated icon-only Dental Emergency link (bg-alert, MedicalCrossIcon, aria-label) alongside Call/Schedule/Menu on mobile, and a matching bg-alert badge in the desktop nav before Book Appointment. Answers the question the scope posed: yes, emergency needed its own distinct entry",
-      "DONE (2026-09-01): fixing this exposed two real regressions from adding a fourth mobile-header control, both measured and fixed rather than guessed at — (1) at 320px the header was already at capacity after item 53's fix, so Logo's wordmark was hidden for the whole mobile range (`hidden md:flex`, was `hidden min-[375px]:flex`), tooth mark only; the first attempt only hid it below 375px, which left the hamburger button clipped fully off-canvas from 375px up to ~421px measured — most phones — until widened to the full mobile range; (2) the desktop nav overflowed at 768px once a labeled badge was added (measured: both the badge and 'Book Appointment' clipped past the viewport edge), fixed by making the desktop badge icon-only at md and returning the 'Emergency' label at lg, same pattern already used for the Backlog link",
+      "TRIED AND REJECTED (2026-09-01): built a dedicated icon-only Dental Emergency link in the fixed header — mobile icon beside Call/Schedule/Menu, desktop badge before Book Appointment (both bg-alert, MedicalCrossIcon, per item 46's treatment). Fitting a fourth mobile control also required hiding Logo's wordmark across the whole mobile range and making the desktop badge icon-only below lg to avoid overflowing the header at 320px and 768px (both measured, not guessed). Akash reviewed and didn't want emergency in the top nav at all — reverted in full (Nav.tsx and Logo.tsx both back to their pre-item-45 state). Back to not-started: reachability currently falls back to the hamburger-menu link only (item 7's original minimum, one extra tap on mobile, no desktop entry), which does not satisfy this item's one-tap acceptance criterion. Next candidate needs Akash's steer: a persistent in-page affordance, the footer, or something else — header placement is now a tried-and-rejected option, not an open one",
     ],
     acceptance: [
-      "Emergency guidance reachable in one tap from every route at 375px — DONE, verified via the fixed header (persists at all scroll depths per item 27)",
-      "Verified at 320, 360, 375, 390, 430 and landscape — DONE, measured directly (see scope note); 320/360/375/390/430 and 568×320 landscape all clear the header row with margin, no horizontal overflow",
-      "The emergency entry is visually distinct from the booking CTA — DONE, undiluted bg-alert vs. terracotta gradient, icon-only or icon+label per item 46's established treatment",
-      "No bottom bar introduced — DONE, confirmed no fixed/sticky bottom element added",
+      "Emergency guidance reachable in one tap from every route at 375px",
+      "Verified at 320, 360, 375, 390, 430 and landscape",
+      "The emergency entry is visually distinct from the booking CTA",
+      "No bottom bar introduced",
     ],
     evidence:
       "Blueprint §17/§19/§22 argued for a bottom bar; the ruling declined it. What survives is the underlying requirement — item 27 measured the fixed header persisting with a 44px Schedule control, so Call and Book are covered, and emergency is the genuine remaining gap.",
     dependsOn: "Item 7 (emergency page must exist to link to) · item 46 (visual distinction)",
     outOfScope:
-      "A sticky bottom bar. Ruled out 2026-08-30. Reopen only with measured evidence that one-tap emergency access is unachievable without one.",
+      "A sticky bottom bar. Ruled out 2026-08-30. Reopen only with measured evidence that one-tap emergency access is unachievable without one. Also out: an emergency entry in the fixed top nav (mobile or desktop) — built and reviewed 2026-09-01, Akash didn't want it there.",
     references: [
       {
         name: "NN/g — thumb zone and mobile reachability",
@@ -5724,7 +5723,7 @@ export const backlog: BacklogItem[] = [
     },
     scores: { conversion: 2, reach: 3, risk: 4, effort: 5, readiness: 4 },
     effort: "S",
-    status: "done",
+    status: "partial",
     wave: 2,
     job: "Tell an emergency action apart from a booking action instantly",
     story:
@@ -5738,13 +5737,13 @@ export const backlog: BacklogItem[] = [
       "Reserved exclusively for emergency. Never a marketing, promotional or error-state colour; a red used twice stops meaning anything",
       "Never colour alone — icon plus text label always, so it survives greyscale and outdoor glare",
       "Do not touch any of the four existing tokens — confirmed: this PR's diff to globals.css only adds `--color-alert`, no existing value changed",
-      "DONE (2026-09-01): item 45 landed the sitewide entries this item was waiting on — the fixed header's mobile emergency icon and desktop badge both use the same undiluted `bg-alert` treatment as the BookingBlock badge (icon + `warm-ivory` text/icon, never colour alone). Now proven across every entry point, not just BookingBlock's one call site",
+      "TRIED (2026-09-01): item 45 built sitewide header entries (mobile icon, desktop badge) using this same undiluted `bg-alert` treatment. Akash reviewed and rejected emergency living in the top nav at all — reverted. Still just the one BookingBlock call site; sitewide coverage is unresolved again pending item 45's next attempt",
     ],
     acceptance: [
       "One new token added, exact value signed off by Akash — DONE, revised once already (see decision.consequence above) after direct feedback; that's expected for a value this subjective",
-      "AA verified on every surface pairing it appears in — DONE: every consumer (BookingBlock's badge, the header's mobile icon, the header's desktop badge) uses ivory text/icon ON the `bg-alert` fill (7.08:1), self-contained regardless of the surrounding section's background",
-      "Emergency action unmistakably distinct from booking CTAs at 375px — DONE: undiluted `bg-alert` fill at every entry point (BookingBlock, mobile header icon, desktop header badge), deliberately smaller than the primary Book/Schedule controls — now sitewide, not just BookingBlock",
-      "Identifiable in greyscale — meaning never colour-carried — DONE: MedicalCrossIcon plus a label (visible text, or aria-label where the header is icon-only) carries the meaning independent of the alert colour at every entry point",
+      "AA verified on every surface pairing it appears in — DONE: the real consumer (BookingBlock's emergency badge) uses ivory text ON the `bg-alert` fill (7.08:1), self-contained regardless of the surrounding section's background. A plain-text-on-espresso treatment was tried mid-pass and measured ~2:1 (fails AA) — abandoned along with the tint-token approach in favor of the current self-contained badge",
+      "Emergency action unmistakably distinct from booking CTAs at 375px — DONE for the BookingBlock badge, now sitting directly in the 'Quick actions' row beside Book/Call: undiluted `bg-alert` fill, deliberately smaller padding/font than the two primary pills is what separates it visually, not distance from Book — an isolated-on-its-own-line version was tried and wasn't the actual fix; still PENDING sitewide — item 45's header attempt was rejected, so this needs a different entry point",
+      "Identifiable in greyscale — meaning never colour-carried — DONE: MedicalCrossIcon + 'Dental emergency' label carry the meaning independent of the alert colour",
       "Zero changes to the four locked tokens — DONE",
     ],
     evidence:
