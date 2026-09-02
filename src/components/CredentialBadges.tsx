@@ -14,46 +14,44 @@ const iconMap: Record<CredentialBadge["icon"], typeof StarIcon> = {
 /** Ordered so "Experience & Education" leads (Akash's "top items") — content.ts doesn't guarantee array order across groups. */
 const groupOrder: CredentialBadge["group"][] = ["Experience & Education", "Certifications & Training", "Professional Memberships"];
 
-function CredentialPill({ badge }: { badge: CredentialBadge }) {
+function CredentialRow({ badge }: { badge: CredentialBadge }) {
   const Icon = iconMap[badge.icon];
   return (
-    <span
-      title={badge.detail}
-      className="flex items-center gap-1.5 rounded-full border border-espresso/12 bg-sand px-3 py-1.5 text-xs font-medium text-espresso"
-    >
-      <Icon className="shrink-0 text-terracotta-dark" />
-      {badge.title}
-    </span>
+    <li className="flex items-start gap-3 py-3.5">
+      <Icon aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-terracotta-dark" />
+      <div className="min-w-0">
+        <p className="font-display text-[15.5px] leading-tight text-espresso">{badge.title}</p>
+        <p className="mt-0.5 text-xs leading-snug text-espresso/60">{badge.detail}</p>
+      </div>
+    </li>
   );
 }
 
 /**
- * Dr. Archana's credential/training-and-affiliation badges — real data
+ * Dr. Archana's credential/training-and-affiliation list — real data
  * supplied by Akash 2026-09-01 (see `credentialBadges` in content.ts).
  * Shared between TrustBlock (homepage bio card) and /about so both
  * surfaces show the same treatment instead of two divergent layouts.
  *
- * Compact pill groups, not a card grid or a one-per-row list — this is
- * the second redesign of this section: a tiled emblem grid cramped on
- * mobile, a medallion list fixed that but read as too tall for what's
- * fundamentally a scan-and-move-on trust signal ("compress ... near 1/2
- * page, almost like pills or pill grouped with few items logically
- * together" — Akash). Grouped into 3 labeled rows (Experience &
- * Education, Certifications & Training, Professional Memberships)
- * instead of 8 flat items, each item a pill with an icon; the fuller
- * org name still exists as a native title-attribute tooltip rather than
- * a second visible line, since that's what was taking up the vertical
- * space.
- *
- * Pills render in a `grid-cols-1 sm:grid-cols-2` per group, not a
- * `flex-wrap` row — a follow-up fix after the first pill pass read as
- * "disorganized" (Akash): flex-wrap let a short pill ("Member, AGD")
- * sit next to a long one, producing a ragged, uneven-width row. A grid
- * makes every pill in a row the same width instead. Single-column below
- * `sm:` specifically — forcing 2 columns at phone width squeezed pills
- * enough that their text wrapped to 2-3 lines, ballooning the "small
- * pill" into a tall oval, which is the opposite of what compressing
- * this section was for.
+ * Third redesign of this section — a tiled emblem grid cramped on
+ * mobile, a medallion list that read as too tall, then compact pills
+ * that fixed both but still looked "disorganized" enough to warrant one
+ * more pass. This pass follows the "Institutional Wordmark List"
+ * pattern from the attached training-affiliation-spec.md (Option 02,
+ * the spec's own explicit recommendation as "the safest premium
+ * implementation... resolves every diagnosed problem while sidestepping
+ * trademark exposure"): plain text rows instead of pills or cards —
+ * name in serif (`font-display`, i.e. Fraunces, already this site's
+ * locked display font), one muted detail line beneath, a hairline
+ * divider *between* rows via `divide-y` rather than a border *around*
+ * each one. The spec's own color tokens (navy/teal/cream) are NOT used
+ * here — Akash's explicit call was to keep this site's locked palette
+ * (Warm Ivory/Terracotta/Espresso/Sand) and only take the structural
+ * idea, not the new brand colors (CLAUDE.md's base-color-token
+ * guardrail). The existing custom icons (not real org logos — see the
+ * PR #60 trademark discussion) carry over as the spec's optional
+ * "decorative leading monogram," `aria-hidden` since the row's visible
+ * text already states the same information.
  */
 export function CredentialBadges() {
   const groups = groupOrder
@@ -61,15 +59,17 @@ export function CredentialBadges() {
     .filter((g) => g.items.length > 0);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-5">
       {groups.map(({ group, items }) => (
         <div key={group}>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-espresso/50">{group}</p>
-          <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+          <p className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-terracotta-dark">
+            {group}
+          </p>
+          <ul className="mt-1 divide-y divide-espresso/12">
             {items.map((badge) => (
-              <CredentialPill key={badge.title} badge={badge} />
+              <CredentialRow key={badge.title} badge={badge} />
             ))}
-          </div>
+          </ul>
         </div>
       ))}
     </div>
