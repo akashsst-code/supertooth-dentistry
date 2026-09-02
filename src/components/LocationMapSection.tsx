@@ -23,12 +23,24 @@ import { contact, hours, practice, serviceAreas } from "@/lib/content";
  * plain-language groups, each divided by a hairline, top to bottom:
  * identity (address, parking note, hours), actions (Book Appointment +
  * Call, inline), areas (neighborhood chips) — a fixed scan order rather
- * than one long paragraph-and-list block. Tightened twice on
+ * than one long paragraph-and-list block. Tightened three times on
  * 2026-09-02 per Akash's "compress, remove space" calls: card padding
  * down to `p-4` (16px), hairline/label margins and icon-row gaps down
  * another step each pass, button height trimmed to `py-2.5` (still
  * ≥44px via the `tap-target` class's own `min-height`, so touch-target
- * compliance doesn't depend on the padding). The standalone "Directions" button
+ * compliance doesn't depend on the padding). The real culprit behind
+ * the persistent extra space wasn't any of those Tailwind margins
+ * though — it was globals.css's `p { margin-bottom: 2em }` (WCAG 2.2
+ * SC 1.4.12 paragraph spacing), which sits outside any `@layer` and so
+ * beats every Tailwind margin utility on a `<p>` regardless of value.
+ * Every address/hours/label line here was a `<p>`, so each one was
+ * silently getting a ~34px bottom margin no matter what `mb-*`/`my-*`
+ * said. Fixed by switching these one-line data/label rows to `<span
+ * className="block">`, same as BookingBlock.tsx already does for its
+ * own address/hours rows — they're short UI labels, not prose
+ * paragraphs, so the WCAG rule (still fully intact for genuine
+ * body-copy `<p>`s elsewhere) was never meant to apply to them. The
+ * standalone "Directions" button
  * was dropped too (Book Appointment + Call now sit inline as the one
  * action row) — the map above is already real, on-page, and one tap
  * from a native maps app via its own "Open in Maps" control, so a
@@ -74,16 +86,16 @@ export function LocationMapSection() {
           <div className="flex items-start gap-2">
             <MapPinIcon className="shrink-0 mt-0.5 text-terracotta" />
             <div>
-              <p className="font-medium text-espresso">{contact.address}</p>
-              <p className="mt-0.5 text-sm text-espresso/60">{contact.parkingNote}</p>
+              <span className="block font-medium text-espresso">{contact.address}</span>
+              <span className="block mt-0.5 text-sm text-espresso/60">{contact.parkingNote}</span>
             </div>
           </div>
           {openHours && (
             <div className="flex items-start gap-2 mt-1.5">
               <ClockIcon className="shrink-0 mt-0.5 text-terracotta" />
-              <p className="text-sm text-espresso/70">
+              <span className="block text-sm text-espresso/70">
                 {openHours.days} &middot; {openHours.time}
-              </p>
+              </span>
             </div>
           )}
 
@@ -108,9 +120,9 @@ export function LocationMapSection() {
 
           <div className="my-3 border-t border-sand" />
 
-          <p className="text-xs font-semibold uppercase tracking-wide text-espresso/50 mb-1.5">
+          <span className="block text-xs font-semibold uppercase tracking-wide text-espresso/50 mb-1.5">
             Also welcoming patients from
-          </p>
+          </span>
           <ul className="flex flex-wrap gap-1.5">
             {serviceAreas.map((area) => (
               <li
@@ -122,7 +134,9 @@ export function LocationMapSection() {
               </li>
             ))}
           </ul>
-          <p className="mt-1.5 text-xs text-espresso/50">Don&apos;t see your area? Call us — we&apos;re happy to help.</p>
+          <span className="block mt-1.5 text-xs text-espresso/50">
+            Don&apos;t see your area? Call us — we&apos;re happy to help.
+          </span>
         </div>
       </div>
     </section>
