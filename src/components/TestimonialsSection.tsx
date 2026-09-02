@@ -87,22 +87,22 @@ export function TestimonialsSection() {
 
   return (
     <section className="bg-espresso text-warm-ivory">
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
-        {/* Pause/play — WCAG 2.2.2 requires a way to stop auto-moving
-            content, but it doesn't need to sit inside the rating badge's
-            row competing for space with it. Tucked into its own corner
-            instead, clear of both the heading and the badge. */}
-        <button
-          type="button"
-          onClick={() => setUserPaused((p) => !p)}
-          aria-label={userPaused ? "Resume testimonial scroll" : "Pause testimonial scroll"}
-          aria-pressed={userPaused}
-          className="tap-target absolute top-4 right-4 sm:top-6 sm:right-6 inline-flex items-center justify-center rounded-full border border-warm-ivory/20 text-warm-ivory/70 hover:text-warm-ivory hover:border-warm-ivory/40 transition-colors"
-        >
-          {userPaused ? <PlayIcon /> : <PauseIcon />}
-        </button>
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
+        <div className="relative flex flex-wrap items-end justify-between gap-4 mb-12 pr-14">
+          {/* Pause/play — WCAG 2.2.2 requires a way to stop auto-moving
+              content, but it doesn't need to sit inside the rating badge's
+              row competing for space with it. Anchored to this row's own
+              corner instead, clear of both the heading and the badge. */}
+          <button
+            type="button"
+            onClick={() => setUserPaused((p) => !p)}
+            aria-label={userPaused ? "Resume testimonial scroll" : "Pause testimonial scroll"}
+            aria-pressed={userPaused}
+            className="tap-target absolute top-0 right-0 inline-flex items-center justify-center rounded-full border border-warm-ivory/20 text-warm-ivory/70 hover:text-warm-ivory hover:border-warm-ivory/40 transition-colors"
+          >
+            {userPaused ? <PlayIcon /> : <PauseIcon />}
+          </button>
 
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-12 pr-14">
           <h2 className="font-display text-2xl sm:text-3xl font-semibold">What patients are saying</h2>
           {/* Rating badge — was a bare 16px icon sitting directly on the
               dark section with no container of its own, easy to miss and
