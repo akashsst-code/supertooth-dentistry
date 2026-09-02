@@ -4600,7 +4600,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 4, reach: 4, risk: 2, effort: 5, readiness: 2 },
     effort: "S",
-    status: "blocked",
+    status: "partial",
     wave: 2,
     job: "Fit dental care around my working day",
     story:
@@ -4613,6 +4613,7 @@ export const backlog: BacklogItem[] = [
       "State closed days honestly rather than omitting them",
       "One source of truth — hours identical across every surface and matching the Google Business Profile",
       "Only badge what is true: no weekend badge if there are no weekend hours",
+      "PARTIAL (2026-09-02): dependsOn resolved by item 3's GBP check (hours already confirmed to match). BookingBlock.tsx now carries an 'Open from 7:00 AM' badge next to the 'Visit us' eyebrow (was buried in the two-column hours list before), and that list itself now states both rows honestly — the open range AND 'Saturday – Monday · Closed' — instead of hiding the closed one. All from the single `hours` array in content.ts, so this stays one source of truth by construction; no new duplicate hours string was introduced. Still open: Nav and LocationMapSection (the other two `where` surfaces) don't carry the early-open badge yet, still only the plain hours list — a badge in either place wasn't part of this PR's scope.",
     ],
     acceptance: [
       "Hours identical on every surface and matching the GBP",

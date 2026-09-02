@@ -1,6 +1,16 @@
 import Image from "next/image";
-import { contact, hours } from "@/lib/content";
-import { CalendarIcon, ClockIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, UserPlusIcon } from "./icons";
+import { contact, hours, mapDirectionsUrl, reviews } from "@/lib/content";
+import {
+  CalendarIcon,
+  ClockIcon,
+  ExternalLinkIcon,
+  GoogleGIcon,
+  MapPinIcon,
+  MedicalCrossIcon,
+  PhoneIcon,
+  StarIcon,
+  UserPlusIcon,
+} from "./icons";
 
 /**
  * Booking block — docs/supertooth-ux-flow.md Section 4 / build-spec
@@ -30,9 +40,28 @@ import { CalendarIcon, ClockIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, UserP
  * down a single edge. "Office hours" and "Location" sit in a genuine
  * two-column grid (not a wrapped row) so they read as a small scannable
  * spec sheet next to the CTAs, same pattern as the labeled "Quick
- * actions" group above them. Only open hours are shown here (the
- * "Closed" row still exists in `hours` for Nav's full listing) since a
- * closed day isn't actionable next to a booking CTA.
+ * actions" group above them.
+ *
+ * Backlog item 34 ("prominent, honest, badged hours") — the 7:00 AM open
+ * is now surfaced as its own badge next to the "Visit us" eyebrow rather
+ * than only living inside the two-column list below, and that list now
+ * states both rows (open AND the Sat–Mon closed row) instead of hiding
+ * the closed one — the earlier "closed isn't actionable" reasoning gave
+ * an incomplete picture next to a booking CTA, which is exactly what
+ * item 34's job story flags. Deliberately still a static list, not a
+ * live "open now/closed" indicator — that's explicitly out of scope for
+ * item 34 per the locked navigation requirements (a static hours list is
+ * the accepted v1).
+ *
+ * Trust proof (real Google rating + review count, plain text — same
+ * non-link pattern Hero.tsx and TestimonialsSection.tsx already use, no
+ * new UI convention) sits right under the reassurance line so it's read
+ * in the same glance as the Book button, not just further up the page.
+ *
+ * "Get Directions" under Location reuses item 59's already-approved
+ * `mapDirectionsUrl` link pattern (HeroAddressMap.tsx /
+ * LocationMapSection.tsx) — same additive, opens-in-new-tab handoff,
+ * extended to this surface.
  *
  * Phone button shows the number itself, not the word "Call" — same
  * "be explicit" call Akash made for the Hero CTA — and both CTAs share
@@ -77,14 +106,35 @@ export function BookingBlock() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
         <div className="grid lg:grid-cols-5 gap-10 lg:gap-12 items-center">
           <div className="lg:col-span-3 text-left">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-              Visit us
-            </p>
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+                Visit us
+              </p>
+              {openHours && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-warm-ivory/10 px-2.5 py-1 text-xs font-semibold text-warm-ivory/90">
+                  <ClockIcon className="h-3 w-3" />
+                  Open from {openHours.time.split(" – ")[0]}
+                </span>
+              )}
+            </div>
             <h2 className="font-display text-2xl sm:text-3xl font-semibold mb-4">
               Ready to book your visit?
             </h2>
-            <p className="text-warm-ivory/80 max-w-xl mb-8">
+            <p className="text-warm-ivory/80 max-w-xl mb-4">
               Reach out and we&apos;ll find a time that works — same-day slots are often available.
+            </p>
+
+            <p className="mb-8 inline-flex items-center gap-1.5 text-sm text-warm-ivory/85">
+              <GoogleGIcon />
+              <span className="flex gap-px text-terracotta">
+                <StarIcon className="h-3.5 w-3.5" />
+                <StarIcon className="h-3.5 w-3.5" />
+                <StarIcon className="h-3.5 w-3.5" />
+                <StarIcon className="h-3.5 w-3.5" />
+                <StarIcon className="h-3.5 w-3.5" />
+              </span>
+              <strong className="text-warm-ivory font-semibold">{reviews.rating}</strong>({reviews.count}{" "}
+              Google reviews)
             </p>
 
             <div className="mb-8">
@@ -116,18 +166,20 @@ export function BookingBlock() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 max-w-sm">
-              {openHours && (
-                <div>
-                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
-                    Office hours
-                  </p>
-                  <span className="flex items-start gap-2 text-sm text-warm-ivory/80">
-                    <ClockIcon className="mt-0.5 shrink-0" />
-                    {openHours.days} · {openHours.time}
-                  </span>
+            <div className="grid grid-cols-2 gap-6 max-w-md">
+              <div>
+                <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                  Office hours
+                </p>
+                <div className="flex flex-col gap-1">
+                  {hours.map((h) => (
+                    <span key={h.days} className="flex items-start gap-2 text-sm text-warm-ivory/80">
+                      <ClockIcon className="mt-0.5 shrink-0" />
+                      {h.days} · {h.time}
+                    </span>
+                  ))}
                 </div>
-              )}
+              </div>
               <div>
                 <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
                   Location
@@ -136,6 +188,15 @@ export function BookingBlock() {
                   <MapPinIcon className="mt-0.5 shrink-0" />
                   {contact.address}
                 </span>
+                <a
+                  href={mapDirectionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tap-target mt-1.5 inline-flex items-center gap-1.5 text-sm font-semibold text-terracotta hover:text-warm-ivory transition-colors"
+                >
+                  Get Directions
+                  <ExternalLinkIcon />
+                </a>
               </div>
             </div>
 
