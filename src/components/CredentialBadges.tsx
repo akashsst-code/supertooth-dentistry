@@ -17,12 +17,9 @@ const groupOrder: CredentialBadge["group"][] = ["Experience & Education", "Certi
 function CredentialRow({ badge }: { badge: CredentialBadge }) {
   const Icon = iconMap[badge.icon];
   return (
-    <li className="flex items-start gap-3 py-3.5">
-      <Icon aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-terracotta-dark" />
-      <div className="min-w-0">
-        <p className="font-display text-[15.5px] leading-tight text-espresso">{badge.title}</p>
-        <p className="mt-0.5 text-xs leading-snug text-espresso/60">{badge.detail}</p>
-      </div>
+    <li title={badge.detail} className="flex items-center gap-2.5 py-2">
+      <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-terracotta-dark" />
+      <span className="font-display text-sm leading-tight text-espresso">{badge.title}</span>
     </li>
   );
 }
@@ -42,16 +39,27 @@ function CredentialRow({ badge }: { badge: CredentialBadge }) {
  * implementation... resolves every diagnosed problem while sidestepping
  * trademark exposure"): plain text rows instead of pills or cards —
  * name in serif (`font-display`, i.e. Fraunces, already this site's
- * locked display font), one muted detail line beneath, a hairline
- * divider *between* rows via `divide-y` rather than a border *around*
- * each one. The spec's own color tokens (navy/teal/cream) are NOT used
- * here — Akash's explicit call was to keep this site's locked palette
- * (Warm Ivory/Terracotta/Espresso/Sand) and only take the structural
- * idea, not the new brand colors (CLAUDE.md's base-color-token
- * guardrail). The existing custom icons (not real org logos — see the
- * PR #60 trademark discussion) carry over as the spec's optional
- * "decorative leading monogram," `aria-hidden` since the row's visible
- * text already states the same information.
+ * locked display font), a hairline divider *between* rows via
+ * `divide-y` rather than a border *around* each one. The spec's own
+ * color tokens (navy/teal/cream) are NOT used here — Akash's explicit
+ * call was to keep this site's locked palette (Warm Ivory/Terracotta/
+ * Espresso/Sand) and only take the structural idea, not the new brand
+ * colors (CLAUDE.md's base-color-token guardrail). The existing custom
+ * icons (not real org logos — see the PR #60 trademark discussion)
+ * carry over as the spec's optional "decorative leading monogram,"
+ * `aria-hidden` since the row's visible text already states the same
+ * information.
+ *
+ * Rows are single-line, not the two-line title/detail stack the first
+ * version of this pass shipped — that read as too tall on review
+ * ("compress and design for 1/2 page scan, why so much space"). The
+ * detail/context line still exists, as a native `title` tooltip on the
+ * row rather than a second visible line — same density trick the pill
+ * version used, now applied to this layout. This is also explicitly
+ * covered by the spec's own Option 05 ("vertical space is the scarcest
+ * resource... a single line delivers essentially all the credibility
+ * of the logo block in roughly a tenth of the height"), not a
+ * departure from it.
  */
 export function CredentialBadges() {
   const groups = groupOrder
@@ -59,13 +67,13 @@ export function CredentialBadges() {
     .filter((g) => g.items.length > 0);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       {groups.map(({ group, items }) => (
         <div key={group}>
           <p className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-terracotta-dark">
             {group}
           </p>
-          <ul className="mt-1 divide-y divide-espresso/12">
+          <ul className="divide-y divide-espresso/12">
             {items.map((badge) => (
               <CredentialRow key={badge.title} badge={badge} />
             ))}
