@@ -130,8 +130,8 @@ export function AppointmentForm() {
         </div>
         <h2 className="font-display text-xl sm:text-2xl font-semibold text-espresso mb-2">Request received</h2>
         <p className="text-espresso/70 max-w-sm mx-auto mb-6">
-          Thanks, {values.firstName}. We&apos;ll reach out to {values.email} or call {values.phone} shortly to
-          confirm a time that works.
+          Thanks, {values.firstName}. We&apos;ll reach out to {values.email} or call {values.phone} within 1
+          business day to confirm a time that works. Need us sooner? Call the number below.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
