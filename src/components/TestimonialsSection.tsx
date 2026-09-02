@@ -184,8 +184,8 @@ export function TestimonialsSection() {
                       {t.initial}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-espresso truncate">{t.name}</p>
-                      <p className="text-xs text-espresso/50 truncate">{t.meta}</p>
+                      <span className="block text-sm font-medium text-espresso truncate">{t.name}</span>
+                      <span className="block text-xs text-espresso/50 truncate">{t.meta}</span>
                     </div>
                     <GoogleGIcon className="h-4 w-4 shrink-0" />
                   </div>
@@ -197,7 +197,7 @@ export function TestimonialsSection() {
                     </span>
                     <span className="text-xs text-espresso/45">{t.postedAt}</span>
                   </div>
-                  <p className="text-sm text-espresso/80 leading-relaxed">{t.quote}</p>
+                  <p className="text-sm text-espresso/80 leading-relaxed mb-0">{t.quote}</p>
                 </div>
               </div>
             ))}
