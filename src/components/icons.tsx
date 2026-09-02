@@ -343,3 +343,25 @@ export function ImplantIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+/** Reassurance/comfort marker — AnxietyBlock (backlog item 16). */
+export function HeartHandIcon({ className }: { className?: string }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M12 20s-7-4.35-9.5-8.8C.9 8.1 2.3 5 5.3 5c1.7 0 3 .9 3.7 2 .7-1.1 2-2 3.7-2 3 0 4.4 3.1 2.8 6.2C13.3 13.5 12 16 12 16"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      <path
+        d="M3.5 15.5h4.2l2-2 2 2.6 2-1.6h6.8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

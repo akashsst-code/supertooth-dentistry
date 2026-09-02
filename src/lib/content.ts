@@ -439,6 +439,44 @@ export const serviceAreas = [
   "Ballard",
 ];
 
+// Backlog item 16 — dental anxiety and comfort content. Minimum version
+// only: the strongest-evidenced patient need in the research (up to 15%
+// of adult dental patients avoid care entirely) with zero page real
+// estate given to it before this. Deliberately holds the line at what's
+// already confirmed rather than the item's own listed v2 additions (a
+// named stop-signal policy, naming a sedation type, an explicit "flagging
+// anxiety at booking is welcome" statement) — none of those are
+// confirmed practice policy yet, and the item's own acceptance criteria
+// call out that no comfort/sedation claim may ship unconfirmed.
+// `comfortNote` restates the one comfort option already confirmed and
+// live in `faqs` below (local anesthesia for every treatment, plus an
+// open invitation to flag anxiety) rather than inventing a second,
+// possibly-drifting version of the same claim.
+export const anxietyContent = {
+  eyebrow: "New here, or it's been a while?",
+  heading: "No judgment — just a plan that starts where you are.",
+  intro:
+    "Putting off a dental visit is one of the most common things we see, and it's not something you need to explain or apologize for. We'll start with a conversation, not a lecture, and go at whatever pace makes this comfortable for you.",
+  steps: [
+    {
+      title: "We talk first",
+      detail: "Before anything else, we ask about your history and what's on your mind — including any nerves.",
+    },
+    {
+      title: "A thorough, unhurried exam",
+      detail: "We walk you through what we're doing and why, one step at a time.",
+    },
+    {
+      title: "You leave with a clear plan",
+      detail: "No surprise procedures — just your options, explained, so you can decide what's next.",
+    },
+  ],
+  comfortNote:
+    "We use local anesthesia for every treatment to keep you comfortable. If a procedure makes you nervous, just tell us and we'll talk through what will help before we start.",
+  disclosureCta: "Let us know before you arrive",
+  disclosureHref: "/contact#details",
+};
+
 // Homepage FAQ — AEO/SEO-required per docs/supertooth-webflow-build-spec.md
 // Section 7 ("FAQ content structured as direct Q&A pairs") and Section 2's
 // service-page spec; landing it on the homepage first since /services and

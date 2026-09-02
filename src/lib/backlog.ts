@@ -1760,7 +1760,7 @@ export const backlog: BacklogItem[] = [
       "PROMOTED P1 → P0 (35.5/50). Outscores five items that were already P0, including /services (29.5) and privacy (31). It's the best-evidenced patient need in the whole research set, it's Small, and it's essentially unblocked — the minimum version is one honest paragraph. Being cheap and evidence-backed is exactly what the scoring model is meant to surface.",
     scores: { conversion: 4, reach: 4, risk: 2, effort: 5, readiness: 3 },
     effort: "S",
-    status: "not-started",
+    status: "partial",
     wave: 3,
     job: "Return to care after avoiding it",
     story:
