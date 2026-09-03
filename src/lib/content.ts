@@ -20,6 +20,16 @@ export const practice = {
   headline: "Your long-term dentist in Queen Anne",
 };
 
+// Backlog item 4 — canonical domain for metadataBase, LocalBusiness schema
+// and sitemap.ts. Not independently confirmed with Akash: this is the
+// practice's real existing domain (cited elsewhere in this file and in
+// docs/supertooth-webflow-build-spec.md as the source for FAQ content),
+// and per docs/supertooth-platform-pivot.md this Next.js build is what
+// replaces that site — so it's the only domain this project is actually
+// headed toward, not a guess. Flag if production ends up going live
+// somewhere else.
+export const siteUrl = "https://www.supertoothdentistry.com";
+
 export const contact = {
   // Backlog item 3 — the practice's source site showed two conflicting
   // numbers, (206) 593-3131 and (206) 687-7571 (docs/supertooth-
