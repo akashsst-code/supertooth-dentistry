@@ -4072,7 +4072,7 @@ export const backlog: BacklogItem[] = [
       "Scores 35.5 so it lands in P0 on merit, but it is also pinned as a dependency: every other item's test scenario references these checks, and adopting them late means re-testing everything already shipped.",
     scores: { conversion: 2, reach: 5, risk: 4, effort: 3, readiness: 5 },
     effort: "M",
-    status: "not-started",
+    status: "partial",
     wave: 1,
     job: "(Team-facing — how we know any item is actually done)",
     story:
@@ -4094,7 +4094,10 @@ export const backlog: BacklogItem[] = [
       "No new dependency added to package.json",
     ],
     evidence:
-      "Blueprint §25(c). The five genuinely new checks are the value: we had no JS-disabled, landscape, 200%-resize, 320/430-width or mobile-input-correctness coverage at all.",
+      "Blueprint §25(c). The five genuinely new checks are the value: we had no JS-disabled, landscape, 200%-resize, 320/430-width or mobile-input-correctness coverage at all.\n\n" +
+      "2026-09-02: `src/lib/test-harness.ts` (all 22 GTH checks + BASELINE_IDS/MOBILE_SUITE_IDS) already existed and every item already references its applicable harness ids — that half of this item's acceptance was done by an earlier session without the status field being updated. This pass does the other half: actually running it. " +
+      "GTH-1 (axe-core, wcag2a/2aa/21a/21aa) run against all 9 shipped routes at 375×812 on the production deployment — found and fixed a real aria-hidden-focus violation (OfficeCarousel.tsx's duplicate carousel track had `aria-hidden` buttons still in tab order; added `tabIndex={-1}`), and found a sitewide color-contrast violation present on every one of the 8 patient-facing routes, logged as its own item (61) rather than fixed here — several shared components (Footer, AppointmentForm, Nav) needed changes, and multiple other sessions had those exact files under active concurrent edit at the time of this pass, so fixing in place risked either a broken merge or clobbering someone else's in-flight work. GTH-13 (no horizontal scroll at 320px) run against all 9 routes — clean, zero overflow anywhere. GTH-9 (console clean) spot-checked on 2 of 9 routes (home, /backlog) — clean. GTH-2/GTH-19 (Lighthouse mobile, simulated throttling) run against / and /contact: /contact scores cleanly (performance 99, LCP 2.1s, CLS 0, TBT 10ms — all within budget); / scores performance 88 / LCP 3.5s / Speed Index 4.1s, below GTH-2's stated thresholds despite item 38 (performance budget) being marked done — flagging as a discrepancy worth a follow-up look (likely the hero carousel's LCP image) rather than re-opening item 38 on a single run's evidence. " +
+      "Left partial, not done: the remaining checks (GTH-3 HTML validity, GTH-4 keyboard-only task completion, GTH-6/14 tap-target measurement, GTH-7 JS-disabled degradation, GTH-15/16/21 thumb-zone/safe-area/landscape, GTH-20 200%-resize, GTH-22 reduced-motion) were not run against all 9 routes in this pass — GTH-20 was already verified for body/input text during item 37's work, and GTH-22 reduced-motion is already implemented per both carousels' own code, but neither was re-verified route-by-route here. A second pass covering those, plus re-running GTH-1 to confirm item 61's contrast fix once it lands, is what would close this out.",
     dependsOn: null,
     outOfScope:
       "Adding Playwright, a CI runner, or a test framework. That is a separate decision with its own cost — 'adopt the harness' is not 'adopt a toolchain'.",
@@ -5085,7 +5088,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 3, reach: 5, risk: 2, effort: 3, readiness: 5 },
     effort: "M",
-    status: "not-started",
+    status: "done",
     wave: 3,
     job: "Trust the practice from how the site feels, not just what it says",
     story:
@@ -5106,8 +5109,20 @@ export const backlog: BacklogItem[] = [
       "Every finding fixed or logged with an owner",
     ],
     evidence:
-      "Blueprint §17 failure-mode table and §15C observed anti-patterns — several drawn from real Seattle practice sites, including fabricated-looking testimonials and hours that contradict across a page.",
-    dependsOn: "Items 2 and 13 (unverified claims and placeholder reviews are two of the modes)",
+      "Blueprint §17 failure-mode table and §15C observed anti-patterns — several drawn from real Seattle practice sites, including fabricated-looking testimonials and hours that contradict across a page.\n\n" +
+      "AUDITED 2026-09-02, all ten modes walked at 375px plus the four shell-level checks (superlative/urgency regex scan sitewide, autoplay/reduced-motion check, contradictory-info check on hours/phone/address). Ten verdicts:\n\n" +
+      "1. Generic — PARTIAL. Real named dentist, real credentials, real office/treatment-room photography and a real testimonial rail all pass. But 6 of the homepage's photo slots (4 `services` tiles, 2 `offers` cards, content.ts ~L394-421/121-129) are stock Unsplash images, not real practice photography — a deliberate 2026-09-01 swap away from Akash's own raw clinical macro/x-ray shots for patient-comfort reasons (see content.ts comment at that line), but stock imagery is exactly this mode's named cause. Logged as its own item — **item 60** — since real photography isn't a cheap fix.\n" +
+      "2. Untrustworthy — FAIL, already tracked. `grep -rn \"<Placeholder\" src/` still finds 13 live production render sites (insurance carrier names, new-patient offer/financing copy) — bracketed unconfirmed claims visible to a patient. This is item 2's exact scope; not re-logged here, just confirmed still open and blocking.\n" +
+      "3. Overly corporate/cold — PASS. Warm-ivory/terracotta/espresso palette throughout (no navy-only/sterile-grid look), human first-person copy (\"we handle the insurance paperwork\", \"we're happy to walk through what a visit looks like\"), real people named and photographed.\n" +
+      "4. Too expensive/exclusive — PASS. No luxury-only cues or cosmetic-only framing — Services page leads with General & preventive, not veneers/whitening; insurance page explicitly welcomes uninsured patients (\"call us to talk about your options\"). Real pricing itself is out of scope here — that's items 20/35/36, separately blocked on a practice pricing decision.\n" +
+      "5. Sterile/clinical — PASS. Warm palette, real office photography (natural light, plants visible through window), no white+red medical-iconography look. `/emergency` in particular reads as calm/plain-language rather than clinical (see mode 7).\n" +
+      "6. Juvenile — PASS. No cartoon mascots or primary-color overload anywhere in `src/components/icons.tsx` or the palette; type and iconography read as grown-up throughout.\n" +
+      "7. Clinically intimidating — PASS. Walked `/emergency` specifically (the highest-risk page for this mode): plain language throughout (\"Call 911 or go to the nearest emergency room right away if...\"), no scary procedure imagery, a plain-English \"what to do right now\" structure with a genuine what-to-expect tone. `/insurance-new-patients` translates all five common insurance terms (premium/deductible/copay/coinsurance/annual maximum) into one plain sentence each — the anti-jargon antidote applied directly.\n" +
+      "8. Visually noisy — PASS WITH A NOTE. Zero popups, zero promo banners, no urgency language (regex scan below). `TestimonialsSection.tsx` does run a continuous auto-scroll — technically this mode's named cause — but it already carries the two mitigations the blueprint's own antidote calls for: it fully skips starting its rAF loop under `prefers-reduced-motion`, and it exposes a `<button aria-pressed>` pause/play control satisfying WCAG 2.2.2. This exact tradeoff was already reviewed and accepted by Akash (see build-spec status log, item 34 entry) rather than being a fresh miss — recorded here as a verdict, not re-litigated or reverted.\n" +
+      "9. Hard to read — PARTIAL. Sitewide `grep` confirms zero `font-size` overrides below the locked Inter-body-16px floor in Tailwind config, but a DOM-level check on `/insurance-new-patients` found real body-adjacent copy rendering at 14px computed size — e.g. the page's own intro sentence (\"The five words that show up most on an insurance statement...\") and the two Placeholder financing/PPO lines, not just breadcrumbs/legal fine print. This is exactly item 37's existing scope (\"Mobile-first type and spacing scale\", currently `partial`) — logged there as an open sub-finding rather than duplicated as a new item, and not blanket-edited here since separating genuine body copy from intentional fine print (breadcrumbs, footer copyright) needs the same care item 37 already applies, not a hasty sitewide find-and-replace.\n" +
+      "10. Aggressive/sales-driven — PASS. `grep -rniE \"limited time|act now|hurry|only [0-9]+ left|today only|don't wait\"` across `src/` returns zero matches; same for superlative/puffery regex (`award|best|#1|top dentist|world-class|state-of-the-art`) — the one hit is inside a genuine attributed Google review (Karthik B., content.ts L316, part of item 13's real-reviews pull), a patient's own words, not marketing copy, so it's the antidote's \"genuine attributed reviews\" case, not a violation.\n\n" +
+      "Shell-level checks: contrast/consistency — `hours` and `contact.phone` are each defined once in content.ts and imported everywhere they render (Nav, BookingBlock, LocationMapSection, footer), so the contradictory-hours-across-the-page failure mode observed on Capitol Hill Dentist is structurally prevented here, not just avoided by luck.",
+    dependsOn: null,
     outOfScope:
       "Redesigning to taste. This audits against named failure modes with stated causes, not personal preference.",
     references: [
@@ -7032,6 +7047,152 @@ export const backlog: BacklogItem[] = [
       ],
       mobileFirst: ["If approved, the link is a real anchor with its own ≥44px tap target, not embedded inside the iframe"],
       pass: ["Ruling recorded", "If approved, implemented and verified; if declined/deferred, item closed with the reason"],
+    },
+  },
+  {
+    id: 60,
+    title: "Replace stock Unsplash photography with real practice photos",
+    priority: "P1",
+    source: "original",
+    launchBlocking: false,
+    harness: ["GTH-1", "GTH-5"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 3, reach: 4, risk: 2, effort: 2, readiness: 1 },
+    effort: "M",
+    status: "blocked",
+    wave: 4,
+    job: "Trust the practice from how the site feels, not just what it says",
+    story:
+      "As a patient scanning the homepage, every photo I see is this actual practice, not a stand-in — one more reason this doesn't feel like a template.",
+    problem:
+      "Found by item 39's anti-pattern audit (2026-09-02), mode 1 (Generic): 6 photo slots render stock Unsplash hotlinks instead of real practice photography — the 4 homepage `services` tiles (content.ts ~L394-421) and 2 `offers` cards (~L121-129). This was a deliberate 2026-09-01 call, not an oversight: the previous round used Akash's own real clinical macro/x-ray photography for these same slots, and it was swapped to stock specifically because extreme intraoral close-ups and a raw implant x-ray read as clinically alarming rather than reassuring to a patient audience (see content.ts's comment at that line). So the fix isn't reverting to the old photos — it's sourcing new, patient-facing real photography (treatment rooms, team, equipment, general office life) in the same warm/modern tone the stock photos were chosen for.",
+    where: "src/lib/content.ts (`services`, `offers`) · public/services/ (originals) · public/team|office/ (existing real photo pool)",
+    scope: [
+      "Identify which of the 6 slots can be filled from the existing real photo pool (public/team/, public/office/) already used elsewhere on the site",
+      "For slots with no existing match, get new patient-facing (not clinical-macro) photography from Akash",
+      "Swap each `image.src`/`image.alt` in `services` and `offers` from the Unsplash URL to the real asset",
+      "The 3 original clinical files already in public/services/ stay available for a future dedicated service-detail page — not deleted",
+    ],
+    acceptance: [
+      "Zero `images.unsplash.com` references remain in content.ts",
+      "Every services/offers image alt text still accurately describes the real photo now in that slot",
+    ],
+    evidence:
+      "content.ts's own 2026-09-01 comment at the `services` array (\"Swapped all 4 for tasteful, patient-facing stock photography... same Unsplash hotlink pattern as `offers` below\") documents both the cause and the two affected arrays firsthand — not inferred.",
+    dependsOn: "Real patient-facing photography from Akash for any slot the existing public/team|office/ pool doesn't already cover",
+    outOfScope:
+      "Reverting to the original clinical macro/x-ray photography — that was tried and moved away from for a stated patient-comfort reason, not a mistake to undo.",
+    references: [
+      {
+        name: "Blueprint §17 — what could make this site feel wrong",
+        url: "https://www.nngroup.com/articles/trustworthy-design/",
+        whatGood: "Names 'template look, stock smiles, no faces' as the Generic failure mode's specific cause.",
+        takeaway: "Real photos are the antidote by name, not a nice-to-have — this item is that antidote applied to the two slots still using stock.",
+        mobile: "These tiles render large and early in the homepage scroll on a phone, so the stock-vs-real gap is seen sooner on mobile than on desktop.",
+      },
+      {
+        name: "Blueprint §15C — observed dental anti-patterns",
+        url: "https://www.chicagoloopdentistry.com/",
+        whatGood:
+          "Same source item 39 cites for the full anti-pattern catalogue this finding came from — 'no real faces, generic template' reads as illegitimate on a real observed practice site.",
+        takeaway: "The fix pattern is the same one item 39 already points to: real photos of this specific practice, not stock, wherever a photo claims to represent it.",
+        mobile: "A generic-looking photo above the fold reads as a template site within the first scroll, which is exactly where these 6 tiles sit.",
+      },
+    ],
+    test: {
+      preconditions: ["Real photography or an approved existing-pool match confirmed for all 6 slots"],
+      steps: [
+        {
+          action: "grep -rn \"images.unsplash.com\" src/lib/content.ts",
+          tool: "shell",
+          viewport: "any",
+          expect: "Zero matches — every services/offers image now points at a real local or practice-supplied asset, not an Unsplash hotlink.",
+        },
+        {
+          action: "At 375px, visually confirm each `services`/`offers` tile shows a real, identifiable practice photo, not a generic stand-in.",
+          tool: "browser",
+          expect: "All 6 tiles read as this specific practice, matching the tone of the site's existing real photography.",
+        },
+      ],
+      mobileFirst: ["All 6 tiles show real photography at 375px, same visual tone as the rest of the site"],
+      pass: ["Zero Unsplash references", "Every image alt text matches its actual (real) photo"],
+    },
+  },
+  {
+    id: 61,
+    title: "Sitewide low-contrast text fails WCAG AA (GTH-1/GTH-5 finding)",
+    priority: "P0",
+    source: "original",
+    launchBlocking: true,
+    blockingGround: "legal",
+    blueprintRef: "§25(c) GTH-1 accessibility scan · GTH-5 contrast",
+    harness: ["GTH-1", "GTH-5"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 2, reach: 5, risk: 5, effort: 4, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 2,
+    job: "Read every page's fine print without straining",
+    story:
+      "As a low-vision or older patient, form labels, nav breadcrumbs, footer text and the phone-number link are all readable at normal contrast, not just legible to someone with full-strength vision.",
+    problem:
+      "Item 29's first Global Test Harness pass (2026-09-02) ran GTH-1 (axe-core) against all 9 shipped routes and found the same root cause on every single patient-facing page: several of this repo's locked `--color-espresso` opacity variants — `text-espresso/40`, `/45`, `/50`, `/60` — drop below WCAG AA's 4.5:1 body-text threshold once actually rendered at 14px on the Warm Ivory background (measured 2.2:1 to 3.61:1, all failing). Separately, full-opacity `text-terracotta` links (e.g. the `tel:` link in `AppointmentForm.tsx` and `Footer.tsx`) measure 3.86:1 against Warm Ivory — also below 4.5:1 for normal-size text. This is exactly the compliance non-negotiable in `docs/CLAUDE.md` ('WCAG AA contrast') and `supertooth-build-principles.md` §8, currently unmet — not a new design call, a real bug in existing shipped pages.",
+    where: "Footer.tsx, AppointmentForm.tsx (field labels + helper text), Nav.tsx (breadcrumb links), and any other component using text-espresso/40–60 or text-terracotta on Warm Ivory for normal-size text — grep for the exact offending selectors is in `evidence` below.",
+    scope: [
+      "Raise every failing text-espresso/NN opacity variant to a level that clears 4.5:1 at its actual rendered size, OR bump the affected text to a size/weight that qualifies for the 3:1 large-text threshold — pick per callsite, not a single global opacity bump",
+      "Fix the text-terracotta-on-warm-ivory link contrast (affects the tel: links flagged above) — likely needs the already-defined text-terracotta-dark token instead, or a bolder/larger treatment",
+      "Re-run GTH-1 (axe-core) against all 9 routes after the fix; zero color-contrast violations on every patient-facing route (/backlog is the noindex internal tool and is explicitly out of scope, same call as item 37)",
+    ],
+    acceptance: [
+      "axe-core color-contrast violations = 0 on /, /about, /services, /insurance-new-patients, /contact, /emergency, /privacy, /accessibility",
+      "No locked --color-* base token value changed — only which opacity variant or token a given callsite uses (per CLAUDE.md's guardrail, opacity/tint variant changes don't require asking first, only base token value changes do)",
+      "aria-hidden-focus violation on OfficeCarousel.tsx's duplicate track (found in the same GTH-1 pass, already fixed in this PR — see evidence) — confirmed still clean after this item's changes",
+    ],
+    evidence:
+      "2026-09-02, item 29's first harness pass: `npx @axe-core/cli <url> --chrome-options=\"window-size=375,812\" --tags wcag2a,wcag2aa,wcag21a,wcag21aa --stdout` run against all 9 routes on the production deployment. Per-route color-contrast violation counts: home 13 nodes (+ a separate 5-node aria-hidden-focus violation on OfficeCarousel.tsx, fixed directly in this PR — a duplicate-track `<button>` was `aria-hidden` but not removed from tab order; added `tabIndex={-1}` to the hidden copies), about 6, services 5, insurance-new-patients 13, contact 11, emergency 6, privacy 6, accessibility 6, backlog 4560 (noindex internal tool, excluded per item 37's precedent). " +
+      "Concrete failing pairs measured on /contact: `label[for=firstName]` etc. (text-espresso/60, 3.61:1), the 'Still stuck?' line (text-espresso/50, 2.78:1), the address line (text-espresso/45, 2.47:1), '(optional)' (text-espresso/40, 2.2:1), and the `tel:` link (text-terracotta, 3.86:1) — all against the locked #faf8f4 Warm Ivory background. Same handful of opacity levels recur across Footer.tsx and Nav.tsx on every other route, which is why the violation count is consistent site-wide rather than page-specific. Full axe JSON output for all 9 routes captured during this pass; not committed to the repo (ephemeral scratch output), but every violation is reproducible by re-running the command above against any route.",
+    dependsOn: null,
+    outOfScope:
+      "Changing the locked --color-espresso, --color-terracotta or --color-warm-ivory base hex values — this is about which opacity/variant a callsite uses, never the token definitions themselves (CLAUDE.md guardrail). Also out of scope: /backlog's ~4560 violations (noindex internal tool, item 37's same carve-out applies).",
+    references: [
+      {
+        name: "WCAG 2.2 — 1.4.3 Contrast (Minimum)",
+        url: "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+        whatGood: "The normative 4.5:1 / 3:1 (large text) thresholds this item's acceptance criteria are drawn from directly.",
+        takeaway: "3:1 only applies at ≥24px regular or ≥19px bold — most of the failing text here is 14px, so it needs the full 4.5:1, not the large-text exception.",
+        mobile: "Fine print is disproportionately common on mobile layouts (labels, captions, footer text packed into limited width), so this class of bug concentrates exactly where phone users read most.",
+      },
+      {
+        name: "WebAIM — Contrast Checker",
+        url: "https://webaim.org/resources/contrastchecker/",
+        whatGood: "Plugs in a foreground/background hex pair and returns the exact ratio plus pass/fail against AA and AAA — the fastest way to test a candidate opacity value before committing to it.",
+        takeaway: "For each failing callsite, compute the Warm Ivory (#faf8f4) background against a few candidate espresso opacities to find the lowest one that still clears 4.5:1, rather than jumping straight to full opacity.",
+        mobile: "Same tool, same ratio — contrast thresholds don't vary by viewport, only how much of the page is fine print does.",
+      },
+    ],
+    test: {
+      preconditions: ["Fix implemented across Footer.tsx, AppointmentForm.tsx, Nav.tsx and any other affected component"],
+      steps: [
+        {
+          action: "Run `npx @axe-core/cli <route> --chrome-options=\"window-size=375,812\" --tags wcag2a,wcag2aa,wcag21a,wcag21aa --stdout` against all 8 patient-facing routes.",
+          tool: "shell",
+          viewport: "375",
+          expect: "Zero color-contrast violations on every route.",
+        },
+        {
+          action: "Diff globals.css and every touched component to confirm no --color-* base token value changed, only which opacity variant a given callsite references.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Locked token definitions untouched; only per-callsite opacity/variant usage changed.",
+        },
+      ],
+      mobileFirst: ["Re-verify at 375×812 — the harness run that found this was already mobile-width"],
+      pass: ["0 color-contrast violations on all 8 patient-facing routes", "No locked base token changed"],
+      gotchas: [
+        "Don't fix this by bumping one opacity value everywhere — text-espresso/70 (used for real body copy, not fine print) already passes; a blanket find-and-replace risks either under-fixing the failing ones or unnecessarily darkening ones that are already fine.",
+      ],
     },
   },
 ];

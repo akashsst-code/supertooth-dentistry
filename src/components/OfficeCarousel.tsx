@@ -209,6 +209,7 @@ export function OfficeCarousel() {
                 dragRef.current = null;
               }}
               aria-hidden={i >= officePhotos.length}
+              tabIndex={i >= officePhotos.length ? -1 : 0}
               aria-label={`View larger: ${photo.alt}`}
               className="group relative shrink-0 touch-pan-y cursor-grab select-none active:cursor-grabbing"
             >
