@@ -11,7 +11,7 @@ export function BenefitsGlossary() {
   return (
     <div className="rounded-2xl border border-sand bg-warm-ivory p-6 sm:p-8">
       <h2 className="font-display text-lg font-semibold text-espresso mb-1">What the terms mean</h2>
-      <p className="text-sm text-espresso/60 leading-relaxed !mb-5">
+      <p className="text-sm text-espresso/70 leading-relaxed !mb-5">
         The five words that show up most on an insurance statement, in plain English.
       </p>
       <dl className="space-y-4">
@@ -19,7 +19,7 @@ export function BenefitsGlossary() {
           <div key={term} className="border-t border-sand pt-4 first:border-t-0 first:pt-0">
             <dt className="font-display text-base font-semibold text-espresso">{term}</dt>
             <dd className="mt-1 text-espresso/80 leading-relaxed">{definition}</dd>
-            <dd className="mt-1 text-sm text-espresso/60 leading-relaxed">{meaning}</dd>
+            <dd className="mt-1 text-sm text-espresso/70 leading-relaxed">{meaning}</dd>
           </div>
         ))}
       </dl>

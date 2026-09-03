@@ -187,7 +187,7 @@ export function TestimonialsSection() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <span className="block text-sm font-medium text-warm-ivory truncate">{t.name}</span>
-                      <span className="block text-xs text-warm-ivory/50 truncate">{t.meta}</span>
+                      <span className="block text-xs text-warm-ivory/70 truncate">{t.meta}</span>
                     </div>
                     <GoogleGIcon className="h-4 w-4 shrink-0" />
                   </div>

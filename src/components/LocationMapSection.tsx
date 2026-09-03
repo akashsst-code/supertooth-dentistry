@@ -87,7 +87,7 @@ export function LocationMapSection() {
             <MapPinIcon className="shrink-0 mt-0.5 text-terracotta" />
             <div>
               <span className="block font-medium text-espresso">{contact.address}</span>
-              <span className="block mt-0.5 text-sm text-espresso/60">{contact.parkingNote}</span>
+              <span className="block mt-0.5 text-sm text-espresso/70">{contact.parkingNote}</span>
             </div>
           </div>
           {openHours && (
@@ -120,7 +120,7 @@ export function LocationMapSection() {
 
           <div className="my-3 border-t border-sand" />
 
-          <span className="block text-xs font-semibold uppercase tracking-wide text-espresso/50 mb-1.5">
+          <span className="block text-xs font-semibold uppercase tracking-wide text-espresso/70 mb-1.5">
             Also welcoming patients from
           </span>
           <ul className="flex flex-wrap gap-1.5">
@@ -134,7 +134,7 @@ export function LocationMapSection() {
               </li>
             ))}
           </ul>
-          <span className="block mt-1.5 text-xs text-espresso/50">
+          <span className="block mt-1.5 text-xs text-espresso/70">
             Don&apos;t see your area? Call us — we&apos;re happy to help.
           </span>
         </div>

@@ -164,7 +164,7 @@ export function AppointmentForm() {
         Prefer to talk to someone?{" "}
         <a
           href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-          className="font-semibold text-terracotta hover:text-terracotta-dark underline underline-offset-2"
+          className="font-semibold text-terracotta-dark hover:text-espresso underline underline-offset-2"
         >
           Call {contact.phone}
         </a>{" "}
@@ -257,8 +257,8 @@ export function AppointmentForm() {
         />
 
         <div>
-          <label htmlFor="details" className="block text-xs font-semibold uppercase tracking-wide text-espresso/60 mb-1.5">
-            Additional details <span className="font-normal normal-case text-espresso/40">(optional)</span>
+          <label htmlFor="details" className="block text-xs font-semibold uppercase tracking-wide text-espresso/70 mb-1.5">
+            Additional details <span className="font-normal normal-case text-espresso/70">(optional)</span>
           </label>
           <textarea
             id="details"
@@ -284,7 +284,7 @@ export function AppointmentForm() {
           {submitting ? "Sending your request…" : ""}
         </span>
 
-        <p className="text-xs text-espresso/50 -mt-2">
+        <p className="text-xs text-espresso/70 -mt-2">
           Still stuck?{" "}
           <a
             href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
@@ -326,7 +326,7 @@ function Field({
 
   return (
     <div>
-      <label htmlFor={name} className="block text-xs font-semibold uppercase tracking-wide text-espresso/60 mb-1.5">
+      <label htmlFor={name} className="block text-xs font-semibold uppercase tracking-wide text-espresso/70 mb-1.5">
         {label} <span className="text-terracotta-dark">*</span>
       </label>
       <input

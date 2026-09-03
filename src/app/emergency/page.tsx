@@ -42,7 +42,7 @@ export default function EmergencyPage() {
               /
             </span>
             <nav aria-label="Breadcrumb">
-              <ol className="flex items-center gap-1.5 text-sm text-espresso/50">
+              <ol className="flex items-center gap-1.5 text-sm text-espresso/70">
                 <li>
                   <Link href="/" className="hover:text-terracotta transition-colors">
                     Home
@@ -134,7 +134,7 @@ export default function EmergencyPage() {
             </ul>
           </div>
 
-          <p className="text-sm text-espresso/60 italic">{emergencyGuidance.erNote}</p>
+          <p className="text-sm text-espresso/70 italic">{emergencyGuidance.erNote}</p>
         </div>
       </main>
       <Footer />

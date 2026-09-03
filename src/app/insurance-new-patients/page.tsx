@@ -56,7 +56,7 @@ export default function InsuranceNewPatientsPage() {
               /
             </span>
             <nav aria-label="Breadcrumb">
-              <ol className="flex items-center gap-1.5 text-sm text-espresso/50">
+              <ol className="flex items-center gap-1.5 text-sm text-espresso/70">
                 <li>
                   <Link href="/" className="hover:text-terracotta transition-colors">
                     Home
@@ -124,12 +124,12 @@ export default function InsuranceNewPatientsPage() {
         </div>
 
         <div className="mx-auto max-w-3xl px-4 sm:px-6 pb-16 sm:pb-20">
-          <p className="text-sm text-espresso/60 !mb-3">
+          <p className="text-sm text-espresso/70 !mb-3">
             We also offer financing through CareCredit, including promotional plans with no
             interest if paid in full within the promotional period — ask when you call or request
             an appointment.
           </p>
-          <p className="text-sm text-espresso/60 !mb-6">
+          <p className="text-sm text-espresso/70 !mb-6">
             Wondering what&apos;s actually covered?{" "}
             <Link href="/services" className="font-medium text-terracotta-dark hover:text-terracotta transition-colors">
               See our services
