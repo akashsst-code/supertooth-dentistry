@@ -74,6 +74,11 @@ export function AppointmentForm() {
   );
 
   const fieldRefs = useRef<Partial<Record<FieldName, HTMLInputElement | null>>>({});
+  // Synchronous guard: two clicks/Enters fired in the same tick both read the
+  // same stale `submitting` state before React re-renders the disabled button,
+  // so the state check alone lets both through. A ref updates immediately,
+  // closing that gap regardless of render timing.
+  const submittingRef = useRef(false);
 
   const errors = validate(values);
   const visibleErrors: Errors = {};
@@ -99,7 +104,7 @@ export function AppointmentForm() {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (submitting) return; // guards a double-tap/double-Enter while a submit is already in flight
+    if (submittingRef.current) return; // guards a double-tap/double-Enter while a submit is already in flight
     setSubmitAttempted(true);
 
     const currentErrors = validate(values);
@@ -109,11 +114,13 @@ export function AppointmentForm() {
       return;
     }
 
+    submittingRef.current = true;
     setSubmitting(true);
     // No booking backend exists yet — this stands in for a real submit
     // (see component doc comment above) rather than pretending to hit one.
     window.setTimeout(() => {
       setSubmittedValues({ firstName: values.firstName, email: values.email, phone: values.phone });
+      submittingRef.current = false;
       setSubmitting(false);
       setSubmitted(true);
       reset(); // clears the shared in-memory values now that they've been sent

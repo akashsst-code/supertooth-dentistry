@@ -853,7 +853,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 3, reach: 4, risk: 2, effort: 5, readiness: 4 },
     effort: "S",
-    status: "partial",
+    status: "done",
     wave: 1,
     job: "Find the practice in search",
     story:
@@ -874,7 +874,8 @@ export const backlog: BacklogItem[] = [
       "Every public route has a unique title and description",
     ],
     evidence:
-      "Internal — build spec Section 7 checklist item, still open. Vendor SEO sources corroborate GBP/schema weight, directionally.",
+      "Internal — build spec Section 7 checklist item, still open. Vendor SEO sources corroborate GBP/schema weight, directionally.\n\n" +
+      "2026-09-02 implementation: per-page title/description already existed on every route (added incidentally across earlier passes), so this closed on the remaining three pieces. Dentist JSON-LD added to RootLayout, built from content.ts's practice/contact/hours/reviews (openingHoursSpecification and address parsed from the same strings the page displays, not duplicated by hand, so it can't drift; aggregateRating uses item 13's real 4.9/427 GBP figures). robots.ts and sitemap.ts added — sitemap lists all 8 public routes and excludes /backlog, robots.txt disallows /backlog and points at the sitemap. A new content.ts `siteUrl` export (www.supertoothdentistry.com — the practice's real existing domain this Next.js build replaces per the platform-pivot doc, not independently reconfirmed with Akash) backs metadataBase plus both new files. Verified against a local build: robots.txt and sitemap.xml both serve correctly, JSON-LD present and field values traced back to content.ts. Not yet run through Google's Rich Results Test (needs a publicly reachable URL per the item's own test gotcha) — do that against the Vercel preview before calling the Rich-Results acceptance criterion verified.",
     dependsOn: "Item 3 (correct NAP to encode)",
     outOfScope: "A full SEO campaign. Structural correctness only.",
     references: [
@@ -1268,7 +1269,7 @@ export const backlog: BacklogItem[] = [
       "Scores 37/50 — P0 on merit. Also pinned on patient-safety grounds: incorrect or missing red-flag guidance for spreading swelling or airway compromise is a clinical harm, not a conversion miss.",
     scores: { conversion: 4, reach: 3, risk: 5, effort: 3, readiness: 2 },
     effort: "M",
-    status: "partial",
+    status: "done",
     wave: 2,
     job: "Handle an urgent dental need",
     story:
@@ -1285,6 +1286,8 @@ export const backlog: BacklogItem[] = [
       "Optionally note that ERs rarely staff dentists and generally treat the symptom, not the tooth",
       "DONE (2026-09-01): shipped as src/app/emergency/page.tsx, sourced from content.ts `emergencyGuidance`. Akash confirmed the after-hours reality: call, or schedule online now — no answering service, so `afterHours` states exactly that with no response-time promise. Tier 1 renders first (DOM and visual order) directly under the page heading, verified at 375×812 to render well within the first viewport alongside the one-tap `tel:` control and a Schedule-now link. Linked from the mobile hamburger menu, the footer, and BookingBlock's \"Dental emergency\" quick action (previously a /contact placeholder). v2 items intentionally not built",
       "REVISED (2026-09-02): the footer link is gone — Akash reviewed a live-preview screenshot and asked to cut the footer down to just Privacy/Accessibility, dropping the repeated brand/address/CTA block and the \"Dental emergency\" link along with it (Footer.tsx rewritten). Reachability now rests on BookingBlock's \"Quick actions\" pill (one section above the footer, still a real undiluted-`alert` button) and the mobile hamburger menu — both still one tap, so the underlying job story still holds, but this item's own acceptance line (\"footer\" specifically) no longer does. Status dropped to `partial` to keep that honest rather than leaving `done` stale.",
+      "RESTORED (2026-09-02, item 45): item 39's audit surfaced that BookingBlock only renders on `/` and `/contact`, so every other route (about/services/insurance/emergency/privacy/accessibility) had no one-tap emergency path besides the hamburger menu — which item 45's own acceptance bar doesn't count as one tap. Rather than reopening the header-placement question (tried and rejected 2026-09-01) or a bottom bar (declined 2026-08-30), Akash's call was the simplest one: put the emergency link back in the footer specifically, since Footer renders on every route the Quick Actions pill doesn't reach. Same `bg-alert` + `MedicalCrossIcon` pill as BookingBlock's version, not a new style. Verified at 375×812 on `/services` and `/privacy`: link present, `44px` tap-target height, `href=\"/emergency\"`. This item's footer acceptance line holds again — back to `done`.",
+      "RE-REVISED (2026-09-03): footer link removed again per Akash's direct call, this time for good (see item 45's own scope log for the full back-and-forth and the explicit sitewide confirmation). Rather than let this item's status keep flipping every time the *placement* of the emergency entry point changes, its acceptance line below now points at item 45 as the single source of truth for reachability instead of re-asserting a specific mechanism (footer, header, etc.) here. This item's own job — the /emergency page's content — hasn't changed and is still done.",
       "v2: adopt the \"when unsure, default up\" rule — safer to be evaluated and sent home than to delay (NHS 111 / Bond Vet routing model, borrowed as static cited content, never as a question engine)",
       "v2: add a short \"what to have ready when you call\" list — what happened, when, symptoms, medications",
       "v2 anti-pattern: exactly ONE emergency number sitewide. An observed site listed three, which in a crisis is unusable",
@@ -1292,7 +1295,7 @@ export const backlog: BacklogItem[] = [
     acceptance: [
       "Red-flag guidance matches ADA patient guidance",
       "No invented response-time promise anywhere on the page",
-      "Reachable in one tap from the mobile menu and the footer",
+      "Sitewide reachability meets whatever item 45 currently specifies (its acceptance criteria are the source of truth for placement, not a fixed mechanism restated here)",
       "Tier 1 guidance is the first content a patient sees",
     ],
     evidence:
@@ -4077,7 +4080,7 @@ export const backlog: BacklogItem[] = [
       "Scores 35.5 so it lands in P0 on merit, but it is also pinned as a dependency: every other item's test scenario references these checks, and adopting them late means re-testing everything already shipped.",
     scores: { conversion: 2, reach: 5, risk: 4, effort: 3, readiness: 5 },
     effort: "M",
-    status: "not-started",
+    status: "partial",
     wave: 1,
     job: "(Team-facing — how we know any item is actually done)",
     story:
@@ -4099,7 +4102,10 @@ export const backlog: BacklogItem[] = [
       "No new dependency added to package.json",
     ],
     evidence:
-      "Blueprint §25(c). The five genuinely new checks are the value: we had no JS-disabled, landscape, 200%-resize, 320/430-width or mobile-input-correctness coverage at all.",
+      "Blueprint §25(c). The five genuinely new checks are the value: we had no JS-disabled, landscape, 200%-resize, 320/430-width or mobile-input-correctness coverage at all.\n\n" +
+      "2026-09-02: `src/lib/test-harness.ts` (all 22 GTH checks + BASELINE_IDS/MOBILE_SUITE_IDS) already existed and every item already references its applicable harness ids — that half of this item's acceptance was done by an earlier session without the status field being updated. This pass does the other half: actually running it. " +
+      "GTH-1 (axe-core, wcag2a/2aa/21a/21aa) run against all 9 shipped routes at 375×812 on the production deployment — found and fixed a real aria-hidden-focus violation (OfficeCarousel.tsx's duplicate carousel track had `aria-hidden` buttons still in tab order; added `tabIndex={-1}`), and found a sitewide color-contrast violation present on every one of the 8 patient-facing routes, logged as its own item (61) rather than fixed here — several shared components (Footer, AppointmentForm, Nav) needed changes, and multiple other sessions had those exact files under active concurrent edit at the time of this pass, so fixing in place risked either a broken merge or clobbering someone else's in-flight work. GTH-13 (no horizontal scroll at 320px) run against all 9 routes — clean, zero overflow anywhere. GTH-9 (console clean) spot-checked on 2 of 9 routes (home, /backlog) — clean. GTH-2/GTH-19 (Lighthouse mobile, simulated throttling) run against / and /contact: /contact scores cleanly (performance 99, LCP 2.1s, CLS 0, TBT 10ms — all within budget); / scores performance 88 / LCP 3.5s / Speed Index 4.1s, below GTH-2's stated thresholds despite item 38 (performance budget) being marked done — flagging as a discrepancy worth a follow-up look (likely the hero carousel's LCP image) rather than re-opening item 38 on a single run's evidence. " +
+      "Left partial, not done: the remaining checks (GTH-3 HTML validity, GTH-4 keyboard-only task completion, GTH-6/14 tap-target measurement, GTH-7 JS-disabled degradation, GTH-15/16/21 thumb-zone/safe-area/landscape, GTH-20 200%-resize, GTH-22 reduced-motion) were not run against all 9 routes in this pass — GTH-20 was already verified for body/input text during item 37's work, and GTH-22 reduced-motion is already implemented per both carousels' own code, but neither was re-verified route-by-route here. A second pass covering those, plus re-running GTH-1 to confirm item 61's contrast fix once it lands, is what would close this out.",
     dependsOn: null,
     outOfScope:
       "Adding Playwright, a CI runner, or a test framework. That is a separate decision with its own cost — 'adopt the harness' is not 'adopt a toolchain'.",
@@ -4405,7 +4411,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 4, reach: 4, risk: 3, effort: 5, readiness: 5 },
     effort: "S",
-    status: "partial",
+    status: "done",
     wave: 2,
     job: "Fill in a form on a phone without fighting it",
     story:
@@ -4426,7 +4432,8 @@ export const backlog: BacklogItem[] = [
       "Submit reachable with the keyboard open",
     ],
     evidence:
-      "Blueprint GTH-18 and §17 forms. All three defects are invisible at desktop width and in a resized desktop window — they need a real device.",
+      "Blueprint GTH-18 and §17 forms. All three defects are invisible at desktop width and in a resized desktop window — they need a real device.\n\n" +
+      "2026-09-02, PR #70: type/inputmode/autocomplete and the 16px input floor were already correct on every AppointmentForm field. Closed the remaining gap — values surviving back-navigation — with a new AppointmentFormStateProvider context mounted above the router in RootLayout (in-memory only, never localStorage/sessionStorage per item 24's PHI constraint), so a patient who navigates away mid-form and back doesn't lose what they typed; resets after a successful submit. Verified via a client-side Home→/contact round trip at 375×812.",
     dependsOn: null,
     outOfScope: "Autosaving to browser storage. Any future form touching health data must not persist PHI locally (see item 24).",
     references: [
@@ -4510,7 +4517,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 3, reach: 4, risk: 2, effort: 5, readiness: 5 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 2,
     job: "Never be left wondering whether something is happening",
     story:
@@ -4531,7 +4538,8 @@ export const backlog: BacklogItem[] = [
       "Double submission is impossible",
     ],
     evidence:
-      "Blueprint §17 state design and §22 — 'every interactive component ships with its loading, success, error and recovery behavior; no dead ends.'",
+      "Blueprint §17 state design and §22 — 'every interactive component ships with its loading, success, error and recovery behavior; no dead ends.'\n\n" +
+      "2026-09-02: shipped alongside item 32 (PR #70) — AppointmentForm's submit now swaps in a spinner + \"Sending...\" label, sets aria-busy on the form and button, and announces via a sr-only aria-live region, with the submit button disabled while in flight. Marked done rather than partial: the empty-state half of this item has no surface to apply to — the site has no search/list/lookup view, only this one submit flow — so it's a documented no-op per docs/supertooth-next-features-proposal.md, not a gap. Verified post-merge: a PerformanceObserver on layout-shift measured 0 cumulative shift across the loading→confirmation transition, and the busy state (disabled, aria-busy, spinner) is observable within 50ms of the click. Found and fixed one real correctness gap while verifying (see the docs status entry for this PR): the original `if (submitting) return` guard read React state, which is stale within the same synchronous tick, so two clicks fired without a render in between both slipped past it. Replaced with a `useRef` flag set synchronously.",
     dependsOn: "Item 9",
     outOfScope: "Skeleton screens for content that loads instantly. A spinner for a 50ms action is worse than none.",
     references: [
@@ -4885,7 +4893,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 2, reach: 5, risk: 3, effort: 5, readiness: 5 },
     effort: "S",
-    status: "partial",
+    status: "done",
     wave: 1,
     job: "Read the site comfortably on a phone",
     story:
@@ -4910,7 +4918,8 @@ export const backlog: BacklogItem[] = [
     evidence:
       "Blueprint §17. Note the 16px input floor is the same rule as GTH-18 (iOS zoom-on-focus) approached from typography rather than forms — two independent reasons for one constraint.\n\n" +
       "2026-08-31 implementation: named scale added in globals.css by overriding Tailwind's --text-xs..--text-7xl tokens through the same :root-variable + @theme-inline indirection already used for the locked colour tokens, so every existing text-* utility across every component picks the scale up automatically — no per-component rewrite needed, and a @media (min-width:1024px) block re-values the same tokens upward (~1.2 mobile step, ~1.25 desktop step) for the desktop enhancement. Verified in-browser against the deployed dev build: body/inputs render at 17px (was 16px), fine print floor raised to 14px (was 12px, Logo's 'Dentistry' wordmark and two insurance-badge labels were hardcoded arbitrary sub-14px values, moved onto the new text-xs token), no horizontal overflow at 320px on any of the 5 patient-facing pages, contact form inputs measured at 17px, and html{font-size:200%} produces no clipping/overflow. Hero's h1 line-height raised from 1.1 to 1.2 to meet the heading line-height floor.\n\n" +
-      "Left partial rather than done: /backlog (src/components/BacklogView.tsx) still has ~15 hardcoded text-[0.6875rem] (11px) instances below the fine-print floor — deliberately left alone since it's the noindex internal review tool, not patient-facing (this item's own story is scoped to 'any patient'), and another session had it under active edit at review time. Worth a follow-up pass if the internal tool's own readability matters enough to spend the effort. Also surfaced, logged separately rather than fixed here since it's a Nav.tsx flex-shrink layout bug unrelated to type sizing: the header logo visually clips behind the phone-icon button at exactly 320px (confirmed independent of font-size — the logo's box stays a fixed width regardless of its text size).",
+      "Left partial rather than done: /backlog (src/components/BacklogView.tsx) still has ~15 hardcoded text-[0.6875rem] (11px) instances below the fine-print floor — deliberately left alone since it's the noindex internal review tool, not patient-facing (this item's own story is scoped to 'any patient'), and another session had it under active edit at review time. Worth a follow-up pass if the internal tool's own readability matters enough to spend the effort. Also surfaced, logged separately rather than fixed here since it's a Nav.tsx flex-shrink layout bug unrelated to type sizing: the header logo visually clips behind the phone-icon button at exactly 320px (confirmed independent of font-size — the logo's box stays a fixed width regardless of its text size).\n\n" +
+      "2026-09-02: closed the specifically-flagged gap above — all 13 hardcoded text-[0.6875rem] instances in BacklogView.tsx moved onto the text-xs token (now 14px, matching every other component). Moving to done rather than leaving partial: this item's own acceptance criteria and story are explicitly scoped to patient-facing pages, and that scope is now fully met. Note for a possible future item, not this one: /backlog still has other hardcoded sub-14px sizes (text-[0.625rem], text-[0.9em]/[0.92em]) that were never part of this item's named gap — left alone rather than scope-creeping an internal-tool typography pass into a patient-facing item.",
     dependsOn: null,
     outOfScope:
       "Changing the locked colour or font tokens. Fraunces and Inter stay; this defines how they are sized, not what they are.",
@@ -5624,7 +5633,7 @@ export const backlog: BacklogItem[] = [
     },
     scores: { conversion: 4, reach: 5, risk: 3, effort: 5, readiness: 5 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 2,
     job: "Reach emergency help fast, from anywhere, on a phone",
     story:
@@ -5638,16 +5647,18 @@ export const backlog: BacklogItem[] = [
       "Verify one-tap reachability from every route, at every matrix width",
       "Pairs with item 46: whatever the entry is, it must be visually distinguishable from the booking CTA",
       "TRIED AND REJECTED (2026-09-01): built a dedicated icon-only Dental Emergency link in the fixed header — mobile icon beside Call/Schedule/Menu, desktop badge before Book Appointment (both bg-alert, MedicalCrossIcon, per item 46's treatment). Fitting a fourth mobile control also required hiding Logo's wordmark across the whole mobile range and making the desktop badge icon-only below lg to avoid overflowing the header at 320px and 768px (both measured, not guessed). Akash reviewed and didn't want emergency in the top nav at all — reverted in full (Nav.tsx and Logo.tsx both back to their pre-item-45 state). Back to not-started: reachability currently falls back to the hamburger-menu link only (item 7's original minimum, one extra tap on mobile, no desktop entry), which does not satisfy this item's one-tap acceptance criterion. Next candidate needs Akash's steer: a persistent in-page affordance, the footer, or something else — header placement is now a tried-and-rejected option, not an open one",
+      "RESOLVED (2026-09-02): item 39's audit named the actual gap precisely — BookingBlock's `bg-alert` \"Dental emergency\" Quick Actions pill (Akash's earlier accepted call, see item 46) only renders on `/` and `/contact`; every other route had no one-tap path. Given Akash's steer (footer, not another in-page affordance), restored a `Dental emergency` link in `Footer.tsx` using that exact same pill treatment. Footer renders on every route the Quick Actions pill doesn't — about/services/insurance-new-patients/emergency/privacy/accessibility — so between the two, all seven routes now have a one-tap path. Verified via DOM measurement at 375×812 (`/services`, `/privacy`) and 1280px (`/services`): link present, `href=\"/emergency\"`, 44px tap-target height at both widths. No bottom bar introduced — the 2026-08-30 ruling still stands.",
+      "REVERSED (2026-09-03, same day the above shipped): Akash reviewed the live preview and asked to remove the footer emergency link — \"remove dental emergency from near privacy accessibility area, since its already covered.\" Flagged before acting that this reopens the exact gap the footer link closed (6 of 8 routes have no BookingBlock pill and would fall back to the hamburger menu, an extra tap); asked explicitly whether that was scoped to the homepage specifically (where the footer link genuinely does duplicate BookingBlock's pill one section above) or sitewide. Akash confirmed sitewide. Removed from Footer.tsx entirely. This is a deliberate, informed tradeoff, not an oversight — acceptance criteria below amended to match what was actually approved rather than left pointing at a bar the site no longer tries to clear.",
     ],
     acceptance: [
-      "Emergency guidance reachable in one tap from every route at 375px",
-      "Verified at 320, 360, 375, 390, 430 and landscape",
+      "Emergency guidance reachable in one tap from `/` and `/contact` (BookingBlock's Quick Actions pill)",
+      "Reachable via the mobile hamburger menu from every other route — accepted as sufficient by Akash 2026-09-03, not one-tap by the item's original bar",
       "The emergency entry is visually distinct from the booking CTA",
       "No bottom bar introduced",
     ],
     evidence:
-      "Blueprint §17/§19/§22 argued for a bottom bar; the ruling declined it. What survives is the underlying requirement — item 27 measured the fixed header persisting with a 44px Schedule control, so Call and Book are covered, and emergency is the genuine remaining gap.",
-    dependsOn: "Item 7 (emergency page must exist to link to) · item 46 (visual distinction)",
+      "Blueprint §17/§19/§22 argued for a bottom bar; the ruling declined it. What survives is the underlying requirement — item 27 measured the fixed header persisting with a 44px Schedule control, so Call and Book are covered, and emergency is the genuine remaining gap. That gap's original one-tap-everywhere bar was itself overridden by Akash 2026-09-03 (see scope above) in favor of the simpler footer-free layout.",
+    dependsOn: null,
     outOfScope:
       "A sticky bottom bar. Ruled out 2026-08-30. Reopen only with measured evidence that one-tap emergency access is unachievable without one. Also out: an emergency entry in the fixed top nav (mobile or desktop) — built and reviewed 2026-09-01, Akash didn't want it there.",
     references: [
@@ -7118,6 +7129,82 @@ export const backlog: BacklogItem[] = [
       ],
       mobileFirst: ["All 6 tiles show real photography at 375px, same visual tone as the rest of the site"],
       pass: ["Zero Unsplash references", "Every image alt text matches its actual (real) photo"],
+    },
+  },
+  {
+    id: 61,
+    title: "Sitewide low-contrast text fails WCAG AA (GTH-1/GTH-5 finding)",
+    priority: "P0",
+    source: "original",
+    launchBlocking: true,
+    blockingGround: "legal",
+    blueprintRef: "§25(c) GTH-1 accessibility scan · GTH-5 contrast",
+    harness: ["GTH-1", "GTH-5"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 2, reach: 5, risk: 5, effort: 4, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 2,
+    job: "Read every page's fine print without straining",
+    story:
+      "As a low-vision or older patient, form labels, nav breadcrumbs, footer text and the phone-number link are all readable at normal contrast, not just legible to someone with full-strength vision.",
+    problem:
+      "Item 29's first Global Test Harness pass (2026-09-02) ran GTH-1 (axe-core) against all 9 shipped routes and found the same root cause on every single patient-facing page: several of this repo's locked `--color-espresso` opacity variants — `text-espresso/40`, `/45`, `/50`, `/60` — drop below WCAG AA's 4.5:1 body-text threshold once actually rendered at 14px on the Warm Ivory background (measured 2.2:1 to 3.61:1, all failing). Separately, full-opacity `text-terracotta` links (e.g. the `tel:` link in `AppointmentForm.tsx` and `Footer.tsx`) measure 3.86:1 against Warm Ivory — also below 4.5:1 for normal-size text. This is exactly the compliance non-negotiable in `docs/CLAUDE.md` ('WCAG AA contrast') and `supertooth-build-principles.md` §8, currently unmet — not a new design call, a real bug in existing shipped pages.",
+    where: "Footer.tsx, AppointmentForm.tsx (field labels + helper text), Nav.tsx (breadcrumb links), and any other component using text-espresso/40–60 or text-terracotta on Warm Ivory for normal-size text — grep for the exact offending selectors is in `evidence` below.",
+    scope: [
+      "Raise every failing text-espresso/NN opacity variant to a level that clears 4.5:1 at its actual rendered size, OR bump the affected text to a size/weight that qualifies for the 3:1 large-text threshold — pick per callsite, not a single global opacity bump",
+      "Fix the text-terracotta-on-warm-ivory link contrast (affects the tel: links flagged above) — likely needs the already-defined text-terracotta-dark token instead, or a bolder/larger treatment",
+      "Re-run GTH-1 (axe-core) against all 9 routes after the fix; zero color-contrast violations on every patient-facing route (/backlog is the noindex internal tool and is explicitly out of scope, same call as item 37)",
+    ],
+    acceptance: [
+      "axe-core color-contrast violations = 0 on /, /about, /services, /insurance-new-patients, /contact, /emergency, /privacy, /accessibility",
+      "No locked --color-* base token value changed — only which opacity variant or token a given callsite uses (per CLAUDE.md's guardrail, opacity/tint variant changes don't require asking first, only base token value changes do)",
+      "aria-hidden-focus violation on OfficeCarousel.tsx's duplicate track (found in the same GTH-1 pass, already fixed in this PR — see evidence) — confirmed still clean after this item's changes",
+    ],
+    evidence:
+      "2026-09-02, item 29's first harness pass: `npx @axe-core/cli <url> --chrome-options=\"window-size=375,812\" --tags wcag2a,wcag2aa,wcag21a,wcag21aa --stdout` run against all 9 routes on the production deployment. Per-route color-contrast violation counts: home 13 nodes (+ a separate 5-node aria-hidden-focus violation on OfficeCarousel.tsx, fixed directly in this PR — a duplicate-track `<button>` was `aria-hidden` but not removed from tab order; added `tabIndex={-1}` to the hidden copies), about 6, services 5, insurance-new-patients 13, contact 11, emergency 6, privacy 6, accessibility 6, backlog 4560 (noindex internal tool, excluded per item 37's precedent). " +
+      "Concrete failing pairs measured on /contact: `label[for=firstName]` etc. (text-espresso/60, 3.61:1), the 'Still stuck?' line (text-espresso/50, 2.78:1), the address line (text-espresso/45, 2.47:1), '(optional)' (text-espresso/40, 2.2:1), and the `tel:` link (text-terracotta, 3.86:1) — all against the locked #faf8f4 Warm Ivory background. Same handful of opacity levels recur across Footer.tsx and Nav.tsx on every other route, which is why the violation count is consistent site-wide rather than page-specific. Full axe JSON output for all 9 routes captured during this pass; not committed to the repo (ephemeral scratch output), but every violation is reproducible by re-running the command above against any route.",
+    dependsOn: null,
+    outOfScope:
+      "Changing the locked --color-espresso, --color-terracotta or --color-warm-ivory base hex values — this is about which opacity/variant a callsite uses, never the token definitions themselves (CLAUDE.md guardrail). Also out of scope: /backlog's ~4560 violations (noindex internal tool, item 37's same carve-out applies).",
+    references: [
+      {
+        name: "WCAG 2.2 — 1.4.3 Contrast (Minimum)",
+        url: "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+        whatGood: "The normative 4.5:1 / 3:1 (large text) thresholds this item's acceptance criteria are drawn from directly.",
+        takeaway: "3:1 only applies at ≥24px regular or ≥19px bold — most of the failing text here is 14px, so it needs the full 4.5:1, not the large-text exception.",
+        mobile: "Fine print is disproportionately common on mobile layouts (labels, captions, footer text packed into limited width), so this class of bug concentrates exactly where phone users read most.",
+      },
+      {
+        name: "WebAIM — Contrast Checker",
+        url: "https://webaim.org/resources/contrastchecker/",
+        whatGood: "Plugs in a foreground/background hex pair and returns the exact ratio plus pass/fail against AA and AAA — the fastest way to test a candidate opacity value before committing to it.",
+        takeaway: "For each failing callsite, compute the Warm Ivory (#faf8f4) background against a few candidate espresso opacities to find the lowest one that still clears 4.5:1, rather than jumping straight to full opacity.",
+        mobile: "Same tool, same ratio — contrast thresholds don't vary by viewport, only how much of the page is fine print does.",
+      },
+    ],
+    test: {
+      preconditions: ["Fix implemented across Footer.tsx, AppointmentForm.tsx, Nav.tsx and any other affected component"],
+      steps: [
+        {
+          action: "Run `npx @axe-core/cli <route> --chrome-options=\"window-size=375,812\" --tags wcag2a,wcag2aa,wcag21a,wcag21aa --stdout` against all 8 patient-facing routes.",
+          tool: "shell",
+          viewport: "375",
+          expect: "Zero color-contrast violations on every route.",
+        },
+        {
+          action: "Diff globals.css and every touched component to confirm no --color-* base token value changed, only which opacity variant a given callsite references.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Locked token definitions untouched; only per-callsite opacity/variant usage changed.",
+        },
+      ],
+      mobileFirst: ["Re-verify at 375×812 — the harness run that found this was already mobile-width"],
+      pass: ["0 color-contrast violations on all 8 patient-facing routes", "No locked base token changed"],
+      gotchas: [
+        "Don't fix this by bumping one opacity value everywhere — text-espresso/70 (used for real body copy, not fine print) already passes; a blanket find-and-replace risks either under-fixing the failing ones or unnecessarily darkening ones that are already fine.",
+      ],
     },
   },
 ];
