@@ -136,7 +136,14 @@ export function EditorialHero() {
             stops it collapsing to nothing in landscape. Desktop restores
             a real ratio, near-square per the spec once the hero goes
             two-column, since height is no longer the scarce axis. */}
-        <figure className="relative mt-4 mb-0 min-h-[180px] flex-1 overflow-hidden rounded-[18px] bg-sand md:mt-0 md:aspect-[5/4] md:flex-none">
+        {/* max-h caps the photo at ~52% of the screen (it was filling to
+            59%, which pulled the eye off the headline and CTA). flex-1
+            still lets it shrink on a short viewport; the cap only binds
+            on tall ones, where the surplus becomes bottom whitespace
+            rather than more photo. If a browser doesn't support svh the
+            declaration is simply dropped and the photo fills as before —
+            a soft, non-breaking degradation. */}
+        <figure className="relative mt-4 mb-0 min-h-[180px] max-h-[52svh] flex-1 overflow-hidden rounded-[18px] bg-sand md:mt-0 md:max-h-none md:aspect-[5/4] md:flex-none">
           {/* Absolutely positioned rather than a plain child: HeroCarousel
               renders `fill` images, which need a positioned ancestor with
               a resolved height. As a flex item the figure's height comes

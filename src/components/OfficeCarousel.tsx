@@ -56,7 +56,15 @@ const DRAG_CLICK_THRESHOLD_PX = 6; // movement past this = a drag, not a tap
  * treats WCAG AA as build-blocking. The reel also never starts at all
  * for prefers-reduced-motion, matching the HeroCarousel.tsx pattern.
  */
-export function OfficeCarousel() {
+export function OfficeCarousel({
+  // EditorialTrustBlock supplies its own "Our office" heading in the
+  // editorial type scale; without this the section would carry two.
+  // The pause control still renders either way — it is a real
+  // accessibility affordance for this draggable reel, not decoration.
+  hideHeading = false,
+}: {
+  hideHeading?: boolean;
+} = {}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const offsetRef = useRef(0);
@@ -180,8 +188,10 @@ export function OfficeCarousel() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="font-display text-xl font-semibold text-espresso">Our office</h3>
+      <div className={`flex items-center mb-6 ${hideHeading ? "justify-end" : "justify-between"}`}>
+        {!hideHeading && (
+          <h3 className="font-display text-xl font-semibold text-espresso">Our office</h3>
+        )}
         <button
           type="button"
           onClick={() => setUserPaused((p) => !p)}

@@ -1,7 +1,7 @@
 import { EditorialScreen } from "@/components/EditorialScreen";
 import { EditorialNav } from "@/components/EditorialNav";
 import { EditorialHero } from "@/components/EditorialHero";
-import { TrustBlock } from "@/components/TrustBlock";
+import { EditorialTrustBlock } from "@/components/EditorialTrustBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { ServicesSection } from "@/components/ServicesSection";
 import { LocationMapSection } from "@/components/LocationMapSection";
@@ -58,7 +58,7 @@ export default function Home() {
         <EditorialHero />
       </EditorialScreen>
       <main id="main-content" tabIndex={-1}>
-        <TrustBlock />
+        <EditorialTrustBlock />
         <TestimonialsSection />
         <ServicesSection />
         <LocationMapSection />
