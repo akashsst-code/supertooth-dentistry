@@ -1766,14 +1766,14 @@ export const backlog: BacklogItem[] = [
       "PROMOTED P1 → P0 (35.5/50). Outscores five items that were already P0, including /services (29.5) and privacy (31). It's the best-evidenced patient need in the whole research set, it's Small, and it's essentially unblocked — the minimum version is one honest paragraph. Being cheap and evidence-backed is exactly what the scoring model is meant to surface.",
     scores: { conversion: 4, reach: 4, risk: 2, effort: 5, readiness: 3 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 3,
     job: "Return to care after avoiding it",
     story:
       "As someone who hasn't been to a dentist in years, I see that you won't make me feel bad about it.",
     problem:
       "The best-evidenced patient need in the entire research set, and the site says nothing about it. Roughly one in five adult dental patients is anxious; over a fifth of them don't attend regularly; up to 15% avoid care entirely.",
-    where: "Homepage strip → /anxiety page later",
+    where: "/contact, directly above AppointmentForm's optional 'Additional details' field (Akash's call, 2026-09-03 — not the homepage strip originally sketched here)",
     scope: [
       "One honest, non-judgmental paragraph — permission, not pity",
       "What actually happens at a first visit, step by step",
@@ -1790,7 +1790,8 @@ export const backlog: BacklogItem[] = [
       "The minimum version ships without waiting on the comfort-options list",
     ],
     evidence:
-      "Peer-reviewed tier — the strongest evidence in the report. Multiple independent studies on prevalence, avoidance and the anxiety/emergency overlap.",
+      "Peer-reviewed tier — the strongest evidence in the report. Multiple independent studies on prevalence, avoidance and the anxiety/emergency overlap.\n\n" +
+      "2026-09-03 implementation: shipped the v1 minimum only — one paragraph (content.ts `anxietyNote`), no sedation or comfort-option claims, no v2 items. Placed on /contact rather than the homepage strip originally sketched above (Akash's call): directly above AppointmentForm's optional 'Additional details' field, which this item's own scope already names as the pairing. Verified at 375×812: the whole paragraph renders as one ~120px block, well within a single mobile screen, immediately followed by the field it's pointing at — no scroll between the acknowledgment and the one-tap route to disclose it.",
     dependsOn: "Confirmed comfort and sedation options (for the fuller version only)",
     outOfScope: "Claiming sedation dentistry unless the practice actually offers it.",
     references: [
