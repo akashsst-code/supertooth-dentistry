@@ -613,6 +613,21 @@ export const nav = [
   { label: "Contact", href: "/contact" },
 ];
 
+// Backlog item 16 — dental anxiety and comfort content, v1 minimum scope
+// only (the v2 items — a concrete stop-signal beyond "gentle", naming a
+// specific sedation type — are deliberately not included; they're policy
+// claims that need Akash's confirmation first, per this item's own
+// outOfScope note). Placed on /contact rather than the homepage strip
+// the item originally sketched (Akash's call, 2026-09-03) — directly
+// above AppointmentForm's optional "Additional details" field, since the
+// item's own scope explicitly pairs this content with that field. The
+// "about 1 in 5" figure is the peer-reviewed prevalence stat from this
+// item's own evidence citation (docs/supertooth-patient-needs-research.md),
+// not a claim about this practice specifically, so it doesn't need the
+// same practice-capability verification pricing/insurance claims do.
+export const anxietyNote =
+  "Nervous about the dentist, or it's been a while since your last visit? You're not alone — about 1 in 5 adults feel the same way, and we won't make you feel bad about it. Let us know below and we'll make sure you're comfortable every step of the way.";
+
 // Backlog item 7 — /emergency, v1 scope only (the v2 items in that
 // backlog entry — a "what to have ready" checklist, NHS-style "when
 // unsure, default up" framing — are deliberately not included here).
