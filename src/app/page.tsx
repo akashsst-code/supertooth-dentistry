@@ -1,6 +1,5 @@
-import { Nav } from "@/components/Nav";
-import { Hero } from "@/components/Hero";
-import { ViewportHero } from "@/components/ViewportHero";
+import { EditorialNav } from "@/components/EditorialNav";
+import { EditorialHero } from "@/components/EditorialHero";
 import { TrustBlock } from "@/components/TrustBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { ServicesSection } from "@/components/ServicesSection";
@@ -35,19 +34,24 @@ import { Footer } from "@/components/Footer";
  * (docs/supertooth-webflow-build-spec.md Section 2) still need to be
  * built at /services, /about, /insurance-new-patients, /contact.
  *
- * Nav is fixed (pinned for the whole page, see Nav.tsx) and rendered
- * outside ViewportHero. Hero still fills exactly one screen height on
- * mobile below it — handled by ViewportHero, which reserves Nav's
- * height; see that file for why a plain h-[100svh] div wasn't enough
- * (in-app browsers like WhatsApp's often don't support svh).
+ * SCREEN 1 IS A VARIATION UNDER REVIEW. The header and hero here are
+ * EditorialNav/EditorialHero, built to docs/supertooth-mobile-design-spec.md
+ * — a calm, editorial, text-beside-photo opening rather than copy
+ * overlaid on a photo. Nav.tsx, Hero.tsx and ViewportHero.tsx are all
+ * still in the tree, unchanged, and every other page still renders the
+ * original Nav; reverting is a two-line change to this file. Everything
+ * below the hero is untouched by the variation.
+ *
+ * ViewportHero is deliberately not used here — it pins the hero to one
+ * screen height, which would squeeze the photograph. The editorial hero
+ * lets the photo run past the fold on purpose, and the header is static
+ * rather than fixed, so nothing needs to reserve nav height.
  */
 export default function Home() {
   return (
     <>
-      <Nav />
-      <ViewportHero>
-        <Hero />
-      </ViewportHero>
+      <EditorialNav />
+      <EditorialHero />
       <main id="main-content" tabIndex={-1}>
         <TrustBlock />
         <TestimonialsSection />

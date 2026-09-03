@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Cormorant_Garamond, Fraunces, Inter, Manrope } from "next/font/google";
 import { SkipLink } from "@/components/SkipLink";
 import { AppointmentFormStateProvider } from "@/components/AppointmentFormStateProvider";
 import { contact, hours, practice, reviews, siteUrl } from "@/lib/content";
@@ -97,6 +97,25 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+// Editorial mobile-hero variation only (docs/supertooth-mobile-design-spec.md,
+// homepage screen 1). Deliberately additive: Fraunces/Inter above stay the
+// locked site-wide type tokens and every other page still renders in them.
+// Weights are limited to what the spec actually calls for — 300/400/500 for
+// Manrope (it explicitly rules out 600–800 as too dense) and a single
+// Cormorant 400 italic used for exactly one accent word.
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+});
+
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["italic"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Super Tooth Dentistry | Dentist in Queen Anne, Seattle",
@@ -108,7 +127,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   const localBusinessJsonLd = buildLocalBusinessJsonLd();
 
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${inter.variable} ${manrope.variable} ${cormorant.variable} h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col bg-warm-ivory text-espresso">
         <script
           type="application/ld+json"

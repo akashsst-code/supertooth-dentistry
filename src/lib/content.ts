@@ -20,6 +20,32 @@ export const practice = {
   headline: "Your long-term dentist in Queen Anne",
 };
 
+/**
+ * Copy for the editorial mobile-hero variation only (EditorialHero.tsx,
+ * spec'd in docs/supertooth-mobile-design-spec.md). `practice.headline`
+ * above is untouched and still drives the existing hero and every other
+ * surface — this is a parallel option for Akash to compare, not a
+ * replacement of the locked string.
+ *
+ * The spec caps a headline at 3–7 words and the support line at one
+ * sentence, and bans urgency/superlative language; these are its own
+ * recommended examples. `accent` is the single word that gets the serif
+ * italic treatment, so the split lives here rather than as markup
+ * hardcoded in the component. No claim here needs verification — it's
+ * positioning language, not a fact about pricing, insurance, or
+ * availability.
+ */
+export const editorialHero = {
+  headlineLead: "Dental visits, made",
+  headlineAccent: "better",
+  support: "Modern care in Queen Anne.",
+  cta: "Book a visit",
+  image: {
+    src: "/office/office-2.webp",
+    alt: "Sunlit treatment room at Super Tooth Dentistry in Queen Anne",
+  },
+};
+
 // Backlog item 4 — canonical domain for metadataBase, LocalBusiness schema
 // and sitemap.ts. Not independently confirmed with Akash: this is the
 // practice's real existing domain (cited elsewhere in this file and in
