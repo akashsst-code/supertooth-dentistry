@@ -122,44 +122,65 @@ export function EditorialTrustBlock() {
           </p>
         </div>
 
-        {/* Dr. Archana — the card shell (rounded surface, border) is gone
-          in favour of the hero's own pairing: one photograph at the
-          spec's 4:5 with an 18px radius, copy beside it, separated by
+        {/* Dr. Archana — section 4. The eyebrow and heading OPEN the
+          section above the photograph rather than sitting beside it in
+          the right-hand column (Akash's call). Three reasons it belongs
+          there: the spec's own section pattern is eyebrow -> heading ->
+          copy -> "one image, list, or action" in that order (Section 8),
+          the hero's content order in Section 7 is likewise headline
+          before figure, and the two blocks above this one ("Why choose
+          us", "Our office") already open on a full-width heading — this
+          was the only one that didn't, so the page had one section
+          announcing itself differently from the rest.
+
+          The card shell (rounded surface, border) is still gone in
+          favour of the hero's own pairing: one photograph at the spec's
+          4:5 with an 18px radius, copy beside it, separated by
           whitespace rather than a container. */}
-        <div className="mt-14 md:mt-20 md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-center md:gap-[clamp(3rem,6vw,6rem)]">
-          {/* Placeholder tint is espresso/10, not bg-sand — the frame now
-              sits on a sand ground and would be invisible while loading. */}
-          <figure className="relative mb-0 aspect-[4/5] overflow-hidden rounded-[18px] bg-espresso/10">
-            <Image
-              src={archana.photo}
-              alt="Dr. Archana Dubey, DDS, MDS, at an American Dental Association event"
-              fill
-              sizes="(min-width: 768px) 45vw, 100vw"
-              className="object-cover"
-            />
-          </figure>
+        <div className="mt-14 md:mt-20">
+          <Eyebrow>Meet Dr. Archana Dubey</Eyebrow>
+          <SectionHeading>{archana.tagline}</SectionHeading>
 
-          <div className="mt-8 md:mt-0">
-            <Eyebrow>Meet Dr. Archana Dubey</Eyebrow>
-            <SectionHeading>{archana.tagline}</SectionHeading>
+          <div className="mt-8 md:mt-12 md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-center md:gap-[clamp(3rem,6vw,6rem)]">
+            {/* Placeholder tint is espresso/10, not bg-sand — the frame
+                now sits on a sand ground and would be invisible while
+                loading. */}
+            <figure className="relative mb-0 aspect-[4/5] overflow-hidden rounded-[18px] bg-espresso/10">
+              <Image
+                src={archana.photo}
+                alt="Dr. Archana Dubey, DDS, MDS, at an American Dental Association event"
+                fill
+                sizes="(min-width: 768px) 45vw, 100vw"
+                className="object-cover"
+              />
+            </figure>
 
-            {/* The one place a serif is allowed below the hero: her pull
-              quote. Cormorant is loaded italic-only, and the spec permits
-              it for a short emphasised phrase — a personal quote is
-              exactly that, and it keeps the accent meaningful by staying
-              rare rather than decorating every heading. */}
-            <blockquote className="mt-6 font-editorial-serif text-2xl font-normal italic leading-[1.35] tracking-[-0.02em] text-espresso md:text-3xl">
-              &ldquo;{archana.quote}&rdquo;
-            </blockquote>
+            <div className="mt-8 md:mt-0">
+              {/* The one place a serif is allowed below the hero: her
+                pull quote. Cormorant is loaded italic-only, and the spec
+                permits it for a short emphasised phrase — a personal
+                quote is exactly that, and it keeps the accent meaningful
+                by staying rare rather than decorating every heading. */}
+              <blockquote className="font-editorial-serif text-2xl font-normal italic leading-[1.35] tracking-[-0.02em] text-espresso md:text-3xl">
+                &ldquo;{archana.quote}&rdquo;
+              </blockquote>
 
-            <p className="mt-6 mb-0! font-editorial text-base font-light leading-[1.6] text-espresso/70">
-              {archana.bio}
-            </p>
-
-            {/* border-sand would now be invisible against the sand ground. */}
-            <div className="mt-8 border-t border-espresso/20 pt-6">
-              <CredentialBadges editorial />
+              <p className="mt-6 mb-0! font-editorial text-base font-light leading-[1.6] text-espresso/70">
+                {archana.bio}
+              </p>
             </div>
+          </div>
+
+          {/* Credentials move out of the bio's right-hand column and run
+            the full width instead. That is the whole density fix: in a
+            single ~600px column the three groups could only stack, ~11
+            lines tall; full width they sit as three side-by-side columns
+            on desktop — same rows, roughly a third of the height, and
+            more horizontal room per row rather than less, so nothing is
+            crowded to buy the space back.
+            border-sand would be invisible against the sand ground. */}
+          <div className="mt-10 border-t border-espresso/20 pt-6 md:mt-14 md:pt-8">
+            <CredentialBadges editorial />
           </div>
         </div>
       </div>
