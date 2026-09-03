@@ -48,7 +48,15 @@ const CROSSFADE_MS = 1200;
  * its own, so both props are needed for the LCP image to actually be
  * fetched with high priority.
  */
-export function HeroCarousel() {
+export function HeroCarousel({
+  // Colour shown behind the photos while they load. Defaults to the
+  // espresso this has always used (Hero.tsx sits it against a dark
+  // scrim); EditorialHero passes a light surface instead, where a dark
+  // rectangle would flash against warm ivory before the first paint.
+  surfaceClass = "bg-espresso",
+}: {
+  surfaceClass?: string;
+} = {}) {
   const [index, setIndex] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -71,7 +79,7 @@ export function HeroCarousel() {
 
   return (
     <div
-      className="relative h-full min-h-[160px] w-full overflow-hidden bg-espresso"
+      className={`relative h-full min-h-[160px] w-full overflow-hidden ${surfaceClass}`}
       role="img"
       aria-label="Photos of Super Tooth Dentistry's team and office"
     >

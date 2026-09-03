@@ -1,7 +1,7 @@
-import { Nav } from "@/components/Nav";
-import { Hero } from "@/components/Hero";
-import { ViewportHero } from "@/components/ViewportHero";
-import { TrustBlock } from "@/components/TrustBlock";
+import { EditorialScreen } from "@/components/EditorialScreen";
+import { EditorialNav } from "@/components/EditorialNav";
+import { EditorialHero } from "@/components/EditorialHero";
+import { EditorialTrustBlock } from "@/components/EditorialTrustBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { ServicesSection } from "@/components/ServicesSection";
 import { LocationMapSection } from "@/components/LocationMapSection";
@@ -35,21 +35,30 @@ import { Footer } from "@/components/Footer";
  * (docs/supertooth-webflow-build-spec.md Section 2) still need to be
  * built at /services, /about, /insurance-new-patients, /contact.
  *
- * Nav is fixed (pinned for the whole page, see Nav.tsx) and rendered
- * outside ViewportHero. Hero still fills exactly one screen height on
- * mobile below it — handled by ViewportHero, which reserves Nav's
- * height; see that file for why a plain h-[100svh] div wasn't enough
- * (in-app browsers like WhatsApp's often don't support svh).
+ * SCREEN 1 IS A VARIATION UNDER REVIEW. The header and hero here are
+ * EditorialNav/EditorialHero, built to docs/supertooth-mobile-design-spec.md
+ * — a calm, editorial, text-beside-photo opening rather than copy
+ * overlaid on a photo. Nav.tsx, Hero.tsx and ViewportHero.tsx are all
+ * still in the tree, unchanged, and every other page still renders the
+ * original Nav; reverting is a two-line change to this file. Everything
+ * below the hero is untouched by the variation.
+ *
+ * EditorialScreen replaces ViewportHero for this variation. EditorialNav
+ * is fixed and transparent at the top of the page, so it overlays the
+ * hero rather than consuming layout height — the hero's own pt-20 is
+ * what clears it, and EditorialScreen's box is the full viewport rather
+ * than viewport-minus-nav. The whole composition, photo included, lands
+ * on screen 1.
  */
 export default function Home() {
   return (
     <>
-      <Nav />
-      <ViewportHero>
-        <Hero />
-      </ViewportHero>
+      <EditorialNav />
+      <EditorialScreen>
+        <EditorialHero />
+      </EditorialScreen>
       <main id="main-content" tabIndex={-1}>
-        <TrustBlock />
+        <EditorialTrustBlock />
         <TestimonialsSection />
         <ServicesSection />
         <LocationMapSection />

@@ -130,6 +130,13 @@
   --color-alert: var(--color-alert);
   --font-display: var(--font-fraunces);
   --font-sans: var(--font-inter);
+
+  /* Editorial mobile-hero variation (docs/supertooth-mobile-design-spec.md).
+   * Additive — `font-display`/`font-sans` above are unchanged and still
+   * drive every other page. Only components in the variation opt into
+   * these via `font-editorial` / `font-editorial-serif`. */
+  --font-editorial: var(--font-manrope);
+  --font-editorial-serif: var(--font-cormorant);
 }
 
 body {

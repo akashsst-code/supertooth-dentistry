@@ -14,12 +14,18 @@ const iconMap: Record<CredentialBadge["icon"], typeof StarIcon> = {
 /** Ordered so "Experience & Education" leads (Akash's "top items") — content.ts doesn't guarantee array order across groups. */
 const groupOrder: CredentialBadge["group"][] = ["Experience & Education", "Certifications & Training", "Professional Memberships"];
 
-function CredentialRow({ badge }: { badge: CredentialBadge }) {
+function CredentialRow({ badge, editorial }: { badge: CredentialBadge; editorial: boolean }) {
   const Icon = iconMap[badge.icon];
   return (
     <li title={badge.detail} className="flex items-center gap-2.5 py-2">
       <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-terracotta-dark" />
-      <span className="font-display text-sm leading-tight text-espresso">{badge.title}</span>
+      <span
+        className={`text-sm leading-tight text-espresso ${
+          editorial ? "font-editorial font-light" : "font-display"
+        }`}
+      >
+        {badge.title}
+      </span>
     </li>
   );
 }
@@ -61,7 +67,17 @@ function CredentialRow({ badge }: { badge: CredentialBadge }) {
  * of the logo block in roughly a tenth of the height"), not a
  * departure from it.
  */
-export function CredentialBadges() {
+export function CredentialBadges({
+  // `editorial` swaps Fraunces/semibold for Manrope at the weights it is
+  // actually loaded at (300–500), for the homepage's editorial variation.
+  // Default is the original treatment, so /about is unaffected. The
+  // group label also moves off 11px onto the 14px `text-xs` token —
+  // globals.css raised that token specifically to hold a fine-print
+  // floor, and the editorial pass had no reason to keep undercutting it.
+  editorial = false,
+}: {
+  editorial?: boolean;
+} = {}) {
   const groups = groupOrder
     .map((group) => ({ group, items: credentialBadges.filter((b) => b.group === group) }))
     .filter((g) => g.items.length > 0);
@@ -70,12 +86,18 @@ export function CredentialBadges() {
     <div className="flex flex-col gap-3">
       {groups.map(({ group, items }) => (
         <div key={group}>
-          <p className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-terracotta-dark">
+          <p
+            className={`uppercase text-terracotta-dark ${
+              editorial
+                ? "font-editorial text-xs font-medium tracking-[0.16em]"
+                : "font-display text-[11px] font-semibold tracking-[0.14em]"
+            }`}
+          >
             {group}
           </p>
           <ul className="divide-y divide-espresso/12">
             {items.map((badge) => (
-              <CredentialRow key={badge.title} badge={badge} />
+              <CredentialRow key={badge.title} badge={badge} editorial={editorial} />
             ))}
           </ul>
         </div>
