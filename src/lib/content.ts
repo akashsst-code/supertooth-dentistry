@@ -36,7 +36,14 @@ export const practice = {
  * availability.
  */
 export const editorialHero = {
-  headlineLead: "Dental visits, made",
+  // Split into explicit lines rather than left to wrap: the spec names
+  // "Dental visits, / made better." as the preferred mobile break and
+  // says to control it at the component level if needed, which it is —
+  // relying on a max-width to force it re-broke to "Dental visits, made
+  // / better." as soon as the type scale changed, orphaning the accent
+  // word on its own line.
+  headlineLine1: "Dental visits,",
+  headlineLine2Lead: "made",
   headlineAccent: "better",
   support: "Modern care in Queen Anne.",
   cta: "Book a visit",

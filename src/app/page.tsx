@@ -43,16 +43,18 @@ import { Footer } from "@/components/Footer";
  * original Nav; reverting is a two-line change to this file. Everything
  * below the hero is untouched by the variation.
  *
- * EditorialScreen replaces ViewportHero for this variation: the header
- * is static rather than fixed, so it sits inside the one-screen box with
- * the hero instead of needing its height reserved separately. The whole
- * composition — photo included — lands on screen 1.
+ * EditorialScreen replaces ViewportHero for this variation. EditorialNav
+ * is fixed and transparent at the top of the page, so it overlays the
+ * hero rather than consuming layout height — the hero's own pt-20 is
+ * what clears it, and EditorialScreen's box is the full viewport rather
+ * than viewport-minus-nav. The whole composition, photo included, lands
+ * on screen 1.
  */
 export default function Home() {
   return (
     <>
+      <EditorialNav />
       <EditorialScreen>
-        <EditorialNav />
         <EditorialHero />
       </EditorialScreen>
       <main id="main-content" tabIndex={-1}>

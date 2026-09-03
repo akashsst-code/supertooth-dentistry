@@ -51,25 +51,37 @@ import { GoogleGIcon, StarIcon } from "./icons";
  */
 export function EditorialHero() {
   return (
-    <section className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-6 pb-6 pt-14 md:max-w-[1320px] md:flex-none md:px-10 md:pb-24 md:pt-20 lg:px-16">
+    <section className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-6 pb-5 pt-20 md:max-w-[1320px] md:flex-none md:px-10 md:pb-24 md:pt-32 lg:px-16">
       <div className="md:grid md:flex-none md:grid-cols-[minmax(320px,0.85fr)_minmax(440px,1.15fr)] md:items-center md:gap-[clamp(4rem,8vw,8.75rem)] flex flex-1 flex-col">
         <div className="shrink-0">
-          {/* clamp() per the spec's mobile type scale; leading/tracking
-              are the spec's 0.94 / -0.045em. max-w keeps the line break
-              falling after "made" at a 390px viewport without a <br>. */}
-          <h1 className="max-w-[350px] font-editorial text-[clamp(3.25rem,14vw,4.25rem)] font-light leading-[0.94] tracking-[-0.045em] text-espresso">
-            {editorialHero.headlineLead}{" "}
-            <em className="font-editorial-serif text-[1.08em] font-normal italic tracking-[-0.035em] text-terracotta">
-              {editorialHero.headlineAccent}
-            </em>
-            .
+          {/* Sized from the reference, not from the spec's numeric scale.
+              The spec says clamp(52px, 14vw, 68px), which rendered
+              "Dental visits," at 75% of the content width — the
+              reference sets it at 59%, and that gap is most of why the
+              first pass read as heavy. 11vw lands it at ~43px/59% on a
+              390px viewport. Leading/tracking stay the spec's
+              0.94/-0.045em. max-w keeps the break after "made". */}
+          {/* The mobile clamp is tuned to the reference and tops out at
+              56px, which reads undersized once the hero goes
+              two-column and the copy only occupies ~40% of the width.
+              Desktop gets its own scale rather than loosening the
+              mobile one — mobile is the view being judged here. */}
+          <h1 className="font-editorial text-[clamp(2.5rem,11vw,3.5rem)] font-light leading-[0.94] tracking-[-0.045em] text-espresso md:text-[clamp(3.25rem,5vw,4.5rem)]">
+            <span className="block">{editorialHero.headlineLine1}</span>
+            <span className="block">
+              {editorialHero.headlineLine2Lead}{" "}
+              <em className="font-editorial-serif text-[1.08em] font-normal italic tracking-[-0.035em] text-terracotta">
+                {editorialHero.headlineAccent}
+              </em>
+              .
+            </span>
           </h1>
 
           {/* mb-0! (not mb-0): globals.css sets `p { margin-bottom: 2em }`
               unlayered, which outranks Tailwind's layered utilities and
               otherwise injects ~42px of dead space into this hero's
               carefully budgeted vertical rhythm. */}
-          <p className="mt-6 mb-0! max-w-[330px] font-editorial text-xl font-light leading-[1.4] tracking-[-0.02em] text-espresso/70">
+          <p className="mt-4 mb-0! max-w-[330px] font-editorial text-base font-light leading-[1.45] tracking-[-0.02em] text-espresso/70 md:mt-6 md:text-xl">
             {editorialHero.support}
           </p>
 
@@ -77,10 +89,15 @@ export function EditorialHero() {
             href="/contact"
             /* Deliberately not `.tap-target`: that helper sets a flat
                min-height:44px from unlayered CSS, which outranks a
-               Tailwind min-h utility and was shrinking this button below
-               the spec's 56–60px. 58px clears the 44px accessibility
-               floor on its own, so the helper has nothing to add here. */
-            className="mt-7 inline-flex min-h-[58px] items-center justify-center rounded-lg bg-terracotta-dark px-10 font-editorial text-base font-medium uppercase tracking-[0.1em] text-warm-ivory transition-[background-color,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-espresso active:translate-y-px"
+               Tailwind min-h utility and would shrink this button below
+               its intended height. 52px clears the 44px accessibility
+               floor on its own, so the helper has nothing to add here.
+               52px is a deliberate middle: the reference's own button
+               maps to ~35px, which is unusable as a touch target, and
+               the spec's 56–60px is what made the first pass look
+               bottom-heavy. Width lands at ~44% of the content column,
+               matching the reference. */
+            className="mt-6 inline-flex min-h-[52px] items-center justify-center rounded-lg bg-terracotta-dark px-8 font-editorial text-sm font-medium uppercase tracking-[0.1em] text-warm-ivory transition-[background-color,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-espresso active:translate-y-px md:mt-8 md:min-h-[58px] md:px-10 md:text-base"
           >
             {editorialHero.cta}
           </Link>
@@ -92,7 +109,7 @@ export function EditorialHero() {
               The visual row is aria-hidden and paired with an sr-only
               sentence: "4.9 (427)" is only meaningful next to the stars,
               so read aloud on its own it would be nonsense. */}
-          <p className="mt-4 mb-0! flex items-center gap-2 font-editorial text-xs text-espresso/70">
+          <p className="mt-3 mb-0! flex items-center gap-2 font-editorial text-xs text-espresso/70 md:mt-5">
             <span className="sr-only">
               Rated {reviews.rating} out of 5 from {reviews.count} Google reviews.
             </span>
@@ -119,7 +136,7 @@ export function EditorialHero() {
             stops it collapsing to nothing in landscape. Desktop restores
             a real ratio, near-square per the spec once the hero goes
             two-column, since height is no longer the scarce axis. */}
-        <figure className="relative mt-6 mb-0 min-h-[180px] flex-1 overflow-hidden rounded-[18px] bg-sand md:mt-0 md:aspect-[5/4] md:flex-none">
+        <figure className="relative mt-4 mb-0 min-h-[180px] flex-1 overflow-hidden rounded-[18px] bg-sand md:mt-0 md:aspect-[5/4] md:flex-none">
           {/* Absolutely positioned rather than a plain child: HeroCarousel
               renders `fill` images, which need a positioned ancestor with
               a resolved height. As a flex item the figure's height comes
