@@ -6782,7 +6782,7 @@ export const backlog: BacklogItem[] = [
       "Every currently listed service is still present and unchanged in content",
     ],
     evidence:
-      "Internal — measured directly during item 27's mandatory desktop pass (docs/supertooth-webflow-build-spec.md-locked mobile-first ordering: mobile first, desktop repeated after, conflicts resolved in mobile's favour). Desktop screenfuls: TrustBlock 2.3, Testimonials 0.68, Services 4.07, LocationMap 0.85, Offers 1.14, FAQ 1.32, Booking 0.84 — Services is the clear outlier.",
+      "Internal — measured directly during item 27's mandatory desktop pass (docs/supertooth-webflow-build-spec.md-locked mobile-first ordering: mobile first, desktop repeated after, conflicts resolved in mobile's favour). Desktop screenfuls: TrustBlock 2.3, Testimonials 0.68, Services 4.07, LocationMap 0.85, Offers 1.14, FAQ 1.32, Booking 0.84 — Services is the clear outlier.\n\n2026-09-03 re-measurement: the number in this item is now stale in the wrong direction. Items 65/66 rebuilt the section — four categories, each with a clinical subtitle, a sub-service line and its own Schedule action — which took it from 4.07 to 4.92 screens at 1280px while mobile stayed at 3.19. The desktop grid is therefore a bigger outlier than when this item was written, and the fix is the same one it already proposes: this is a grid-density change at desktop widths, not a mobile-flow repair.",
     dependsOn: "Item 27 (surfaced this during its desktop pacing pass)",
     outOfScope:
       "The mobile ServicesSection layout, which already passes its own pacing check. Adding, removing, or rewording any service.",
@@ -7254,7 +7254,7 @@ export const backlog: BacklogItem[] = [
       "Pinned legal. It scores P0 on its own (43.0), but the pin is the honest label: this is a published capability claim the practice itself called inaccurate, so shipping it is not a prioritisation question.",
     scores: { conversion: 4, reach: 4, risk: 5, effort: 5, readiness: 3 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 1,
     job: "Trust what the site tells me before I commit to an appointment",
     story:
@@ -7277,7 +7277,7 @@ export const backlog: BacklogItem[] = [
       "The homepage, /services, BookingBlock and the FAQ all state the same availability promise, not three different ones",
     ],
     evidence:
-      "Practice tier, direct: the claim was challenged by the practice owner in the 2026-09-03 review — \"same-day appointment\" called inaccurate while same-day crowns were retained. Standards tier: the ADA Principles of Ethics require advertising to be truthful and not materially misleading, and the FTC's health-products guidance holds that an objective capability claim needs substantiation before it is made, not after it is questioned. This is the same rule item 2 applied to pricing and carriers; this is one instance that pass did not catch, because it reads as a service description rather than a claim.",
+      "Practice tier, direct: the claim was challenged by the practice owner in the 2026-09-03 review — \"same-day appointment\" called inaccurate while same-day crowns were retained. Standards tier: the ADA Principles of Ethics require advertising to be truthful and not materially misleading, and the FTC's health-products guidance holds that an objective capability claim needs substantiation before it is made, not after it is questioned. This is the same rule item 2 applied to pricing and carriers; this is one instance that pass did not catch, because it reads as a service description rather than a claim.\n\n2026-09-03 implementation: the row is gone rather than softened, per this item's own rule — nothing was invented to replace it while item 15 (online booking) is blocked, and \"Same-day crowns\" is untouched and now leads the capability half of the block. Swept four places, not one: `differentiators[0]` (removed), `services[0].detail` (\"same-day appointments when you need them\" — rewritten wholesale by item 66 in the same pass), BookingBlock's \"same-day slots are often available\", and the emergency FAQ answer (\"in most cases we can accommodate emergency visits the same day you call\"), which is now process-first: call, urgent problems come first, we tell you the soonest we can see you. A fifth place was found that this item had not listed and would have outlived every page fix — the site's own meta description in layout.tsx opened with \"Same-day appointments\", which is what search results would have kept showing; it now leads on in-network and same-day crowns. Verified at 375x812 on the running site: zero occurrences of the appointment claim anywhere in the rendered text. The practice's live site does say \"there is always an on-call dentist\" and the FAQ's original hedged same-day emergency wording came from that site — both are logged to item 63 rather than reinstated here, because a second unvetted availability promise is exactly what this item exists to stop.",
     dependsOn: null,
     outOfScope:
       "Building instant online booking. That is item 15 and is blocked on Tab32 — this item must be resolvable today with wording alone, and it cannot wait on a booking integration to stop publishing an inaccurate claim.",
@@ -7514,7 +7514,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 2, effort: 5, readiness: 3 },
     effort: "S",
-    status: "not-started",
+    status: "partial",
     wave: 2,
     job: "Find out fast whether this practice is a realistic option for me",
     story:
@@ -7539,7 +7539,7 @@ export const backlog: BacklogItem[] = [
       "Scheduling remains the section's only primary action",
     ],
     evidence:
-      "Practice tier, direct: the ordering and its rationale are Akash's, stated twice in the session — insurance-driven patients first, modern/digital second. Usability tier: NN/g's eyetracking work finds attention concentrated in the first screenfuls, which is the argument for spending the first row on the qualifier most patients actually filter by rather than on a capability claim. Internal: docs/supertooth-webflow-build-spec.md Section 1 makes new-patient conversion the goal, and insurance participation is the most common disqualifier in the researched patient scenarios.",
+      "Practice tier, direct: the ordering and its rationale are Akash's, stated twice in the session — insurance-driven patients first, modern/digital second. Usability tier: NN/g's eyetracking work finds attention concentrated in the first screenfuls, which is the argument for spending the first row on the qualifier most patients actually filter by rather than on a capability claim. Internal: docs/supertooth-webflow-build-spec.md Section 1 makes new-patient conversion the goal, and insurance participation is the most common disqualifier in the researched patient scenarios.\n\n2026-09-03 implementation, PARTIAL by design: in-network now leads and a modern/digital row is second, which is the ordering half of this item, done. The row set is three, not the seven the review named — in-network, modern digital dentistry, same-day crowns. The other four (verified Botox qualification, a verified convenience benefit, care/skill/choice, downtown location) each need an answer from item 63, which is blocked, and this item's own acceptance rule is that every row traces to a verified fact; three real rows beat seven padded ones. The new modern/digital row asserts nothing new — digital scanning and in-house milling are already published in `services` as real and are the same capability the same-day-crown row rests on. Measured at 375x812 before and after: the trust block is 3.63 screens against 3.54 before, so the reorder cost 0.09 of a screen. Scheduling is still the section's only action. Remaining work is the four gated rows; status stays partial until 63 lands.",
     dependsOn: "62, 63",
     outOfScope:
       "Redesigning the Why-choose-us block's visual treatment. The surface, type and spacing were settled in the editorial pass and reviewed on 2026-09-03; this is a content order and content set change.",
@@ -7638,7 +7638,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 5, risk: 2, effort: 3, readiness: 2 },
     effort: "M",
-    status: "blocked",
+    status: "done",
     wave: 2,
     job: "Find my own problem in the list of what this practice does",
     story:
@@ -7661,17 +7661,17 @@ export const backlog: BacklogItem[] = [
       "The top-level count is validated at 375px, not just on desktop",
     ],
     evidence:
-      "Practice tier, direct: the categories and the \"fresh IA, not incremental editing\" instruction are Akash's, from the 2026-09-03 session. Usability tier: NN/g's work on category naming and card sorting finds that users fail to find services filed under organisation-internal groupings even when the service is present — which is the live failure here, with Invisalign and Botox absent from the top level despite being named capabilities. Internal: docs/supertooth-ux-flow.md and the build spec Section 2 both treat the services surface as an entry point rather than a catalogue.",
+      "Practice tier, direct: the categories and the \"fresh IA, not incremental editing\" instruction are Akash's, from the 2026-09-03 session. Usability tier: NN/g's work on category naming and card sorting finds that users fail to find services filed under organisation-internal groupings even when the service is present — which is the live failure here, with Invisalign and Botox absent from the top level despite being named capabilities. Internal: docs/supertooth-ux-flow.md and the build spec Section 2 both treat the services surface as an entry point rather than a catalogue.\n\nMarket assessment, 2026-09-03 (the research Akash asked for before the call). Three nearest competitors read directly: dentistsofqueenanne.com publishes a flat A-Z list of 22 procedures with emergency dentistry first and no grouping at all — the \"service dump\" blueprint v2 names as an anti-pattern; qasmiles.com groups under Preventive / Cosmetic / Restorative / Appliances but files implants and Invisalign under two parents each, which is precisely the overlap this item's acceptance criteria forbid; queenannefamilydental.com nests nine categories under Services including Restorative Dentistry, Dental Implants, Emergency Dentistry and \"TMJ Treatments and Botox\", with Invisalign inside cosmetic. Read together: restorative as a top-level peer of cosmetic is the local norm (2 of 3), emergency appears as a service category in 2 of 3, Invisalign is top-level in none of them, and one of the three already publishes a TMJ/Botox category. The blueprint supplies what the market does not: patient-language labels (Section 6), a curated overview rather than a catalogue, an emergency shortcut on the services surface, and Invisalign in its own top 6-8 because the brand name is itself a patient search term. The decision recorded above follows the market on restorative's level, the blueprint on its label, the blueprint on emergency, and the review on promoting Invisalign — each part attributable rather than asserted. Also read the practice's own live site (www.supertoothdentistry.com), which lists comprehensive exams, periodontal therapy/cleaning, preventative care, fillings, crowns and bridges, root canals, extractions, implants, Invisalign and Opalescence whitening, and does NOT mention Botox or TMJ anywhere — the direct evidence behind holding that category back.",
     dependsOn: null,
     outOfScope:
       "Writing the treatment copy, and building per-service pages. The copy is item 66; per-service pages are item 18. This item produces an agreed structure and nothing else.",
-    conflict: {
-      locked:
-        "The four-category `services` set in content.ts — general & preventive, same-day crowns, cosmetic, restorative — built to docs/supertooth-webflow-build-spec.md Section 2 and shipped as item 11's minimum /services page.",
-      blueprint:
-        "The 2026-09-03 review names five top-level categories instead — general dentistry, cosmetic dentistry, Invisalign, Botox for headaches/TMJ, implant restorations — which promotes two capabilities that are currently absent and demotes same-day crowns from a top-level card to a restorative sub-service.",
-      question:
-        "Is restorative care its own top-level category or a child of general dentistry, and does emergency care get a category of its own given /emergency already exists?",
+    decision: {
+      date: "2026-09-03",
+      ruling: "approved-with-constraint",
+      said:
+        "Do the market assessment research along with the blueprint categories and make a call — make it defensible.",
+      consequence:
+        "Both open questions are answered from evidence rather than preference, and the taxonomy is built. RESTORATIVE STAYS TOP-LEVEL, renamed to patient language (\"Fix a damaged or missing tooth\", with \"Restorative dentistry\" as a subtitle): two of the three nearest competitors carry restorative as a peer of cosmetic rather than a child of general dentistry, Dr. Dubey's own specialty is esthetic and restorative work, and burying it under general would hide what she is most qualified for — while blueprint v2 Section 6's vocabulary rule rules out the clinical label the competitors use. EMERGENCY IS A SHORTCUT, NOT A CATEGORY: it was raised verbally and dropped from the written list, /emergency already exists as the P0 safety page (item 7), and a fifth card would duplicate safety-critical guidance in a second place that then drifts — the blueprint's own services-overview spec asks for an emergency shortcut on this surface, which is what shipped. What survives from the review's proposal: five categories become four plus a shortcut, Invisalign is promoted to its own door as asked, and same-day crowns is demoted to a sub-service of the repair door exactly as asked — the capability is unchanged and still leads the differentiator block. What is HELD BACK: the fifth category, Botox for headaches/TMJ, is absent from the practice's own live site and the only Botox claim in the repo is the credential item 63 is blocked on verifying. One nearby practice does publish a TMJ-and-Botox category, so it is defensible in this market and ships the day 63 confirms the practice treats those patients — and not before.",
     },
     references: [
       {
@@ -7769,7 +7769,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 5, reach: 4, risk: 2, effort: 3, readiness: 2 },
     effort: "M",
-    status: "blocked",
+    status: "partial",
     wave: 2,
     job: "Understand what a treatment does for me, then book it without hunting for the button",
     story:
@@ -7793,7 +7793,7 @@ export const backlog: BacklogItem[] = [
       "The page's total CTA count at 375px is recorded, and the added actions are shown not to compete with the primary booking ask",
     ],
     evidence:
-      "Practice tier, direct: both halves — new copy, and a scheduling path per treatment — are Akash's instructions from the 2026-09-03 session. Usability tier: NN/g's reading research finds users scan rather than read on the web, and act at the point of conviction rather than returning to a global control; that is the argument for a per-category action rather than one at the section's end. Internal: docs/supertooth-build-principles.md Section 8 sets the 44×44px floor these controls must clear, and the build spec makes scheduling the primary action everywhere.",
+      "Practice tier, direct: both halves — new copy, and a scheduling path per treatment — are Akash's instructions from the 2026-09-03 session. Usability tier: NN/g's reading research finds users scan rather than read on the web, and act at the point of conviction rather than returning to a global control; that is the argument for a per-category action rather than one at the section's end. Internal: docs/supertooth-build-principles.md Section 8 sets the 44×44px floor these controls must clear, and the build spec makes scheduling the primary action everywhere.\n\n2026-09-03 implementation, PARTIAL: all four shipped categories were rewritten from scratch rather than patched — each card now leads with the patient's problem (\"Fix a damaged or missing tooth\", \"Change how your smile looks\", \"Straighten your teeth\"), carries the clinical term as a subtitle so nothing is left unexplained and the page still reads as credible, lists its sub-services on one wrapped line, and ends in its own Schedule action. Measured at 375x812: four Schedule links at 92x44px, all pointing at /contact — the same booking path the hero and footer use, so there is one destination to maintain. They are deliberately quiet text actions rather than filled buttons: four terracotta buttons in a single column would have competed with the page's one primary booking ask, which is this item's own gotcha. Every claim traces to the practice's live site or to Dr. Dubey's bio; nothing new was asserted. Section height at 375px went 2.48 -> 3.97 screens on first build and was cut back to 3.19 in three passes: shortening every card's copy, halving the connector gap, taking the card photo to 16:10 on mobile (4:3 from sm up, so the ratio Akash reviewed on desktop is untouched and the uniform-tile rule still holds), and finally forcing mb-0! on all four card paragraphs — globals.css's unlayered `p { margin-bottom: 2em }` was silently adding ~32px between every line, which was a third of a screen across the stack and the single largest win. 3.19 against a ~3-screen guideline, for four categories that each gained a subtitle, a sub-service line and an action: recorded rather than hidden. The one structural cut left would be dropping the photos on mobile, which is Akash's own uniform-photo-tile call, so it is his to make rather than one to take quietly. At 1280px the section is now 4.92 screens against the 4.07 item 56 already logged — that item's number is updated rather than a new one opened. Status stays partial: the fifth category (Botox for headaches/TMJ) is held behind item 63 per item 65's decision.",
     dependsOn: "63, 65",
     outOfScope:
       "Per-service pages with their own FAQ and schema — that is item 18, and it is deliberately later. This item is the homepage and /services surface only.",
@@ -7899,7 +7899,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 2, reach: 3, risk: 2, effort: 5, readiness: 3 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 2,
     job: "Get a feel for the place before I decide to walk in",
     story:

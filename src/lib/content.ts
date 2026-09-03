@@ -149,13 +149,41 @@ export const hoursByDay = hours.flatMap(({ days, time }) => {
 // free of specific promises (no time windows, no "guaranteed") per the
 // no-unverifiable-claims rule. "In-network" doesn't need one — its
 // expanded panel is the real carrier list instead.
+// Backlog items 62 and 64 (2026-09-03 homepage review, WI-06/WI-07).
+// Two changes, both Akash's:
+//
+// 1. "Same-day appointments" is GONE. He called the claim inaccurate in
+//    the review — same-day CROWNS were confirmed and kept, and the two
+//    must never be conflated. Nothing softer replaced it: item 62's rule
+//    is that an unconfirmed time promise is dropped rather than hedged,
+//    and "instant online booking" can't stand in for it while item 15
+//    (Tab32) is still blocked. The same promise was swept out of
+//    `services`, BookingBlock and the emergency FAQ answer in the same
+//    pass so the site doesn't contradict itself.
+// 2. In-network leads, because most patients here are insurance-driven
+//    (his stated rationale), with the modern/digital experience second.
+//
+// The review named seven rows. Only these three are shippable today —
+// the other four (verified Botox qualification, a verified convenience
+// benefit, care/skill/choice, downtown location) all need answers from
+// item 63, which is blocked, and item 64's own rule is that every row
+// traces to a verified fact. Three real rows beat seven padded ones.
+//
+// The modern/digital row claims nothing new: digital scanning and
+// in-house milling are already published in `services` (real: true) and
+// are the same capability the same-day-crown row rests on.
 export const differentiators = [
   {
-    title: "Same-day appointments",
-    detail: "Real availability, not a form-and-wait.",
-    image: { src: "/office/office-1.webp", alt: "Front desk and reception area" },
+    title: "In-network with most plans",
+    detail: "We handle the insurance paperwork.",
+    image: { src: "/team/front-desk.jpg", alt: "A team member at the front desk" },
+  },
+  {
+    title: "Modern, digital dentistry",
+    detail: "Digital scans, designed and milled in-house.",
+    image: { src: "/team/team-itero-scan.jpg", alt: "A team member reviewing a digital scan on-screen" },
     expandedNote:
-      "We hold same-day slots for urgent needs — a toothache, a chipped tooth, a lost filling. Call us or request an appointment and we'll find the next available time.",
+      "Your teeth are scanned digitally rather than pressed into a tray of putty, and that scan is what the crown is designed from — the same file from the first appointment to the finished tooth.",
   },
   {
     title: "Same-day crowns",
@@ -163,11 +191,6 @@ export const differentiators = [
     image: { src: "/services/same-day-crown-onlay-crop.jpg", alt: "Same-day crown, milled in-office" },
     expandedNote:
       "Crowns are designed and milled right here in one visit — no impressions sent to an outside lab, no temporary crown, no second appointment.",
-  },
-  {
-    title: "In-network with most plans",
-    detail: "We handle the insurance paperwork.",
-    image: { src: "/team/front-desk.jpg", alt: "A team member at the front desk" },
   },
 ];
 
@@ -327,10 +350,27 @@ export const team = [
 // Brief "about our office" copy for the homepage, directly under the
 // office-photo carousel — Akash's explicit placement call. Tone copy
 // (like the hero/Archana-bio copy), not a factual claim needing
-// Placeholder treatment; only references already-real differentiators
-// (same-day crowns) rather than unconfirmed physical specifics.
+// Placeholder treatment.
+//
+// Backlog item 67 (2026-09-03 review, WI-09): the opening line stays,
+// shortened; the equipment list that followed it ("comfortable
+// treatment rooms, same-day crown technology on-site") is gone. That
+// was the one place on the homepage that could say what the practice
+// believes, spent on a capability already claimed twice above it.
+//
+// What replaces it is RETRIEVED, not written: "Care. Skill. Choice." is
+// the practice's own values framing on its live site
+// (www.supertoothdentistry.com, read 2026-09-03), down to the phrases
+// used here — "the highest quality dental care available" (Care),
+// treatment completed "with the utmost skill", "as gentle, yet as
+// effective, as possible" (Skill), and working with you "every step of
+// the way in order to make the best choices" (Choice). Same trust tier
+// as the FAQ content and Dr. Dubey's bio, both of which are sourced
+// from that site. The item's own instruction was to retrieve the
+// language rather than improve it, so the three words lead the sentence
+// unchanged and the compression is in the connective tissue only.
 export const officeBlurb =
-  "Step inside and it feels less like a dental office and more like a quiet reset — comfortable treatment rooms, same-day crown technology on-site, and a team that walks you through every step before it happens.";
+  "Step inside and it feels less like a dental office and more like a quiet reset. Care, skill and choice are what we promise: the highest quality dental care we can give, treatment carried out as gently as it can be while still being effective, and a team that works with you at every step so the choices stay yours.";
 
 // "What patients are saying" — backlog item 13. Real Google rating/count
 // already exist above (reviews). These five are the top reviews pulled
@@ -469,10 +509,65 @@ export const credentialBadges: CredentialBadge[] = [
 // implant-supported dentures" covers every claim in both cards' detail
 // text. Flag to Akash to confirm before launch in case that bio line
 // doesn't fully match current in-house capability.
+// ── Backlog items 65 and 66 — the "what we treat" rebuild ────────────
+//
+// The 2026-09-03 review asked for a fresh information architecture and
+// fresh copy, not incremental editing, and left two questions open:
+// whether restorative care is top-level or nested under general
+// dentistry, and whether emergency care becomes a category. Akash
+// delegated the call ("do market assessment research along with the
+// blueprint categories and make a call, defensible"), so both are
+// answered here from evidence rather than preference. Full reasoning
+// lives on backlog item 65's decision record; in short:
+//
+// RESTORATIVE STAYS TOP-LEVEL, in patient language. Two of the three
+// nearest competitors (queenannefamilydental.com,
+// qasmiles.com) carry restorative as a peer of cosmetic rather than a
+// child of general dentistry, and Dr. Dubey's own specialty is esthetic
+// AND restorative work (MDS Prosthodontics) — filing it under "general"
+// would bury the thing she is most qualified for. But the blueprint's
+// vocabulary rule (§6: lead with the patient word, keep the clinical
+// term as a subtitle) rules out the label peers use: patients say "my
+// tooth broke" and "replace a missing tooth", not "restorative
+// dentistry". Hence the plain title plus a `clinical` subtitle.
+//
+// EMERGENCY IS A SHORTCUT, NOT A CATEGORY. It was raised verbally in
+// the review and dropped from the written list. /emergency already
+// exists as a P0 safety page (item 7); a fifth catalogue card would
+// duplicate safety-critical guidance in a second place, which is how
+// the two drift apart. The blueprint's own services-overview spec
+// (§"Services (overview)") calls for an "emergency shortcut" on this
+// surface rather than a category — see `servicesEmergencyShortcut`.
+//
+// The review named a fifth category, "Botox for headaches/TMJ". It is
+// deliberately NOT here: it is absent from the practice's own live site,
+// and the only Botox claim anywhere in this repo is the credential row
+// item 63 is currently blocked on verifying. One nearby practice
+// (queenannefamilydental.com) does publish "TMJ Treatments and Botox",
+// so the category is defensible in this market — it ships the day 63
+// confirms the practice treats TMJ/headache patients, and not before.
+//
+// Sourcing for every line below: the practice's own live site
+// (www.supertoothdentistry.com — comprehensive exams, periodontal
+// therapy/cleaning, preventative care, fillings, crowns and bridges,
+// root canals, extractions, implants, Invisalign, Opalescence
+// whitening) and `archana.bio` (esthetic and restorative dentistry —
+// implants, crowns, veneers, smile design, implant-supported dentures),
+// which is the same trust tier the FAQ content already uses. Same-day
+// crowns moves from its own top-level card to a sub-service of the
+// repair door, exactly as the review proposed — the capability is
+// unchanged and still leads the differentiator row above.
+//
+// Photography is untouched from the 2026-09-01 round (patient-facing
+// stock, one shared aspect-[4/3] box); the Invisalign card reuses the
+// aligner photo already used by `offers.invisalign`. Item 60 still
+// covers swapping all of it for real practice photography.
 export const services = [
   {
-    title: "General & preventive care",
-    detail: "Cleanings, exams, and same-day appointments when you need them.",
+    title: "Checkups & cleanings",
+    clinical: "General & preventive dentistry",
+    detail: "The visit that keeps the other ones small — and anything we find gets explained before it's treated.",
+    includes: ["Comprehensive exams", "X-rays", "Cleanings", "Gum (periodontal) care"],
     real: true,
     image: {
       src: "https://images.unsplash.com/photo-1663755489920-5e09f66d011a?auto=format&fit=crop&w=1200&q=80",
@@ -480,17 +575,26 @@ export const services = [
     },
   },
   {
-    title: "Same-day crowns",
-    detail: "Digitally scanned and milled in-house — no second visit, no temporary crown.",
+    title: "Fix a damaged or missing tooth",
+    clinical: "Restorative dentistry",
+    detail: "Chipped, cracked, worn down or missing — the work that gets a tooth back to chewing and looking like itself.",
+    includes: [
+      "Same-day crowns",
+      "Fillings and bonding",
+      "Root canals and extractions",
+      "Bridges, dentures and implant restorations",
+    ],
     real: true,
     image: {
-      src: "https://images.unsplash.com/photo-1667133295315-820bb6481730?auto=format&fit=crop&w=1200&q=80",
-      alt: "Dentist using a digital scanner to design a same-day crown chairside",
+      src: "https://images.unsplash.com/photo-1771442873035-474765b40ac6?auto=format&fit=crop&w=1200&q=80",
+      alt: "Gloved hand holding a dental implant and crown model",
     },
   },
   {
-    title: "Cosmetic dentistry",
-    detail: "Veneers, in-office whitening, and full smile design.",
+    title: "Change how your smile looks",
+    clinical: "Cosmetic dentistry",
+    detail: "For the tooth you notice in every photograph. You'll see what's possible, and what it involves, before anything is decided.",
+    includes: ["Veneers", "Teeth whitening", "Smile design"],
     real: true,
     image: {
       src: "https://images.unsplash.com/photo-1777331903190-341a3dd0441b?auto=format&fit=crop&w=1200&q=80",
@@ -498,15 +602,26 @@ export const services = [
     },
   },
   {
-    title: "Restorative care",
-    detail: "Crowns, bridges, dentures, and dental implants — rebuilding function, not just looks.",
+    title: "Straighten your teeth",
+    clinical: "Orthodontics",
+    detail: "Clear aligners you take out to eat and brush. A consultation tells you whether they'll work for your teeth.",
+    includes: ["Invisalign clear aligners", "Fastbraces", "Consultation and treatment plan"],
     real: true,
     image: {
-      src: "https://images.unsplash.com/photo-1771442873035-474765b40ac6?auto=format&fit=crop&w=1200&q=80",
-      alt: "Gloved hand holding a dental implant and crown model",
+      src: "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=1200&q=80",
+      alt: "Clear aligner tray held up against a smile",
     },
   },
 ];
+
+// The emergency shortcut that sits under the service cards rather than
+// among them — see the reasoning above. It points at /emergency, which
+// stays the single source for urgent guidance (backlog item 7).
+export const servicesEmergencyShortcut = {
+  text: "In pain, or broke a tooth right now?",
+  linkLabel: "What to do in a dental emergency",
+  href: "/emergency",
+};
 
 // Neighborhoods served, for the map section — modeled on
 // smilemakersfortworth.com's "Proudly Serving Fort Worth & Surrounding
@@ -627,7 +742,14 @@ export const faqs = [
     // Deliberately no phone number baked in here — see the file-level
     // comment above. FAQSection.tsx prepends the one confirmed real
     // number (`contact.phone`) when it renders this specific answer.
-    answer: "In most cases, we can accommodate emergency visits the same day you call.",
+    // Item 62 sweep: this previously promised "in most cases we can
+    // accommodate emergency visits the same day you call". That is a
+    // time-bound availability promise of exactly the kind Akash called
+    // inaccurate, so it is process-first here until item 63 confirms
+    // what the practice actually delivers — at which point the stronger
+    // wording goes straight back in.
+    answer:
+      "Call us right away and tell us what's happening — urgent problems come first, and we'll tell you the soonest we can see you.",
   },
   {
     question: "Do you have a referral program?",
