@@ -7087,6 +7087,14 @@ export const backlog: BacklogItem[] = [
         takeaway: "Real photos are the antidote by name, not a nice-to-have — this item is that antidote applied to the two slots still using stock.",
         mobile: "These tiles render large and early in the homepage scroll on a phone, so the stock-vs-real gap is seen sooner on mobile than on desktop.",
       },
+      {
+        name: "Blueprint §15C — observed dental anti-patterns",
+        url: "https://www.chicagoloopdentistry.com/",
+        whatGood:
+          "Same source item 39 cites for the full anti-pattern catalogue this finding came from — 'no real faces, generic template' reads as illegitimate on a real observed practice site.",
+        takeaway: "The fix pattern is the same one item 39 already points to: real photos of this specific practice, not stock, wherever a photo claims to represent it.",
+        mobile: "A generic-looking photo above the fold reads as a template site within the first scroll, which is exactly where these 6 tiles sit.",
+      },
     ],
     test: {
       preconditions: ["Real photography or an approved existing-pool match confirmed for all 6 slots"],
@@ -7095,7 +7103,7 @@ export const backlog: BacklogItem[] = [
           action: "grep -rn \"images.unsplash.com\" src/lib/content.ts",
           tool: "shell",
           viewport: "any",
-          expect: "Zero matches.",
+          expect: "Zero matches — every services/offers image now points at a real local or practice-supplied asset, not an Unsplash hotlink.",
         },
         {
           action: "At 375px, visually confirm each `services`/`offers` tile shows a real, identifiable practice photo, not a generic stand-in.",
