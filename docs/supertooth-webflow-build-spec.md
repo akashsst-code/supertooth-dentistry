@@ -130,6 +130,12 @@ Staged rollout via Webflow staging/preview before publishing live. Webflow versi
 
 ## Status: Next.js build (current — see `supertooth-platform-pivot.md`)
 
+**Emergency reachability restored via the footer — items 45 and 7, both back to `done`, 2026-09-02:** Item 39's audit named the actual gap left by the 2026-09-02 footer trim precisely: `BookingBlock.tsx`'s `bg-alert` "Dental emergency" Quick Actions pill only renders on `/` and `/contact`, so every other route (about, services, insurance-new-patients, emergency, privacy, accessibility) had no one-tap emergency path besides the hamburger menu — which item 45's own acceptance bar doesn't count as one tap.
+
+Rather than reopening header placement (tried and rejected 2026-09-01 — Akash didn't want it in the top nav) or a bottom bar (declined 2026-08-30), Akash's call was the simplest fix: put the "Dental emergency" link back in `Footer.tsx` specifically, using the exact same `bg-alert` + `MedicalCrossIcon` pill BookingBlock already uses, not a new style. Footer renders on every route the Quick Actions pill doesn't, so between the two, all seven routes now have a one-tap path. Verified via DOM measurement at 375×812 (`/services`, `/privacy`) and 1280px (`/services`): link present, resolves to `/emergency`, 44px tap-target height at both widths. No bottom bar introduced.
+
+`npx tsc --noEmit`, `npx next build`, and `npx eslint` all clean.
+
 **Design anti-pattern audit — item 39, `not-started` → `done`, 2026-09-02:** Walked all ten of blueprint §17's named failure modes (generic, untrustworthy, overly corporate/cold, too expensive/exclusive, sterile/clinical, juvenile, clinically intimidating, visually noisy, hard to read, aggressive/sales-driven) against every page at 375px, plus the item's four named shell checks (sitewide superlative/urgency regex scan, autoplay/`prefers-reduced-motion` check, contradictory hours/phone/address check). Full ten-verdict record with evidence lives in `backlog.ts`'s item 39 entry rather than duplicated here.
 
 Seven modes pass outright. Three findings, each fixed or logged with an owner per the item's own acceptance bar:

@@ -1265,7 +1265,7 @@ export const backlog: BacklogItem[] = [
       "Scores 37/50 — P0 on merit. Also pinned on patient-safety grounds: incorrect or missing red-flag guidance for spreading swelling or airway compromise is a clinical harm, not a conversion miss.",
     scores: { conversion: 4, reach: 3, risk: 5, effort: 3, readiness: 2 },
     effort: "M",
-    status: "partial",
+    status: "done",
     wave: 2,
     job: "Handle an urgent dental need",
     story:
@@ -1282,6 +1282,7 @@ export const backlog: BacklogItem[] = [
       "Optionally note that ERs rarely staff dentists and generally treat the symptom, not the tooth",
       "DONE (2026-09-01): shipped as src/app/emergency/page.tsx, sourced from content.ts `emergencyGuidance`. Akash confirmed the after-hours reality: call, or schedule online now — no answering service, so `afterHours` states exactly that with no response-time promise. Tier 1 renders first (DOM and visual order) directly under the page heading, verified at 375×812 to render well within the first viewport alongside the one-tap `tel:` control and a Schedule-now link. Linked from the mobile hamburger menu, the footer, and BookingBlock's \"Dental emergency\" quick action (previously a /contact placeholder). v2 items intentionally not built",
       "REVISED (2026-09-02): the footer link is gone — Akash reviewed a live-preview screenshot and asked to cut the footer down to just Privacy/Accessibility, dropping the repeated brand/address/CTA block and the \"Dental emergency\" link along with it (Footer.tsx rewritten). Reachability now rests on BookingBlock's \"Quick actions\" pill (one section above the footer, still a real undiluted-`alert` button) and the mobile hamburger menu — both still one tap, so the underlying job story still holds, but this item's own acceptance line (\"footer\" specifically) no longer does. Status dropped to `partial` to keep that honest rather than leaving `done` stale.",
+      "RESTORED (2026-09-02, item 45): item 39's audit surfaced that BookingBlock only renders on `/` and `/contact`, so every other route (about/services/insurance/emergency/privacy/accessibility) had no one-tap emergency path besides the hamburger menu — which item 45's own acceptance bar doesn't count as one tap. Rather than reopening the header-placement question (tried and rejected 2026-09-01) or a bottom bar (declined 2026-08-30), Akash's call was the simplest one: put the emergency link back in the footer specifically, since Footer renders on every route the Quick Actions pill doesn't reach. Same `bg-alert` + `MedicalCrossIcon` pill as BookingBlock's version, not a new style. Verified at 375×812 on `/services` and `/privacy`: link present, `44px` tap-target height, `href=\"/emergency\"`. This item's footer acceptance line holds again — back to `done`.",
       "v2: adopt the \"when unsure, default up\" rule — safer to be evaluated and sent home than to delay (NHS 111 / Bond Vet routing model, borrowed as static cited content, never as a question engine)",
       "v2: add a short \"what to have ready when you call\" list — what happened, when, symptoms, medications",
       "v2 anti-pattern: exactly ONE emergency number sitewide. An observed site listed three, which in a crisis is unusable",
@@ -5619,7 +5620,7 @@ export const backlog: BacklogItem[] = [
     },
     scores: { conversion: 4, reach: 5, risk: 3, effort: 5, readiness: 5 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 2,
     job: "Reach emergency help fast, from anywhere, on a phone",
     story:
@@ -5633,6 +5634,7 @@ export const backlog: BacklogItem[] = [
       "Verify one-tap reachability from every route, at every matrix width",
       "Pairs with item 46: whatever the entry is, it must be visually distinguishable from the booking CTA",
       "TRIED AND REJECTED (2026-09-01): built a dedicated icon-only Dental Emergency link in the fixed header — mobile icon beside Call/Schedule/Menu, desktop badge before Book Appointment (both bg-alert, MedicalCrossIcon, per item 46's treatment). Fitting a fourth mobile control also required hiding Logo's wordmark across the whole mobile range and making the desktop badge icon-only below lg to avoid overflowing the header at 320px and 768px (both measured, not guessed). Akash reviewed and didn't want emergency in the top nav at all — reverted in full (Nav.tsx and Logo.tsx both back to their pre-item-45 state). Back to not-started: reachability currently falls back to the hamburger-menu link only (item 7's original minimum, one extra tap on mobile, no desktop entry), which does not satisfy this item's one-tap acceptance criterion. Next candidate needs Akash's steer: a persistent in-page affordance, the footer, or something else — header placement is now a tried-and-rejected option, not an open one",
+      "RESOLVED (2026-09-02): item 39's audit named the actual gap precisely — BookingBlock's `bg-alert` \"Dental emergency\" Quick Actions pill (Akash's earlier accepted call, see item 46) only renders on `/` and `/contact`; every other route had no one-tap path. Given Akash's steer (footer, not another in-page affordance), restored a `Dental emergency` link in `Footer.tsx` using that exact same pill treatment. Footer renders on every route the Quick Actions pill doesn't — about/services/insurance-new-patients/emergency/privacy/accessibility — so between the two, all seven routes now have a one-tap path. Verified via DOM measurement at 375×812 (`/services`, `/privacy`) and 1280px (`/services`): link present, `href=\"/emergency\"`, 44px tap-target height at both widths. No bottom bar introduced — the 2026-08-30 ruling still stands.",
     ],
     acceptance: [
       "Emergency guidance reachable in one tap from every route at 375px",
