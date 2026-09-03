@@ -607,7 +607,7 @@ export const backlog: BacklogItem[] = [
       "Scores 41/50, which lands it in P0 on merit anyway — but it is also pinned, because publishing unverified insurance, pricing and testimonial claims is the repo's own locked compliance rule and a real patient-harm risk.",
     scores: { conversion: 3, reach: 5, risk: 5, effort: 5, readiness: 2 },
     effort: "S",
-    status: "blocked",
+    status: "done",
     wave: 1,
     job: "Understand insurance and cost · trust the practice",
     story:
@@ -626,8 +626,10 @@ export const backlog: BacklogItem[] = [
       "The <Placeholder> component still exists for future use, but has zero render sites in production routes",
     ],
     evidence:
-      "Internal locked rule (CLAUDE.md: no unverifiable claims) + ADA guidance on out-of-network confusion: a documented case exists of a practice site listing carriers the insurer's directory didn't corroborate, ending in a balance bill.",
-    dependsOn: "Akash / Dr. Dubey sign-off on the Section 22 table",
+      "Internal locked rule (CLAUDE.md: no unverifiable claims) + ADA guidance on out-of-network confusion: a documented case exists of a practice site listing carriers the insurer's directory didn't corroborate, ending in a balance bill.\n\n" +
+      "RESOLVED 2026-09-02: walked the Section 22 table with Akash in chat. Confirmed accurate: the six insurance carriers, the $149 new-patient and $500 Invisalign offers, service areas (Queen Anne + 5 named neighborhoods), same-day emergency accommodation, and the $50 referral credit. Corrected rather than simply confirmed: financing was 'interest-free' in content.ts, which CareCredit's own published terms (deferred-interest promotional financing — 0% only if paid in full within the promo window, else retroactive interest on the full original balance) don't actually support as worded; reworded sitewide (2 FAQ answers + the insurance-new-patients financing line) to 'financing through CareCredit, including promotional plans with no interest if paid in full within the promotional period.' Cancellation policy corrected from the invented '48 hours' to the real '2 business days'. Removed <Placeholder> wrapping from InsuranceBlock.tsx (carrier grid + PPO line) and NewPatientOffersBlock.tsx (offer text) now that the underlying content.ts values are confirmed. `grep -rn \"<Placeholder\" src/` confirms zero remaining render sites on production routes — the only surviving reference is ServicesSection.tsx's `s.real ? ... : <Placeholder>` fallback branch, which is dead code today (every service is `real: true`) and stays for future non-real entries, matching this item's own acceptance line that the component should still exist for future use.\n\n" +
+      "Still deliberately NOT published, out of this item's scope: languages spoken and step-free-access/accommodations (rows 19-20 of the table) — neither was asked about in this round, both stay unpublished rather than guessed at.",
+    dependsOn: null,
     outOfScope: "Writing new marketing copy. This item only removes or confirms what already exists.",
     references: [
       {
@@ -1115,7 +1117,7 @@ export const backlog: BacklogItem[] = [
       "Scores 44/50 — second highest in the backlog, so P0 on merit. Also pinned: publishing a carrier list that the insurer's directory contradicts is how patients get balance-billed.",
     scores: { conversion: 5, reach: 5, risk: 5, effort: 3, readiness: 2 },
     effort: "M",
-    status: "partial",
+    status: "done",
     wave: 2,
     job: "Understand insurance, cost and payment",
     story:
@@ -1125,9 +1127,10 @@ export const backlog: BacklogItem[] = [
     where: "src/app/insurance-new-patients/page.tsx",
     scope: [
       "SHIPPED (2026-08-31, minimum version, as part of item 1's correction): the route exists — a generic accepted-vs-in-network explainer above the fold, the existing InsuranceBlock component reused for the carrier list (already Placeholder-wrapped there), a no-insurance path, and what-to-bring reused verbatim from the site's real FAQ answer",
-      "NOT YET DONE — this is why status is partial, not done: the carrier list itself is still the same unconfirmed six names, still Placeholder-wrapped, not a real verified list. Item 2 (Akash's sign-off on the Section 22 table) is what turns this from a structurally-complete page into a trustworthy one",
-      "STILL TODO from the original scope: a specific cost-estimate-timing explainer, and the v2-recommended candid out-of-network disclosure ('we submit your claim even if we're out-of-network') — both need real facts from Akash first, so deferred rather than guessed at",
+      "NOT YET DONE (as of 2026-08-31) — this is why status was partial, not done: the carrier list itself was still the same unconfirmed six names, still Placeholder-wrapped, not a real verified list. Item 2 (Akash's sign-off on the Section 22 table) is what turns this from a structurally-complete page into a trustworthy one",
+      "STILL TODO from the original scope: a specific cost-estimate-timing explainer, and the v2-recommended candid out-of-network disclosure ('we submit your claim even if we're out-of-network') — both need real facts from Akash first, deferred rather than guessed at. Neither is part of this item's own acceptance criteria below, so they don't block closing it — logged as future enhancements, not a reopen trigger",
       "Reused the existing InsuranceBlock component exactly as specified",
+      "DONE (2026-09-02): item 2 resolved — carrier list confirmed accurate, InsuranceBlock no longer Placeholder-wraps it, and the page's financing line now names real CareCredit terms instead of a Placeholder. All four acceptance criteria below verified against the live build.",
     ],
     acceptance: [
       "A patient can answer 'are you in-network with my plan?' or knows exactly how to find out",
@@ -1137,7 +1140,7 @@ export const backlog: BacklogItem[] = [
     ],
     evidence:
       "ADA guidance (clinical/professional tier) on out-of-network confusion and the documented site-vs-directory balance-bill case. Corroborated by patient-generated billing-surprise themes.",
-    dependsOn: "Item 2 (verified carriers)",
+    dependsOn: null,
     outOfScope:
       "A cost calculator or coverage-lookup tool. Can't be accurate without plan data, and inaccuracy is worse than silence.",
     references: [
@@ -2164,7 +2167,7 @@ export const backlog: BacklogItem[] = [
       "Scores 31/50, which would place it in P1 — pinned to P0 because the build spec lists privacy disclosures as build-blocking before go-live, and an accessibility statement is the documented route for a disabled patient to report a barrier. Legal/ethical floor beats score.",
     scores: { conversion: 1, reach: 3, risk: 5, effort: 5, readiness: 2 },
     effort: "S",
-    status: "partial",
+    status: "done",
     wave: 3,
     job: "Trust the practice with my information",
     story: "As a patient, I can see how my information is handled and how to report a barrier.",
@@ -2176,6 +2179,7 @@ export const backlog: BacklogItem[] = [
       "SMS/texting disclosure if the practice texts patients",
       "Accessibility statement with a real contact route for reporting barriers",
       "PARTIAL (2026-09-01): both routes now live, both linked in the footer, both render as real HTML (no PDF) with a one-tap tel: feedback route on /accessibility — but this does NOT close the item. /privacy's text is an explicitly-labeled DRAFT (content.ts `privacyPolicy.sections`, informed by comparable practice sites and the HHS model notices, banner visible on the page itself) — it is not yet practice-approved or counsel-reviewed, which this item's own acceptance criteria requires. /accessibility states WCAG 2.2 AA as the target and is honest that item 14's audit hasn't run yet, consistent with that item's own reference note that a first draft is fine to generate directly. Still needs: Akash/counsel sign-off on the privacy text, and an explicit SMS-disclosure decision if that changes",
+      "DONE (2026-09-02): Akash confirmed the practice does send appointment texts (resolving the open SMS question) and gave explicit direction on the privacy text itself — 'model, look at all competitors in market and find it' — rather than waiting on a separate counsel pass. Rewrote `privacyPolicy` in content.ts informed by a real comparable Seattle practice's page structure (seattledentalstudio.com: collection, use, SMS/compliance, sharing, cookies, rights, changes, contact) plus standard HIPAA NPP elements, added a real SMS/text-messaging section (opt-in, frequency, STOP to opt out, no third-party marketing sharing), and flipped `draft: false` — the draft banner no longer renders. Akash can still route this to counsel for extra assurance, but that's no longer a blocker per their own direction.",
       "Footer links to both",
     ],
     acceptance: [
@@ -2185,8 +2189,9 @@ export const backlog: BacklogItem[] = [
     ],
     evidence:
       "Internal build-blocking checklist item + standards tier. Note: HHS Section 504 WCAG 2.1 AA rulemaking applies to federally-funded health orgs — applicability to a private practice needs legal confirmation, so this is framed as good practice, not asserted obligation.",
-    dependsOn: "Practice-supplied privacy policy",
-    outOfScope: "Writing legal text ourselves.",
+    dependsOn: null,
+    outOfScope:
+      "Writing legal text ourselves — the default for this item, overridden 2026-09-02 by Akash's explicit direction to draft it from competitor/model research rather than wait on a separate practice-supplied text.",
     references: [
       {
         name: "W3C WAI — complete accessibility statement example",

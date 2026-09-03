@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { Placeholder } from "./Placeholder";
 import { offers } from "@/lib/content";
 import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
 
@@ -104,7 +103,7 @@ export function NewPatientOffersBlock() {
           >
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta-dark mb-4">{offer.label}</p>
             <p className="font-display text-2xl sm:text-3xl font-semibold text-espresso leading-snug mb-6">
-              <Placeholder>{offer.text}</Placeholder>
+              {offer.text}
             </p>
             <a
               href="/contact"

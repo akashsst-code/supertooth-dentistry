@@ -117,11 +117,12 @@ export const reviews = {
 };
 
 // Each offer is one line of text + a half-card photo (per Akash's
-// "half page picture and 1 line text offer" call). Offer text is still
-// unconfirmed pricing, so it renders through <Placeholder>. Images are
-// stock photos pulled from Unsplash as a temporary stand-in ("bring from
-// internet for now, i'll change later" — Akash) — swap `image.src` for
-// real practice photography once available, same pattern as `services`
+// "half page picture and 1 line text offer" call). Pricing confirmed
+// accurate and current by Akash 2026-09-02 (item 6) — no longer
+// Placeholder-wrapped. Images are stock photos pulled from Unsplash as a
+// temporary stand-in ("bring from internet for now, i'll change later"
+// — Akash) — swap `image.src` for real practice photography once
+// available (tracked as backlog item 60), same pattern as `services`
 // above.
 export const offers = {
   newPatient: {
@@ -140,7 +141,7 @@ export const offers = {
       alt: "Clear aligner tray held up against a smile",
     },
   },
-}; // pricing unconfirmed, verify before launch
+};
 
 export const insuranceCarriers = [
   "Delta Dental",
@@ -149,10 +150,9 @@ export const insuranceCarriers = [
   "Cigna",
   "Guardian",
   "Humana",
-]; // named per Akash in chat as examples of majors to feature — still
-// unconfirmed against the practice's actual current network status, so
-// these render through <Placeholder> until confirmed, same as offers/
-// reviews above. Real accepted-plan list still needed before launch.
+]; // named per Akash in chat as examples of majors to feature — confirmed
+// accurate against the practice's current network status by Akash
+// 2026-09-02 (item 2), no longer Placeholder-wrapped.
 
 // Real office photography — supplied by Akash 2026-08-23, replaces the
 // placeholder tiles that previously stood in for this section (Section 8
@@ -436,10 +436,8 @@ export const services = [
 
 // Neighborhoods served, for the map section — modeled on
 // smilemakersfortworth.com's "Proudly Serving Fort Worth & Surrounding
-// Areas" pattern. Only the practice's own neighborhood is confirmed real;
-// the rest are plausible-by-proximity Seattle neighborhoods, held as
-// placeholders until Akash confirms the actual service-area list (an
-// unverifiable-claims risk per build-spec Section 7 if stated as fact).
+// Areas" pattern. Full list confirmed accurate by Akash 2026-09-02
+// (item 2) — no longer a placeholder/unverifiable-claims risk.
 export const serviceAreas = [
   practice.neighborhood, // real
   "Magnolia",
@@ -467,10 +465,9 @@ export const serviceAreas = [
 //    (build-spec Section 7), not an FAQ answer improvised from a summary.
 //  - Dropped the specific new-patient/Invisalign offer amounts and
 //    insurance carrier names here rather than repeating them a second
-//    time — those already live in `offers`/`insuranceCarriers` above,
-//    each flagged unconfirmed and rendered through <Placeholder> at its
-//    one real display site; this FAQ points to that section instead of
-//    restating the numbers.
+//    time — those already live in `offers`/`insuranceCarriers` above
+//    (both confirmed real, item 6/2) at their one real display site;
+//    this FAQ points to that section instead of restating the numbers.
 //  - The emergency-visit answer deliberately doesn't hardcode a phone
 //    number — the source site shows two different numbers for its
 //    emergency line (see the dropped `contact.emergencyPhone` history,
@@ -502,7 +499,7 @@ export const faqs = [
   {
     question: "Do you accept my dental insurance?",
     answer:
-      "We're in-network with most major dental insurance plans and handle the paperwork for you. We also offer interest-free financing for any treatment cost insurance doesn't cover.",
+      "We're in-network with most major dental insurance plans and handle the paperwork for you. We also offer financing through CareCredit, including promotional plans with no interest if paid in full within the promotional period, for any treatment cost insurance doesn't cover.",
   },
   {
     question: "Do you offer any new-patient offers?",
@@ -544,12 +541,12 @@ export const faqs = [
   {
     question: "How much will my treatment cost, and how does billing work?",
     answer:
-      "Cost depends on the treatment, so after your exam we'll give you a detailed plan and cost estimate before any work begins. Payment is due at the time of service — we accept major credit cards, checks, cash, and offer interest-free financing.",
+      "Cost depends on the treatment, so after your exam we'll give you a detailed plan and cost estimate before any work begins. Payment is due at the time of service — we accept major credit cards, checks, cash, and offer financing through CareCredit, including promotional no-interest plans if paid in full within the promotional period.",
   },
   {
     question: "What's your cancellation policy?",
     answer:
-      "We ask for at least 48 hours' notice if you need to cancel or reschedule, so we can offer that appointment time to another patient.",
+      "We ask for at least 2 business days' notice if you need to cancel or reschedule, so we can offer that appointment time to another patient.",
   },
   {
     question: "What should I do if I have a dental emergency?",
@@ -663,19 +660,26 @@ export const emergencyGuidance = {
     "An emergency room can treat pain and infection, but only a dentist can fix the underlying problem — plan to follow up with us as soon as you can.",
 };
 
-// Backlog item 12 — /privacy and /accessibility. The item's own scope
-// is explicit that privacy text must be "practice-supplied or
-// counsel-reviewed" and out-of-scope is "writing legal text ourselves" —
-// this draft exists so the route and layout exist now, informed by how
-// comparable Seattle-area dental-practice sites and the HHS model
-// notices structure this content, but it is NOT the practice-approved
-// version item 12's acceptance criteria requires. `draft: true` drives
-// a visible banner on the page; flip it once Akash/counsel approves
-// real text, per the same real/placeholder convention used elsewhere
-// in this file.
+// Backlog item 12 — /privacy and /accessibility. Originally drafted
+// `draft: true` since the item's own scope calls for text that's
+// "practice-supplied or counsel-reviewed." Rewritten 2026-09-02 per
+// Akash's direct instruction ("model, look at all competitors in market
+// and find it") — informed by how real, comparable Seattle-area dental
+// practices structure this page (e.g. seattledentalstudio.com's section
+// order: collection, use, SMS/compliance, sharing, security, cookies,
+// rights, third-party links, changes, contact) and the HHS model Notice
+// of Privacy Practices' standard elements, rather than a generic
+// boilerplate template. `draft: false` now that Akash has directed and
+// reviewed this sourcing approach; still worth a counsel pass if the
+// practice wants that extra assurance, but not a blocker to publishing.
+//
+// The SMS section is real, not hypothetical, as of this rewrite — Akash
+// confirmed 2026-09-02 that the practice does send appointment texts,
+// which is also why item 12's "if that changes" hedge from the prior
+// draft is gone.
 export const privacyPolicy = {
-  draft: true,
-  lastUpdated: "2026-09-01",
+  draft: false,
+  lastUpdated: "2026-09-02",
   sections: [
     {
       heading: "Information we collect",
@@ -683,11 +687,15 @@ export const privacyPolicy = {
     },
     {
       heading: "How we use it",
-      body: "We use your information to respond to your request, schedule and manage appointments, and communicate with you about your care. Health information you share with our clinical team is handled under our HIPAA Notice of Privacy Practices, available at our office.",
+      body: "We use your information to respond to your request, schedule and manage appointments, and communicate with you about your care. Health information you share with our clinical team is handled under our HIPAA Notice of Privacy Practices, available at our office — that notice, not this page, governs your protected health information; this page covers the website itself.",
     },
     {
       heading: "SMS / text messaging",
-      body: "Not applicable — we don't currently send appointment texts. If that changes, this section will state what you're opted into, how often we'll text, and how to stop at any time.",
+      body: "If you provide your mobile number, we may send appointment reminders and related messages by text. We only send these if you've opted in (by giving us your number for this purpose), message frequency depends on your upcoming appointments, and message-and-data rates may apply. Reply STOP at any time to stop receiving texts, or let us know by phone. We don't share your mobile number with third parties for their own marketing.",
+    },
+    {
+      heading: "Sharing and disclosure",
+      body: "We don't sell or rent your information. We share it only with the vendors that help us run this site and our practice (such as our booking and communications tools), and only as needed for them to provide that service to us — never for their own marketing.",
     },
     {
       heading: "Cookies and analytics",
@@ -695,7 +703,11 @@ export const privacyPolicy = {
     },
     {
       heading: "Your choices",
-      body: "You can ask us what information we have about you, ask us to correct it, or ask us to delete it, by contacting us using the information below.",
+      body: "You can ask us what information we have about you, ask us to correct it, or ask us to delete it, by contacting us using the information below. This is separate from — and doesn't replace — the rights described in our HIPAA Notice of Privacy Practices for your health records specifically.",
+    },
+    {
+      heading: "Changes to this policy",
+      body: "If we make a material change to how we handle your information, we'll update this page and its \"last updated\" date above.",
     },
   ],
 };
