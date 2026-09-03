@@ -111,13 +111,19 @@ export function CredentialBadges({
   // ruled out. Those two callers keep the stack (and still get the
   // margin/padding tightening below).
   columns = false,
+  // Akash's 2×2 request. Supersedes `columns` when both are passed.
+  // See QuadrantCredentials below for why the data suits it.
+  quadrant = false,
 }: {
   editorial?: boolean;
   columns?: boolean;
+  quadrant?: boolean;
 } = {}) {
   const groups = groupOrder
     .map((group) => ({ group, items: credentialBadges.filter((b) => b.group === group) }))
     .filter((g) => g.items.length > 0);
+
+  if (quadrant) return <QuadrantCredentials editorial={editorial} />;
 
   return (
     /* The density pass Akash asked for ("lesser space, but without
@@ -166,5 +172,95 @@ export function CredentialBadges({
         </div>
       ))}
     </div>
+  );
+}
+
+/**
+ * Quadrant layout — Akash's request: "top left experience and education,
+ * top right professional memberships, bottom left and right
+ * certifications and training split in two."
+ *
+ * The data happens to suit it exactly, which is why it works rather than
+ * merely fits: Experience & Education and Professional Memberships hold
+ * two items each, and Certifications & Training holds four, so splitting
+ * that group across the bottom two cells gives every quadrant the same
+ * two rows. No cell is padded out and none overflows. Worth noting the
+ * balance is a property of today's content — if a fifth certification or
+ * a third membership is ever added, the bottom row absorbs it (the
+ * split is computed, not hardcoded) but the top row would go uneven.
+ *
+ * Certifications keeps ONE label spanning both bottom cells rather than
+ * being relabelled twice. Two identical headings would read as two
+ * different groups, which is a factual claim about her credentials that
+ * isn't true.
+ *
+ * The cross rules are what make it read as quadrants without adding
+ * cards — the spec keeps cards uncommon (Section 9), and this section
+ * already sits inside a bordered block on the homepage.
+ *
+ * Mobile stacks. Two columns at the 480px mobile container leave ~137px
+ * of text width per cell, which wraps "AACE Trained and Certified Botox
+ * Provider" to three lines and most others to two — measured, and it is
+ * the precise crowding Akash ruled out in the density pass ("lesser
+ * space, but without crowding"). The quadrant grid engages at md, where
+ * a cell measures ~350px and every row stays on one line.
+ */
+function QuadrantCredentials({ editorial }: { editorial: boolean }) {
+  const pick = (group: CredentialBadge["group"]) =>
+    credentialBadges.filter((b) => b.group === group);
+
+  const experience = pick("Experience & Education");
+  const memberships = pick("Professional Memberships");
+  const certs = pick("Certifications & Training");
+  // Split rather than sliced at a fixed index, so an added certification
+  // lands in the second cell instead of silently disappearing.
+  const half = Math.ceil(certs.length / 2);
+  const certsLeft = certs.slice(0, half);
+  const certsRight = certs.slice(half);
+
+  const label = editorial
+    ? "font-editorial text-xs font-medium tracking-[0.16em]"
+    : "font-display text-[11px] font-semibold tracking-[0.14em]";
+
+  return (
+    <div className="grid grid-cols-1 gap-y-6 md:grid-cols-2 md:gap-x-10 md:gap-y-0 lg:gap-x-14">
+      {/* Top left */}
+      <div className="md:border-b md:border-espresso/12 md:pb-7">
+        <p className={`mb-0! uppercase text-terracotta-dark ${label}`}>Experience &amp; Education</p>
+        <CredentialList items={experience} editorial={editorial} />
+      </div>
+
+      {/* Top right — the vertical half of the cross. */}
+      <div className="md:border-b md:border-l md:border-espresso/12 md:pb-7 md:pl-10 lg:pl-14">
+        <p className={`mb-0! uppercase text-terracotta-dark ${label}`}>Professional Memberships</p>
+        <CredentialList items={memberships} editorial={editorial} />
+      </div>
+
+      {/* Bottom row — one label across both cells, then the items split.
+          `md:col-span-2` for the label with the list re-gridded beneath
+          it, rather than two sibling cells, so the heading genuinely
+          spans the pair instead of sitting over the left one. */}
+      <div className="md:col-span-2 md:pt-7">
+        <p className={`mb-0! uppercase text-terracotta-dark ${label}`}>
+          Certifications &amp; Training
+        </p>
+        <div className="md:grid md:grid-cols-2 md:gap-x-10 lg:gap-x-14">
+          <CredentialList items={certsLeft} editorial={editorial} />
+          <div className="md:border-l md:border-espresso/12 md:pl-10 lg:pl-14">
+            <CredentialList items={certsRight} editorial={editorial} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CredentialList({ items, editorial }: { items: CredentialBadge[]; editorial: boolean }) {
+  return (
+    <ul className="mt-2 divide-y divide-espresso/12">
+      {items.map((badge) => (
+        <CredentialRow key={badge.title} badge={badge} editorial={editorial} />
+      ))}
+    </ul>
   );
 }
