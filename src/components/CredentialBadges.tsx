@@ -17,10 +17,15 @@ const groupOrder: CredentialBadge["group"][] = ["Experience & Education", "Certi
 function CredentialRow({ badge, editorial }: { badge: CredentialBadge; editorial: boolean }) {
   const Icon = iconMap[badge.icon];
   return (
-    <li title={badge.detail} className="flex items-center gap-2.5 py-2">
-      <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-terracotta-dark" />
+    /* py-1.5 rather than py-2: the rows are single-line and the divider
+       already separates them, so 12px of padding was buying air the
+       section didn't need. items-start (with the icon nudged onto the
+       first line) so a title that wraps in a narrow column keeps its
+       glyph beside the first line instead of centring it against two. */
+    <li title={badge.detail} className="flex items-start gap-2.5 py-1.5">
+      <Icon aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-terracotta-dark" />
       <span
-        className={`text-sm leading-tight text-espresso ${
+        className={`text-sm leading-snug text-espresso ${
           editorial ? "font-editorial font-light" : "font-display"
         }`}
       >
@@ -66,6 +71,28 @@ function CredentialRow({ badge, editorial }: { badge: CredentialBadge; editorial
  * resource... a single line delivers essentially all the credibility
  * of the logo block in roughly a tenth of the height"), not a
  * departure from it.
+ *
+ * 2026-09-03 density pass (Akash: "is there a way to organize them with
+ * lesser space, but without crowding"). The wordmark-list treatment
+ * above is unchanged — same rows, same order, same 14px type, nothing
+ * dropped. The height comes out of spacing and layout instead:
+ *
+ * - `p { margin-bottom: 2em }` in globals.css was landing on all three
+ *   group labels — 84px of dead space, the single biggest thing making
+ *   the list tall. Killed, and replaced by 8px on the list, which also
+ *   puts a label nearer its own rows than the next group.
+ * - Rows drop from py-2 to py-1.5; they are single-line and already
+ *   divided, so the extra 4px was buying nothing.
+ * - With `columns`, the three groups sit side by side from md up.
+ *
+ * Two things had to be true for the columns not to be a trade: the
+ * homepage caller moved this block out of the bio's right-hand column
+ * and gave it the full section width, so a desktop column is wider than
+ * the old single stack rather than narrower; and mobile keeps one
+ * column, because at the 480px mobile container two columns would wrap
+ * the longer titles to three lines apiece. Net height in the homepage's
+ * editorial variation: ~440px -> 162px on desktop, ~443px -> 371px on
+ * mobile, with nothing removed and no type made smaller.
  */
 export function CredentialBadges({
   // `editorial` swaps Fraunces/semibold for Manrope at the weights it is
@@ -75,19 +102,55 @@ export function CredentialBadges({
   // globals.css raised that token specifically to hold a fine-print
   // floor, and the editorial pass had no reason to keep undercutting it.
   editorial = false,
+  // Opt-in, not automatic: the three groups only sit side by side where
+  // the caller actually has the width for it. The homepage gives this
+  // block the full section (~1150px, so ~350px a column and every row
+  // still one line); TrustBlock and /about hand it a ~600px bio card,
+  // where three columns measure 181px and wrap most rows onto two lines
+  // — denser on paper, crowded in practice, which is the thing Akash
+  // ruled out. Those two callers keep the stack (and still get the
+  // margin/padding tightening below).
+  columns = false,
 }: {
   editorial?: boolean;
+  columns?: boolean;
 } = {}) {
   const groups = groupOrder
     .map((group) => ({ group, items: credentialBadges.filter((b) => b.group === group) }))
     .filter((g) => g.items.length > 0);
 
   return (
-    <div className="flex flex-col gap-3">
+    /* The density pass Akash asked for ("lesser space, but without
+       crowding"). Nothing is removed and no type gets smaller — with
+       `columns` the three groups simply stop stacking once the caller
+       has width for them to sit side by side. On the homepage this now
+       spans the full section rather than the bio's right-hand column
+       (see EditorialTrustBlock), so a desktop column measures 347px —
+       wider per row than the single stacked column was, not narrower,
+       and every row still fits on one line (verified in the browser at
+       1280px, including the longest title).
+       Below md it stays one column everywhere: the mobile container
+       tops out at 480px, and two columns there would wrap the longer
+       titles onto three lines each, which is exactly the crowding to
+       avoid. Mobile's saving comes from the label margin and the row
+       padding instead — see the two comments below. */
+    <div
+      className={`grid grid-cols-1 gap-y-4 ${
+        columns ? "md:grid-cols-3 md:gap-x-10 md:gap-y-0 lg:gap-x-14" : ""
+      }`}
+    >
       {groups.map(({ group, items }) => (
         <div key={group}>
+          {/* mb-0! matters more than it looks: globals.css sets
+              `p { margin-bottom: 2em }`, so each group label was
+              carrying ~28px of trailing margin — 84px of dead space
+              across the three, and the single largest thing making this
+              list tall. The ul's own mt-2 replaces it with 8px, which
+              also fixes the proximity that margin got backwards: a
+              label now sits nearer its own rows (8px) than to the next
+              group (16px). */}
           <p
-            className={`uppercase text-terracotta-dark ${
+            className={`mb-0! uppercase text-terracotta-dark ${
               editorial
                 ? "font-editorial text-xs font-medium tracking-[0.16em]"
                 : "font-display text-[11px] font-semibold tracking-[0.14em]"
@@ -95,7 +158,7 @@ export function CredentialBadges({
           >
             {group}
           </p>
-          <ul className="divide-y divide-espresso/12">
+          <ul className="mt-2 divide-y divide-espresso/12">
             {items.map((badge) => (
               <CredentialRow key={badge.title} badge={badge} editorial={editorial} />
             ))}

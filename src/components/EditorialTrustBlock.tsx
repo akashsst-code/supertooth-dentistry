@@ -180,7 +180,7 @@ export function EditorialTrustBlock() {
             crowded to buy the space back.
             border-sand would be invisible against the sand ground. */}
           <div className="mt-10 border-t border-espresso/20 pt-6 md:mt-14 md:pt-8">
-            <CredentialBadges editorial />
+            <CredentialBadges editorial columns />
           </div>
         </div>
       </div>
