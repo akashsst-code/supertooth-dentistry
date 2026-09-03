@@ -57,14 +57,19 @@ const DRAG_CLICK_THRESHOLD_PX = 6; // movement past this = a drag, not a tap
  * for prefers-reduced-motion, matching the HeroCarousel.tsx pattern.
  */
 export function OfficeCarousel({
-  // EditorialTrustBlock supplies its own "Our office" heading in the
-  // editorial type scale; without this the section would carry two.
-  // The pause control still renders either way — it is a real
-  // accessibility affordance for this draggable reel, not decoration.
-  hideHeading = false,
+  // "editorial" adapts this to EditorialTrustBlock, which supplies its
+  // own "Our office" heading in the editorial type scale (so this one
+  // would be a duplicate) and renders on a Sand ground (where the
+  // default border-sand outlines are invisible). The pause control
+  // still renders in both variants — it is a real accessibility
+  // affordance for this draggable reel, not decoration. Default keeps
+  // /about exactly as it was.
+  variant = "default",
 }: {
-  hideHeading?: boolean;
+  variant?: "default" | "editorial";
 } = {}) {
+  const editorial = variant === "editorial";
+  const borderClass = editorial ? "border-espresso/20" : "border-sand";
   const trackRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const offsetRef = useRef(0);
@@ -188,8 +193,8 @@ export function OfficeCarousel({
 
   return (
     <div>
-      <div className={`flex items-center mb-6 ${hideHeading ? "justify-end" : "justify-between"}`}>
-        {!hideHeading && (
+      <div className={`flex items-center mb-6 ${editorial ? "justify-end" : "justify-between"}`}>
+        {!editorial && (
           <h3 className="font-display text-xl font-semibold text-espresso">Our office</h3>
         )}
         <button
@@ -197,7 +202,7 @@ export function OfficeCarousel({
           onClick={() => setUserPaused((p) => !p)}
           aria-label={userPaused ? "Resume office photo scroll" : "Pause office photo scroll"}
           aria-pressed={userPaused}
-          className="tap-target inline-flex items-center justify-center rounded-full border border-sand text-espresso/70 hover:text-espresso hover:border-terracotta/50 transition-colors"
+          className={`tap-target inline-flex items-center justify-center rounded-full border ${borderClass} text-espresso/70 hover:text-espresso hover:border-terracotta/50 transition-colors`}
         >
           {userPaused ? <PlayIcon /> : <PauseIcon />}
         </button>
@@ -229,7 +234,7 @@ export function OfficeCarousel({
                 width={320}
                 height={240}
                 draggable={false}
-                className="h-48 sm:h-60 w-64 sm:w-80 rounded-2xl object-cover border border-sand pointer-events-none"
+                className={`h-48 sm:h-60 w-64 sm:w-80 rounded-2xl object-cover border ${borderClass} pointer-events-none`}
               />
               <span className="tap-target absolute bottom-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-espresso/60 text-warm-ivory">
                 <ExpandIcon />
