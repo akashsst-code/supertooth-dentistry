@@ -618,7 +618,7 @@ function Stat({ label, value, accent = false }: { label: string; value: number; 
 
 function PinBadge({ pin }: { pin: "legal" | "dependency" }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-terracotta/50 bg-terracotta/10 px-2 py-0.5 text-[0.6875rem] font-semibold text-terracotta">
+    <span className="inline-flex items-center rounded-full border border-terracotta/50 bg-terracotta/10 px-2 py-0.5 text-xs font-semibold text-terracotta">
       {pin === "legal" ? "Legal / safety pin" : "Dependency pin"}
     </span>
   );
@@ -649,10 +649,10 @@ function ScoreBar({ item }: { item: BacklogItem }) {
       <dl className="grid grid-cols-2 sm:grid-cols-5 gap-2">
         {(Object.keys(WEIGHTS) as (keyof typeof WEIGHTS)[]).map((f) => (
           <div key={f} className="rounded-lg bg-warm-ivory border border-espresso/10 px-2.5 py-2">
-            <dt className="text-[0.6875rem] leading-tight text-espresso/55">{FACTOR_LABELS[f]}</dt>
+            <dt className="text-xs leading-tight text-espresso/55">{FACTOR_LABELS[f]}</dt>
             <dd className="mt-0.5 flex items-baseline gap-1">
               <span className="font-semibold text-espresso tabular-nums">{item.scores[f]}</span>
-              <span className="text-[0.6875rem] text-espresso/40 tabular-nums">
+              <span className="text-xs text-espresso/40 tabular-nums">
                 ×{WEIGHTS[f]}
               </span>
             </dd>
@@ -698,28 +698,28 @@ function ItemCard({
                 {item.priority}
               </span>
               {moved && (
-                <span className="inline-flex items-center gap-1 rounded-full border border-terracotta/50 bg-terracotta/10 px-2 py-0.5 text-[0.6875rem] font-semibold text-terracotta">
+                <span className="inline-flex items-center gap-1 rounded-full border border-terracotta/50 bg-terracotta/10 px-2 py-0.5 text-xs font-semibold text-terracotta">
                   {item.originalPriority} → {item.priority}
                 </span>
               )}
               {item.launchBlocking && (
-                <span className="inline-flex items-center rounded-full bg-terracotta text-warm-ivory px-2.5 py-0.5 text-[0.6875rem] font-semibold">
+                <span className="inline-flex items-center rounded-full bg-terracotta text-warm-ivory px-2.5 py-0.5 text-xs font-semibold">
                   Launch-blocking · {item.blockingGround}
                 </span>
               )}
               {item.pin && <PinBadge pin={item.pin} />}
               {item.conflict && (
-                <span className="inline-flex items-center rounded-full bg-terracotta text-warm-ivory px-2 py-0.5 text-[0.6875rem] font-semibold">
+                <span className="inline-flex items-center rounded-full bg-terracotta text-warm-ivory px-2 py-0.5 text-xs font-semibold">
                   Needs your call
                 </span>
               )}
               {item.decision && (
-                <span className="inline-flex items-center rounded-full border border-espresso/30 bg-espresso/[0.06] px-2 py-0.5 text-[0.6875rem] font-semibold text-espresso/70">
+                <span className="inline-flex items-center rounded-full border border-espresso/30 bg-espresso/[0.06] px-2 py-0.5 text-xs font-semibold text-espresso/70">
                   You ruled: {item.decision.ruling.replace(/-/g, " ")}
                 </span>
               )}
               {item.source !== "original" && (
-                <span className="inline-flex items-center rounded-full border border-espresso/25 px-2 py-0.5 text-[0.6875rem] text-espresso/55">
+                <span className="inline-flex items-center rounded-full border border-espresso/25 px-2 py-0.5 text-xs text-espresso/55">
                   {item.source === "blueprint" ? "New — blueprint" : "Enriched"}
                 </span>
               )}
@@ -858,7 +858,7 @@ function ItemCard({
                 Test scenario
               </p>
 
-              <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-espresso/40 !mb-1">
+              <p className="text-xs font-semibold uppercase tracking-wide text-espresso/40 !mb-1">
                 Preconditions
               </p>
               <ul className="flex flex-col gap-1 mb-4">
@@ -875,7 +875,7 @@ function ItemCard({
               {/* The mobile gate comes before the steps on purpose: if these
                   don't hold at 375px, the item fails regardless of desktop. */}
               <div className="rounded-lg border border-terracotta/30 bg-terracotta/[0.06] px-3 py-3 mb-4">
-                <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-terracotta !mb-1.5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-terracotta !mb-1.5">
                   Mobile gate — must hold at 375×812 before desktop counts
                 </p>
                 <ul className="flex flex-col gap-1.5">
@@ -890,7 +890,7 @@ function ItemCard({
                 </ul>
               </div>
 
-              <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-espresso/40 !mb-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-espresso/40 !mb-2">
                 Steps
               </p>
               <ol className="flex flex-col gap-3 mb-4">
@@ -923,7 +923,7 @@ function ItemCard({
                 ))}
               </ol>
 
-              <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-espresso/40 !mb-1.5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-espresso/40 !mb-1.5">
                 Passes when
               </p>
               <ul className="flex flex-col gap-1.5">
@@ -939,7 +939,7 @@ function ItemCard({
 
               {item.test.gotchas && item.test.gotchas.length > 0 && (
                 <>
-                  <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-terracotta !mb-1.5 mt-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-terracotta !mb-1.5 mt-4">
                     Gotchas
                   </p>
                   <ul className="flex flex-col gap-1.5">
