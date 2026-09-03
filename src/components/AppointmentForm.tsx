@@ -5,10 +5,9 @@ import type { FormEvent } from "react";
 import Link from "next/link";
 import { contact } from "@/lib/content";
 import { CalendarIcon } from "./icons";
+import { useAppointmentFormState } from "./AppointmentFormStateProvider";
+import type { AppointmentFormFieldName as FieldName, AppointmentFormValues as Values } from "./AppointmentFormStateProvider";
 
-type FieldName = "firstName" | "lastName" | "email" | "phone";
-
-type Values = Record<FieldName | "details", string>;
 type Errors = Partial<Record<FieldName, string>>;
 
 const FIELD_LABELS: Record<FieldName, string> = {
@@ -66,17 +65,13 @@ function validate(values: Values): Errors {
  * anyone who gets stuck rather than fighting the form.
  */
 export function AppointmentForm() {
-  const [values, setValues] = useState<Values>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    details: "",
-  });
-  const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
-  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const { values, setValues, touched, setTouched, submitAttempted, setSubmitAttempted, reset } =
+    useAppointmentFormState();
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submittedValues, setSubmittedValues] = useState<Pick<Values, "firstName" | "email" | "phone"> | null>(
+    null,
+  );
 
   const fieldRefs = useRef<Partial<Record<FieldName, HTMLInputElement | null>>>({});
 
@@ -104,6 +99,7 @@ export function AppointmentForm() {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitting) return; // guards a double-tap/double-Enter while a submit is already in flight
     setSubmitAttempted(true);
 
     const currentErrors = validate(values);
@@ -117,12 +113,14 @@ export function AppointmentForm() {
     // No booking backend exists yet — this stands in for a real submit
     // (see component doc comment above) rather than pretending to hit one.
     window.setTimeout(() => {
+      setSubmittedValues({ firstName: values.firstName, email: values.email, phone: values.phone });
       setSubmitting(false);
       setSubmitted(true);
+      reset(); // clears the shared in-memory values now that they've been sent
     }, 500);
   }
 
-  if (submitted) {
+  if (submitted && submittedValues) {
     return (
       <div className="rounded-2xl border border-sand bg-warm-ivory p-6 sm:p-8 text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-terracotta/10 text-terracotta">
@@ -130,8 +128,9 @@ export function AppointmentForm() {
         </div>
         <h2 className="font-display text-xl sm:text-2xl font-semibold text-espresso mb-2">Request received</h2>
         <p className="text-espresso/70 max-w-sm mx-auto mb-6">
-          Thanks, {values.firstName}. We&apos;ll reach out to {values.email} or call {values.phone} within 1
-          business day to confirm a time that works. Need us sooner? Call the number below.
+          Thanks, {submittedValues.firstName}. We&apos;ll reach out to {submittedValues.email} or call{" "}
+          {submittedValues.phone} within 1 business day to confirm a time that works. Need us sooner? Call the
+          number below.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
@@ -190,7 +189,7 @@ export function AppointmentForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} noValidate aria-busy={submitting} className="flex flex-col gap-5">
         <div className="grid sm:grid-cols-2 gap-5">
           <Field
             name="firstName"
@@ -268,11 +267,15 @@ export function AppointmentForm() {
         <button
           type="submit"
           disabled={submitting}
+          aria-busy={submitting}
           className="tap-target inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-6 py-3 text-sm font-semibold text-warm-ivory hover:brightness-110 transition disabled:opacity-70"
         >
-          <CalendarIcon />
+          {submitting ? <Spinner /> : <CalendarIcon />}
           {submitting ? "Sending..." : "Send Request"}
         </button>
+        <span role="status" aria-live="polite" className="sr-only">
+          {submitting ? "Sending your request…" : ""}
+        </span>
 
         <p className="text-xs text-espresso/50 -mt-2">
           Still stuck?{" "}
@@ -360,6 +363,15 @@ function CheckMark() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M6 12.5l4 4 8-9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function Spinner() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="animate-spin" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" opacity="0.3" />
+      <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
   );
 }
