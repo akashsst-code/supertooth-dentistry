@@ -84,9 +84,26 @@ export function Footer({
     return (
       <footer className="bg-warm-ivory font-editorial font-light text-espresso">
         <div className="mx-auto w-full max-w-[480px] px-6 pb-[max(1rem,env(safe-area-inset-bottom))] md:max-w-[1320px] md:px-10 md:pb-6 lg:px-16">
-          <div className="flex flex-col border-t border-espresso/12 pt-3 sm:flex-row sm:items-center sm:justify-between">
+          {/* Alignment and rhythm, 2026-09-03 (Akash). Two measured
+              faults, both from the 44px tap targets on the links:
+
+              1. The copyright line carried `px-2` to visually match the
+                 links' own padding, which put its text at x=32 while
+                 every other left edge in this section — the buttons, the
+                 hours panel, the links' text — is at x=24. Padding
+                 removed; the links keep theirs (with the -8px pull on
+                 the nav) because that padding IS their tap area.
+              2. The vertical gaps were 26px above "Privacy" and 0px
+                 between the two lines, so the pair read as cramped
+                 under a wide gap. The cause is that a 44px box around
+                 17px text carries ~13px of invisible padding on each
+                 side, which the container's own padding was then adding
+                 to at the top and not at all in between. Compensated:
+                 6px above the row and a 2px gap, which lands ~20px from
+                 the rule to the text and ~16px between the lines. */}
+          <div className="flex flex-col gap-0.5 border-t border-espresso/12 pt-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-0 sm:pt-2">
             <LegalLinks merged />
-            <p className="mb-0! px-2 text-xs text-espresso/80 sm:px-0">
+            <p className="mb-0! text-xs text-espresso/80">
               © {new Date().getFullYear()} {practice.name}. All rights reserved.
             </p>
           </div>
