@@ -102,6 +102,39 @@ export const hours = [
   { days: "Saturday – Monday", time: "Closed" },
 ];
 
+// Same hours, one row per day (Akash, 2026-09-03: "expand each date
+// Tuesday, wednesday, thursday, friday"). DERIVED from `hours` above
+// rather than typed out a second time — the ranges stay the single
+// source of truth, so this cannot drift from them or from the
+// OpeningHoursSpecification in layout.tsx that reads the same array,
+// and expanding a stated range into its days states nothing new.
+//
+// Week starts Tuesday because that is where the practice's own week
+// starts; the order falls out of walking each range in `hours`, so
+// Saturday/Sunday/Monday land last, closed.
+const WEEK = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+export const hoursByDay = hours.flatMap(({ days, time }) => {
+  const [start, end] = days.split("–").map((d) => d.trim());
+  const startIdx = WEEK.indexOf(start);
+  const endIdx = WEEK.indexOf(end);
+  if (startIdx === -1 || endIdx === -1) return [{ day: days, time }];
+  const out: { day: string; time: string }[] = [];
+  for (let i = startIdx; i !== endIdx; i = (i + 1) % WEEK.length) {
+    out.push({ day: WEEK[i], time });
+  }
+  out.push({ day: WEEK[endIdx], time });
+  return out;
+});
+
 // `image` on each entry backs the mobile photo-card treatment in
 // TrustBlock (2026-08-29 declutter pass — the old icon-only cards read as
 // empty/no-visuals on mobile). Reuses real photography already sourced

@@ -70,6 +70,10 @@ export function Footer({
   // lost it. Follows that section onto Warm Ivory now that it is no
   // longer espresso; the divider is espresso/12 rather than border-sand
   // because sand on ivory measures ~1.2:1 and would not be visible.
+  // Spacing compressed 2026-09-03 (Akash): the row is two 12px lines and
+  // was carrying 20px above and 24px below plus BookingBlock's own 48px
+  // section padding over the rule. The rule is the separator; the
+  // whitespace does not need to repeat it.
   variant = "default",
 }: {
   variant?: "default" | "editorial" | "merged";
@@ -80,7 +84,7 @@ export function Footer({
     return (
       <footer className="bg-warm-ivory font-editorial font-light text-espresso">
         <div className="mx-auto w-full max-w-[480px] px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:max-w-[1320px] md:px-10 md:pb-8 lg:px-16">
-          <div className="flex flex-col gap-1 border-t border-espresso/12 pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-0.5 border-t border-espresso/12 pt-3.5 sm:flex-row sm:items-center sm:justify-between">
             <LegalLinks merged />
             <p className="mb-0! px-2 text-xs text-espresso/80 sm:px-0">
               © {new Date().getFullYear()} {practice.name}. All rights reserved.

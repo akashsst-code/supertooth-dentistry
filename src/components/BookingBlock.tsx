@@ -1,6 +1,6 @@
-import { contact, hours, reviews } from "@/lib/content";
+import { contact, hoursByDay } from "@/lib/content";
 import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
-import { CalendarIcon, ClockIcon, GoogleGIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, StarIcon } from "./icons";
+import { CalendarIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon } from "./icons";
 
 /**
  * Booking block — docs/supertooth-ux-flow.md Section 4 / build-spec
@@ -28,14 +28,12 @@ import { CalendarIcon, ClockIcon, GoogleGIcon, MapPinIcon, MedicalCrossIcon, Pho
  * Everything here is left-aligned, never centered — Akash flagged that
  * centered text on mobile made the eye jump around instead of scanning
  * down a single edge. "Office hours" and "Location" are stacked (not
- * side-by-side) — a two-column layout was tried first but squeezed the
- * hours string into an awkward mid-phrase wrap at this section's actual
- * available width; full-width stacked rows read cleaner and don't wrap.
+ * side-by-side); they now share one panel, see the comment on it below.
  *
  * Backlog item 34 ("prominent, honest, badged hours") — the 7:00 AM open
  * is stated inline in the "Visit us" eyebrow line rather than only living
- * inside the two-column list below, and that list now states both rows
- * (open AND the Sat–Mon closed row) instead of hiding the closed one —
+ * inside the list below, and that list states every day, closed ones
+ * included, instead of hiding them —
  * the earlier "closed isn't actionable" reasoning gave an incomplete
  * picture next to a booking CTA, which is exactly what item 34's job
  * story flags. A separate pill/badge for the open hour was tried first
@@ -45,17 +43,30 @@ import { CalendarIcon, ClockIcon, GoogleGIcon, MapPinIcon, MedicalCrossIcon, Pho
  * explicitly out of scope for item 34 per the locked navigation
  * requirements (a static hours list is the accepted v1).
  *
- * Trust proof (real Google rating + review count, plain text — same
- * non-link pattern Hero.tsx and TestimonialsSection.tsx already use, no
- * new UI convention) sits right under the reassurance line so it's read
- * in the same glance as the Book button, not just further up the page.
+ * Trust proof (Google rating + review count) USED TO sit right under the
+ * reassurance line, so it was read in the same glance as the Book
+ * button. Removed 2026-09-03 — Akash: "move google reviews out, or keep
+ * it centered if appropriate, decide based on customer need." Moved out,
+ * for two reasons that both come down to it not earning the row:
  *
- * Office hours / Location use a fixed icon-column grid (not a flex row)
- * so a wrapped second line indents under the first line's text instead
- * of sliding under the icon — narrow flex rows were wrapping "AM"/"PM"
- * onto their own line, which read as broken. No "Get Directions" link
- * here (tried, then removed per Akash's direct feedback) — the address
- * is plain text, same as before this pass.
+ *  - It was the same figure, verbatim, as the badge in
+ *    TestimonialsSection three sections above (4.9, 427). A reader
+ *    reaches the Book button having already passed it; repeating it
+ *    adds no information, and the identical duplicate is most of why
+ *    the row read as odd rather than deliberate.
+ *  - Centering it — the other option offered — is ruled out by this
+ *    section's own locked rule: "Everything here is left-aligned, never
+ *    centered", Akash's earlier call because centred text on mobile made
+ *    the eye jump instead of scanning one edge. Left-aligned, it split
+ *    the ask from its own actions.
+ *
+ * The trade-off, stated plainly: proof no longer sits adjacent to the
+ * CTA, which is a real conversion pattern. If it should come back, the
+ * place for it is tight under the body line (8px, not 28px) so it reads
+ * as part of the same reassurance block — not as its own row.
+ *
+ * No "Get Directions" link here (tried, then removed per Akash's direct
+ * feedback) — the address is plain text, same as before this pass.
  *
  * Phone button shows the number itself, not the word "Call" — same
  * "be explicit" call Akash made for the Hero CTA — and both CTAs share
@@ -137,7 +148,7 @@ import { CalendarIcon, ClockIcon, GoogleGIcon, MapPinIcon, MedicalCrossIcon, Pho
  *    and the `onDark` props on the primitives are what flip the type.
  */
 export function BookingBlock() {
-  const openHours = hours.find((h) => h.time !== "Closed");
+  const openHours = hoursByDay.find((h) => h.time !== "Closed");
 
   return (
     /* Container mirrors every other editorial section's measure and
@@ -146,7 +157,7 @@ export function BookingBlock() {
        mismatch put this section's left edge a few pixels off from the
        one above it, visible as a jog when scrolling past the boundary. */
     <section id="booking" className="bg-warm-ivory text-espresso">
-      <div className={shellWide}>
+      <div className={`${shellWide} pb-8! md:pb-12!`}>
         <div className="md:max-w-2xl">
           <div className="text-left">
             <Eyebrow>
@@ -155,22 +166,9 @@ export function BookingBlock() {
             <SectionHeading>
               Ready to book your <Accent>visit</Accent>?
             </SectionHeading>
-            <Body className="mt-4 mb-4! max-w-xl">
+            <Body className="mt-4 mb-6! max-w-xl">
               Reach out and we&apos;ll find a time that works — same-day slots are often available.
             </Body>
-
-            <p className="mb-7 inline-flex items-center gap-1.5 text-sm text-espresso/80">
-              <GoogleGIcon />
-              <span className="flex gap-px text-terracotta-dark">
-                <StarIcon className="h-3.5 w-3.5" />
-                <StarIcon className="h-3.5 w-3.5" />
-                <StarIcon className="h-3.5 w-3.5" />
-                <StarIcon className="h-3.5 w-3.5" />
-                <StarIcon className="h-3.5 w-3.5" />
-              </span>
-              <strong className="text-espresso font-medium">{reviews.rating}</strong>({reviews.count}{" "}
-              Google reviews)
-            </p>
 
             {/* Quick actions, rebuilt after Akash flagged the spacing:
                 the three were in one `flex-wrap` row, so Book and Call
@@ -180,27 +178,32 @@ export function BookingBlock() {
                 emergency badge dropped to row 2 ending 151px short — a
                 ragged tail under a nearly-flush row.
 
-                Now: full-width rows on phones, pairing into two columns
-                from sm. Measured, not guessed — "Book Appointment" with
-                its icon needs 170px and a two-column row inside this
-                group gives it 167px at 390px and 159px at 375px, so
-                side-by-side wrapped its label onto a second line and
-                made both pills 68px tall. Full width holds one line at
-                every size down to 320px; at sm the columns are 220px and
-                fit comfortably. This is also the pattern /emergency
-                already uses for its two CTAs. The emergency badge takes
-                the full row beneath rather than trailing off. It is still visibly the third action and
-                not a fourth primary — text-xs against text-sm, 44px
-                against 48px, which is the restraint-through-scale the
-                earlier rounds settled on (see backlog items 46/48); only
-                its width changed. The group is capped at the same
-                max-w-md as the hours/location block below so the two
-                share a left AND a right edge. */}
+                Then all three went full width, which Akash flagged in
+                turn — three equal slabs stacked read as three primaries.
+                Now there are two, and the emergency link goes back to
+                the compact badge the earlier rounds actually settled on
+                (backlog items 46/48): restraint through scale, not
+                through hiding it. Two full-width pills with a small tag
+                beneath reads as a hierarchy; three slabs read as a list.
+
+                Why the pair is full width rather than side by side, and
+                why the badge is not beside the Call button — both
+                measured at this group's width (342px at 390px, 327px at
+                375px): "Book Appointment" with its icon needs 170px
+                against 167px in a two-column row, so pairing wrapped its
+                label and made both pills 68px tall; and "Dental
+                emergency" needs 197px, so it cannot share a row with
+                Call (148px) inside 342px either. Full width holds one
+                line down to 320px.
+
+                The group is capped at the same max-w-md as the
+                hours/location block below so the two share a left AND a
+                right edge. */}
             <div className="mb-7 max-w-md">
               <p className="mb-2.5 text-xs font-medium uppercase tracking-wide text-espresso/80">
                 Quick actions
               </p>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div className="flex flex-col gap-2">
                 <a
                   href="/contact"
                   className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3 py-3 text-sm font-medium text-warm-ivory hover:brightness-110 transition"
@@ -218,7 +221,7 @@ export function BookingBlock() {
               </div>
               <a
                 href="/emergency"
-                className="tap-target mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-alert px-3 py-2 text-xs font-medium uppercase tracking-wide text-warm-ivory hover:brightness-110 transition"
+                className="tap-target mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-alert px-3 py-2 text-xs font-medium uppercase tracking-wide text-warm-ivory hover:brightness-110 transition"
               >
                 <MedicalCrossIcon className="h-3.5 w-3.5" />
                 Dental emergency
@@ -227,31 +230,63 @@ export function BookingBlock() {
 
             {/* Same max-w-md as the Quick actions group, so the two
                 stack as one aligned column rather than two blocks of
-                different width. */}
-            <div className="flex flex-col gap-4 max-w-md">
-              <div>
-                <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-espresso/80">
-                  Office hours
-                </p>
-                <div className="flex flex-col gap-1">
-                  {hours.map((h) => (
-                    <div key={h.days} className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-espresso/80">
-                      <ClockIcon className="mt-0.5 shrink-0" />
-                      <span>
-                        {h.days} · {h.time}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
+                different width.
+
+                Compressed per Akash: the two blocks were separate 16px-
+                gapped groups each with a label, an icon column and
+                loose 4px row gaps. They are now one panel with a
+                hairline between the day rows and the address, which is
+                what lets the spacing come down without the rows running
+                together — the rule does the separating that the gaps
+                used to.
+
+                Days are listed individually (`hoursByDay`, derived from
+                the same `hours` ranges in content.ts, so nothing new is
+                claimed and the schema.org OpeningHoursSpecification
+                still reads the same source). Day left, time right, which
+                is the lookup pattern the nav's own hours panel already
+                uses — seven "days · time" sentences would be a wall.
+                The per-row clock icon is gone: it was one glyph beside
+                every text row, which Section 9 of the spec rules out,
+                and seven of them would have been noise rather than
+                information. Closed days are dimmer than open ones so
+                the four bookable days are what the eye lands on (at a
+                contrast-safe step — see the comment on the rows). */}
+            <div className="max-w-md rounded-2xl bg-sand/60 px-4 py-3.5">
+              <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-espresso/80">
+                Office hours
+              </p>
+              <ul className="mb-0! flex flex-col">
+                {hoursByDay.map((h) => {
+                  const closed = h.time === "Closed";
+                  return (
+                    <li
+                      key={h.day}
+                      className="flex items-baseline justify-between gap-4 py-[3px] text-sm leading-snug"
+                    >
+                      {/* /80, not /60, for the closed rows. On this
+                          sand tint over ivory, espresso/60 measures
+                          3.46:1 and fails AA for 14px text; /80 is
+                          5.97:1. Open days stay full-strength espresso,
+                          so the four bookable days are still the
+                          stronger of the two — the dimming is one step
+                          instead of two, and the word "Closed" carries
+                          the rest. */}
+                      <span className={closed ? "text-espresso/80" : "text-espresso"}>{h.day}</span>
+                      <span className="text-espresso/80">{h.time}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="mt-3 border-t border-espresso/12 pt-3">
                 <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-espresso/80">
                   Location
                 </p>
-                <div className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-espresso/80">
+                <p className="mb-0! grid grid-cols-[1rem_1fr] gap-2 text-sm leading-snug text-espresso/80">
                   <MapPinIcon className="mt-0.5 shrink-0" />
                   <span>{contact.address}</span>
-                </div>
+                </p>
               </div>
             </div>
           </div>
