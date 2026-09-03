@@ -5,7 +5,6 @@ import { EditorialTrustBlock } from "@/components/EditorialTrustBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { ServicesSection } from "@/components/ServicesSection";
 import { LocationMapSection } from "@/components/LocationMapSection";
-import { NewPatientOffersBlock } from "@/components/NewPatientOffersBlock";
 import { FAQSection } from "@/components/FAQSection";
 import { BookingBlock } from "@/components/BookingBlock";
 import { Footer } from "@/components/Footer";
@@ -21,6 +20,17 @@ import { Footer } from "@/components/Footer";
  * 7) sits right before Booking — resolves last-minute objections
  * (insurance, cost, cancellation, emergencies) right before the booking
  * ask, without reordering anything else already locked above it.
+ *
+ * New-patient offers removed from the homepage 2026-09-03 per Akash's
+ * call ("remove the new patient offer from home page and move into
+ * hamburger as a new item and with it its own detail page"). This
+ * reverses the earlier locked "offers stay last, right before the
+ * booking ask" placement — both calls are his; the component is kept,
+ * not deleted, and `/offers` (in the menu) is the new home. Removing it
+ * also broke the ivory/sand alternation between Location and FAQ, so
+ * FAQ moved onto the sand ground; and the Footer now renders `merged`,
+ * continuing BookingBlock's espresso ground so the page ends on that
+ * section rather than a pale strip beneath it.
  *
  * Insurance block removed from the homepage entirely per Akash's explicit
  * call — the component (`InsuranceBlock.tsx`) and its content
@@ -62,11 +72,10 @@ export default function Home() {
         <TestimonialsSection />
         <ServicesSection variant="editorial" />
         <LocationMapSection />
-        <NewPatientOffersBlock />
         <FAQSection />
         <BookingBlock />
       </main>
-      <Footer variant="editorial" />
+      <Footer variant="merged" />
     </>
   );
 }

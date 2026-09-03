@@ -102,6 +102,39 @@ export const hours = [
   { days: "Saturday – Monday", time: "Closed" },
 ];
 
+// Same hours, one row per day (Akash, 2026-09-03: "expand each date
+// Tuesday, wednesday, thursday, friday"). DERIVED from `hours` above
+// rather than typed out a second time — the ranges stay the single
+// source of truth, so this cannot drift from them or from the
+// OpeningHoursSpecification in layout.tsx that reads the same array,
+// and expanding a stated range into its days states nothing new.
+//
+// Week starts Tuesday because that is where the practice's own week
+// starts; the order falls out of walking each range in `hours`, so
+// Saturday/Sunday/Monday land last, closed.
+const WEEK = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+export const hoursByDay = hours.flatMap(({ days, time }) => {
+  const [start, end] = days.split("–").map((d) => d.trim());
+  const startIdx = WEEK.indexOf(start);
+  const endIdx = WEEK.indexOf(end);
+  if (startIdx === -1 || endIdx === -1) return [{ day: days, time }];
+  const out: { day: string; time: string }[] = [];
+  for (let i = startIdx; i !== endIdx; i = (i + 1) % WEEK.length) {
+    out.push({ day: WEEK[i], time });
+  }
+  out.push({ day: WEEK[endIdx], time });
+  return out;
+});
+
 // `image` on each entry backs the mobile photo-card treatment in
 // TrustBlock (2026-08-29 declutter pass — the old icon-only cards read as
 // empty/no-visuals on mobile). Reuses real photography already sourced
@@ -647,9 +680,25 @@ export const benefitsGlossary = [
 // claim on those three pages either traces to a `real: true` field
 // below or renders through <Placeholder> — none of this data changed
 // to make the pages possible.
+// docs/supertooth-navigation-requirements.md locks the four primary
+// links (Services · About · Insurance & New Patients · Contact). "New-
+// Patient Offers" is a deliberate fifth, added 2026-09-03 on Akash's
+// call when the offers moved off the homepage — they need a route into
+// them, and the menu is where he asked for it. Recorded as an amendment
+// in the build-spec status, not a silent drift. Placed directly above
+// Insurance & New Patients: the two are the same "before you book"
+// errand, and offers is the shorter, more concrete of the pair.
+//
+// Labelled "Offers", not "New-Patient Offers", for a measured reason:
+// Nav.tsx's own comment records the desktop row already crowding at
+// 768–790px with four items ("Insurance & New Patients" wrapping to two
+// lines). Measured at 790px, the long label made a second item wrap;
+// "Offers" does not. The page's own title and H1 still say new-patient
+// offers, so nothing is lost but the row width.
 export const nav = [
   { label: "Services", href: "/services" },
   { label: "About", href: "/about" },
+  { label: "Offers", href: "/offers" },
   { label: "Insurance & New Patients", href: "/insurance-new-patients" },
   { label: "Contact", href: "/contact" },
 ];

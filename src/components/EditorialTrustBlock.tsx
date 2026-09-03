@@ -2,7 +2,7 @@ import Image from "next/image";
 import { CredentialBadges } from "./CredentialBadges";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { archana, differentiators, officeBlurb } from "@/lib/content";
-import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
+import { Accent, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 /**
  * EditorialTrustBlock — "page 2", carrying the screen-1 editorial system
@@ -44,6 +44,14 @@ import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
  * the browser to synthesise a bold it doesn't have.
  */
 export function EditorialTrustBlock() {
+  // "Experienced care. Personalized smiles." ->
+  // "Experienced care." / "Personalized" + <Accent>smiles</Accent> + "."
+  const [taglineFirst, taglineSecond] = archana.tagline.split(/\.\s+/, 2);
+  const taglineHead = `${taglineFirst}.`;
+  const secondWords = taglineSecond.replace(/\.$/, "").split(" ");
+  const taglineAccent = secondWords.pop() ?? "";
+  const taglineTail = secondWords.join(" ");
+
   return (
     /* Sand ground, not the page's Warm Ivory. Page 1 and page 2 were
        the same colour edge to edge with no rule, shadow or shift
@@ -60,7 +68,7 @@ export function EditorialTrustBlock() {
        longer has to, and 80px on top of the hero's own trailing space
        was most of the gap complaint. */
     <section className="bg-sand">
-      <div className="mx-auto w-full max-w-[480px] px-6 pb-20 pt-11 md:max-w-[1320px] md:px-10 md:pb-28 md:pt-16 lg:px-16">
+      <div className={shellWide}>
         <Eyebrow>Why choose us</Eyebrow>
         <SectionHeading>
           Care that respects
@@ -117,7 +125,7 @@ export function EditorialTrustBlock() {
           <div className="mt-8 md:mt-10">
             <OfficeCarousel variant="editorial" />
           </div>
-          <p className="mt-6 mb-0! max-w-2xl font-editorial text-base font-light leading-[1.6] text-espresso/70">
+          <p className="mt-6 mb-0! max-w-2xl font-editorial text-base font-light leading-[1.6] text-espresso/80">
             {officeBlurb}
           </p>
         </div>
@@ -139,7 +147,20 @@ export function EditorialTrustBlock() {
           whitespace rather than a container. */}
         <div className="mt-14 md:mt-20">
           <Eyebrow>Meet Dr. Archana Dubey</Eyebrow>
-          <SectionHeading>{archana.tagline}</SectionHeading>
+          {/* The one heading on the page that was still rendering
+              plain — no serif accent, no deliberate break — which is the
+              styling Akash spotted as missed here. Derived from
+              `archana.tagline` rather than retyped, so content.ts stays
+              the single source and this can't drift: the tagline is two
+              sentences, so it breaks between them, and the last word of
+              the second carries the accent with its full stop left
+              outside, matching "your *time*." and "not a *waiting*
+              room." above. */}
+          <SectionHeading>
+            {taglineHead}
+            <br />
+            {taglineTail} <Accent>{taglineAccent}</Accent>.
+          </SectionHeading>
 
           <div className="mt-8 md:mt-12 md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-center md:gap-[clamp(3rem,6vw,6rem)]">
             {/* Placeholder tint is espresso/10, not bg-sand — the frame
@@ -165,7 +186,7 @@ export function EditorialTrustBlock() {
                 &ldquo;{archana.quote}&rdquo;
               </blockquote>
 
-              <p className="mt-6 mb-0! font-editorial text-base font-light leading-[1.6] text-espresso/70">
+              <p className="mt-6 mb-0! font-editorial text-base font-light leading-[1.6] text-espresso/80">
                 {archana.bio}
               </p>
             </div>

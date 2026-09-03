@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { faqs, contact } from "@/lib/content";
+import { Accent, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 const EMERGENCY_QUESTION = "What should I do if I have a dental emergency?";
 
@@ -46,23 +47,38 @@ export function FAQSection() {
   };
 
   return (
-    <section id="faq" className="bg-warm-ivory">
-      <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-3xl md:px-10 md:pb-24 md:pt-16">
+    /* Sand, not Warm Ivory. Removing the offers block put Location
+       (ivory) directly above this section, and two ivory sections back
+       to back lose the colour boundary that carries every other
+       transition down this page. */
+    <section id="faq" className="bg-sand">
+      <div className={shellWide}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <h2 className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em] text-espresso mb-2">
-        Frequently asked questions
-      </h2>
-      <p className="text-espresso/70 mb-10 max-w-2xl">
-        Answers to what new and existing patients ask us most. Don&apos;t see yours? Call us and we&apos;ll help.
-      </p>
+      <Eyebrow>Good to know</Eyebrow>
+      {/* Straight into the questions (Akash) — the standing line here
+          ("Answers to what new and existing patients ask us most...")
+          was preamble in front of a list that explains itself. Its one
+          substantive half, the invitation to call, is already a real
+          answer inside the emergency question and a Quick action in the
+          section below. */}
+      <SectionHeading className="mb-10">
+        Frequently asked <Accent>questions</Accent>.
+      </SectionHeading>
 
-      <div className="flex flex-col gap-3">
+      {/* Reading measure, left-aligned against the page's spine rather
+          than centred — see the shellWide comment in editorial.tsx. */}
+      <div className="flex flex-col gap-3 md:max-w-3xl">
         {faqs.map((faq, i) => {
           const open = openIndex === i;
           const isEmergency = faq.question === EMERGENCY_QUESTION;
           return (
-            <div key={faq.question} className="rounded-2xl bg-warm-ivory border border-sand overflow-hidden">
+            /* Borderless: this section's ground moved to Sand, where a
+               border-sand outline measures about 1.2:1 and is effectively
+               invisible. Ivory on sand is its own boundary — the same
+               call already made for the differentiator rows in
+               EditorialTrustBlock. */
+            <div key={faq.question} className="overflow-hidden rounded-2xl bg-warm-ivory">
               <button
                 type="button"
                 onClick={() => setOpenIndex(open ? null : i)}
