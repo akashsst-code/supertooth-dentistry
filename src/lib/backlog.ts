@@ -4505,7 +4505,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 3, reach: 4, risk: 2, effort: 5, readiness: 5 },
     effort: "S",
-    status: "not-started",
+    status: "done",
     wave: 2,
     job: "Never be left wondering whether something is happening",
     story:
@@ -4526,7 +4526,8 @@ export const backlog: BacklogItem[] = [
       "Double submission is impossible",
     ],
     evidence:
-      "Blueprint §17 state design and §22 — 'every interactive component ships with its loading, success, error and recovery behavior; no dead ends.'",
+      "Blueprint §17 state design and §22 — 'every interactive component ships with its loading, success, error and recovery behavior; no dead ends.'\n\n" +
+      "2026-09-02: shipped alongside item 32 (PR #70) — AppointmentForm's submit now swaps in a spinner + \"Sending...\" label, sets aria-busy on the form and button, and announces via a sr-only aria-live region, with the submit button disabled while in flight. Marked done rather than partial: the empty-state half of this item has no surface to apply to — the site has no search/list/lookup view, only this one submit flow — so it's a documented no-op per docs/supertooth-next-features-proposal.md, not a gap. Verified post-merge: a PerformanceObserver on layout-shift measured 0 cumulative shift across the loading→confirmation transition, and the busy state (disabled, aria-busy, spinner) is observable within 50ms of the click. Found and fixed one real correctness gap while verifying (see the docs status entry for this PR): the original `if (submitting) return` guard read React state, which is stale within the same synchronous tick, so two clicks fired without a render in between both slipped past it. Replaced with a `useRef` flag set synchronously.",
     dependsOn: "Item 9",
     outOfScope: "Skeleton screens for content that loads instantly. A spinner for a 50ms action is worse than none.",
     references: [
