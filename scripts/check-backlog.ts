@@ -162,18 +162,23 @@ for (const item of backlog) {
   // Every item declares where it came from and which harness checks apply,
   // so provenance and coverage can't quietly drift.
   check(
-    ["original", "blueprint", "merged"].includes(item.source),
+    ["original", "blueprint", "merged", "review"].includes(item.source),
     `${tag}: invalid source "${item.source}"`,
   );
   check(item.harness.length >= 1, `${tag}: no harness checks referenced`);
   for (const h of item.harness) {
     check(h in harnessById, `${tag}: references unknown harness check "${h}"`);
   }
-  // Anything drawn from the blueprint must say which section, so a claim
-  // can be traced back rather than taken on trust.
+  // Anything drawn from the blueprint must say which section, and anything
+  // drawn from a review session must name the session and work item, so a
+  // claim can be traced back rather than taken on trust.
   check(
-    item.source === "original" || Boolean(item.blueprintRef),
+    item.source === "original" || item.source === "review" || Boolean(item.blueprintRef),
     `${tag}: source is "${item.source}" but no blueprintRef given`,
+  );
+  check(
+    item.source !== "review" || Boolean(item.reviewRef),
+    `${tag}: source is "review" but no reviewRef naming the session and work item`,
   );
   // ── LAUNCH-BLOCKING TIER ───────────────────────────────────────────
   // The narrow tier inside P0 that actually gates go-live.
@@ -276,7 +281,8 @@ console.log(
 const bySource = (s: string) => backlog.filter((i) => i.source === s).length;
 console.log(
   `  provenance: ${bySource("original")} original · ${bySource("blueprint")} from blueprint · ` +
-    `${bySource("merged")} enriched · ${harnessChecks.length} harness checks defined`,
+    `${bySource("merged")} enriched · ${bySource("review")} from review sessions · ` +
+    `${harnessChecks.length} harness checks defined`,
 );
 
 console.log("-".repeat(width));
