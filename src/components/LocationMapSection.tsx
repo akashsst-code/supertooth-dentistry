@@ -1,6 +1,6 @@
 import { CalendarIcon, ClockIcon, MapPinIcon, PhoneIcon, PinDotIcon } from "./icons";
 import { contact, hours, practice, serviceAreas } from "@/lib/content";
-import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
+import { Accent, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 /**
  * Map + "areas we serve" — positioned after Services per Akash's locked
@@ -65,21 +65,32 @@ export function LocationMapSection() {
     <section className="bg-warm-ivory">
       <div className={shellWide}>
       <Eyebrow>Find us</Eyebrow>
-      {/* Explicit break. Left to wrap on its own at 390px this came out
-          "Proudly serving Queen / Anne & nearby Seattle." — splitting the
-          neighbourhood's name across two lines, which is what read as
-          wrong about this heading rather than its size (measured: 33px
-          here, identical to every other heading on the page). Every
-          other two-line heading in this system breaks where the sentence
-          does, so this one does too. */}
-      <SectionHeading>
-        Proudly serving {practice.neighborhood}
+      {/* Two lines at every width (Akash), which cost one word.
+          Measured at 375px: the heading has 327px of measure, and
+          "Queen Anne & nearby Seattle." needs 400px on one line — so
+          "Proudly serving" on line 1 with all the rest on line 2 runs to
+          three lines on every phone, not two. Something had to give, and
+          "Proudly" is the only word here carrying no information, so it
+          went rather than "nearby" (which does real work — the practice
+          serves Queen Anne AND the neighbourhoods around it, and "Queen
+          Anne & Seattle" would read oddly given Queen Anne is in
+          Seattle). "Serving Queen Anne" is 274px and "& nearby Seattle."
+          is 227px, both clear at 375px and still clear at 320px.
+
+          The heading was never the wrong size — measured 32px mobile /
+          44px desktop, identical to every other heading on the page.
+
+          No standing line under it: Akash's call is that the map should
+          follow immediately. The copy it replaced ("Easy to reach
+          whether you're coming from home, work, or school") said less
+          than the map does, and the address/parking detail below it is
+          still there. The heading carries the section's bottom step
+          instead. */}
+      <SectionHeading className="mb-10">
+        Serving {practice.neighborhood}
         <br />
         &amp; nearby <Accent>Seattle</Accent>.
       </SectionHeading>
-      <Body className="mt-4 mb-10! max-w-2xl">
-        Easy to reach whether you&apos;re coming from home, work, or school.
-      </Body>
 
       <div className="grid lg:grid-cols-5 gap-8 items-start">
         <div className="lg:col-span-3 rounded-2xl overflow-hidden border border-sand">

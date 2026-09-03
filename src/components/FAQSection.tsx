@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { faqs, contact } from "@/lib/content";
-import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
+import { Accent, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 const EMERGENCY_QUESTION = "What should I do if I have a dental emergency?";
 
@@ -56,12 +56,15 @@ export function FAQSection() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Eyebrow>Good to know</Eyebrow>
-      <SectionHeading>
+      {/* Straight into the questions (Akash) — the standing line here
+          ("Answers to what new and existing patients ask us most...")
+          was preamble in front of a list that explains itself. Its one
+          substantive half, the invitation to call, is already a real
+          answer inside the emergency question and a Quick action in the
+          section below. */}
+      <SectionHeading className="mb-10">
         Frequently asked <Accent>questions</Accent>.
       </SectionHeading>
-      <Body className="mt-4 mb-10! max-w-2xl">
-        Answers to what new and existing patients ask us most. Don&apos;t see yours? Call us and we&apos;ll help.
-      </Body>
 
       {/* Reading measure, left-aligned against the page's spine rather
           than centred — see the shellWide comment in editorial.tsx. */}

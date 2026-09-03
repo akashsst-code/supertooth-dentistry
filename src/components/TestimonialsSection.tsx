@@ -3,6 +3,24 @@
 import { useEffect, useRef, useState } from "react";
 import { GoogleGIcon, PauseIcon, PlayIcon, StarIcon } from "./icons";
 import { reviews, testimonials } from "@/lib/content";
+
+/**
+ * Longest quote first, then descending (Akash). Two reasons, one of
+ * them structural: the cards are top-aligned in a `w-max` flex track, so
+ * the track's height is set by the tallest card no matter which one is
+ * on screen. With the shortest card leading, the 316px card sat in a
+ * 474px track and left ~158px of dead space beneath it — on top of the
+ * section's own 48px bottom padding — which is the "more left out space
+ * above our services section" gap. Leading with the tallest removes it
+ * at rest, and the reel then reads as deliberately descending rather
+ * than random.
+ *
+ * Sorted here rather than reordered in content.ts on purpose: that
+ * array's comment documents it as a point-in-time pull off the Google
+ * Business Profile, in the order pulled, and that provenance is worth
+ * more than saving a sort.
+ */
+const orderedTestimonials = [...testimonials].sort((a, b) => b.quote.length - a.quote.length);
 import { Accent, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 const PIXELS_PER_SECOND = 22; // slower than the office reel — text needs more read time than a photo
@@ -56,7 +74,7 @@ export function TestimonialsSection() {
   useEffect(() => {
     function measure() {
       const first = cardRefs.current[0];
-      const firstOfSecondCopy = cardRefs.current[testimonials.length];
+      const firstOfSecondCopy = cardRefs.current[orderedTestimonials.length];
       if (first && firstOfSecondCopy) {
         loopWidthRef.current = firstOfSecondCopy.offsetLeft - first.offsetLeft;
       }
@@ -149,13 +167,13 @@ export function TestimonialsSection() {
                 through the loop. */}
             <div className="absolute inset-x-0 top-4 h-px bg-terracotta/40" aria-hidden="true" />
 
-            {[...testimonials, ...testimonials].map((t, i) => (
+            {[...orderedTestimonials, ...orderedTestimonials].map((t, i) => (
               <div
                 key={i}
                 ref={(el) => {
                   cardRefs.current[i] = el;
                 }}
-                aria-hidden={i >= testimonials.length}
+                aria-hidden={i >= orderedTestimonials.length}
                 className="relative shrink-0 w-72 sm:w-80"
               >
                 {/* Stem + node connecting this card up to the rail */}

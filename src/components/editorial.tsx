@@ -45,13 +45,28 @@ export function Eyebrow({ children, onDark = false }: { children: React.ReactNod
 
 /** Section heading — the spec's 38px/1.05/-0.035em, light weight, with
  *  its own larger desktop scale so it doesn't read undersized once the
- *  measure widens. */
-export function SectionHeading({ children, onDark = false }: { children: React.ReactNode } & Tone) {
+ *  measure widens.
+ *
+ *  The clamp floor is 1.875rem (30px), not 2rem. Below a ~353px
+ *  viewport the 8.5vw term is already pinned at the floor, so a 32px
+ *  floor meant no headline ever got smaller no matter how narrow the
+ *  phone — and at 325px the measure is 272px while "Serving Queen Anne"
+ *  needs 274px at 32px, which is how that heading broke to three lines
+ *  on the smallest phones. 30px clears it with room and changes nothing
+ *  at 375px and up, where 8.5vw is above the floor anyway. */
+export function SectionHeading({
+  children,
+  onDark = false,
+  // Sections with no standing line under the heading (Location, FAQ)
+  // pass the 40px bottom step here, so heading-to-content stays the
+  // same distance whether or not a paragraph sits in between.
+  className = "",
+}: { children: React.ReactNode; className?: string } & Tone) {
   return (
     <h2
-      className={`mt-4 font-editorial text-[clamp(2rem,8.5vw,2.375rem)] font-light leading-[1.05] tracking-[-0.035em] md:text-[clamp(2.375rem,3.4vw,3rem)] ${
+      className={`mt-4 font-editorial text-[clamp(1.875rem,8.5vw,2.375rem)] font-light leading-[1.05] tracking-[-0.035em] md:text-[clamp(2.375rem,3.4vw,3rem)] ${
         onDark ? "text-warm-ivory" : "text-espresso"
-      }`}
+      } ${className}`}
     >
       {children}
     </h2>

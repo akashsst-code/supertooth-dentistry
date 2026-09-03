@@ -155,11 +155,11 @@ export function BookingBlock() {
             <SectionHeading>
               Ready to book your <Accent>visit</Accent>?
             </SectionHeading>
-            <Body className="mt-4 mb-3! max-w-xl">
+            <Body className="mt-4 mb-4! max-w-xl">
               Reach out and we&apos;ll find a time that works — same-day slots are often available.
             </Body>
 
-            <p className="mb-5 inline-flex items-center gap-1.5 text-sm text-espresso/80">
+            <p className="mb-7 inline-flex items-center gap-1.5 text-sm text-espresso/80">
               <GoogleGIcon />
               <span className="flex gap-px text-terracotta-dark">
                 <StarIcon className="h-3.5 w-3.5" />
@@ -172,38 +172,65 @@ export function BookingBlock() {
               Google reviews)
             </p>
 
-            <div className="mb-6">
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-espresso/80">
+            {/* Quick actions, rebuilt after Akash flagged the spacing:
+                the three were in one `flex-wrap` row, so Book and Call
+                filled row 1 to within 12px of the container's right edge
+                (a dead sliver, not a margin), sat at two different
+                heights because their padding differed by 2px, and the
+                emergency badge dropped to row 2 ending 151px short — a
+                ragged tail under a nearly-flush row.
+
+                Now: full-width rows on phones, pairing into two columns
+                from sm. Measured, not guessed — "Book Appointment" with
+                its icon needs 170px and a two-column row inside this
+                group gives it 167px at 390px and 159px at 375px, so
+                side-by-side wrapped its label onto a second line and
+                made both pills 68px tall. Full width holds one line at
+                every size down to 320px; at sm the columns are 220px and
+                fit comfortably. This is also the pattern /emergency
+                already uses for its two CTAs. The emergency badge takes
+                the full row beneath rather than trailing off. It is still visibly the third action and
+                not a fourth primary — text-xs against text-sm, 44px
+                against 48px, which is the restraint-through-scale the
+                earlier rounds settled on (see backlog items 46/48); only
+                its width changed. The group is capped at the same
+                max-w-md as the hours/location block below so the two
+                share a left AND a right edge. */}
+            <div className="mb-7 max-w-md">
+              <p className="mb-2.5 text-xs font-medium uppercase tracking-wide text-espresso/80">
                 Quick actions
               </p>
-              <div className="flex flex-wrap items-center gap-1.5">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <a
                   href="/contact"
-                  className="tap-target inline-flex items-center justify-center gap-1 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3.5 py-3.5 text-sm font-medium text-warm-ivory hover:brightness-110 transition"
+                  className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3 py-3 text-sm font-medium text-warm-ivory hover:brightness-110 transition"
                 >
                   <CalendarIcon />
                   Book Appointment
                 </a>
                 <a
                   href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-                  className="tap-target inline-flex items-center justify-center gap-1 rounded-full border border-espresso/20 px-3.5 py-3.5 text-sm font-medium text-espresso hover:border-terracotta-dark transition-colors"
+                  className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full border border-espresso/20 px-3 py-3 text-sm font-medium text-espresso hover:border-terracotta-dark transition-colors"
                 >
                   <PhoneIcon />
                   {contact.phone}
                 </a>
-                <a
-                  href="/emergency"
-                  className="tap-target inline-flex items-center gap-1 rounded-full bg-alert px-2.5 py-2 text-xs font-medium uppercase tracking-wide text-warm-ivory hover:brightness-110 transition"
-                >
-                  <MedicalCrossIcon className="h-3.5 w-3.5" />
-                  Dental emergency
-                </a>
               </div>
+              <a
+                href="/emergency"
+                className="tap-target mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-alert px-3 py-2 text-xs font-medium uppercase tracking-wide text-warm-ivory hover:brightness-110 transition"
+              >
+                <MedicalCrossIcon className="h-3.5 w-3.5" />
+                Dental emergency
+              </a>
             </div>
 
-            <div className="flex flex-col gap-3 max-w-sm">
+            {/* Same max-w-md as the Quick actions group, so the two
+                stack as one aligned column rather than two blocks of
+                different width. */}
+            <div className="flex flex-col gap-4 max-w-md">
               <div>
-                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-espresso/80">
+                <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-espresso/80">
                   Office hours
                 </p>
                 <div className="flex flex-col gap-1">
@@ -218,7 +245,7 @@ export function BookingBlock() {
                 </div>
               </div>
               <div>
-                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-espresso/80">
+                <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-espresso/80">
                   Location
                 </p>
                 <div className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-espresso/80">
