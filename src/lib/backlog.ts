@@ -5084,7 +5084,7 @@ export const backlog: BacklogItem[] = [
     pin: null,
     scores: { conversion: 3, reach: 5, risk: 2, effort: 3, readiness: 5 },
     effort: "M",
-    status: "not-started",
+    status: "done",
     wave: 3,
     job: "Trust the practice from how the site feels, not just what it says",
     story:
@@ -5105,8 +5105,20 @@ export const backlog: BacklogItem[] = [
       "Every finding fixed or logged with an owner",
     ],
     evidence:
-      "Blueprint §17 failure-mode table and §15C observed anti-patterns — several drawn from real Seattle practice sites, including fabricated-looking testimonials and hours that contradict across a page.",
-    dependsOn: "Items 2 and 13 (unverified claims and placeholder reviews are two of the modes)",
+      "Blueprint §17 failure-mode table and §15C observed anti-patterns — several drawn from real Seattle practice sites, including fabricated-looking testimonials and hours that contradict across a page.\n\n" +
+      "AUDITED 2026-09-02, all ten modes walked at 375px plus the four shell-level checks (superlative/urgency regex scan sitewide, autoplay/reduced-motion check, contradictory-info check on hours/phone/address). Ten verdicts:\n\n" +
+      "1. Generic — PARTIAL. Real named dentist, real credentials, real office/treatment-room photography and a real testimonial rail all pass. But 6 of the homepage's photo slots (4 `services` tiles, 2 `offers` cards, content.ts ~L394-421/121-129) are stock Unsplash images, not real practice photography — a deliberate 2026-09-01 swap away from Akash's own raw clinical macro/x-ray shots for patient-comfort reasons (see content.ts comment at that line), but stock imagery is exactly this mode's named cause. Logged as its own item — **item 60** — since real photography isn't a cheap fix.\n" +
+      "2. Untrustworthy — FAIL, already tracked. `grep -rn \"<Placeholder\" src/` still finds 13 live production render sites (insurance carrier names, new-patient offer/financing copy) — bracketed unconfirmed claims visible to a patient. This is item 2's exact scope; not re-logged here, just confirmed still open and blocking.\n" +
+      "3. Overly corporate/cold — PASS. Warm-ivory/terracotta/espresso palette throughout (no navy-only/sterile-grid look), human first-person copy (\"we handle the insurance paperwork\", \"we're happy to walk through what a visit looks like\"), real people named and photographed.\n" +
+      "4. Too expensive/exclusive — PASS. No luxury-only cues or cosmetic-only framing — Services page leads with General & preventive, not veneers/whitening; insurance page explicitly welcomes uninsured patients (\"call us to talk about your options\"). Real pricing itself is out of scope here — that's items 20/35/36, separately blocked on a practice pricing decision.\n" +
+      "5. Sterile/clinical — PASS. Warm palette, real office photography (natural light, plants visible through window), no white+red medical-iconography look. `/emergency` in particular reads as calm/plain-language rather than clinical (see mode 7).\n" +
+      "6. Juvenile — PASS. No cartoon mascots or primary-color overload anywhere in `src/components/icons.tsx` or the palette; type and iconography read as grown-up throughout.\n" +
+      "7. Clinically intimidating — PASS. Walked `/emergency` specifically (the highest-risk page for this mode): plain language throughout (\"Call 911 or go to the nearest emergency room right away if...\"), no scary procedure imagery, a plain-English \"what to do right now\" structure with a genuine what-to-expect tone. `/insurance-new-patients` translates all five common insurance terms (premium/deductible/copay/coinsurance/annual maximum) into one plain sentence each — the anti-jargon antidote applied directly.\n" +
+      "8. Visually noisy — PASS WITH A NOTE. Zero popups, zero promo banners, no urgency language (regex scan below). `TestimonialsSection.tsx` does run a continuous auto-scroll — technically this mode's named cause — but it already carries the two mitigations the blueprint's own antidote calls for: it fully skips starting its rAF loop under `prefers-reduced-motion`, and it exposes a `<button aria-pressed>` pause/play control satisfying WCAG 2.2.2. This exact tradeoff was already reviewed and accepted by Akash (see build-spec status log, item 34 entry) rather than being a fresh miss — recorded here as a verdict, not re-litigated or reverted.\n" +
+      "9. Hard to read — PARTIAL. Sitewide `grep` confirms zero `font-size` overrides below the locked Inter-body-16px floor in Tailwind config, but a DOM-level check on `/insurance-new-patients` found real body-adjacent copy rendering at 14px computed size — e.g. the page's own intro sentence (\"The five words that show up most on an insurance statement...\") and the two Placeholder financing/PPO lines, not just breadcrumbs/legal fine print. This is exactly item 37's existing scope (\"Mobile-first type and spacing scale\", currently `partial`) — logged there as an open sub-finding rather than duplicated as a new item, and not blanket-edited here since separating genuine body copy from intentional fine print (breadcrumbs, footer copyright) needs the same care item 37 already applies, not a hasty sitewide find-and-replace.\n" +
+      "10. Aggressive/sales-driven — PASS. `grep -rniE \"limited time|act now|hurry|only [0-9]+ left|today only|don't wait\"` across `src/` returns zero matches; same for superlative/puffery regex (`award|best|#1|top dentist|world-class|state-of-the-art`) — the one hit is inside a genuine attributed Google review (Karthik B., content.ts L316, part of item 13's real-reviews pull), a patient's own words, not marketing copy, so it's the antidote's \"genuine attributed reviews\" case, not a violation.\n\n" +
+      "Shell-level checks: contrast/consistency — `hours` and `contact.phone` are each defined once in content.ts and imported everywhere they render (Nav, BookingBlock, LocationMapSection, footer), so the contradictory-hours-across-the-page failure mode observed on Capitol Hill Dentist is structurally prevented here, not just avoided by luck.",
+    dependsOn: null,
     outOfScope:
       "Redesigning to taste. This audits against named failure modes with stated causes, not personal preference.",
     references: [
@@ -7031,6 +7043,68 @@ export const backlog: BacklogItem[] = [
       ],
       mobileFirst: ["If approved, the link is a real anchor with its own ≥44px tap target, not embedded inside the iframe"],
       pass: ["Ruling recorded", "If approved, implemented and verified; if declined/deferred, item closed with the reason"],
+    },
+  },
+  {
+    id: 60,
+    title: "Replace stock Unsplash photography with real practice photos",
+    priority: "P1",
+    source: "original",
+    launchBlocking: false,
+    harness: ["GTH-1", "GTH-5"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 3, reach: 4, risk: 2, effort: 2, readiness: 1 },
+    effort: "M",
+    status: "blocked",
+    wave: 4,
+    job: "Trust the practice from how the site feels, not just what it says",
+    story:
+      "As a patient scanning the homepage, every photo I see is this actual practice, not a stand-in — one more reason this doesn't feel like a template.",
+    problem:
+      "Found by item 39's anti-pattern audit (2026-09-02), mode 1 (Generic): 6 photo slots render stock Unsplash hotlinks instead of real practice photography — the 4 homepage `services` tiles (content.ts ~L394-421) and 2 `offers` cards (~L121-129). This was a deliberate 2026-09-01 call, not an oversight: the previous round used Akash's own real clinical macro/x-ray photography for these same slots, and it was swapped to stock specifically because extreme intraoral close-ups and a raw implant x-ray read as clinically alarming rather than reassuring to a patient audience (see content.ts's comment at that line). So the fix isn't reverting to the old photos — it's sourcing new, patient-facing real photography (treatment rooms, team, equipment, general office life) in the same warm/modern tone the stock photos were chosen for.",
+    where: "src/lib/content.ts (`services`, `offers`) · public/services/ (originals) · public/team|office/ (existing real photo pool)",
+    scope: [
+      "Identify which of the 6 slots can be filled from the existing real photo pool (public/team/, public/office/) already used elsewhere on the site",
+      "For slots with no existing match, get new patient-facing (not clinical-macro) photography from Akash",
+      "Swap each `image.src`/`image.alt` in `services` and `offers` from the Unsplash URL to the real asset",
+      "The 3 original clinical files already in public/services/ stay available for a future dedicated service-detail page — not deleted",
+    ],
+    acceptance: [
+      "Zero `images.unsplash.com` references remain in content.ts",
+      "Every services/offers image alt text still accurately describes the real photo now in that slot",
+    ],
+    evidence:
+      "content.ts's own 2026-09-01 comment at the `services` array (\"Swapped all 4 for tasteful, patient-facing stock photography... same Unsplash hotlink pattern as `offers` below\") documents both the cause and the two affected arrays firsthand — not inferred.",
+    dependsOn: "Real patient-facing photography from Akash for any slot the existing public/team|office/ pool doesn't already cover",
+    outOfScope:
+      "Reverting to the original clinical macro/x-ray photography — that was tried and moved away from for a stated patient-comfort reason, not a mistake to undo.",
+    references: [
+      {
+        name: "Blueprint §17 — what could make this site feel wrong",
+        url: "https://www.nngroup.com/articles/trustworthy-design/",
+        whatGood: "Names 'template look, stock smiles, no faces' as the Generic failure mode's specific cause.",
+        takeaway: "Real photos are the antidote by name, not a nice-to-have — this item is that antidote applied to the two slots still using stock.",
+        mobile: "These tiles render large and early in the homepage scroll on a phone, so the stock-vs-real gap is seen sooner on mobile than on desktop.",
+      },
+    ],
+    test: {
+      preconditions: ["Real photography or an approved existing-pool match confirmed for all 6 slots"],
+      steps: [
+        {
+          action: "grep -rn \"images.unsplash.com\" src/lib/content.ts",
+          tool: "shell",
+          viewport: "any",
+          expect: "Zero matches.",
+        },
+        {
+          action: "At 375px, visually confirm each `services`/`offers` tile shows a real, identifiable practice photo, not a generic stand-in.",
+          tool: "browser",
+          expect: "All 6 tiles read as this specific practice, matching the tone of the site's existing real photography.",
+        },
+      ],
+      mobileFirst: ["All 6 tiles show real photography at 375px, same visual tone as the rest of the site"],
+      pass: ["Zero Unsplash references", "Every image alt text matches its actual (real) photo"],
     },
   },
 ];
