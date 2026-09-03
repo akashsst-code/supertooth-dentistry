@@ -2,7 +2,86 @@ import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { SkipLink } from "@/components/SkipLink";
 import { AppointmentFormStateProvider } from "@/components/AppointmentFormStateProvider";
+import { contact, hours, practice, reviews, siteUrl } from "@/lib/content";
 import "./globals.css";
+
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+// Expands a "Tuesday – Friday" range into ["Tuesday", "Wednesday", "Thursday", "Friday"].
+function expandDayRange(range: string): string[] {
+  const [start, end] = range.split("–").map((d) => d.trim());
+  const startIdx = WEEKDAYS.indexOf(start);
+  const endIdx = WEEKDAYS.indexOf(end);
+  if (startIdx === -1 || endIdx === -1) return [];
+  const days: string[] = [];
+  for (let i = startIdx; i !== endIdx; i = (i + 1) % 7) days.push(WEEKDAYS[i]);
+  days.push(WEEKDAYS[endIdx]);
+  return days;
+}
+
+// Converts "7:00 AM" -> "07:00", "4:30 PM" -> "16:30" for schema.org's
+// 24-hour opens/closes format.
+function to24Hour(time: string): string {
+  const match = time.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!match) return time;
+  let [, hourStr, minute, meridiem] = match;
+  let hour = parseInt(hourStr, 10) % 12;
+  if (meridiem.toUpperCase() === "PM") hour += 12;
+  return `${String(hour).padStart(2, "0")}:${minute}`;
+}
+
+// Item 4 — LocalBusiness/Dentist JSON-LD driven directly by content.ts
+// (practice/contact/hours/reviews) so it can never drift from what's
+// displayed on the page. aggregateRating uses the same real Google
+// Business Profile figures item 13 verified — no invented values.
+function parseAddress(address: string) {
+  const [street, suite, locality, regionAndZip] = address.split(",").map((part) => part.trim());
+  const [region, postalCode] = regionAndZip.split(/\s+/);
+  return {
+    streetAddress: `${street}, ${suite}`,
+    addressLocality: locality,
+    addressRegion: region,
+    postalCode,
+  };
+}
+
+function buildLocalBusinessJsonLd() {
+  const address = parseAddress(contact.address);
+  const openingHoursSpecification = hours
+    .filter((h) => h.time !== "Closed")
+    .flatMap((h) => {
+      const [opens, closes] = h.time.split("–").map((t) => to24Hour(t.trim()));
+      return expandDayRange(h.days).map((dayOfWeek) => ({
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek,
+        opens,
+        closes,
+      }));
+    });
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dentist",
+    "@id": `${siteUrl}/#practice`,
+    name: practice.name,
+    url: siteUrl,
+    telephone: contact.phone,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: address.streetAddress,
+      addressLocality: address.addressLocality,
+      addressRegion: address.addressRegion,
+      postalCode: address.postalCode,
+      addressCountry: "US",
+    },
+    openingHoursSpecification,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: reviews.rating,
+      reviewCount: reviews.count,
+    },
+  };
+}
 
 // Design system typography — locked in docs/supertooth-ux-flow.md:
 // Fraunces (display/headlines) + Inter (body, healthcare-accessibility
@@ -19,15 +98,22 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Super Tooth Dentistry | Dentist in Queen Anne, Seattle",
   description:
     "Your long-term dentist in Queen Anne, Seattle. Same-day appointments, in-network with most insurance plans, and a team that treats you like a person, not a patient number.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  const localBusinessJsonLd = buildLocalBusinessJsonLd();
+
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-warm-ivory text-espresso">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
         <SkipLink />
         <AppointmentFormStateProvider>{children}</AppointmentFormStateProvider>
       </body>
