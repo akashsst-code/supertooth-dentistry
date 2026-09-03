@@ -5,9 +5,11 @@ import { archana, differentiators, officeBlurb } from "@/lib/content";
 
 /**
  * EditorialTrustBlock — "page 2", carrying the screen-1 editorial system
- * down the page: same Manrope/Cormorant type, same warm-ivory canvas,
- * same terracotta-as-accent-only discipline, same reliance on whitespace
- * instead of containers. Used ONLY by the homepage in this variation;
+ * down the page: same Manrope/Cormorant type, same terracotta-as-accent-
+ * only discipline, same reliance on whitespace instead of containers.
+ * The one deliberate difference is the ground — Sand rather than page
+ * 1's Warm Ivory; see the section comment below for why that is the
+ * transition. Used ONLY by the homepage in this variation;
  * TrustBlock.tsx is untouched and still serves /about, so this is
  * reversible by a one-line swap in page.tsx.
  *
@@ -42,87 +44,117 @@ import { archana, differentiators, officeBlurb } from "@/lib/content";
  */
 export function EditorialTrustBlock() {
   return (
-    <section className="mx-auto w-full max-w-[480px] px-6 py-20 md:max-w-[1320px] md:px-10 md:py-28 lg:px-16">
-      <Eyebrow>Why choose us</Eyebrow>
-      <SectionHeading>
-        Care that respects
-        <br />
-        your <Accent>time</Accent>.
-      </SectionHeading>
+    /* Sand ground, not the page's Warm Ivory. Page 1 and page 2 were
+       the same colour edge to edge with no rule, shadow or shift
+       anywhere, so there was no boundary for the eye to catch and the
+       section read as "the page just stopped". The colour change is the
+       transition. It also earns its keep twice: every hairline inside
+       this section sits on a darker ground and finally has contrast —
+       Sand-on-Ivory rules measured about 1.2:1, effectively invisible,
+       which is the other half of why the rows blended together.
+       Precedent, not a new idea: TrustBlock already used bg-sand/40 for
+       this section; this makes it deliberate and full-strength.
+       Top padding is 44px rather than the 80px used elsewhere — with a
+       real colour boundary doing the separating, the whitespace no
+       longer has to, and 80px on top of the hero's own trailing space
+       was most of the gap complaint. */
+    <section className="bg-sand">
+      <div className="mx-auto w-full max-w-[480px] px-6 pb-20 pt-11 md:max-w-[1320px] md:px-10 md:pb-28 md:pt-16 lg:px-16">
+        <Eyebrow>Why choose us</Eyebrow>
+        <SectionHeading>
+          Care that respects
+          <br />
+          your <Accent>time</Accent>.
+        </SectionHeading>
 
-      {/* Stacked list with hairline rules — the spec's replacement for
-          the dark card grid. No icons: Section 9 says to use them
-          sparingly and never one beside every text row. */}
-      <ul className="mt-10 md:mt-12 md:max-w-3xl">
-        {differentiators.map((d) => (
-          <li
-            key={d.title}
-            className="border-t border-sand py-5 last:border-b md:py-6"
-          >
-            <h3 className="font-editorial text-xl font-light leading-snug tracking-[-0.02em] text-espresso md:text-2xl">
-              {d.title}
-            </h3>
-            <p className="mt-1 mb-0! font-editorial text-base font-light leading-[1.55] text-espresso/70">
-              {d.detail}
-            </p>
-          </li>
-        ))}
-      </ul>
+        {/* Akash's pick (option B of three shown): each row gets its own
+            Warm Ivory surface on the Sand ground, rather than hairline
+            dividers. The previous version failed because everything was
+            identical — both lines Manrope 300, and Sand-on-Ivory rules
+            at roughly 1.2:1, which is effectively invisible. A surface
+            change can't be missed, and it needs no rule at all: ivory on
+            sand is its own boundary, so these are borderless.
+            The title also moves to weight 500 while the detail stays
+            300, so the two lines stop reading as one block.
 
-      {/* Office carousel is reused as-is rather than reskinned: it is
+            Worth being honest that this is nearer the card treatment the
+            spec's Section 8 steers away from ("subtle dividers rather
+            than large dark cards") — chosen with that trade-off shown.
+            It is the light, flat, borderless end of that idea, and it
+            leaves an obvious surface to hang the tap-to-expand behaviour
+            back on if that ever returns. No icons: Section 9 says never
+            one beside every text row. */}
+        <ul className="mt-10 flex flex-col gap-3 md:mt-12 md:max-w-3xl">
+          {differentiators.map((d) => (
+            <li key={d.title} className="rounded-2xl bg-warm-ivory p-6 md:p-7">
+              <h3 className="font-editorial text-xl font-medium leading-snug tracking-[-0.02em] text-espresso md:text-2xl">
+                {d.title}
+              </h3>
+              <p className="mt-1.5 mb-0! font-editorial text-base font-light leading-[1.55] text-espresso/70">
+                {d.detail}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        {/* Office carousel is reused as-is rather than reskinned: it is
           shared with /about, and its own surface is already light
           (photos on the page canvas, sand borders). Only its heading
           needed the editorial treatment, so it is rendered here with
           the component's built-in heading suppressed. */}
-      <div className="mt-20 md:mt-28">
-        <Eyebrow>Our office</Eyebrow>
-        <SectionHeading>
-          A calm room,
-          <br />
-          not a <Accent>waiting</Accent> room.
-        </SectionHeading>
-        <div className="mt-8 md:mt-10">
-          <OfficeCarousel hideHeading />
+        <div className="mt-20 md:mt-28">
+          <Eyebrow>Our office</Eyebrow>
+          <SectionHeading>
+            A calm room,
+            <br />
+            not a <Accent>waiting</Accent> room.
+          </SectionHeading>
+          <div className="mt-8 md:mt-10">
+            <OfficeCarousel variant="editorial" />
+          </div>
+          <p className="mt-6 mb-0! max-w-2xl font-editorial text-base font-light leading-[1.6] text-espresso/70">
+            {officeBlurb}
+          </p>
         </div>
-        <p className="mt-6 mb-0! max-w-2xl font-editorial text-base font-light leading-[1.6] text-espresso/70">
-          {officeBlurb}
-        </p>
-      </div>
 
-      {/* Dr. Archana — the card shell (rounded surface, border) is gone
+        {/* Dr. Archana — the card shell (rounded surface, border) is gone
           in favour of the hero's own pairing: one photograph at the
           spec's 4:5 with an 18px radius, copy beside it, separated by
           whitespace rather than a container. */}
-      <div className="mt-20 md:mt-28 md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-center md:gap-[clamp(3rem,6vw,6rem)]">
-        <figure className="relative mb-0 aspect-[4/5] overflow-hidden rounded-[18px] bg-sand">
-          <Image
-            src={archana.photo}
-            alt="Dr. Archana Dubey, DDS, MDS, at an American Dental Association event"
-            fill
-            sizes="(min-width: 768px) 45vw, 100vw"
-            className="object-cover"
-          />
-        </figure>
+        <div className="mt-20 md:mt-28 md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-center md:gap-[clamp(3rem,6vw,6rem)]">
+          {/* Placeholder tint is espresso/10, not bg-sand — the frame now
+              sits on a sand ground and would be invisible while loading. */}
+          <figure className="relative mb-0 aspect-[4/5] overflow-hidden rounded-[18px] bg-espresso/10">
+            <Image
+              src={archana.photo}
+              alt="Dr. Archana Dubey, DDS, MDS, at an American Dental Association event"
+              fill
+              sizes="(min-width: 768px) 45vw, 100vw"
+              className="object-cover"
+            />
+          </figure>
 
-        <div className="mt-8 md:mt-0">
-          <Eyebrow>Meet Dr. Archana Dubey</Eyebrow>
-          <SectionHeading>{archana.tagline}</SectionHeading>
+          <div className="mt-8 md:mt-0">
+            <Eyebrow>Meet Dr. Archana Dubey</Eyebrow>
+            <SectionHeading>{archana.tagline}</SectionHeading>
 
-          {/* The one place a serif is allowed below the hero: her pull
+            {/* The one place a serif is allowed below the hero: her pull
               quote. Cormorant is loaded italic-only, and the spec permits
               it for a short emphasised phrase — a personal quote is
               exactly that, and it keeps the accent meaningful by staying
               rare rather than decorating every heading. */}
-          <blockquote className="mt-6 font-editorial-serif text-2xl font-normal italic leading-[1.35] tracking-[-0.02em] text-espresso md:text-3xl">
-            &ldquo;{archana.quote}&rdquo;
-          </blockquote>
+            <blockquote className="mt-6 font-editorial-serif text-2xl font-normal italic leading-[1.35] tracking-[-0.02em] text-espresso md:text-3xl">
+              &ldquo;{archana.quote}&rdquo;
+            </blockquote>
 
-          <p className="mt-6 mb-0! font-editorial text-base font-light leading-[1.6] text-espresso/70">
-            {archana.bio}
-          </p>
+            <p className="mt-6 mb-0! font-editorial text-base font-light leading-[1.6] text-espresso/70">
+              {archana.bio}
+            </p>
 
-          <div className="mt-8 border-t border-sand pt-6">
-            <CredentialBadges editorial />
+            {/* border-sand would now be invisible against the sand ground. */}
+            <div className="mt-8 border-t border-espresso/20 pt-6">
+              <CredentialBadges editorial />
+            </div>
           </div>
         </div>
       </div>

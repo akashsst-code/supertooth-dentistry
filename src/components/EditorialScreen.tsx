@@ -28,6 +28,20 @@ import { useEffect, useState } from "react";
  * Desktop (md+) opts out entirely — the hero is a two-column composition
  * there and sizes itself naturally.
  */
+/**
+ * Deliberately short of a full screen. The remaining ~8% is where page
+ * 2's Sand ground shows through at the bottom of screen 1 — the "peek"
+ * that tells the reader there is a next section, and the reason the hero
+ * no longer ends in an unexplained band of empty ivory.
+ *
+ * It also sets the photo's height indirectly: the copy block above it
+ * has a fixed natural height and the photo takes the rest, so shrinking
+ * the box shrinks the photo. At 92% it lands near half the screen, which
+ * is where Akash asked for it. Keep this in sync with the `min-h-[92svh]`
+ * class below, which is the pre-hydration fallback.
+ */
+const SCREEN_FRACTION = 0.92;
+
 export function EditorialScreen({ children }: { children: React.ReactNode }) {
   const [mobileHeight, setMobileHeight] = useState<number | null>(null);
 
@@ -37,7 +51,8 @@ export function EditorialScreen({ children }: { children: React.ReactNode }) {
         setMobileHeight(null);
         return;
       }
-      setMobileHeight(window.visualViewport?.height ?? window.innerHeight);
+      const vh = window.visualViewport?.height ?? window.innerHeight;
+      setMobileHeight(vh * SCREEN_FRACTION);
     };
     sync();
     window.addEventListener("resize", sync);
@@ -50,7 +65,7 @@ export function EditorialScreen({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className="flex min-h-[100svh] flex-col md:block md:min-h-0"
+      className="flex min-h-[92svh] flex-col md:block md:min-h-0"
       style={mobileHeight ? { minHeight: mobileHeight } : undefined}
     >
       {children}
