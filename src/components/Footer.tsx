@@ -5,21 +5,29 @@ import { practice } from "@/lib/content";
  * Legal/utility row — backlog item 12. Privacy and Accessibility must
  * stay linked in the footer (≥44×44px tap targets, ≥8px separation).
  */
-function LegalLinks() {
+function LegalLinks({ merged }: { merged: boolean }) {
+  const link = merged
+    ? "text-warm-ivory/70 hover:text-warm-ivory"
+    : "text-espresso/70 hover:text-terracotta-dark";
   return (
-    <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1">
+    <nav
+      aria-label="Legal"
+      className={`flex flex-wrap items-center gap-x-1 gap-y-1 ${
+        merged ? "-ml-2" : "justify-center"
+      }`}
+    >
       <Link
         href="/privacy"
-        className="tap-target inline-flex items-center px-2 text-xs text-espresso/70 hover:text-terracotta-dark transition-colors"
+        className={`tap-target inline-flex items-center px-2 text-xs transition-colors ${link}`}
       >
         Privacy
       </Link>
-      <span className="text-espresso/20" aria-hidden="true">
+      <span className={merged ? "text-warm-ivory/25" : "text-espresso/20"} aria-hidden="true">
         ·
       </span>
       <Link
         href="/accessibility"
-        className="tap-target inline-flex items-center px-2 text-xs text-espresso/70 hover:text-terracotta-dark transition-colors"
+        className={`tap-target inline-flex items-center px-2 text-xs transition-colors ${link}`}
       >
         Accessibility
       </Link>
@@ -51,10 +59,36 @@ export function Footer({
   // would be the one strip on that page still rendering in Inter. It
   // carries no display-font headings, so the whole switch is the body
   // face. Every other page renders the default and is unchanged.
+  //
+  // `merged` (homepage, 2026-09-03) continues BookingBlock's espresso
+  // ground with no border, no colour change and the same container
+  // measure, so the legal row reads as the closing line of that section
+  // rather than a separate ivory strip below it — which is what Akash
+  // asked for. It stays a real <footer> element rendered as a direct
+  // child of <body>, so the homepage keeps its contentinfo landmark;
+  // moving these links into BookingBlock's markup would have looked
+  // identical and quietly lost it.
   variant = "default",
 }: {
-  variant?: "default" | "editorial";
+  variant?: "default" | "editorial" | "merged";
 } = {}) {
+  const merged = variant === "merged";
+
+  if (merged) {
+    return (
+      <footer className="bg-espresso font-editorial font-light text-warm-ivory">
+        <div className="mx-auto w-full max-w-[480px] px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:max-w-[1320px] md:px-10 md:pb-8 lg:px-16">
+          <div className="flex flex-col gap-1 border-t border-warm-ivory/15 pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <LegalLinks merged />
+            <p className="mb-0! px-2 text-xs text-warm-ivory/70 sm:px-0">
+              © {new Date().getFullYear()} {practice.name}. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
   return (
     <footer
       className={`border-t border-sand bg-warm-ivory ${
@@ -62,7 +96,7 @@ export function Footer({
       }`}
     >
       <div className="px-6 py-4 flex flex-col items-center gap-2 text-center">
-        <LegalLinks />
+        <LegalLinks merged={false} />
         <p className="text-xs text-espresso/70">
           © {new Date().getFullYear()} {practice.name}. All rights reserved.
         </p>

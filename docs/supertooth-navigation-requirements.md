@@ -11,6 +11,7 @@ Status: **Draft — evaluating mobile nav patterns**
 Modeled on the real pattern observed at Zen Dental Studio (SF):
 - Logo left
 - Short primary links: **Services · About/Meet the Team · Insurance & New Patients · Contact**
+  - **Amended 2026-09-03 (Akash):** a fifth link, **Offers** (`/offers`), was added between About and Insurance & New Patients when the new-patient offers moved off the homepage — they need a route into them, and Akash asked for it in the menu specifically. Labelled "Offers" rather than "New-Patient Offers" for a measured reason: the desktop row already crowds at 768–790px (see the comment in `Nav.tsx`), and the long label made a second link wrap to two lines at 790px while the short one does not. The page's own title and H1 still read "New-Patient Offers". Recorded here rather than left as code drift, since this line was previously the locked list.
 - Persistent **Book Now** CTA, always visible, right-aligned
 - **Sticky header** — stays visible on scroll, so booking CTA is never more than one click away (serves Stage 4 conversion directly)
 

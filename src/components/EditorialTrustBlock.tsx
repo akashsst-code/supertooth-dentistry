@@ -117,7 +117,7 @@ export function EditorialTrustBlock() {
           <div className="mt-8 md:mt-10">
             <OfficeCarousel variant="editorial" />
           </div>
-          <p className="mt-6 mb-0! max-w-2xl font-editorial text-base font-light leading-[1.6] text-espresso/70">
+          <p className="mt-6 mb-0! max-w-2xl font-editorial text-base font-light leading-[1.6] text-espresso/80">
             {officeBlurb}
           </p>
         </div>
@@ -165,7 +165,7 @@ export function EditorialTrustBlock() {
                 &ldquo;{archana.quote}&rdquo;
               </blockquote>
 
-              <p className="mt-6 mb-0! font-editorial text-base font-light leading-[1.6] text-espresso/70">
+              <p className="mt-6 mb-0! font-editorial text-base font-light leading-[1.6] text-espresso/80">
                 {archana.bio}
               </p>
             </div>

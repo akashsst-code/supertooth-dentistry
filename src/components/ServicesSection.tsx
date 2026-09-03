@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ClockIcon, CrownIcon, SparkleIcon, ToothIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
 import { services } from "@/lib/content";
+import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
 
 const cardIcons = [ClockIcon, CrownIcon, SparkleIcon, ToothIcon];
 
@@ -46,12 +47,31 @@ export function ServicesSection({
             : "mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-24"
         }
       >
-        <h2 className={`mb-2 text-espresso ${editorial ? "font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em]" : "font-display text-2xl sm:text-3xl font-semibold"}`}>
-          What we treat
-        </h2>
-        <p className="text-espresso/70 mb-10 sm:mb-12 max-w-2xl">
-          General, cosmetic, and restorative care — under one roof, close to home.
-        </p>
+        {/* Editorial variant uses the shared section opening — eyebrow,
+            heading with one serif accent word, body — rather than a bare
+            <h2>. Sections 2 and 3 already opened this way and the ones
+            below them didn't, which is the inconsistency Akash flagged.
+            /services keeps the default heading untouched. */}
+        {editorial ? (
+          <>
+            <Eyebrow>Our services</Eyebrow>
+            <SectionHeading>
+              What we <Accent>treat</Accent>.
+            </SectionHeading>
+            <Body className="mt-4 mb-10! max-w-2xl sm:mb-12!">
+              General, cosmetic, and restorative care — under one roof, close to home.
+            </Body>
+          </>
+        ) : (
+          <>
+            <h2 className="mb-2 font-display text-2xl font-semibold text-espresso sm:text-3xl">
+              What we treat
+            </h2>
+            <p className="text-espresso/70 mb-10 sm:mb-12 max-w-2xl">
+              General, cosmetic, and restorative care — under one roof, close to home.
+            </p>
+          </>
+        )}
 
         <div className="flex flex-col">
           {services.map((s, i) => {

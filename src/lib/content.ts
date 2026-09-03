@@ -647,9 +647,25 @@ export const benefitsGlossary = [
 // claim on those three pages either traces to a `real: true` field
 // below or renders through <Placeholder> — none of this data changed
 // to make the pages possible.
+// docs/supertooth-navigation-requirements.md locks the four primary
+// links (Services · About · Insurance & New Patients · Contact). "New-
+// Patient Offers" is a deliberate fifth, added 2026-09-03 on Akash's
+// call when the offers moved off the homepage — they need a route into
+// them, and the menu is where he asked for it. Recorded as an amendment
+// in the build-spec status, not a silent drift. Placed directly above
+// Insurance & New Patients: the two are the same "before you book"
+// errand, and offers is the shorter, more concrete of the pair.
+//
+// Labelled "Offers", not "New-Patient Offers", for a measured reason:
+// Nav.tsx's own comment records the desktop row already crowding at
+// 768–790px with four items ("Insurance & New Patients" wrapping to two
+// lines). Measured at 790px, the long label made a second item wrap;
+// "Offers" does not. The page's own title and H1 still say new-patient
+// offers, so nothing is lost but the row width.
 export const nav = [
   { label: "Services", href: "/services" },
   { label: "About", href: "/about" },
+  { label: "Offers", href: "/offers" },
   { label: "Insurance & New Patients", href: "/insurance-new-patients" },
   { label: "Contact", href: "/contact" },
 ];

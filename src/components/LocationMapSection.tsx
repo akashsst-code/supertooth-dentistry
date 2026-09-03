@@ -1,5 +1,6 @@
 import { CalendarIcon, ClockIcon, MapPinIcon, PhoneIcon, PinDotIcon } from "./icons";
 import { contact, hours, practice, serviceAreas } from "@/lib/content";
+import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
 
 /**
  * Map + "areas we serve" — positioned after Services per Akash's locked
@@ -63,12 +64,13 @@ export function LocationMapSection() {
   return (
     <section className="bg-warm-ivory">
       <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-[1320px] md:px-10 md:pb-24 md:pt-16 lg:px-16">
-      <h2 className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em] text-espresso mb-2">
-        Proudly serving {practice.neighborhood} &amp; nearby Seattle
-      </h2>
-      <p className="text-espresso/70 mb-10 max-w-2xl">
+      <Eyebrow>Find us</Eyebrow>
+      <SectionHeading>
+        Proudly serving {practice.neighborhood} &amp; nearby <Accent>Seattle</Accent>.
+      </SectionHeading>
+      <Body className="mt-4 mb-10! max-w-2xl">
         Easy to reach whether you&apos;re coming from home, work, or school.
-      </p>
+      </Body>
 
       <div className="grid lg:grid-cols-5 gap-8 items-start">
         <div className="lg:col-span-3 rounded-2xl overflow-hidden border border-sand">

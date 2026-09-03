@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { GoogleGIcon, PauseIcon, PlayIcon, StarIcon } from "./icons";
 import { reviews, testimonials } from "@/lib/content";
+import { Accent, Eyebrow, SectionHeading } from "./editorial";
 
 const PIXELS_PER_SECOND = 22; // slower than the office reel — text needs more read time than a photo
 
@@ -107,7 +108,17 @@ export function TestimonialsSection() {
             {userPaused ? <PlayIcon /> : <PauseIcon />}
           </button>
 
-          <h2 className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em]">What patients are saying</h2>
+          {/* Same section opening as every other block on this page. The
+              heading has to keep its own wrapper here — this row is a
+              flex container that sits the rating badge beside it, so the
+              eyebrow and heading need to be one flex item rather than
+              two, or the badge lands between them. */}
+          <div>
+            <Eyebrow>In their words</Eyebrow>
+            <SectionHeading>
+              What patients are <Accent>saying</Accent>.
+            </SectionHeading>
+          </div>
           {/* Rating badge — was a bare 16px icon sitting directly on the
               dark section with no container of its own, easy to miss and
               too small for the Google "G"'s four brand colors to read
@@ -187,7 +198,7 @@ export function TestimonialsSection() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <span className="block font-editorial text-sm font-medium text-espresso truncate">{t.name}</span>
-                      <span className="block font-editorial text-xs text-espresso/70 truncate">{t.meta}</span>
+                      <span className="block font-editorial text-xs text-espresso/80 truncate">{t.meta}</span>
                     </div>
                     <GoogleGIcon className="h-4 w-4 shrink-0" />
                   </div>

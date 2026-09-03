@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { contact, hours, reviews } from "@/lib/content";
+import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
 import { CalendarIcon, ClockIcon, GoogleGIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, StarIcon } from "./icons";
 
 /**
@@ -88,24 +88,52 @@ import { CalendarIcon, ClockIcon, GoogleGIcon, MapPinIcon, MedicalCrossIcon, Pho
  *
  * "New patient? Start here" line removed per Akash's direct feedback —
  * `/insurance-new-patients` stays reachable via the persistent nav.
+ *
+ * 2026-09-03, three changes from Akash's review of the v2 preview:
+ *
+ * 1. It now opens on the same eyebrow/heading/body the rest of the page
+ *    uses, via the shared primitives with `onDark`. It had been hand-
+ *    rolling a near-copy — its own eyebrow at 0.2em instead of 0.16em,
+ *    a bare <h2>, no accent word — which is why this section read as
+ *    outside the system even though its type was already Manrope.
+ * 2. The office photo is gone. It was the right call when this block
+ *    was the page's only trust visual; the page now carries the office
+ *    carousel, the services photography and Dr. Archana's portrait
+ *    above, so a fourth interior shot was repetition, and it was the
+ *    thing forcing the two-column grid. Single column now, which also
+ *    lets the copy hold a proper measure instead of a 3/5 slice.
+ * 3. Privacy/Accessibility/copyright now read as part of this section
+ *    rather than a 60px ivory strip pasted under a dark block. They are
+ *    NOT moved into this component, though: `<footer>` is only a
+ *    contentinfo landmark as a direct child of <body>, and burying the
+ *    row in a <div> here — inside <main>, no less — would have silently
+ *    dropped that landmark from the homepage to win a visual. Footer
+ *    gets a `merged` variant that continues this espresso ground with
+ *    no seam instead, so the two read as one block while the markup
+ *    stays honest. This section's bottom padding is trimmed to suit.
  */
 export function BookingBlock() {
   const openHours = hours.find((h) => h.time !== "Closed");
 
   return (
+    /* Container mirrors every other editorial section's measure and
+       padding (max-w-[480px] / md:max-w-[1320px], px-6 / md:px-10 /
+       lg:px-16) rather than the max-w-6xl px-4 it used to use — that
+       mismatch put this section's left edge a few pixels off from the
+       one above it, visible as a jog when scrolling past the boundary. */
     <section id="booking" className="bg-espresso text-warm-ivory">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
-        <div className="grid lg:grid-cols-5 gap-8 lg:gap-10 items-center">
-          <div className="lg:col-span-3 text-left">
-            <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-warm-ivory/70">
+      <div className="mx-auto w-full max-w-[480px] px-6 pb-12 pt-11 md:max-w-[1320px] md:px-10 md:pb-16 md:pt-16 lg:px-16">
+        <div className="md:max-w-2xl">
+          <div className="text-left">
+            <Eyebrow onDark>
               Visit us{openHours && ` · Open from ${openHours.time.split(" – ")[0]}`}
-            </p>
-            <h2 className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em] mb-2">
-              Ready to book your visit?
-            </h2>
-            <p className="text-warm-ivory/80 max-w-xl mb-3">
+            </Eyebrow>
+            <SectionHeading onDark>
+              Ready to book your <Accent onDark>visit</Accent>?
+            </SectionHeading>
+            <Body onDark className="mt-4 mb-3! max-w-xl">
               Reach out and we&apos;ll find a time that works — same-day slots are often available.
-            </p>
+            </Body>
 
             <p className="mb-5 inline-flex items-center gap-1.5 text-sm text-warm-ivory/85">
               <GoogleGIcon />
@@ -176,19 +204,8 @@ export function BookingBlock() {
               </div>
             </div>
           </div>
-
-          <div className="lg:col-span-2">
-            <div className="relative aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5] rounded-2xl overflow-hidden border border-warm-ivory/10">
-              <Image
-                src="/office/office-2.webp"
-                alt="Treatment room inside Super Tooth Dentistry's Queen Anne office"
-                fill
-                sizes="(min-width: 1024px) 24rem, 100vw"
-                className="object-cover"
-              />
-            </div>
-          </div>
         </div>
+
       </div>
     </section>
   );
