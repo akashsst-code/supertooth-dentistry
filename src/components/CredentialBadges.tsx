@@ -72,7 +72,7 @@ function CredentialRow({ badge, editorial }: { badge: CredentialBadge; editorial
  * of the logo block in roughly a tenth of the height"), not a
  * departure from it.
  *
- * 2026-09-02 density pass (Akash: "is there a way to organize them with
+ * 2026-09-03 density pass (Akash: "is there a way to organize them with
  * lesser space, but without crowding"). The wordmark-list treatment
  * above is unchanged — same rows, same order, same 14px type, nothing
  * dropped. The height comes out of spacing and layout instead:
@@ -121,18 +121,19 @@ export function CredentialBadges({
 
   return (
     /* The density pass Akash asked for ("lesser space, but without
-       crowding"). Nothing is removed and no type gets smaller — the
-       three groups simply stop stacking once there is width for them to
-       sit side by side, which is the only way to take height out of this
-       list without tightening it into a block. On the homepage this now
+       crowding"). Nothing is removed and no type gets smaller — with
+       `columns` the three groups simply stop stacking once the caller
+       has width for them to sit side by side. On the homepage this now
        spans the full section rather than the bio's right-hand column
-       (see EditorialTrustBlock), so the desktop columns are ~380px —
-       wider per row than the single stacked column was, not narrower.
-       Below md it stays one column: the mobile container tops out at
-       480px, and two columns there would wrap the longer titles onto
-       three lines each, which is exactly the crowding to avoid. The
-       mobile saving comes from the row padding and the group gap
-       instead. */
+       (see EditorialTrustBlock), so a desktop column measures 347px —
+       wider per row than the single stacked column was, not narrower,
+       and every row still fits on one line (verified in the browser at
+       1280px, including the longest title).
+       Below md it stays one column everywhere: the mobile container
+       tops out at 480px, and two columns there would wrap the longer
+       titles onto three lines each, which is exactly the crowding to
+       avoid. Mobile's saving comes from the label margin and the row
+       padding instead — see the two comments below. */
     <div
       className={`grid grid-cols-1 gap-y-4 ${
         columns ? "md:grid-cols-3 md:gap-x-10 md:gap-y-0 lg:gap-x-14" : ""
