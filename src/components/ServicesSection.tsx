@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ClockIcon, CrownIcon, SparkleIcon, ToothIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
 import { services } from "@/lib/content";
-import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
+import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 const cardIcons = [ClockIcon, CrownIcon, SparkleIcon, ToothIcon];
 
@@ -43,7 +43,7 @@ export function ServicesSection({
       <div
         className={
           editorial
-            ? "mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-3xl md:px-10 md:pb-24 md:pt-16"
+            ? shellWide
             : "mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-24"
         }
       >
@@ -58,7 +58,7 @@ export function ServicesSection({
             <SectionHeading>
               What we <Accent>treat</Accent>.
             </SectionHeading>
-            <Body className="mt-4 mb-10! max-w-2xl sm:mb-12!">
+            <Body className="mt-4 mb-10! max-w-2xl">
               General, cosmetic, and restorative care — under one roof, close to home.
             </Body>
           </>
@@ -73,7 +73,12 @@ export function ServicesSection({
           </>
         )}
 
-        <div className="flex flex-col">
+        {/* Same reading measure as the FAQ list, left-aligned. The
+            editorial variant's container is now full width so its
+            heading shares the page's left spine; the card stack keeps
+            its own narrower measure. /services is unaffected — its own
+            container is already max-w-3xl. */}
+        <div className={`flex flex-col ${editorial ? "md:max-w-3xl" : ""}`}>
           {services.map((s, i) => {
             const Icon = cardIcons[i] ?? ClockIcon;
             return (

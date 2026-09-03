@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { faqs, contact } from "@/lib/content";
-import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
+import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 const EMERGENCY_QUESTION = "What should I do if I have a dental emergency?";
 
@@ -52,7 +52,7 @@ export function FAQSection() {
        to back lose the colour boundary that carries every other
        transition down this page. */
     <section id="faq" className="bg-sand">
-      <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-3xl md:px-10 md:pb-24 md:pt-16">
+      <div className={shellWide}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Eyebrow>Good to know</Eyebrow>
@@ -63,7 +63,9 @@ export function FAQSection() {
         Answers to what new and existing patients ask us most. Don&apos;t see yours? Call us and we&apos;ll help.
       </Body>
 
-      <div className="flex flex-col gap-3">
+      {/* Reading measure, left-aligned against the page's spine rather
+          than centred — see the shellWide comment in editorial.tsx. */}
+      <div className="flex flex-col gap-3 md:max-w-3xl">
         {faqs.map((faq, i) => {
           const open = openIndex === i;
           const isEmergency = faq.question === EMERGENCY_QUESTION;

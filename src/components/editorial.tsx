@@ -103,6 +103,32 @@ export function Body({
 }
 
 /**
+ * The one section container. Every editorial section below the hero was
+ * carrying its own copy of this string, and they had drifted — five
+ * sections at `pb-16`, EditorialTrustBlock at `pb-20`/`md:pb-28`. That
+ * outlier is what made the gap above "In their words" read as larger
+ * than every other boundary (Akash flagged it), because it was: 124px
+ * against 108px everywhere else.
+ *
+ * Bottom padding is now 48px mobile / 80px desktop, so a boundary
+ * measures 92px on mobile (44 top + 48 bottom). The spec asks for
+ * 80–96px between major sections (Section 8), which the old 108px
+ * exceeded everywhere — and that was before counting the colour change
+ * at each boundary, which is doing separation work the whitespace no
+ * longer has to duplicate.
+ *
+ * One width, not two. Services and FAQ used to take a centred
+ * `md:max-w-3xl` container, which put their headings at x=296 on a
+ * 1280px screen while every other section's heading started at x=64 —
+ * a 232px jog in the page's left spine, visible while scrolling. Where
+ * a section genuinely needs a reading measure it constrains its own
+ * content with a LEFT-ALIGNED `md:max-w-3xl` instead, which is the
+ * pattern EditorialTrustBlock's differentiator list already used.
+ */
+export const shellWide =
+  "mx-auto w-full max-w-[480px] px-6 pb-12 pt-11 md:max-w-[1320px] md:px-10 md:pb-20 md:pt-16 lg:px-16";
+
+/**
  * Section shell. `ground` alternates ivory and sand down the page —
  * that alternation is the transition device Akash picked for page 2
  * (a colour change at each boundary, rather than whitespace alone), now
@@ -120,7 +146,7 @@ export function EditorialSection({
   return (
     <section className={ground === "sand" ? "bg-sand" : "bg-warm-ivory"}>
       <div
-        className={`mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-[1320px] md:px-10 md:pb-24 md:pt-16 lg:px-16 ${className}`}
+        className={`${shellWide} ${className}`}
       >
         {children}
       </div>

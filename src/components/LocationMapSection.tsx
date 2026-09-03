@@ -1,6 +1,6 @@
 import { CalendarIcon, ClockIcon, MapPinIcon, PhoneIcon, PinDotIcon } from "./icons";
 import { contact, hours, practice, serviceAreas } from "@/lib/content";
-import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
+import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 /**
  * Map + "areas we serve" — positioned after Services per Akash's locked
@@ -63,10 +63,19 @@ export function LocationMapSection() {
 
   return (
     <section className="bg-warm-ivory">
-      <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-[1320px] md:px-10 md:pb-24 md:pt-16 lg:px-16">
+      <div className={shellWide}>
       <Eyebrow>Find us</Eyebrow>
+      {/* Explicit break. Left to wrap on its own at 390px this came out
+          "Proudly serving Queen / Anne & nearby Seattle." — splitting the
+          neighbourhood's name across two lines, which is what read as
+          wrong about this heading rather than its size (measured: 33px
+          here, identical to every other heading on the page). Every
+          other two-line heading in this system breaks where the sentence
+          does, so this one does too. */}
       <SectionHeading>
-        Proudly serving {practice.neighborhood} &amp; nearby <Accent>Seattle</Accent>.
+        Proudly serving {practice.neighborhood}
+        <br />
+        &amp; nearby <Accent>Seattle</Accent>.
       </SectionHeading>
       <Body className="mt-4 mb-10! max-w-2xl">
         Easy to reach whether you&apos;re coming from home, work, or school.

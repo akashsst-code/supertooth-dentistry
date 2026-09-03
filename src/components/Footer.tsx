@@ -7,7 +7,7 @@ import { practice } from "@/lib/content";
  */
 function LegalLinks({ merged }: { merged: boolean }) {
   const link = merged
-    ? "text-warm-ivory/70 hover:text-warm-ivory"
+    ? "text-espresso/80 hover:text-terracotta-dark"
     : "text-espresso/70 hover:text-terracotta-dark";
   return (
     <nav
@@ -22,7 +22,7 @@ function LegalLinks({ merged }: { merged: boolean }) {
       >
         Privacy
       </Link>
-      <span className={merged ? "text-warm-ivory/25" : "text-espresso/20"} aria-hidden="true">
+      <span className="text-espresso/20" aria-hidden="true">
         ·
       </span>
       <Link
@@ -60,14 +60,16 @@ export function Footer({
   // carries no display-font headings, so the whole switch is the body
   // face. Every other page renders the default and is unchanged.
   //
-  // `merged` (homepage, 2026-09-03) continues BookingBlock's espresso
-  // ground with no border, no colour change and the same container
-  // measure, so the legal row reads as the closing line of that section
-  // rather than a separate ivory strip below it — which is what Akash
-  // asked for. It stays a real <footer> element rendered as a direct
-  // child of <body>, so the homepage keeps its contentinfo landmark;
-  // moving these links into BookingBlock's markup would have looked
-  // identical and quietly lost it.
+  // `merged` (homepage, 2026-09-03) continues BookingBlock's ground
+  // with no border, no colour change and the same container measure, so
+  // the legal row reads as the closing line of that section rather than
+  // a separate strip below it — which is what Akash asked for. It stays
+  // a real <footer> element rendered as a direct child of <body>, so
+  // the homepage keeps its contentinfo landmark; moving these links
+  // into BookingBlock's markup would have looked identical and quietly
+  // lost it. Follows that section onto Warm Ivory now that it is no
+  // longer espresso; the divider is espresso/12 rather than border-sand
+  // because sand on ivory measures ~1.2:1 and would not be visible.
   variant = "default",
 }: {
   variant?: "default" | "editorial" | "merged";
@@ -76,11 +78,11 @@ export function Footer({
 
   if (merged) {
     return (
-      <footer className="bg-espresso font-editorial font-light text-warm-ivory">
+      <footer className="bg-warm-ivory font-editorial font-light text-espresso">
         <div className="mx-auto w-full max-w-[480px] px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:max-w-[1320px] md:px-10 md:pb-8 lg:px-16">
-          <div className="flex flex-col gap-1 border-t border-warm-ivory/15 pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-1 border-t border-espresso/12 pt-5 sm:flex-row sm:items-center sm:justify-between">
             <LegalLinks merged />
-            <p className="mb-0! px-2 text-xs text-warm-ivory/70 sm:px-0">
+            <p className="mb-0! px-2 text-xs text-espresso/80 sm:px-0">
               © {new Date().getFullYear()} {practice.name}. All rights reserved.
             </p>
           </div>

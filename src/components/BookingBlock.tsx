@@ -1,5 +1,5 @@
 import { contact, hours, reviews } from "@/lib/content";
-import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
+import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
 import { CalendarIcon, ClockIcon, GoogleGIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon, StarIcon } from "./icons";
 
 /**
@@ -103,14 +103,38 @@ import { CalendarIcon, ClockIcon, GoogleGIcon, MapPinIcon, MedicalCrossIcon, Pho
  *    thing forcing the two-column grid. Single column now, which also
  *    lets the copy hold a proper measure instead of a 3/5 slice.
  * 3. Privacy/Accessibility/copyright now read as part of this section
- *    rather than a 60px ivory strip pasted under a dark block. They are
- *    NOT moved into this component, though: `<footer>` is only a
- *    contentinfo landmark as a direct child of <body>, and burying the
- *    row in a <div> here — inside <main>, no less — would have silently
- *    dropped that landmark from the homepage to win a visual. Footer
- *    gets a `merged` variant that continues this espresso ground with
- *    no seam instead, so the two read as one block while the markup
- *    stays honest. This section's bottom padding is trimmed to suit.
+ *    rather than a separate strip pasted under it. They are NOT moved
+ *    into this component, though: `<footer>` is only a contentinfo
+ *    landmark as a direct child of <body>, and burying the row in a
+ *    <div> here — inside <main>, no less — would have silently dropped
+ *    that landmark from the homepage to win a visual. Footer gets a
+ *    `merged` variant that continues this section's ground with no seam
+ *    instead, so the two read as one block while the markup stays
+ *    honest. This section's bottom padding is trimmed to suit.
+ *
+ * 4. THE GROUND IS NO LONGER ESPRESSO (Akash, on a second pass: "check
+ *    style guide and see if its background is going with the theme").
+ *    It isn't, on two counts. The spec's own Final CTA rule (Section 8)
+ *    is "use a light surface with a single headline and one appointment
+ *    button"; a dark full-width strip is permitted only "near the very
+ *    bottom", which the merged legal row now is. And Section 4's usage
+ *    ratio wants 75–85% warm canvas with dark reserved for "emphasis
+ *    and action, not the page background" — a 660px dark panel holding
+ *    hours, address, a rating line and a legal row is a background.
+ *
+ *    This panel is a holdover: it was built to echo the old dark hero,
+ *    the same inversion EditorialTrustBlock's comment already records
+ *    for the differentiator cards ("page 1 is now the light editorial
+ *    hero, so the same instruction points the opposite way"). It was
+ *    the last dark surface left from that design. Warm Ivory now, which
+ *    also keeps the ivory/sand alternation intact against the FAQ's
+ *    sand above it, and makes the terracotta Book pill the only strong
+ *    colour in the section — which is the emphasis the spec wants dark
+ *    green to carry.
+ *
+ *    Reverting is a one-word change: `bg-warm-ivory` -> `bg-espresso`
+ *    here, `variant="merged"` still follows whatever this section uses,
+ *    and the `onDark` props on the primitives are what flip the type.
  */
 export function BookingBlock() {
   const openHours = hours.find((h) => h.time !== "Closed");
@@ -121,35 +145,35 @@ export function BookingBlock() {
        lg:px-16) rather than the max-w-6xl px-4 it used to use — that
        mismatch put this section's left edge a few pixels off from the
        one above it, visible as a jog when scrolling past the boundary. */
-    <section id="booking" className="bg-espresso text-warm-ivory">
-      <div className="mx-auto w-full max-w-[480px] px-6 pb-12 pt-11 md:max-w-[1320px] md:px-10 md:pb-16 md:pt-16 lg:px-16">
+    <section id="booking" className="bg-warm-ivory text-espresso">
+      <div className={shellWide}>
         <div className="md:max-w-2xl">
           <div className="text-left">
-            <Eyebrow onDark>
+            <Eyebrow>
               Visit us{openHours && ` · Open from ${openHours.time.split(" – ")[0]}`}
             </Eyebrow>
-            <SectionHeading onDark>
-              Ready to book your <Accent onDark>visit</Accent>?
+            <SectionHeading>
+              Ready to book your <Accent>visit</Accent>?
             </SectionHeading>
-            <Body onDark className="mt-4 mb-3! max-w-xl">
+            <Body className="mt-4 mb-3! max-w-xl">
               Reach out and we&apos;ll find a time that works — same-day slots are often available.
             </Body>
 
-            <p className="mb-5 inline-flex items-center gap-1.5 text-sm text-warm-ivory/85">
+            <p className="mb-5 inline-flex items-center gap-1.5 text-sm text-espresso/80">
               <GoogleGIcon />
-              <span className="flex gap-px text-terracotta">
+              <span className="flex gap-px text-terracotta-dark">
                 <StarIcon className="h-3.5 w-3.5" />
                 <StarIcon className="h-3.5 w-3.5" />
                 <StarIcon className="h-3.5 w-3.5" />
                 <StarIcon className="h-3.5 w-3.5" />
                 <StarIcon className="h-3.5 w-3.5" />
               </span>
-              <strong className="text-warm-ivory font-medium">{reviews.rating}</strong>({reviews.count}{" "}
+              <strong className="text-espresso font-medium">{reviews.rating}</strong>({reviews.count}{" "}
               Google reviews)
             </p>
 
             <div className="mb-6">
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-warm-ivory/70">
+              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-espresso/80">
                 Quick actions
               </p>
               <div className="flex flex-wrap items-center gap-1.5">
@@ -162,7 +186,7 @@ export function BookingBlock() {
                 </a>
                 <a
                   href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-                  className="tap-target inline-flex items-center justify-center gap-1 rounded-full border border-warm-ivory/30 px-3.5 py-3.5 text-sm font-medium text-warm-ivory hover:border-warm-ivory/60 transition-colors"
+                  className="tap-target inline-flex items-center justify-center gap-1 rounded-full border border-espresso/20 px-3.5 py-3.5 text-sm font-medium text-espresso hover:border-terracotta-dark transition-colors"
                 >
                   <PhoneIcon />
                   {contact.phone}
@@ -179,12 +203,12 @@ export function BookingBlock() {
 
             <div className="flex flex-col gap-3 max-w-sm">
               <div>
-                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-warm-ivory/70">
+                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-espresso/80">
                   Office hours
                 </p>
                 <div className="flex flex-col gap-1">
                   {hours.map((h) => (
-                    <div key={h.days} className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-warm-ivory/80">
+                    <div key={h.days} className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-espresso/80">
                       <ClockIcon className="mt-0.5 shrink-0" />
                       <span>
                         {h.days} · {h.time}
@@ -194,10 +218,10 @@ export function BookingBlock() {
                 </div>
               </div>
               <div>
-                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-warm-ivory/70">
+                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-espresso/80">
                   Location
                 </p>
-                <div className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-warm-ivory/80">
+                <div className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-espresso/80">
                   <MapPinIcon className="mt-0.5 shrink-0" />
                   <span>{contact.address}</span>
                 </div>

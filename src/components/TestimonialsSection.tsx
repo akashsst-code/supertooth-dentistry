@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { GoogleGIcon, PauseIcon, PlayIcon, StarIcon } from "./icons";
 import { reviews, testimonials } from "@/lib/content";
-import { Accent, Eyebrow, SectionHeading } from "./editorial";
+import { Accent, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 const PIXELS_PER_SECOND = 22; // slower than the office reel — text needs more read time than a photo
 
@@ -92,8 +92,10 @@ export function TestimonialsSection() {
 
   return (
     <section className="bg-warm-ivory text-espresso">
-      <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-[1320px] md:px-10 md:pb-24 md:pt-16 lg:px-16">
-        <div className="relative flex flex-wrap items-end justify-between gap-4 mb-12 pr-14">
+      <div className={shellWide}>
+        {/* mb-10, not mb-12: every other section steps 40px from its
+            heading block to its content, and this was the one at 48. */}
+        <div className="relative flex flex-wrap items-end justify-between gap-4 mb-10 pr-14">
           {/* Pause/play — WCAG 2.2.2 requires a way to stop auto-moving
               content, but it doesn't need to sit inside the rating badge's
               row competing for space with it. Anchored to this row's own
