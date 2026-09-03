@@ -1,13 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
 import { editorialHero, reviews } from "@/lib/content";
+import { HeroCarousel } from "./HeroCarousel";
 import { GoogleGIcon, StarIcon } from "./icons";
 
 /**
  * EditorialHero — homepage screen 1, built to
- * docs/supertooth-mobile-design-spec.md. Offered as a variation
- * alongside the existing photo-overlay Hero.tsx (which is untouched);
- * only src/app/page.tsx picks between them.
+ * docs/supertooth-mobile-design-spec.md and to the reference composition
+ * Akash supplied. Offered as a variation alongside the existing
+ * photo-overlay Hero.tsx (which is untouched); only src/app/page.tsx
+ * picks between them.
  *
  * The spec's structural rules, and where each is enforced below:
  *   - One headline, one support line, one action, one photograph.
@@ -16,12 +17,21 @@ import { GoogleGIcon, StarIcon } from "./icons";
  *   - Separation comes from whitespace, not borders or cards.
  *   - Exactly one serif accent word in the headline.
  *
- * Palette is ours, not the spec's. The spec's own tokens (--canvas
- * #F7F6F1, --ink #172219, --forest #173E28) are deliberately NOT
- * imported — Akash's instruction was to keep the locked color theme and
- * borrow everything else, so each spec role maps onto an existing token:
- * canvas -> warm-ivory, ink -> espresso, ink-muted -> espresso/70,
- * forest (action + accent) -> terracotta-dark / terracotta.
+ * WHOLE COMPOSITION FITS ONE MOBILE SCREEN, photo included — Akash's
+ * explicit call, and the thing the reference gets right. That is a
+ * layout constraint, not a set of magic numbers: EditorialScreen sizes
+ * the box to the real viewport, every copy element keeps its natural
+ * height, and the photo frame below takes the remainder via `flex-1`.
+ * So the gaps here stay fixed and readable while the photo absorbs the
+ * difference between a 667px SE and a 932px Pro Max. Deliberately no
+ * fixed aspect-ratio on mobile — that was what pushed the photo past
+ * the fold before.
+ *
+ * Palette is ours, not the spec's or the reference's — both use a
+ * forest green, and Akash's instruction was to keep the locked color
+ * theme and borrow everything else. Each role maps onto an existing
+ * token: canvas -> warm-ivory, ink -> espresso, ink-muted ->
+ * espresso/70, forest (action + accent) -> terracotta-dark / terracotta.
  *
  * Contrast, computed against the real token values rather than assumed:
  * white on terracotta-dark is 5.62:1 (AA at any size) — note plain
@@ -38,17 +48,12 @@ import { GoogleGIcon, StarIcon } from "./icons";
  * "small metadata" role — one quiet line below the CTA, not a badge or
  * a logo block — so it reads as a footnote to the action rather than a
  * second focal point.
- *
- * Not wrapped in ViewportHero: that pins the hero to exactly one screen
- * height, which would force the photograph to shrink to fit. Here the
- * photo is meant to run past the fold — the visible top of it is the
- * scroll affordance.
  */
 export function EditorialHero() {
   return (
-    <section className="mx-auto w-full max-w-[480px] px-6 pt-[clamp(3.5rem,15vw,4.75rem)] pb-16 md:max-w-[1320px] md:px-10 md:pt-20 md:pb-24 lg:px-16">
-      <div className="md:grid md:grid-cols-[minmax(320px,0.85fr)_minmax(440px,1.15fr)] md:items-center md:gap-[clamp(4rem,8vw,8.75rem)]">
-        <div>
+    <section className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-6 pb-6 pt-14 md:max-w-[1320px] md:flex-none md:px-10 md:pb-24 md:pt-20 lg:px-16">
+      <div className="md:grid md:flex-none md:grid-cols-[minmax(320px,0.85fr)_minmax(440px,1.15fr)] md:items-center md:gap-[clamp(4rem,8vw,8.75rem)] flex flex-1 flex-col">
+        <div className="shrink-0">
           {/* clamp() per the spec's mobile type scale; leading/tracking
               are the spec's 0.94 / -0.045em. max-w keeps the line break
               falling after "made" at a 390px viewport without a <br>. */}
@@ -80,39 +85,51 @@ export function EditorialHero() {
             {editorialHero.cta}
           </Link>
 
-          {/* Reviews — see the deviation note in the file header. */}
-          <p className="mt-5 mb-0! flex flex-wrap items-center gap-x-2 gap-y-1 font-editorial text-xs text-espresso/70">
-            <GoogleGIcon />
-            <span className="flex gap-px text-terracotta" aria-hidden="true">
-              <StarIcon className="h-3 w-3" />
-              <StarIcon className="h-3 w-3" />
-              <StarIcon className="h-3 w-3" />
-              <StarIcon className="h-3 w-3" />
-              <StarIcon className="h-3 w-3" />
+          {/* Reviews — see the deviation note in the file header. Akash
+              asked for the bare count in parentheses rather than a
+              "from 427 Google reviews" sentence, which at this size read
+              as a second line of copy competing with the support line.
+              The visual row is aria-hidden and paired with an sr-only
+              sentence: "4.9 (427)" is only meaningful next to the stars,
+              so read aloud on its own it would be nonsense. */}
+          <p className="mt-4 mb-0! flex items-center gap-2 font-editorial text-xs text-espresso/70">
+            <span className="sr-only">
+              Rated {reviews.rating} out of 5 from {reviews.count} Google reviews.
             </span>
-            <span>
-              <span className="font-medium text-espresso">{reviews.rating}</span> from{" "}
-              {reviews.count} Google reviews
+            <span className="flex items-center gap-2" aria-hidden="true">
+              <GoogleGIcon />
+              <span className="flex gap-px text-terracotta">
+                <StarIcon className="h-3 w-3" />
+                <StarIcon className="h-3 w-3" />
+                <StarIcon className="h-3 w-3" />
+                <StarIcon className="h-3 w-3" />
+                <StarIcon className="h-3 w-3" />
+              </span>
+              <span>
+                <span className="font-medium text-espresso">{reviews.rating}</span> ({reviews.count}
+                )
+              </span>
             </span>
           </p>
         </div>
 
-        {/* aspect-ratio is set on the frame, not the img, so the space is
-            reserved before the photo loads — the spec's no-layout-shift
-            requirement. `priority` because this is the LCP element.
-            Portrait 4:5 on phones per Section 7; the spec asks for
-            landscape-or-near-square once the hero goes two-column, so it
-            widens rather than growing into a full-height slab. */}
-        <figure className="mt-7 aspect-[4/5] overflow-hidden rounded-[18px] bg-sand md:mt-0 md:aspect-[5/4]">
-          <Image
-            src={editorialHero.image.src}
-            alt={editorialHero.image.alt}
-            width={900}
-            height={1125}
-            priority
-            sizes="(min-width: 768px) 55vw, 100vw"
-            className="h-full w-full object-cover"
-          />
+        {/* Mobile: `flex-1` + `min-h-0` is what keeps the photo on screen
+            1 — it fills the leftover height rather than imposing an
+            aspect-ratio the viewport may not have room for. min-h-[180px]
+            stops it collapsing to nothing in landscape. Desktop restores
+            a real ratio, near-square per the spec once the hero goes
+            two-column, since height is no longer the scarce axis. */}
+        <figure className="relative mt-6 mb-0 min-h-[180px] flex-1 overflow-hidden rounded-[18px] bg-sand md:mt-0 md:aspect-[5/4] md:flex-none">
+          {/* Absolutely positioned rather than a plain child: HeroCarousel
+              renders `fill` images, which need a positioned ancestor with
+              a resolved height. As a flex item the figure's height comes
+              from `flex-1`, and a percentage height inside that doesn't
+              reliably resolve — the carousel collapsed to the photo's own
+              height and left the rest of the frame empty. inset-0 pins it
+              to whatever height flex actually computed. */}
+          <div className="absolute inset-0">
+            <HeroCarousel surfaceClass="bg-sand" />
+          </div>
         </figure>
       </div>
     </section>

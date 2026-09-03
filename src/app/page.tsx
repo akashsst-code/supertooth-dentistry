@@ -1,3 +1,4 @@
+import { EditorialScreen } from "@/components/EditorialScreen";
 import { EditorialNav } from "@/components/EditorialNav";
 import { EditorialHero } from "@/components/EditorialHero";
 import { TrustBlock } from "@/components/TrustBlock";
@@ -42,16 +43,18 @@ import { Footer } from "@/components/Footer";
  * original Nav; reverting is a two-line change to this file. Everything
  * below the hero is untouched by the variation.
  *
- * ViewportHero is deliberately not used here — it pins the hero to one
- * screen height, which would squeeze the photograph. The editorial hero
- * lets the photo run past the fold on purpose, and the header is static
- * rather than fixed, so nothing needs to reserve nav height.
+ * EditorialScreen replaces ViewportHero for this variation: the header
+ * is static rather than fixed, so it sits inside the one-screen box with
+ * the hero instead of needing its height reserved separately. The whole
+ * composition — photo included — lands on screen 1.
  */
 export default function Home() {
   return (
     <>
-      <EditorialNav />
-      <EditorialHero />
+      <EditorialScreen>
+        <EditorialNav />
+        <EditorialHero />
+      </EditorialScreen>
       <main id="main-content" tabIndex={-1}>
         <TrustBlock />
         <TestimonialsSection />
