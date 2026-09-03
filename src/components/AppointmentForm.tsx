@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
-import { contact } from "@/lib/content";
+import { anxietyNote, contact } from "@/lib/content";
 import { CalendarIcon } from "./icons";
 import { useAppointmentFormState } from "./AppointmentFormStateProvider";
 import type { AppointmentFormFieldName as FieldName, AppointmentFormValues as Values } from "./AppointmentFormStateProvider";
@@ -257,6 +257,7 @@ export function AppointmentForm() {
         />
 
         <div>
+          <p className="text-sm text-espresso/70 mb-2">{anxietyNote}</p>
           <label htmlFor="details" className="block text-xs font-semibold uppercase tracking-wide text-espresso/70 mb-1.5">
             Additional details <span className="font-normal normal-case text-espresso/70">(optional)</span>
           </label>
@@ -266,7 +267,7 @@ export function AppointmentForm() {
             rows={3}
             value={values.details}
             onChange={(e) => updateValue("details", e.target.value)}
-            placeholder="Preferred days/times, reason for visit, anything we should know..."
+            placeholder="Preferred days/times, reason for visit, or anything that would help you feel more comfortable..."
             className="w-full rounded-lg border border-sand bg-warm-ivory px-3.5 py-2.5 text-espresso placeholder:text-espresso/35 focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta resize-none"
           />
         </div>
