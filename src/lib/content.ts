@@ -394,7 +394,15 @@ export const credentialBadges: CredentialBadge[] = [
   { icon: "graduationCap", title: "DDS, University of Colorado", detail: "Doctor of Dental Surgery", group: "Experience & Education" },
   { icon: "aligner", title: "Certified Invisalign Provider", detail: "Clear aligner treatment", group: "Certifications & Training" },
   { icon: "aligner", title: "AACA Gold Status Provider", detail: "American Academy of Clear Aligners", group: "Certifications & Training" },
-  { icon: "syringe", title: "Certified Botox Provider", detail: "American Academy of Facial Esthetics (AAFE)", group: "Certifications & Training" },
+  // Title wording is Akash's own (2026-09-02): "AACE trained and
+  // certified botox provider". Note the acronym differs from the
+  // issuing body previously recorded here — this entry's `detail` read
+  // "American Academy of Facial Esthetics (AAFE)". Rather than assert
+  // an expansion that contradicts the title, `detail` states the
+  // credential without naming an organisation until Akash confirms
+  // which acronym is right; the AAFE attribution is preserved in this
+  // comment so it can go straight back in if AAFE was correct.
+  { icon: "syringe", title: "AACE Trained and Certified Botox Provider", detail: "Trained and certified in therapeutic and esthetic Botox", group: "Certifications & Training" },
   { icon: "implant", title: "Trained in Implant Dentistry", detail: "Implant placement & restoration", group: "Certifications & Training" },
   { icon: "badge", title: "Member, AGD", detail: "Academy of General Dentistry", group: "Professional Memberships" },
   { icon: "shieldCheck", title: "Member, ADA", detail: "American Dental Association", group: "Professional Memberships" },
