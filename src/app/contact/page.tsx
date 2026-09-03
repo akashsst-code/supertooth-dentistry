@@ -42,7 +42,7 @@ export default function ContactPage() {
               /
             </span>
             <nav aria-label="Breadcrumb">
-              <ol className="flex items-center gap-1.5 text-sm text-espresso/50">
+              <ol className="flex items-center gap-1.5 text-sm text-espresso/70">
                 <li>
                   <Link href="/" className="hover:text-terracotta transition-colors">
                     Home
@@ -71,7 +71,7 @@ export default function ContactPage() {
 
             <AppointmentForm />
 
-            <p className="mt-6 text-center text-xs text-espresso/45">{contact.address}</p>
+            <p className="mt-6 text-center text-xs text-espresso/70">{contact.address}</p>
           </div>
         </div>
       </main>

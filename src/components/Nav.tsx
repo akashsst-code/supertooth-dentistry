@@ -105,10 +105,10 @@ export function Nav() {
             <span className="hidden lg:block h-5 w-px bg-espresso/15" aria-hidden="true" />
             <Link
               href="/backlog"
-              className="group hidden lg:inline-flex items-baseline gap-1.5 text-sm text-espresso/45 hover:text-terracotta transition-colors -ml-4"
+              className="group hidden lg:inline-flex items-baseline gap-1.5 text-sm text-espresso/70 hover:text-terracotta transition-colors -ml-4"
             >
               Backlog
-              <span className="text-xs text-espresso/30 group-hover:text-terracotta/60 transition-colors">
+              <span className="text-xs text-espresso/70 group-hover:text-terracotta/60 transition-colors">
                 internal
               </span>
             </Link>
@@ -184,7 +184,7 @@ export function Nav() {
                   className="flex items-baseline justify-between gap-4 py-1.5 border-b border-espresso/10 last:border-0"
                 >
                   <span className="font-medium text-espresso">{h.days}</span>
-                  <span className={h.time === "Closed" ? "text-espresso/45" : "text-espresso/80"}>{h.time}</span>
+                  <span className={h.time === "Closed" ? "text-espresso/70" : "text-espresso/80"}>{h.time}</span>
                 </li>
               ))}
             </ul>
@@ -235,10 +235,10 @@ export function Nav() {
             <Link
               href="/backlog"
               onClick={() => setOpen(false)}
-              className="tap-target inline-flex items-center justify-center gap-1.5 text-xs font-medium text-espresso/45 hover:text-terracotta transition-colors"
+              className="tap-target inline-flex items-center justify-center gap-1.5 text-xs font-medium text-espresso/70 hover:text-terracotta transition-colors"
             >
               Backlog
-              <span className="text-espresso/30">· internal</span>
+              <span className="text-espresso/70">· internal</span>
             </Link>
           </div>
         </div>

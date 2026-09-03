@@ -97,7 +97,7 @@ export function BookingBlock() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
         <div className="grid lg:grid-cols-5 gap-8 lg:gap-10 items-center">
           <div className="lg:col-span-3 text-left">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-warm-ivory/70">
               Visit us{openHours && ` · Open from ${openHours.time.split(" – ")[0]}`}
             </p>
             <h2 className="font-display text-2xl sm:text-3xl font-semibold mb-2">
@@ -121,7 +121,7 @@ export function BookingBlock() {
             </p>
 
             <div className="mb-6">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-warm-ivory/70">
                 Quick actions
               </p>
               <div className="flex flex-wrap items-center gap-1.5">
@@ -151,7 +151,7 @@ export function BookingBlock() {
 
             <div className="flex flex-col gap-3 max-w-sm">
               <div>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-warm-ivory/70">
                   Office hours
                 </p>
                 <div className="flex flex-col gap-1">
@@ -166,7 +166,7 @@ export function BookingBlock() {
                 </div>
               </div>
               <div>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-warm-ivory/50">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-warm-ivory/70">
                   Location
                 </p>
                 <div className="grid grid-cols-[1rem_1fr] gap-2 text-sm text-warm-ivory/80">

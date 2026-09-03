@@ -38,7 +38,7 @@ export default function AccessibilityPage() {
               /
             </span>
             <nav aria-label="Breadcrumb">
-              <ol className="flex items-center gap-1.5 text-sm text-espresso/50">
+              <ol className="flex items-center gap-1.5 text-sm text-espresso/70">
                 <li>
                   <Link href="/" className="hover:text-terracotta transition-colors">
                     Home
@@ -57,7 +57,7 @@ export default function AccessibilityPage() {
           <h1 className="font-display text-2xl sm:text-4xl font-semibold text-espresso leading-tight mb-2">
             Accessibility Statement
           </h1>
-          <p className="text-sm text-espresso/50 mb-8">Last updated {accessibilityStatement.lastUpdated}</p>
+          <p className="text-sm text-espresso/70 mb-8">Last updated {accessibilityStatement.lastUpdated}</p>
 
           <p className="text-espresso/80 leading-relaxed mb-8">{accessibilityStatement.commitment}</p>
 

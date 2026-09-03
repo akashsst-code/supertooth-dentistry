@@ -50,7 +50,7 @@ export default function AboutPage() {
               /
             </span>
             <nav aria-label="Breadcrumb">
-              <ol className="flex items-center gap-1.5 text-sm text-espresso/50">
+              <ol className="flex items-center gap-1.5 text-sm text-espresso/70">
                 <li>
                   <Link href="/" className="hover:text-terracotta transition-colors">
                     Home
@@ -100,7 +100,7 @@ export default function AboutPage() {
             <CredentialBadges />
           </div>
 
-          <p className="mt-10 text-sm text-espresso/60">
+          <p className="mt-10 text-sm text-espresso/70">
             Thinking of becoming a patient?{" "}
             <Link
               href="/insurance-new-patients"

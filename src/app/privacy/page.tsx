@@ -36,7 +36,7 @@ export default function PrivacyPage() {
               /
             </span>
             <nav aria-label="Breadcrumb">
-              <ol className="flex items-center gap-1.5 text-sm text-espresso/50">
+              <ol className="flex items-center gap-1.5 text-sm text-espresso/70">
                 <li>
                   <Link href="/" className="hover:text-terracotta transition-colors">
                     Home
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
           <h1 className="font-display text-2xl sm:text-4xl font-semibold text-espresso leading-tight mb-2">
             Privacy Policy
           </h1>
-          <p className="text-sm text-espresso/50 mb-8">Last updated {privacyPolicy.lastUpdated}</p>
+          <p className="text-sm text-espresso/70 mb-8">Last updated {privacyPolicy.lastUpdated}</p>
 
           <div className="flex flex-col gap-8">
             {privacyPolicy.sections.map((s) => (

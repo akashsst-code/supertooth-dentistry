@@ -10,7 +10,7 @@ function LegalLinks() {
     <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1">
       <Link
         href="/privacy"
-        className="tap-target inline-flex items-center px-2 text-xs text-espresso/60 hover:text-terracotta-dark transition-colors"
+        className="tap-target inline-flex items-center px-2 text-xs text-espresso/70 hover:text-terracotta-dark transition-colors"
       >
         Privacy
       </Link>
@@ -19,7 +19,7 @@ function LegalLinks() {
       </span>
       <Link
         href="/accessibility"
-        className="tap-target inline-flex items-center px-2 text-xs text-espresso/60 hover:text-terracotta-dark transition-colors"
+        className="tap-target inline-flex items-center px-2 text-xs text-espresso/70 hover:text-terracotta-dark transition-colors"
       >
         Accessibility
       </Link>
@@ -51,7 +51,7 @@ export function Footer() {
     <footer className="border-t border-sand bg-warm-ivory">
       <div className="px-6 py-4 flex flex-col items-center gap-2 text-center">
         <LegalLinks />
-        <p className="text-xs text-espresso/50">
+        <p className="text-xs text-espresso/70">
           © {new Date().getFullYear()} {practice.name}. All rights reserved.
         </p>
       </div>
