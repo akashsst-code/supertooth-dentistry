@@ -10,10 +10,9 @@ import { contact, hours, practice, serviceAreas } from "@/lib/content";
  * key/billing needed) — same embed as HeroAddressMap, see the comment
  * there for why (native place card on marker click, no "open in Maps
  * app" chip, lighter than the informal `?q=...&output=embed` trick this
- * replaced). The neighborhood list is: only `practice.neighborhood` is
- * confirmed, the rest are plausible-by-proximity placeholders pending
- * Akash's actual service-area confirmation (see content.ts serviceAreas
- * comment).
+ * replaced). The full neighborhood list — `practice.neighborhood` plus
+ * Magnolia/Belltown/South Lake Union/Fremont/Ballard — is confirmed
+ * accurate by Akash (2026-09-02, see content.ts serviceAreas comment).
  *
  * Map stays first (left, `lg:col-span-3`) per Akash's call to keep the
  * map as the section's lead visual rather than the actions-first layout
@@ -50,12 +49,13 @@ import { contact, hours, practice, serviceAreas } from "@/lib/content";
  * `practice.neighborhood`) rendered through <Placeholder> — bracket
  * notation + dashed underline — which read as broken/unstyled inside a
  * pill (Akash's exact "looks unappealing, like broken links" call on
- * InsuranceExpandCard.tsx's carrier grid, now repeated here). Same fix
- * applied: every chip renders with identical, uniform styling, and one
- * plain-text disclaimer line under the list carries the
- * no-unverifiable-claims disclosure instead of per-chip brackets — see
- * InsuranceExpandCard.tsx's "Don't see your plan? Call us and we'll
- * verify." for the precedent.
+ * InsuranceExpandCard.tsx's carrier grid, now repeated here). Every chip
+ * already rendered with identical, uniform styling before confirmation
+ * landed, and now that the full list is confirmed (2026-09-02) that
+ * styling is simply correct rather than a workaround. The plain-text
+ * line under the list ("don't see your area? call us") stays regardless
+ * — it's a genuine invitation for areas outside the confirmed six, not
+ * a leftover unconfirmed-claims disclaimer.
  */
 export function LocationMapSection() {
   const openHours = hours.find((h) => h.time !== "Closed");

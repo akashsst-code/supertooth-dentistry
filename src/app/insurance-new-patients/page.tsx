@@ -4,7 +4,6 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { InsuranceBlock } from "@/components/InsuranceBlock";
 import { BenefitsGlossary } from "@/components/BenefitsGlossary";
-import { Placeholder } from "@/components/Placeholder";
 import { CalendarIcon, PhoneIcon } from "@/components/icons";
 import { contact, faqs } from "@/lib/content";
 
@@ -25,18 +24,19 @@ const whatToBring = faqs.find((f) => f.question === "What should I bring to my f
  *  1. A plain, GENERIC explainer of accepted-vs-in-network — this is
  *     industry-standard information, not a claim about this practice's
  *     specific network status, so it needs no verification.
- *  2. The real carrier module, reused as-is (`InsuranceBlock`) — every
- *     carrier name already renders through <Placeholder> there per its
- *     own file comment; nothing about that changes here.
+ *  2. The real carrier module, reused as-is (`InsuranceBlock`) — carrier
+ *     list confirmed accurate by Akash 2026-09-02 (item 2), no longer
+ *     Placeholder-wrapped.
  *  3. A no-insurance path — worded generically ("call to talk about your
  *     options") rather than inventing membership/financing terms, since
- *     those are still unconfirmed (backlog item 40).
+ *     the membership-plan offering itself is still unconfirmed (backlog
+ *     item 40) even though general financing (CareCredit) is now real.
  *  4. What to bring — reused verbatim from the site's own real FAQ
  *     answer (content.ts `faqs`), not new copy.
  *
- * No price appears anywhere on this page. $149/$500 offer figures stay
- * on NewPatientOffersBlock, which already renders them through
- * <Placeholder> — this page doesn't repeat them.
+ * No dollar figure appears anywhere on this page. $149/$500 offer prices
+ * stay on NewPatientOffersBlock (confirmed real, item 6) — this page
+ * doesn't repeat them, only names that financing exists.
  */
 export default function InsuranceNewPatientsPage() {
   return (
@@ -125,8 +125,9 @@ export default function InsuranceNewPatientsPage() {
 
         <div className="mx-auto max-w-3xl px-4 sm:px-6 pb-16 sm:pb-20">
           <p className="text-sm text-espresso/60 !mb-3">
-            <Placeholder>New-patient offer and financing details</Placeholder> — ask when you call
-            or request an appointment.
+            We also offer financing through CareCredit, including promotional plans with no
+            interest if paid in full within the promotional period — ask when you call or request
+            an appointment.
           </p>
           <p className="text-sm text-espresso/60 !mb-6">
             Wondering what&apos;s actually covered?{" "}

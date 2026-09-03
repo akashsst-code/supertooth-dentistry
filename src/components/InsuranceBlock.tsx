@@ -1,5 +1,4 @@
 import { CheckIcon } from "./icons";
-import { Placeholder } from "./Placeholder";
 import { insuranceCarriers } from "@/lib/content";
 
 /**
@@ -15,6 +14,9 @@ import { insuranceCarriers } from "@/lib/content";
  * available/licensed for use here, so this is a deliberate design
  * choice (styled display-font lettering + accent, not a scraped image)
  * standing in for real logos until Akash can supply licensed assets.
+ *
+ * Carrier list and the "plus most major PPO plans" line confirmed
+ * accurate by Akash 2026-09-02 (item 2) — no longer Placeholder-wrapped.
  */
 export function InsuranceBlock() {
   return (
@@ -40,15 +42,14 @@ export function InsuranceBlock() {
               <CheckIcon className="shrink-0" /> In-network
             </span>
             <span className="relative font-display text-lg font-semibold italic text-espresso leading-tight">
-              <Placeholder>{c}</Placeholder>
+              {c}
             </span>
           </div>
         ))}
       </div>
 
       <p className="mt-6 text-sm text-espresso/70">
-        <Placeholder>Plus most major PPO plans</Placeholder> — don&apos;t see yours? Call us and
-        we&apos;ll verify.
+        Plus most major PPO plans — don&apos;t see yours? Call us and we&apos;ll verify.
       </p>
     </section>
   );

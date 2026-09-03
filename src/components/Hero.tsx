@@ -75,13 +75,13 @@ export function Hero() {
          * it — Akash flagged that as the same claim shown twice.
          *
          * Deliberately NOT wrapped in <Placeholder> here (unlike the fuller
-         * versions in TrustBlock/InsuranceBlock below) — Akash asked
+         * versions in TrustBlock/InsuranceBlock originally) — Akash asked
          * for the dashed-underline treatment removed from this strip
          * specifically since it read as broken rather than "unconfirmed" at
-         * a glance. The compliance status hasn't changed: reviews.rating/
-         * count and these carrier names still need real confirmation before
-         * launch — that's still marked explicitly in content.ts and still
-         * visible via <Placeholder> in the detailed sections below.
+         * a glance. Moot now for the carrier names either way: both
+         * reviews.rating/count and insuranceCarriers are confirmed real
+         * (items 13, 2) and InsuranceBlock below no longer wraps them in
+         * <Placeholder> either.
          *
          * In-network line uses insuranceCarriersHeroTeaser (short names:
          * "Delta, Premera, Aetna"), not the full-name insuranceCarriers

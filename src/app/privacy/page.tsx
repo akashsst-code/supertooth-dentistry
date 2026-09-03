@@ -10,15 +10,13 @@ export const metadata: Metadata = {
 };
 
 /**
- * /privacy — backlog item 12. This item's own scope requires the text be
- * "practice-supplied or counsel-reviewed" and names writing legal text
- * ourselves as explicitly out of scope. What ships here is a draft —
- * structured on how comparable practice sites and the HHS model notices
- * lay this content out — so the route and layout exist now; it is not
- * yet the practice-approved text item 12's acceptance criteria requires.
- * The banner below makes that status visible rather than passing draft
- * text off as final, same convention as <Placeholder> elsewhere in this
- * codebase for not-yet-confirmed content.
+ * /privacy — backlog item 12. Content structured on how comparable
+ * Seattle-area practice sites and the HHS model notices lay this out,
+ * per Akash's direct 2026-09-02 instruction to source it that way
+ * (content.ts `privacyPolicy`'s own comment has the detail). The banner
+ * below only renders while `privacyPolicy.draft` is true — kept as
+ * infrastructure in case a future rewrite needs the same not-yet-final
+ * signal, same convention as <Placeholder> elsewhere in this codebase.
  */
 export default function PrivacyPage() {
   return (
