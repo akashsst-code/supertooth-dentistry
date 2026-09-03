@@ -4072,7 +4072,7 @@ export const backlog: BacklogItem[] = [
       "Scores 35.5 so it lands in P0 on merit, but it is also pinned as a dependency: every other item's test scenario references these checks, and adopting them late means re-testing everything already shipped.",
     scores: { conversion: 2, reach: 5, risk: 4, effort: 3, readiness: 5 },
     effort: "M",
-    status: "not-started",
+    status: "partial",
     wave: 1,
     job: "(Team-facing — how we know any item is actually done)",
     story:
@@ -4094,7 +4094,10 @@ export const backlog: BacklogItem[] = [
       "No new dependency added to package.json",
     ],
     evidence:
-      "Blueprint §25(c). The five genuinely new checks are the value: we had no JS-disabled, landscape, 200%-resize, 320/430-width or mobile-input-correctness coverage at all.",
+      "Blueprint §25(c). The five genuinely new checks are the value: we had no JS-disabled, landscape, 200%-resize, 320/430-width or mobile-input-correctness coverage at all.\n\n" +
+      "2026-09-02: `src/lib/test-harness.ts` (all 22 GTH checks + BASELINE_IDS/MOBILE_SUITE_IDS) already existed and every item already references its applicable harness ids — that half of this item's acceptance was done by an earlier session without the status field being updated. This pass does the other half: actually running it. " +
+      "GTH-1 (axe-core, wcag2a/2aa/21a/21aa) run against all 9 shipped routes at 375×812 on the production deployment — found and fixed a real aria-hidden-focus violation (OfficeCarousel.tsx's duplicate carousel track had `aria-hidden` buttons still in tab order; added `tabIndex={-1}`), and found a sitewide color-contrast violation present on every one of the 8 patient-facing routes, logged as its own item (61) rather than fixed here — several shared components (Footer, AppointmentForm, Nav) needed changes, and multiple other sessions had those exact files under active concurrent edit at the time of this pass, so fixing in place risked either a broken merge or clobbering someone else's in-flight work. GTH-13 (no horizontal scroll at 320px) run against all 9 routes — clean, zero overflow anywhere. GTH-9 (console clean) spot-checked on 2 of 9 routes (home, /backlog) — clean. GTH-2/GTH-19 (Lighthouse mobile, simulated throttling) run against / and /contact: /contact scores cleanly (performance 99, LCP 2.1s, CLS 0, TBT 10ms — all within budget); / scores performance 88 / LCP 3.5s / Speed Index 4.1s, below GTH-2's stated thresholds despite item 38 (performance budget) being marked done — flagging as a discrepancy worth a follow-up look (likely the hero carousel's LCP image) rather than re-opening item 38 on a single run's evidence. " +
+      "Left partial, not done: the remaining checks (GTH-3 HTML validity, GTH-4 keyboard-only task completion, GTH-6/14 tap-target measurement, GTH-7 JS-disabled degradation, GTH-15/16/21 thumb-zone/safe-area/landscape, GTH-20 200%-resize, GTH-22 reduced-motion) were not run against all 9 routes in this pass — GTH-20 was already verified for body/input text during item 37's work, and GTH-22 reduced-motion is already implemented per both carousels' own code, but neither was re-verified route-by-route here. A second pass covering those, plus re-running GTH-1 to confirm item 61's contrast fix once it lands, is what would close this out.",
     dependsOn: null,
     outOfScope:
       "Adding Playwright, a CI runner, or a test framework. That is a separate decision with its own cost — 'adopt the harness' is not 'adopt a toolchain'.",
@@ -7113,6 +7116,82 @@ export const backlog: BacklogItem[] = [
       ],
       mobileFirst: ["All 6 tiles show real photography at 375px, same visual tone as the rest of the site"],
       pass: ["Zero Unsplash references", "Every image alt text matches its actual (real) photo"],
+    },
+  },
+  {
+    id: 61,
+    title: "Sitewide low-contrast text fails WCAG AA (GTH-1/GTH-5 finding)",
+    priority: "P0",
+    source: "original",
+    launchBlocking: true,
+    blockingGround: "legal",
+    blueprintRef: "§25(c) GTH-1 accessibility scan · GTH-5 contrast",
+    harness: ["GTH-1", "GTH-5"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 2, reach: 5, risk: 5, effort: 4, readiness: 5 },
+    effort: "M",
+    status: "not-started",
+    wave: 2,
+    job: "Read every page's fine print without straining",
+    story:
+      "As a low-vision or older patient, form labels, nav breadcrumbs, footer text and the phone-number link are all readable at normal contrast, not just legible to someone with full-strength vision.",
+    problem:
+      "Item 29's first Global Test Harness pass (2026-09-02) ran GTH-1 (axe-core) against all 9 shipped routes and found the same root cause on every single patient-facing page: several of this repo's locked `--color-espresso` opacity variants — `text-espresso/40`, `/45`, `/50`, `/60` — drop below WCAG AA's 4.5:1 body-text threshold once actually rendered at 14px on the Warm Ivory background (measured 2.2:1 to 3.61:1, all failing). Separately, full-opacity `text-terracotta` links (e.g. the `tel:` link in `AppointmentForm.tsx` and `Footer.tsx`) measure 3.86:1 against Warm Ivory — also below 4.5:1 for normal-size text. This is exactly the compliance non-negotiable in `docs/CLAUDE.md` ('WCAG AA contrast') and `supertooth-build-principles.md` §8, currently unmet — not a new design call, a real bug in existing shipped pages.",
+    where: "Footer.tsx, AppointmentForm.tsx (field labels + helper text), Nav.tsx (breadcrumb links), and any other component using text-espresso/40–60 or text-terracotta on Warm Ivory for normal-size text — grep for the exact offending selectors is in `evidence` below.",
+    scope: [
+      "Raise every failing text-espresso/NN opacity variant to a level that clears 4.5:1 at its actual rendered size, OR bump the affected text to a size/weight that qualifies for the 3:1 large-text threshold — pick per callsite, not a single global opacity bump",
+      "Fix the text-terracotta-on-warm-ivory link contrast (affects the tel: links flagged above) — likely needs the already-defined text-terracotta-dark token instead, or a bolder/larger treatment",
+      "Re-run GTH-1 (axe-core) against all 9 routes after the fix; zero color-contrast violations on every patient-facing route (/backlog is the noindex internal tool and is explicitly out of scope, same call as item 37)",
+    ],
+    acceptance: [
+      "axe-core color-contrast violations = 0 on /, /about, /services, /insurance-new-patients, /contact, /emergency, /privacy, /accessibility",
+      "No locked --color-* base token value changed — only which opacity variant or token a given callsite uses (per CLAUDE.md's guardrail, opacity/tint variant changes don't require asking first, only base token value changes do)",
+      "aria-hidden-focus violation on OfficeCarousel.tsx's duplicate track (found in the same GTH-1 pass, already fixed in this PR — see evidence) — confirmed still clean after this item's changes",
+    ],
+    evidence:
+      "2026-09-02, item 29's first harness pass: `npx @axe-core/cli <url> --chrome-options=\"window-size=375,812\" --tags wcag2a,wcag2aa,wcag21a,wcag21aa --stdout` run against all 9 routes on the production deployment. Per-route color-contrast violation counts: home 13 nodes (+ a separate 5-node aria-hidden-focus violation on OfficeCarousel.tsx, fixed directly in this PR — a duplicate-track `<button>` was `aria-hidden` but not removed from tab order; added `tabIndex={-1}` to the hidden copies), about 6, services 5, insurance-new-patients 13, contact 11, emergency 6, privacy 6, accessibility 6, backlog 4560 (noindex internal tool, excluded per item 37's precedent). " +
+      "Concrete failing pairs measured on /contact: `label[for=firstName]` etc. (text-espresso/60, 3.61:1), the 'Still stuck?' line (text-espresso/50, 2.78:1), the address line (text-espresso/45, 2.47:1), '(optional)' (text-espresso/40, 2.2:1), and the `tel:` link (text-terracotta, 3.86:1) — all against the locked #faf8f4 Warm Ivory background. Same handful of opacity levels recur across Footer.tsx and Nav.tsx on every other route, which is why the violation count is consistent site-wide rather than page-specific. Full axe JSON output for all 9 routes captured during this pass; not committed to the repo (ephemeral scratch output), but every violation is reproducible by re-running the command above against any route.",
+    dependsOn: null,
+    outOfScope:
+      "Changing the locked --color-espresso, --color-terracotta or --color-warm-ivory base hex values — this is about which opacity/variant a callsite uses, never the token definitions themselves (CLAUDE.md guardrail). Also out of scope: /backlog's ~4560 violations (noindex internal tool, item 37's same carve-out applies).",
+    references: [
+      {
+        name: "WCAG 2.2 — 1.4.3 Contrast (Minimum)",
+        url: "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+        whatGood: "The normative 4.5:1 / 3:1 (large text) thresholds this item's acceptance criteria are drawn from directly.",
+        takeaway: "3:1 only applies at ≥24px regular or ≥19px bold — most of the failing text here is 14px, so it needs the full 4.5:1, not the large-text exception.",
+        mobile: "Fine print is disproportionately common on mobile layouts (labels, captions, footer text packed into limited width), so this class of bug concentrates exactly where phone users read most.",
+      },
+      {
+        name: "WebAIM — Contrast Checker",
+        url: "https://webaim.org/resources/contrastchecker/",
+        whatGood: "Plugs in a foreground/background hex pair and returns the exact ratio plus pass/fail against AA and AAA — the fastest way to test a candidate opacity value before committing to it.",
+        takeaway: "For each failing callsite, compute the Warm Ivory (#faf8f4) background against a few candidate espresso opacities to find the lowest one that still clears 4.5:1, rather than jumping straight to full opacity.",
+        mobile: "Same tool, same ratio — contrast thresholds don't vary by viewport, only how much of the page is fine print does.",
+      },
+    ],
+    test: {
+      preconditions: ["Fix implemented across Footer.tsx, AppointmentForm.tsx, Nav.tsx and any other affected component"],
+      steps: [
+        {
+          action: "Run `npx @axe-core/cli <route> --chrome-options=\"window-size=375,812\" --tags wcag2a,wcag2aa,wcag21a,wcag21aa --stdout` against all 8 patient-facing routes.",
+          tool: "shell",
+          viewport: "375",
+          expect: "Zero color-contrast violations on every route.",
+        },
+        {
+          action: "Diff globals.css and every touched component to confirm no --color-* base token value changed, only which opacity variant a given callsite references.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Locked token definitions untouched; only per-callsite opacity/variant usage changed.",
+        },
+      ],
+      mobileFirst: ["Re-verify at 375×812 — the harness run that found this was already mobile-width"],
+      pass: ["0 color-contrast violations on all 8 patient-facing routes", "No locked base token changed"],
+      gotchas: [
+        "Don't fix this by bumping one opacity value everywhere — text-espresso/70 (used for real body copy, not fine print) already passes; a blanket find-and-replace risks either under-fixing the failing ones or unnecessarily darkening ones that are already fine.",
+      ],
     },
   },
 ];
