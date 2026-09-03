@@ -4,6 +4,25 @@ import { useEffect, useRef, useState } from "react";
 import { GoogleGIcon, PauseIcon, PlayIcon, StarIcon } from "./icons";
 import { reviews, testimonials } from "@/lib/content";
 
+/**
+ * Longest quote first, then descending (Akash). Two reasons, one of
+ * them structural: the cards are top-aligned in a `w-max` flex track, so
+ * the track's height is set by the tallest card no matter which one is
+ * on screen. With the shortest card leading, the 316px card sat in a
+ * 474px track and left ~158px of dead space beneath it — on top of the
+ * section's own 48px bottom padding — which is the "more left out space
+ * above our services section" gap. Leading with the tallest removes it
+ * at rest, and the reel then reads as deliberately descending rather
+ * than random.
+ *
+ * Sorted here rather than reordered in content.ts on purpose: that
+ * array's comment documents it as a point-in-time pull off the Google
+ * Business Profile, in the order pulled, and that provenance is worth
+ * more than saving a sort.
+ */
+const orderedTestimonials = [...testimonials].sort((a, b) => b.quote.length - a.quote.length);
+import { Accent, Eyebrow, SectionHeading, shellWide } from "./editorial";
+
 const PIXELS_PER_SECOND = 22; // slower than the office reel — text needs more read time than a photo
 
 // Avatar-roundel fill for the Google-widget-style card preview — locked
@@ -55,7 +74,7 @@ export function TestimonialsSection() {
   useEffect(() => {
     function measure() {
       const first = cardRefs.current[0];
-      const firstOfSecondCopy = cardRefs.current[testimonials.length];
+      const firstOfSecondCopy = cardRefs.current[orderedTestimonials.length];
       if (first && firstOfSecondCopy) {
         loopWidthRef.current = firstOfSecondCopy.offsetLeft - first.offsetLeft;
       }
@@ -91,8 +110,10 @@ export function TestimonialsSection() {
 
   return (
     <section className="bg-warm-ivory text-espresso">
-      <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-[1320px] md:px-10 md:pb-24 md:pt-16 lg:px-16">
-        <div className="relative flex flex-wrap items-end justify-between gap-4 mb-12 pr-14">
+      <div className={shellWide}>
+        {/* mb-10, not mb-12: every other section steps 40px from its
+            heading block to its content, and this was the one at 48. */}
+        <div className="relative flex flex-wrap items-end justify-between gap-4 mb-10 pr-14">
           {/* Pause/play — WCAG 2.2.2 requires a way to stop auto-moving
               content, but it doesn't need to sit inside the rating badge's
               row competing for space with it. Anchored to this row's own
@@ -107,7 +128,17 @@ export function TestimonialsSection() {
             {userPaused ? <PlayIcon /> : <PauseIcon />}
           </button>
 
-          <h2 className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em]">What patients are saying</h2>
+          {/* Same section opening as every other block on this page. The
+              heading has to keep its own wrapper here — this row is a
+              flex container that sits the rating badge beside it, so the
+              eyebrow and heading need to be one flex item rather than
+              two, or the badge lands between them. */}
+          <div>
+            <Eyebrow>In their words</Eyebrow>
+            <SectionHeading>
+              What patients are <Accent>saying</Accent>.
+            </SectionHeading>
+          </div>
           {/* Rating badge — was a bare 16px icon sitting directly on the
               dark section with no container of its own, easy to miss and
               too small for the Google "G"'s four brand colors to read
@@ -136,13 +167,13 @@ export function TestimonialsSection() {
                 through the loop. */}
             <div className="absolute inset-x-0 top-4 h-px bg-terracotta/40" aria-hidden="true" />
 
-            {[...testimonials, ...testimonials].map((t, i) => (
+            {[...orderedTestimonials, ...orderedTestimonials].map((t, i) => (
               <div
                 key={i}
                 ref={(el) => {
                   cardRefs.current[i] = el;
                 }}
-                aria-hidden={i >= testimonials.length}
+                aria-hidden={i >= orderedTestimonials.length}
                 className="relative shrink-0 w-72 sm:w-80"
               >
                 {/* Stem + node connecting this card up to the rail */}
@@ -187,7 +218,7 @@ export function TestimonialsSection() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <span className="block font-editorial text-sm font-medium text-espresso truncate">{t.name}</span>
-                      <span className="block font-editorial text-xs text-espresso/70 truncate">{t.meta}</span>
+                      <span className="block font-editorial text-xs text-espresso/80 truncate">{t.meta}</span>
                     </div>
                     <GoogleGIcon className="h-4 w-4 shrink-0" />
                   </div>

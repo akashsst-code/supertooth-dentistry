@@ -8,6 +8,7 @@ const PUBLIC_ROUTES = [
   "",
   "/about",
   "/services",
+  "/offers",
   "/insurance-new-patients",
   "/contact",
   "/emergency",
