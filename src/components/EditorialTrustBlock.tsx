@@ -2,6 +2,7 @@ import Image from "next/image";
 import { CredentialBadges } from "./CredentialBadges";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { archana, differentiators, officeBlurb } from "@/lib/content";
+import { Accent, Body, Eyebrow, SectionHeading } from "./editorial";
 
 /**
  * EditorialTrustBlock — "page 2", carrying the screen-1 editorial system
@@ -102,7 +103,11 @@ export function EditorialTrustBlock() {
           (photos on the page canvas, sand borders). Only its heading
           needed the editorial treatment, so it is rendered here with
           the component's built-in heading suppressed. */}
-        <div className="mt-20 md:mt-28">
+        {/* `relative` is load-bearing: OfficeCarousel's editorial pause
+            control positions against this wrapper so it lands at the
+            top-right of the heading block rather than on top of the
+            half-visible next photo. */}
+        <div className="relative mt-14 md:mt-20">
           <Eyebrow>Our office</Eyebrow>
           <SectionHeading>
             A calm room,
@@ -121,7 +126,7 @@ export function EditorialTrustBlock() {
           in favour of the hero's own pairing: one photograph at the
           spec's 4:5 with an 18px radius, copy beside it, separated by
           whitespace rather than a container. */}
-        <div className="mt-20 md:mt-28 md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-center md:gap-[clamp(3rem,6vw,6rem)]">
+        <div className="mt-14 md:mt-20 md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-center md:gap-[clamp(3rem,6vw,6rem)]">
           {/* Placeholder tint is espresso/10, not bg-sand — the frame now
               sits on a sand ground and would be invisible while loading. */}
           <figure className="relative mb-0 aspect-[4/5] overflow-hidden rounded-[18px] bg-espresso/10">
@@ -159,32 +164,5 @@ export function EditorialTrustBlock() {
         </div>
       </div>
     </section>
-  );
-}
-
-/** Section 8's "optional small eyebrow", at the spec's 12px/0.16em. */
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mb-0! font-editorial text-xs font-medium uppercase tracking-[0.16em] text-terracotta-dark">
-      {children}
-    </p>
-  );
-}
-
-/** Section heading — the spec's 38px/1.05/-0.035em, light weight. */
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="mt-4 font-editorial text-[clamp(2rem,8.5vw,2.375rem)] font-light leading-[1.05] tracking-[-0.035em] text-espresso md:text-[clamp(2.375rem,3.4vw,3rem)]">
-      {children}
-    </h2>
-  );
-}
-
-/** The serif accent word, matching the hero's treatment exactly. */
-function Accent({ children }: { children: React.ReactNode }) {
-  return (
-    <em className="font-editorial-serif text-[1.08em] font-normal italic tracking-[-0.035em] text-terracotta">
-      {children}
-    </em>
   );
 }

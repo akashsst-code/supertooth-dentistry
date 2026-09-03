@@ -90,8 +90,8 @@ export function TestimonialsSection() {
   }, [playing]);
 
   return (
-    <section className="bg-espresso text-warm-ivory">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
+    <section className="bg-warm-ivory text-espresso">
+      <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-[1320px] md:px-10 md:pb-24 md:pt-16 lg:px-16">
         <div className="relative flex flex-wrap items-end justify-between gap-4 mb-12 pr-14">
           {/* Pause/play — WCAG 2.2.2 requires a way to stop auto-moving
               content, but it doesn't need to sit inside the rating badge's
@@ -102,25 +102,25 @@ export function TestimonialsSection() {
             onClick={() => setUserPaused((p) => !p)}
             aria-label={userPaused ? "Resume testimonial scroll" : "Pause testimonial scroll"}
             aria-pressed={userPaused}
-            className="tap-target absolute top-0 right-0 inline-flex items-center justify-center rounded-full border border-warm-ivory/20 text-warm-ivory/70 hover:text-warm-ivory hover:border-warm-ivory/40 transition-colors"
+            className="tap-target absolute top-0 right-0 inline-flex items-center justify-center rounded-full border border-espresso/15 text-espresso/70 hover:text-espresso hover:border-terracotta/50 transition-colors"
           >
             {userPaused ? <PlayIcon /> : <PauseIcon />}
           </button>
 
-          <h2 className="font-display text-2xl sm:text-3xl font-semibold">What patients are saying</h2>
+          <h2 className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em]">What patients are saying</h2>
           {/* Rating badge — was a bare 16px icon sitting directly on the
               dark section with no container of its own, easy to miss and
               too small for the Google "G"'s four brand colors to read
               clearly. Sized up and given a proper white roundel + bordered
               pill so both the badge and the logo's color read at a glance. */}
-          <div className="flex items-center gap-2.5 rounded-full bg-warm-ivory/10 border border-warm-ivory/25 pl-2 pr-4 py-2 text-warm-ivory/90 text-sm font-medium">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warm-ivory">
+          <div className="flex items-center gap-2.5 rounded-full bg-sand border border-espresso/10 pl-2 pr-4 py-2 text-espresso/80 text-sm font-medium">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warm-ivory border border-espresso/10">
               <GoogleGIcon className="h-5 w-5" />
             </span>
             <span className="flex gap-0.5 text-terracotta">
               <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon /> <StarIcon />
             </span>
-            <span className="font-display text-base font-semibold text-warm-ivory">{reviews.rating}</span>
+            <span className="font-editorial text-base font-medium text-espresso">{reviews.rating}</span>
             <span>({reviews.count})</span>
           </div>
         </div>
@@ -175,10 +175,10 @@ export function TestimonialsSection() {
                     discussion) but this is a static restyle of already-
                     curated quotes, not a live embed, so the redacted
                     format stays until/unless a real widget is built. */}
-                <div className="rounded-2xl bg-warm-ivory/10 border border-warm-ivory/15 p-5 flex flex-col">
+                <div className="rounded-2xl bg-sand border border-transparent p-6 flex flex-col">
                   <div className="flex items-center gap-3 mb-2">
                     <span
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-display font-semibold text-warm-ivory ${
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-editorial font-medium text-warm-ivory ${
                         AVATAR_COLORS[i % AVATAR_COLORS.length]
                       }`}
                       aria-hidden="true"
@@ -186,8 +186,8 @@ export function TestimonialsSection() {
                       {t.initial}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <span className="block text-sm font-medium text-warm-ivory truncate">{t.name}</span>
-                      <span className="block text-xs text-warm-ivory/70 truncate">{t.meta}</span>
+                      <span className="block font-editorial text-sm font-medium text-espresso truncate">{t.name}</span>
+                      <span className="block font-editorial text-xs text-espresso/70 truncate">{t.meta}</span>
                     </div>
                     <GoogleGIcon className="h-4 w-4 shrink-0" />
                   </div>
@@ -198,7 +198,7 @@ export function TestimonialsSection() {
                       <StarIcon className="h-3.5 w-3.5" />
                     </span>
                   </div>
-                  <p className="text-sm text-warm-ivory/90 leading-relaxed mb-0">{t.quote}</p>
+                  <p className="font-editorial text-base font-light text-espresso/80 leading-[1.55] mb-0">{t.quote}</p>
                 </div>
               </div>
             ))}

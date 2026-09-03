@@ -60,13 +60,13 @@ export default function Home() {
       <main id="main-content" tabIndex={-1}>
         <EditorialTrustBlock />
         <TestimonialsSection />
-        <ServicesSection />
+        <ServicesSection variant="editorial" />
         <LocationMapSection />
         <NewPatientOffersBlock />
         <FAQSection />
         <BookingBlock />
       </main>
-      <Footer />
+      <Footer variant="editorial" />
     </>
   );
 }

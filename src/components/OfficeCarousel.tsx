@@ -193,20 +193,39 @@ export function OfficeCarousel({
 
   return (
     <div>
-      <div className={`flex items-center mb-6 ${editorial ? "justify-end" : "justify-between"}`}>
-        {!editorial && (
-          <h3 className="font-display text-xl font-semibold text-espresso">Our office</h3>
-        )}
+      {/* Default: heading and control share a row above the reel.
+          Editorial: EditorialTrustBlock owns the heading, which left this
+          control alone on an empty row looking orphaned (Akash flagged
+          it). It is absolutely positioned with NO positioned ancestor
+          here on purpose — it resolves against the `relative` wrapper
+          EditorialTrustBlock puts around the eyebrow, heading and reel,
+          which lands it at the top-right of the heading block. Anchoring
+          it to this component instead put it on top of the half-visible
+          next tile, where it read as that photo's own button. */}
+      {editorial ? (
         <button
           type="button"
           onClick={() => setUserPaused((p) => !p)}
           aria-label={userPaused ? "Resume office photo scroll" : "Pause office photo scroll"}
           aria-pressed={userPaused}
-          className={`tap-target inline-flex items-center justify-center rounded-full border ${borderClass} text-espresso/70 hover:text-espresso hover:border-terracotta/50 transition-colors`}
+          className="tap-target absolute right-0 top-0 z-10 inline-flex items-center justify-center rounded-full border border-espresso/15 text-espresso/70 transition-colors hover:border-terracotta/50 hover:text-espresso"
         >
           {userPaused ? <PlayIcon /> : <PauseIcon />}
         </button>
-      </div>
+      ) : (
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-display text-xl font-semibold text-espresso">Our office</h3>
+          <button
+            type="button"
+            onClick={() => setUserPaused((p) => !p)}
+            aria-label={userPaused ? "Resume office photo scroll" : "Pause office photo scroll"}
+            aria-pressed={userPaused}
+            className={`tap-target inline-flex items-center justify-center rounded-full border ${borderClass} text-espresso/70 hover:text-espresso hover:border-terracotta/50 transition-colors`}
+          >
+            {userPaused ? <PlayIcon /> : <PauseIcon />}
+          </button>
+        </div>
+      )}
 
       <div className="overflow-hidden" onWheel={markInteracting}>
         <div ref={trackRef} className="flex gap-4 w-max" style={{ willChange: "transform" }}>
@@ -228,13 +247,24 @@ export function OfficeCarousel({
               aria-label={`View larger: ${photo.alt}`}
               className="group relative shrink-0 touch-pan-y cursor-grab select-none active:cursor-grabbing"
             >
+              {/* Editorial tiles run substantially larger — 288px tall
+                  against the default 192px — because this section is now
+                  carrying the office story on its own and the photos are
+                  the best content in it. Sized so roughly one tile plus a
+                  slice of the next is visible at 390px: big enough to
+                  actually look at, deliberately short of full-screen so
+                  it still reads as a reel you can drag. `width`/`height`
+                  raised to match so Next serves a sharp enough source. */}
               <Image
                 src={photo.src}
                 alt={photo.alt}
-                width={320}
-                height={240}
+                width={editorial ? 560 : 320}
+                height={editorial ? 420 : 240}
                 draggable={false}
-                className={`h-48 sm:h-60 w-64 sm:w-80 rounded-2xl object-cover border ${borderClass} pointer-events-none`}
+                sizes={editorial ? "(min-width: 640px) 420px, 280px" : "320px"}
+                className={`${
+                  editorial ? "h-72 w-[280px] sm:h-96 sm:w-[420px]" : "h-48 sm:h-60 w-64 sm:w-80"
+                } rounded-2xl object-cover border ${borderClass} pointer-events-none`}
               />
               <span className="tap-target absolute bottom-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-espresso/60 text-warm-ivory">
                 <ExpandIcon />
