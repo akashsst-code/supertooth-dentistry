@@ -46,9 +46,21 @@ function LegalLinks() {
  * footer link. Recorded as a deliberate ruling in backlog.ts item 45,
  * not a silent revert.
  */
-export function Footer() {
+export function Footer({
+  // The homepage variation sets its own type; without this the footer
+  // would be the one strip on that page still rendering in Inter. It
+  // carries no display-font headings, so the whole switch is the body
+  // face. Every other page renders the default and is unchanged.
+  variant = "default",
+}: {
+  variant?: "default" | "editorial";
+} = {}) {
   return (
-    <footer className="border-t border-sand bg-warm-ivory">
+    <footer
+      className={`border-t border-sand bg-warm-ivory ${
+        variant === "editorial" ? "font-editorial font-light" : ""
+      }`}
+    >
       <div className="px-6 py-4 flex flex-col items-center gap-2 text-center">
         <LegalLinks />
         <p className="text-xs text-espresso/70">

@@ -29,11 +29,24 @@ const connectorOffsets = [-22, 18, -14];
  *
  * Still exactly 4 items, no links (no click-throughs for now).
  */
-export function ServicesSection() {
+export function ServicesSection({
+  // "editorial" adapts this to the homepage variation's type system and
+  // section rhythm. /services renders the default and is unchanged.
+  variant = "default",
+}: {
+  variant?: "default" | "editorial";
+} = {}) {
+  const editorial = variant === "editorial";
   return (
-    <section className="bg-sand/40">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-24">
-        <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso mb-2">
+    <section className={editorial ? "bg-sand" : "bg-sand/40"}>
+      <div
+        className={
+          editorial
+            ? "mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-3xl md:px-10 md:pb-24 md:pt-16"
+            : "mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-24"
+        }
+      >
+        <h2 className={`mb-2 text-espresso ${editorial ? "font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em]" : "font-display text-2xl sm:text-3xl font-semibold"}`}>
           What we treat
         </h2>
         <p className="text-espresso/70 mb-10 sm:mb-12 max-w-2xl">
@@ -73,7 +86,7 @@ export function ServicesSection() {
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col p-5 sm:p-6">
-                    <h3 className="font-display text-lg sm:text-xl font-semibold text-espresso mb-1.5">
+                    <h3 className={`mb-1.5 text-espresso ${editorial ? "font-editorial text-xl font-medium tracking-[-0.02em]" : "font-display text-lg sm:text-xl font-semibold"}`}>
                       {s.title}
                     </h3>
                     <p className="text-[15px] leading-relaxed text-espresso/70">

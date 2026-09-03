@@ -61,8 +61,9 @@ export function LocationMapSection() {
   const openHours = hours.find((h) => h.time !== "Closed");
 
   return (
-    <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
-      <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso mb-2">
+    <section className="bg-warm-ivory">
+      <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-[1320px] md:px-10 md:pb-24 md:pt-16 lg:px-16">
+      <h2 className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em] text-espresso mb-2">
         Proudly serving {practice.neighborhood} &amp; nearby Seattle
       </h2>
       <p className="text-espresso/70 mb-10 max-w-2xl">
@@ -104,14 +105,14 @@ export function LocationMapSection() {
           <div className="flex gap-2">
             <a
               href="/contact"
-              className="tap-target grow shrink-0 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-4 py-2.5 text-sm font-semibold text-warm-ivory hover:brightness-110 transition"
+              className="tap-target grow shrink-0 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-4 py-2.5 text-sm font-medium text-warm-ivory hover:brightness-110 transition"
             >
               <CalendarIcon />
               Book Appointment
             </a>
             <a
               href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-              className="tap-target shrink-0 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-espresso/15 px-4 py-2.5 text-sm font-semibold text-espresso hover:border-terracotta/50 hover:text-terracotta-dark transition-colors"
+              className="tap-target shrink-0 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-espresso/15 px-4 py-2.5 text-sm font-medium text-espresso hover:border-terracotta/50 hover:text-terracotta-dark transition-colors"
             >
               <PhoneIcon />
               Call
@@ -120,7 +121,7 @@ export function LocationMapSection() {
 
           <div className="my-3 border-t border-sand" />
 
-          <span className="block text-xs font-semibold uppercase tracking-wide text-espresso/70 mb-1.5">
+          <span className="block text-xs font-medium uppercase tracking-wide text-espresso/70 mb-1.5">
             Also welcoming patients from
           </span>
           <ul className="flex flex-wrap gap-1.5">
@@ -139,6 +140,7 @@ export function LocationMapSection() {
           </span>
         </div>
       </div>
+    </div>
     </section>
   );
 }

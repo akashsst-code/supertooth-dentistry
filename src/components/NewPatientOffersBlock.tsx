@@ -64,9 +64,10 @@ export function NewPatientOffersBlock() {
   }
 
   return (
-    <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
+    <section className="bg-sand">
+      <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-[1320px] md:px-10 md:pb-24 md:pt-16 lg:px-16">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso">New-patient offers</h2>
+        <h2 className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em] text-espresso">New-patient offers</h2>
         <div className="hidden sm:flex items-center gap-2">
           <button
             type="button"
@@ -101,13 +102,13 @@ export function NewPatientOffersBlock() {
             }}
             className="relative shrink-0 snap-center w-[85%] sm:w-[62%] md:w-[46%] rounded-3xl bg-sand p-8 sm:p-10 flex flex-col"
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta-dark mb-4">{offer.label}</p>
-            <p className="font-display text-2xl sm:text-3xl font-semibold text-espresso leading-snug mb-6">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-terracotta-dark mb-4">{offer.label}</p>
+            <p className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em] text-espresso leading-snug mb-6">
               {offer.text}
             </p>
             <a
               href="/contact"
-              className="tap-target inline-flex w-fit items-center font-semibold text-terracotta-dark hover:text-terracotta underline underline-offset-4 decoration-2 mb-8"
+              className="tap-target inline-flex w-fit items-center font-medium text-terracotta-dark hover:text-terracotta underline underline-offset-4 decoration-2 mb-8"
             >
               Schedule this offer
             </a>
@@ -138,6 +139,7 @@ export function NewPatientOffersBlock() {
           </button>
         ))}
       </div>
+    </div>
     </section>
   );
 }

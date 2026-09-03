@@ -46,10 +46,11 @@ export function FAQSection() {
   };
 
   return (
-    <section id="faq" className="mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-24">
+    <section id="faq" className="bg-warm-ivory">
+      <div className="mx-auto w-full max-w-[480px] px-6 pb-16 pt-11 md:max-w-3xl md:px-10 md:pb-24 md:pt-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <h2 className="font-display text-2xl sm:text-3xl font-semibold text-espresso mb-2">
+      <h2 className="font-editorial text-[clamp(2rem,8.5vw,2.375rem)] md:text-[clamp(2.375rem,3.4vw,3rem)] font-light leading-[1.05] tracking-[-0.035em] text-espresso mb-2">
         Frequently asked questions
       </h2>
       <p className="text-espresso/70 mb-10 max-w-2xl">
@@ -70,7 +71,7 @@ export function FAQSection() {
                 id={`faq-trigger-${i}`}
                 className="tap-target w-full flex items-start gap-4 p-5 text-left"
               >
-                <span className="flex-1 font-display text-lg font-semibold text-espresso leading-snug">
+                <span className="flex-1 font-editorial text-lg font-medium text-espresso leading-snug">
                   {faq.question}
                 </span>
                 <span
@@ -107,6 +108,7 @@ export function FAQSection() {
           );
         })}
       </div>
+    </div>
     </section>
   );
 }
