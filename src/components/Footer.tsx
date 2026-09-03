@@ -83,8 +83,8 @@ export function Footer({
   if (merged) {
     return (
       <footer className="bg-warm-ivory font-editorial font-light text-espresso">
-        <div className="mx-auto w-full max-w-[480px] px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:max-w-[1320px] md:px-10 md:pb-8 lg:px-16">
-          <div className="flex flex-col gap-0.5 border-t border-espresso/12 pt-3.5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto w-full max-w-[480px] px-6 pb-[max(1rem,env(safe-area-inset-bottom))] md:max-w-[1320px] md:px-10 md:pb-6 lg:px-16">
+          <div className="flex flex-col border-t border-espresso/12 pt-3 sm:flex-row sm:items-center sm:justify-between">
             <LegalLinks merged />
             <p className="mb-0! px-2 text-xs text-espresso/80 sm:px-0">
               © {new Date().getFullYear()} {practice.name}. All rights reserved.

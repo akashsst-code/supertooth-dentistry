@@ -147,6 +147,17 @@ import { CalendarIcon, MapPinIcon, MedicalCrossIcon, PhoneIcon } from "./icons";
  *    here, `variant="merged"` still follows whatever this section uses,
  *    and the `onDark` props on the primitives are what flip the type.
  */
+/** The three Quick actions differ only in fill — see the comment on the
+ *  group below for why the ladder is weight rather than size. */
+const quickAction =
+  // `border` with no colour here, and each variant sets its own —
+  // including `border-transparent` on the filled primary. The border
+  // has to be on all three or the two outlined ones come out 2px taller;
+  // but putting a colour on the base as well makes it compete with the
+  // variants' own border-colour utilities at equal specificity, which
+  // silently won and left both outlines transparent.
+  "tap-target flex w-full items-center justify-center gap-1.5 rounded-full border px-4 py-3 text-sm font-medium transition";
+
 export function BookingBlock() {
   const openHours = hoursByDay.find((h) => h.time !== "Closed");
 
@@ -157,7 +168,15 @@ export function BookingBlock() {
        mismatch put this section's left edge a few pixels off from the
        one above it, visible as a jog when scrolling past the boundary. */
     <section id="booking" className="bg-warm-ivory text-espresso">
-      <div className={`${shellWide} pb-8! md:pb-12!`}>
+      {/* Bottom padding trimmed to 16px/24px (Akash: extra space below
+          Location running all the way down to the legal line). Measured
+          at 390px before the change: 151px from the last line of the
+          address to the bottom of the page, of which 32px was this
+          padding sitting above a hairline rule that already separates the
+          legal row — and the rule then added its own. Now 123px. The
+          44px tap-target height on the two legal links stays; that is a
+          requirement (item 12), not slack. */}
+      <div className={`${shellWide} pb-4! md:pb-6!`}>
         <div className="md:max-w-2xl">
           <div className="text-left">
             <Eyebrow>
@@ -178,23 +197,38 @@ export function BookingBlock() {
                 emergency badge dropped to row 2 ending 151px short — a
                 ragged tail under a nearly-flush row.
 
-                Then all three went full width, which Akash flagged in
-                turn — three equal slabs stacked read as three primaries.
-                Now there are two, and the emergency link goes back to
-                the compact badge the earlier rounds actually settled on
-                (backlog items 46/48): restraint through scale, not
-                through hiding it. Two full-width pills with a small tag
-                beneath reads as a hierarchy; three slabs read as a list.
+                Then all three went full width (read as three
+                primaries), then the emergency link went back to a
+                compact badge (read as unorganised — Akash again). The
+                problem in every version was that the three controls
+                shared nothing: three widths, three fills, and one of
+                them uppercase and letter-spaced while the other two
+                were sentence case.
 
-                Why the pair is full width rather than side by side, and
-                why the badge is not beside the Call button — both
-                measured at this group's width (342px at 390px, 327px at
-                375px): "Book Appointment" with its icon needs 170px
-                against 167px in a two-column row, so pairing wrapped its
-                label and made both pills 68px tall; and "Dental
-                emergency" needs 197px, so it cannot share a row with
-                Call (148px) inside 342px either. Full width holds one
-                line down to 320px.
+                So they are one system now, and the ladder is weight
+                rather than size — same width, same height, same radius,
+                same type, same icon scale, same 8px step between them.
+                Only the fill changes: solid terracotta for the primary,
+                outlined for Call, outlined in alert for the emergency.
+                Nothing here is uppercase any more; it was the only
+                uppercase button on the page.
+
+                Side-by-side pairs were ruled out by measurement, not
+                taste. At this group's width (342px at 390px, 327px at
+                375px) a two-column row gives 167px / 159px, and "Book
+                Appointment" with its icon needs 170px, so pairing it
+                with Call wrapped the label and made both pills 68px
+                tall. "Dental emergency" needs 166px sentence-case, so
+                it cannot pair with Call at 375px either. Full width
+                holds one line on all three down to 320px.
+
+                The emergency control being outlined rather than solid is
+                the one thing to look at: items 46/48 record a solid
+                badge as the settled treatment, after plain de-emphasized
+                TEXT was rejected as "hidden". This is not that — it is a
+                peer-sized button with an icon in alert red (6.3:1 on
+                this ground), so it is not hidden, it is ranked. Going
+                back to solid is one class.
 
                 The group is capped at the same max-w-md as the
                 hours/location block below so the two share a left AND a
@@ -206,26 +240,26 @@ export function BookingBlock() {
               <div className="flex flex-col gap-2">
                 <a
                   href="/contact"
-                  className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-3 py-3 text-sm font-medium text-warm-ivory hover:brightness-110 transition"
+                  className={`${quickAction} border-transparent bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] text-warm-ivory hover:brightness-110`}
                 >
                   <CalendarIcon />
                   Book Appointment
                 </a>
                 <a
                   href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
-                  className="tap-target inline-flex items-center justify-center gap-1.5 rounded-full border border-espresso/20 px-3 py-3 text-sm font-medium text-espresso hover:border-terracotta-dark transition-colors"
+                  className={`${quickAction} border-espresso/20 text-espresso hover:border-terracotta-dark`}
                 >
                   <PhoneIcon />
                   {contact.phone}
                 </a>
+                <a
+                  href="/emergency"
+                  className={`${quickAction} border-alert/35 bg-alert/5 text-alert hover:bg-alert/10`}
+                >
+                  <MedicalCrossIcon className="h-4 w-4" />
+                  Dental emergency
+                </a>
               </div>
-              <a
-                href="/emergency"
-                className="tap-target mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-alert px-3 py-2 text-xs font-medium uppercase tracking-wide text-warm-ivory hover:brightness-110 transition"
-              >
-                <MedicalCrossIcon className="h-3.5 w-3.5" />
-                Dental emergency
-              </a>
             </div>
 
             {/* Same max-w-md as the Quick actions group, so the two
