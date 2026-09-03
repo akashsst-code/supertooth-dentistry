@@ -19,6 +19,12 @@ import { Accent, Eyebrow, SectionHeading, shellWide } from "./editorial";
  * read from content.ts. Nothing factual was added, removed, or reworded.
  * What changed is presentation.
  *
+ * Order inside the section, as of 2026-09-03: differentiators -> Dr.
+ * Archana's bio -> office carousel. The bio moved ahead of the office
+ * block on Akash's call, reversing the earlier "office above bio"
+ * ordering. Nothing else about either block changed — same markup, same
+ * spacing rhythm (`mt-14 md:mt-20` opens each), just swapped.
+ *
  * The dark cards are the substantive change. TrustBlock renders the
  * three differentiators as espresso-surfaced tap-to-expand rows, which
  * deliberately echoed the old Hero's dark panel — a comment in that file
@@ -106,40 +112,23 @@ export function EditorialTrustBlock() {
           ))}
         </ul>
 
-        {/* Office carousel is reused as-is rather than reskinned: it is
-          shared with /about, and its own surface is already light
-          (photos on the page canvas, sand borders). Only its heading
-          needed the editorial treatment, so it is rendered here with
-          the component's built-in heading suppressed. */}
-        {/* `relative` is load-bearing: OfficeCarousel's editorial pause
-            control positions against this wrapper so it lands at the
-            top-right of the heading block rather than on top of the
-            half-visible next photo. */}
-        <div className="relative mt-14 md:mt-20">
-          <Eyebrow>Our office</Eyebrow>
-          <SectionHeading>
-            A calm room,
-            <br />
-            not a <Accent>waiting</Accent> room.
-          </SectionHeading>
-          <div className="mt-8 md:mt-10">
-            <OfficeCarousel variant="editorial" />
-          </div>
-          <p className="mt-6 mb-0! max-w-2xl font-editorial text-base font-light leading-[1.6] text-espresso/80">
-            {officeBlurb}
-          </p>
-        </div>
+        {/* Dr. Archana — now the second block on the page, ahead of the
+          office carousel (Akash's call, 2026-09-03). This reverses the
+          earlier "office above bio" ordering recorded in this file's
+          header; both calls are his. The differentiators still open the
+          section, so the run is: why choose us -> who you'll see -> the
+          room she works in.
 
-        {/* Dr. Archana — section 4. The eyebrow and heading OPEN the
-          section above the photograph rather than sitting beside it in
-          the right-hand column (Akash's call). Three reasons it belongs
-          there: the spec's own section pattern is eyebrow -> heading ->
-          copy -> "one image, list, or action" in that order (Section 8),
-          the hero's content order in Section 7 is likewise headline
-          before figure, and the two blocks above this one ("Why choose
-          us", "Our office") already open on a full-width heading — this
-          was the only one that didn't, so the page had one section
-          announcing itself differently from the rest.
+          The eyebrow and heading OPEN the section above the photograph
+          rather than sitting beside it in the right-hand column (also
+          Akash's call). Three reasons it belongs there: the spec's own
+          section pattern is eyebrow -> heading -> copy -> "one image,
+          list, or action" in that order (Section 8), the hero's content
+          order in Section 7 is likewise headline before figure, and the
+          block above this one ("Why choose us") already opens on a
+          full-width heading — this was the only one that didn't, so the
+          page had one section announcing itself differently from the
+          rest.
 
           The card shell (rounded surface, border) is still gone in
           favour of the hero's own pairing: one photograph at the spec's
@@ -154,8 +143,8 @@ export function EditorialTrustBlock() {
               the single source and this can't drift: the tagline is two
               sentences, so it breaks between them, and the last word of
               the second carries the accent with its full stop left
-              outside, matching "your *time*." and "not a *waiting*
-              room." above. */}
+              outside, matching "your *time*." above and "not a
+              *waiting* room." below. */}
           <SectionHeading>
             {taglineHead}
             <br />
@@ -203,6 +192,30 @@ export function EditorialTrustBlock() {
           <div className="mt-10 border-t border-espresso/20 pt-6 md:mt-14 md:pt-8">
             <CredentialBadges editorial quadrant />
           </div>
+        </div>
+
+        {/* Office carousel is reused as-is rather than reskinned: it is
+          shared with /about, and its own surface is already light
+          (photos on the page canvas, sand borders). Only its heading
+          needed the editorial treatment, so it is rendered here with
+          the component's built-in heading suppressed. */}
+        {/* `relative` is load-bearing: OfficeCarousel's editorial pause
+            control positions against this wrapper so it lands at the
+            top-right of the heading block rather than on top of the
+            half-visible next photo. */}
+        <div className="relative mt-14 md:mt-20">
+          <Eyebrow>Our office</Eyebrow>
+          <SectionHeading>
+            A calm room,
+            <br />
+            not a <Accent>waiting</Accent> room.
+          </SectionHeading>
+          <div className="mt-8 md:mt-10">
+            <OfficeCarousel variant="editorial" />
+          </div>
+          <p className="mt-6 mb-0! max-w-2xl font-editorial text-base font-light leading-[1.6] text-espresso/80">
+            {officeBlurb}
+          </p>
         </div>
       </div>
     </section>
