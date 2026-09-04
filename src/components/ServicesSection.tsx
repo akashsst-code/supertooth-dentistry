@@ -1,17 +1,22 @@
 import Image from "next/image";
-import { ClockIcon, CrownIcon, SparkleIcon, ToothIcon } from "./icons";
+import Link from "next/link";
+import { AlignerIcon, CrownIcon, MedicalCrossIcon, SparkleIcon, SyringeIcon, ToothIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
-import { services } from "@/lib/content";
+import { services, servicesEmergencyShortcut } from "@/lib/content";
 import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
-const cardIcons = [ClockIcon, CrownIcon, SparkleIcon, ToothIcon];
+// One per category, in the order content.ts declares them: a checkup, a
+// repair, a cosmetic change, straightening, jaw pain. The last one also
+// does double duty as that card's image fallback — it is the only
+// category with no photograph yet.
+const cardIcons = [ToothIcon, CrownIcon, SparkleIcon, AlignerIcon, SyringeIcon];
 
 // Horizontal offset (px from center) of the connector segment in each
 // gap between cards — one entry per gap, so services.length - 1 values.
 // Deliberately not all 0: a single straight line down the center is the
 // thing Akash asked off of. Small enough that it never comes close to
 // a card's own edge at the narrowest (375px) viewport.
-const connectorOffsets = [-22, 18, -14];
+const connectorOffsets = [-22, 18, -14, 20];
 
 /**
  * Services teaser — positioned after Testimonials. Cards kept from the
@@ -28,7 +33,11 @@ const connectorOffsets = [-22, 18, -14];
  * line, offset by a different `connectorOffsets` value per gap so the
  * path zigzags down the page rather than reading as one straight line.
  *
- * Still exactly 4 items, no links (no click-throughs for now).
+ * Four categories, rebuilt 2026-09-03 for backlog items 65 and 66: each
+ * card now carries the patient-language title, the clinical term as a
+ * subtitle, the sub-services it covers, and its own Schedule action —
+ * plus an emergency shortcut below the stack rather than a fifth card.
+ * See content.ts for the taxonomy decision and its sourcing.
  */
 export function ServicesSection({
   // "editorial" adapts this to the homepage variation's type system and
@@ -59,7 +68,8 @@ export function ServicesSection({
               What we <Accent>treat</Accent>.
             </SectionHeading>
             <Body className="mt-4 mb-10! max-w-2xl">
-              General, cosmetic, and restorative care — under one roof, close to home.
+              Four doors in: a checkup, a repair, a change to how your smile looks, or
+              straightening. Not sure which is yours? Start with a checkup.
             </Body>
           </>
         ) : (
@@ -68,7 +78,8 @@ export function ServicesSection({
               What we treat
             </h2>
             <p className="text-espresso/70 mb-10 sm:mb-12 max-w-2xl">
-              General, cosmetic, and restorative care — under one roof, close to home.
+              Four doors in: a checkup, a repair, a change to how your smile looks, or
+              straightening. Not sure which is yours? Start with a checkup.
             </p>
           </>
         )}
@@ -80,11 +91,11 @@ export function ServicesSection({
             container is already max-w-3xl. */}
         <div className={`flex flex-col ${editorial ? "md:max-w-3xl" : ""}`}>
           {services.map((s, i) => {
-            const Icon = cardIcons[i] ?? ClockIcon;
+            const Icon = cardIcons[i] ?? ToothIcon;
             return (
               <div key={s.title}>
                 {i > 0 && (
-                  <div className="relative h-10 sm:h-14" aria-hidden="true">
+                  <div className="relative h-7 sm:h-14" aria-hidden="true">
                     <span
                       className="absolute top-0 bottom-0 w-px bg-espresso/15"
                       style={{ left: `calc(50% + ${connectorOffsets[i - 1]}px)` }}
@@ -92,7 +103,16 @@ export function ServicesSection({
                   </div>
                 )}
                 <div className="group flex flex-col overflow-hidden rounded-2xl border border-sand bg-warm-ivory shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-terracotta/10">
+                  {/* 16:10 on a phone, 4:3 from sm up. The uniform-tile
+                      rule from Akash's 2026-09-01 round is about every
+                      card being the SAME size, and it still holds — but
+                      each card now carries a clinical subtitle, its
+                      sub-services and its own action, and at 375px four
+                      4:3 photos plus that content ran the section to
+                      3.97 screens. The shorter mobile crop buys a
+                      quarter-screen back without touching the ratio the
+                      cards were reviewed at on desktop. */}
+                  <div className="relative aspect-[16/10] overflow-hidden bg-terracotta/10 sm:aspect-[4/3]">
                     {s.image ? (
                       <Image
                         src={s.image.src}
@@ -102,27 +122,97 @@ export function ServicesSection({
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
+                      /* Falls back to the card's OWN icon rather than a
+                         hardcoded clock — with a real category using this
+                         path now, a stock clock on the jaw-pain card
+                         would read as a mistake rather than a placeholder. */
                       <div className="flex h-full items-center justify-center">
-                        <ClockIcon className="h-16 w-16 text-terracotta" />
+                        <Icon className="h-16 w-16 text-terracotta" />
                       </div>
                     )}
-                    <span className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-warm-ivory/90 text-terracotta-dark shadow-sm backdrop-blur-sm">
-                      <Icon className="h-4 w-4" />
-                    </span>
+                    {/* The badge exists to sit ON a photograph. On the
+                        one card with no photo the tile already renders
+                        the same icon at 64px, so the badge would just be
+                        the same mark twice in one box. */}
+                    {s.image && (
+                      <span className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-warm-ivory/90 text-terracotta-dark shadow-sm backdrop-blur-sm">
+                        <Icon className="h-4 w-4" />
+                      </span>
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col p-5 sm:p-6">
-                    <h3 className={`mb-1.5 text-espresso ${editorial ? "font-editorial text-xl font-medium tracking-[-0.02em]" : "font-display text-lg sm:text-xl font-semibold"}`}>
+                    <h3 className={`mb-1 text-espresso ${editorial ? "font-editorial text-xl font-medium tracking-[-0.02em]" : "font-display text-lg sm:text-xl font-semibold"}`}>
                       {s.title}
                     </h3>
-                    <p className="text-[15px] leading-relaxed text-espresso/70">
+                    {/* The clinical term as a subtitle rather than the
+                        heading — blueprint v2 §6's rule, and backlog item
+                        66's "no internal terminology left unexplained".
+                        The patient word is what gets found; the clinical
+                        one is what makes it credible and searchable. */}
+                    {/* Not the uppercase/tracked eyebrow treatment: that
+                        is the section-label signal in this type system,
+                        and reusing it per card both duplicates the signal
+                        and wraps to two heavy lines at 375px. Plain case,
+                        smaller, muted — a subtitle, not a second label. */}
+                    {/* mb-0! everywhere below, not mb-2/mb-3: globals.css
+                        sets an unlayered `p { margin-bottom: 2em }` that
+                        outranks Tailwind's layered utilities, and with
+                        four stacked paragraphs in one card it opened
+                        ~32px of dead space between every line. Spacing is
+                        controlled with mt-* only. Same trap EditorialHero
+                        documents. */}
+                    <p className="mt-1 mb-0! text-[13px] font-medium text-espresso/45">{s.clinical}</p>
+                    <p className="mt-3 mb-0! text-[15px] leading-relaxed text-espresso/70">
                       {s.real ? s.detail : <Placeholder>{s.detail}</Placeholder>}
                     </p>
+                    {/* Sub-services as one wrapped line, not chips or a
+                        bulleted list: at 375px a chip row for four items
+                        is three rows of boxes, and this is a scanning
+                        aid under a paragraph, not a navigation surface. */}
+                    <p className="mt-3 mb-0! text-[13px] leading-relaxed text-espresso/55">
+                      {s.includes.join(" · ")}
+                    </p>
+                    {/* Item 66: a scheduling path from the thing that
+                        convinced you, rather than a scroll back to the
+                        header. Deliberately a quiet text action, not a
+                        filled button — four terracotta buttons in one
+                        column would compete with the page's single
+                        primary booking ask. min-h-44px and -ml-1/px-1
+                        keep the real tap target at the locked floor
+                        without visually indenting the label. */}
+                    <Link
+                      href="/contact"
+                      aria-label={`Schedule a visit for ${s.title.toLowerCase()}`}
+                      className="mt-3 -ml-1 inline-flex min-h-[44px] w-fit items-center gap-1.5 px-1 text-sm font-medium text-terracotta-dark underline decoration-terracotta/40 underline-offset-4 transition-colors hover:text-espresso hover:decoration-espresso/40"
+                    >
+                      Schedule
+                      <span aria-hidden="true">&rarr;</span>
+                    </Link>
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
+
+        {/* The emergency shortcut, deliberately BELOW the categories and
+            not among them: /emergency is the single source for urgent
+            guidance (item 7), and a fifth card would duplicate
+            safety-critical content in a second place that then drifts.
+            Blueprint v2's services-overview spec asks for exactly this —
+            a shortcut on this surface, not a category. */}
+        <p
+          className={`mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] text-espresso/70 ${editorial ? "md:max-w-3xl" : ""}`}
+        >
+          <MedicalCrossIcon className="h-4 w-4 shrink-0 text-terracotta-dark" />
+          {servicesEmergencyShortcut.text}{" "}
+          <Link
+            href={servicesEmergencyShortcut.href}
+            className="inline-flex min-h-[44px] items-center font-medium text-terracotta-dark underline decoration-terracotta/40 underline-offset-4 transition-colors hover:text-espresso hover:decoration-espresso/40"
+          >
+            {servicesEmergencyShortcut.linkLabel}
+          </Link>
+        </p>
       </div>
     </section>
   );

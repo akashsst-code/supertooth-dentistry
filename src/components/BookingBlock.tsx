@@ -186,7 +186,7 @@ export function BookingBlock() {
               Ready to book your <Accent>visit</Accent>?
             </SectionHeading>
             <Body className="mt-4 mb-6! max-w-xl">
-              Reach out and we&apos;ll find a time that works — same-day slots are often available.
+              Reach out and we&apos;ll find a time that works — tell us when you&apos;re free and we&apos;ll match it as closely as we can.
             </Body>
 
             {/* Quick actions, rebuilt after Akash flagged the spacing:

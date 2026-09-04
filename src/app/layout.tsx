@@ -119,8 +119,13 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Super Tooth Dentistry | Dentist in Queen Anne, Seattle",
+  // Backlog item 62: the meta description used to lead on "same-day
+  // appointments" — the claim Akash called inaccurate in the 2026-09-03
+  // review, and the one place it would have kept appearing in search
+  // results after the page itself stopped making it. In-network leads
+  // here for the same reason it leads the homepage's own trust block.
   description:
-    "Your long-term dentist in Queen Anne, Seattle. Same-day appointments, in-network with most insurance plans, and a team that treats you like a person, not a patient number.",
+    "Your long-term dentist in Queen Anne, Seattle. In-network with most insurance plans, same-day crowns milled in-house, and a team that treats you like a person, not a patient number.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

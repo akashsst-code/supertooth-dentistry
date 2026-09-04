@@ -9,7 +9,7 @@ import { contact } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Services | Super Tooth Dentistry",
   description:
-    "General and preventive care, same-day crowns, cosmetic dentistry, and restorative care at Super Tooth Dentistry in Queen Anne, Seattle.",
+    "Checkups and cleanings, repairs for a damaged or missing tooth, cosmetic dentistry, and Invisalign clear aligners at Super Tooth Dentistry in Queen Anne, Seattle.",
 };
 
 /**
