@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useDialogBehavior } from "./useDialogBehavior";
 import { contact, nav, practice } from "@/lib/content";
 
 /** Past this many pixels of scroll the bar takes on a surface and the
@@ -41,6 +42,11 @@ export function EditorialNav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  // Same three obligations as Nav.tsx's menu — focus in, focus trapped,
+  // page behind frozen. See useDialogBehavior.
+  useDialogBehavior(open, sheetRef);
 
   function closeMenu() {
     setOpen(false);
@@ -72,12 +78,21 @@ export function EditorialNav() {
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        <div className="mx-auto flex h-16 w-full max-w-[480px] items-center justify-between px-6 md:max-w-[1320px] md:px-10 lg:px-16">
+        {/* px-4 below 360px. At 320px (iPhone SE, a folded Galaxy Fold
+            cover screen) the four things in this row — wordmark, call,
+            Book, hamburger — measured 309px against 277px of content
+            width, and the hamburger was visibly clipped by the viewport
+            edge. Nothing changes at 375px and up. */}
+        <div className="mx-auto flex h-16 w-full max-w-[480px] items-center justify-between px-4 min-[360px]:px-6 md:max-w-[1320px] md:px-10 lg:px-16">
           {/* Typographic wordmark, not the tooth-mark lockup — the spec's
               compact header drops the "Dentistry" subline entirely. */}
           <Link
             href="/"
-            className="font-editorial text-[15px] font-normal uppercase leading-none tracking-[0.28em] text-espresso"
+            /* Tracking eases to 0.16em below 360px — the wordmark is
+               the widest single item in this row and 0.28em across ten
+               letters is 21px of pure letter-spacing. Above 360px the
+               spec's 0.28em is untouched. */
+            className="font-editorial text-[15px] font-normal uppercase leading-none tracking-[0.16em] min-[360px]:tracking-[0.28em] text-espresso"
             aria-label={`${practice.name}, home`}
           >
             Supertooth
@@ -88,9 +103,21 @@ export function EditorialNav() {
                 these out of the tab order while hidden (so there are no
                 focusable phantom controls over the hero) but still lets
                 opacity/transform animate, which a mount/unmount can't. */}
+            {/* `w-0 overflow-hidden` on top of `invisible`, not instead
+                of it. `invisible` is what keeps these out of the tab
+                order (and is why they aren't unmounted — opacity and
+                transform can't animate a mount). But visibility:hidden
+                still reserves layout width, so before this the pair sat
+                there occupying 123px of a 320px header at the top of
+                the page, where they are not even shown. Collapsing the
+                width is what actually gives the hamburger its room
+                back; the transition list carries `width` so the
+                controls still ease in on scroll rather than snapping. */}
             <div
-              className={`flex items-center gap-1 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                scrolled ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0"
+              className={`flex items-center gap-1 overflow-hidden transition-[opacity,transform,width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                scrolled
+                  ? "visible w-auto translate-y-0 opacity-100"
+                  : "invisible w-0 -translate-y-1 opacity-0"
               }`}
               aria-hidden={!scrolled}
             >
@@ -103,7 +130,7 @@ export function EditorialNav() {
               </a>
               <Link
                 href="/contact"
-                className="inline-flex min-h-[38px] items-center justify-center rounded-lg bg-terracotta-dark px-4 font-editorial text-xs font-medium uppercase tracking-[0.1em] text-warm-ivory"
+                className="inline-flex min-h-[38px] shrink-0 items-center justify-center rounded-lg bg-terracotta-dark px-3 min-[360px]:px-4 font-editorial text-xs font-medium uppercase tracking-[0.1em] text-warm-ivory"
               >
                 Book
               </Link>
@@ -115,7 +142,15 @@ export function EditorialNav() {
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => (open ? closeMenu() : setOpen(true))}
-              className="tap-target -mr-2 inline-flex items-center justify-center text-espresso"
+              /* The -mr-2 optical pull was dropped: at 320px (iPhone SE,
+                 a folded Galaxy Fold cover screen) it carried the 44px
+                 tap box past the right edge of the viewport and visibly
+                 clipped the hamburger's own strokes — verified in a
+                 screenshot at that width. The container's px-6 is what
+                 aligns this with the wordmark opposite it; the extra
+                 8px was buying a little optical tidiness at the cost of
+                 a clipped control on the narrowest phones. */
+              className="tap-target inline-flex items-center justify-center text-espresso"
             >
               {open ? <CloseIcon /> : <MenuIcon />}
             </button>
@@ -130,8 +165,14 @@ export function EditorialNav() {
           own height instead of the viewport (the same trap documented in
           Nav.tsx). */}
       {open && (
-        <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-warm-ivory">
-          <div className="mx-auto flex h-16 w-full max-w-[480px] items-center justify-between px-6 md:max-w-[1320px] md:px-10 lg:px-16">
+        <div
+          ref={sheetRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site menu"
+          className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-warm-ivory"
+        >
+          <div className="mx-auto flex h-16 w-full max-w-[480px] items-center justify-between px-4 min-[360px]:px-6 md:max-w-[1320px] md:px-10 lg:px-16">
             <span className="font-editorial text-[15px] font-normal uppercase leading-none tracking-[0.28em] text-espresso">
               Supertooth
             </span>
@@ -139,7 +180,9 @@ export function EditorialNav() {
               type="button"
               aria-label="Close menu"
               onClick={closeMenu}
-              className="tap-target -mr-2 inline-flex items-center justify-center text-espresso"
+              /* Same 320px clipping fix as the header hamburger above —
+                 this control sits in an identically-padded row. */
+              className="tap-target inline-flex items-center justify-center text-espresso"
             >
               <CloseIcon />
             </button>

@@ -190,3 +190,72 @@ p {
     animation: none;
   }
 }
+
+/* ============================================================
+ * Display preferences — the site's own accessibility controls
+ * ============================================================
+ * Driven by src/lib/display-preferences.ts, which writes
+ * `--user-text-scale` and the `data-contrast` / `data-motion`
+ * attributes onto <html> before first paint. Full reasoning for why
+ * this is a first-party preference panel and NOT an accessibility
+ * overlay widget lives in that file's header comment.
+ *
+ * Text scale. Every --text-* token above is authored in `rem`, so
+ * scaling the root font size scales the entire locked type scale in
+ * proportion — headline-to-body relationships hold, and no individual
+ * size has to be overridden. Tailwind's rem-based spacing scales with
+ * it, which is what keeps a 130% page looking composed rather than
+ * like large text crammed into small boxes. This is additive to
+ * browser zoom, never a replacement for it: pinch-zoom and the
+ * browser's own text-size setting keep working on top of this.
+ */
+html {
+  font-size: calc(100% * var(--user-text-scale, 1));
+}
+
+/* High contrast. The design leans on opacity variants of the locked
+ * palette (text-espresso/70 and friends) for muted secondary text.
+ * Several of those sit between 2.5:1 and 4.5:1 against Warm Ivory or
+ * Sand, which is fine as a deliberate visual hierarchy but not enough
+ * for everyone. This drops every such variant back to the full-strength
+ * token — 11.7:1 espresso on warm-ivory — without touching the locked
+ * base color values themselves.
+ *
+ * The attribute-substring selectors match the literal Tailwind class
+ * (`text-espresso/70` appears verbatim in the class attribute), which
+ * is what lets one rule cover every opacity step without enumerating
+ * them. `!important` is needed because Tailwind's own color utility is
+ * equally specific and wins on source order otherwise. */
+[data-contrast="high"] [class*="text-espresso/"] {
+  color: var(--color-espresso) !important;
+}
+[data-contrast="high"] [class*="text-warm-ivory/"] {
+  color: var(--color-warm-ivory) !important;
+}
+[data-contrast="high"] [class*="text-terracotta/"] {
+  color: var(--color-terracotta-dark) !important;
+}
+/* Hairline borders and dividers are decorative at default contrast and
+ * near-invisible to some readers; give them a real edge here. */
+[data-contrast="high"] [class*="border-espresso/"],
+[data-contrast="high"] [class*="border-sand"] {
+  border-color: var(--color-espresso) !important;
+}
+/* A thicker focus ring for the same reason — the halo pattern above
+ * stays, this just makes it unmissable. */
+[data-contrast="high"] :focus-visible {
+  outline-width: 3px;
+}
+
+/* Reduced motion, chosen on the site rather than in the OS. The
+ * rAF-driven carousels also read this preference in JS (they can't be
+ * stopped by CSS alone) — see useReducedMotion in
+ * src/components/useDisplayPreferences.ts. */
+[data-motion="reduced"] *,
+[data-motion="reduced"] *::before,
+[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}

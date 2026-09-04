@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { officePhotos } from "@/lib/content";
+import { useReducedMotion } from "./useDisplayPreferences";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -81,14 +82,16 @@ export function OfficeCarousel({
 
   const [userPaused, setUserPaused] = useState(false);
   const [interacting, setInteracting] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const playing = !userPaused && !interacting && !reducedMotion && lightboxIndex === null;
+  // Shared hook: OS prefers-reduced-motion OR the site's own Motion
+  // setting (footer > Display settings). The third stop condition,
+  // `userPaused`, stays exactly as it was — the pause button is still
+  // the sticky, per-visit control and this preference is the durable,
+  // site-wide one.
+  const reducedMotion = useReducedMotion();
 
-  useEffect(() => {
-    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  }, []);
+  const playing = !userPaused && !interacting && !reducedMotion && lightboxIndex === null;
 
   // One copy's rendered width (photos + gaps), so the doubled track can
   // wrap seamlessly. Re-measured on resize since tile size changes at
