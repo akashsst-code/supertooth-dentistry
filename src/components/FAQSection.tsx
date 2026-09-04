@@ -55,20 +55,39 @@ export function FAQSection() {
       <div className={shellWide}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Eyebrow>Good to know</Eyebrow>
-      {/* Straight into the questions (Akash) — the standing line here
-          ("Answers to what new and existing patients ask us most...")
-          was preamble in front of a list that explains itself. Its one
-          substantive half, the invitation to call, is already a real
-          answer inside the emergency question and a Quick action in the
-          section below. */}
-      <SectionHeading className="mb-10">
-        Frequently asked <Accent>questions</Accent>.
-      </SectionHeading>
+      {/* DESKTOP (lg+): the heading moves into a sticky left column and
+          the questions take the right, instead of the heading sitting
+          alone above a 768px list with 424px of empty sand beside it.
+
+          A grid, not a two-column accordion. Splitting eleven expanding
+          panels across two columns means opening one in the left column
+          reflows every panel in the right — the answer a reader just
+          asked for jumps out from under the cursor. Keeping the
+          accordion in one column preserves that, while the heading
+          column absorbs the width that was empty.
+
+          `lg:sticky lg:top-24` keeps "Frequently asked questions" in view
+          for the whole ~1,300px of the list, so a reader eight questions
+          down still has the section label on screen. `self-start` is what
+          makes sticky work inside a grid item — a stretched item is
+          already as tall as the row and has nothing to scroll within. */}
+      <div className="lg:grid lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-16">
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <Eyebrow>Good to know</Eyebrow>
+          {/* Straight into the questions (Akash) — the standing line here
+              ("Answers to what new and existing patients ask us most...")
+              was preamble in front of a list that explains itself. Its one
+              substantive half, the invitation to call, is already a real
+              answer inside the emergency question and a Quick action in the
+              section below. */}
+          <SectionHeading className="mb-10 lg:mb-0">
+            Frequently asked <Accent>questions</Accent>.
+          </SectionHeading>
+        </div>
 
       {/* Reading measure, left-aligned against the page's spine rather
           than centred — see the shellWide comment in editorial.tsx. */}
-      <div className="flex flex-col gap-3 md:max-w-3xl">
+      <div className="flex flex-col gap-3 md:max-w-3xl lg:max-w-none">
         {faqs.map((faq, i) => {
           const open = openIndex === i;
           const isEmergency = faq.question === EMERGENCY_QUESTION;
@@ -116,13 +135,24 @@ export function FAQSection() {
                         Call us at {contact.phone}
                       </a>
                     )}
-                    <p className="text-sm text-espresso/70">{faq.answer}</p>
+                    {/* Capped in `ch`, which tracks the font rather than a
+                        guessed pixel width — so it stays a ~65-character
+                        measure at any text size, including under the
+                        site's own larger-text setting and under browser
+                        zoom. Measured at 728px / 77 characters before
+                        this, against the 50–75 band the readability
+                        research settles on and the 80-character ceiling
+                        in WCAG 2.2 SC 1.4.8. Only applied from lg: below
+                        it the panel
+                        is already narrower than the cap. */}
+                    <p className="text-sm text-espresso/70 lg:max-w-[65ch]">{faq.answer}</p>
                   </div>
                 </div>
               </div>
             </div>
           );
         })}
+        </div>
       </div>
     </div>
     </section>

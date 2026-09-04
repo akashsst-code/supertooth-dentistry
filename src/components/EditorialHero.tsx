@@ -56,7 +56,28 @@ import { GoogleGIcon, PhoneIcon, StarIcon } from "./icons";
 export function EditorialHero() {
   return (
     <section className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-6 pb-5 pt-20 md:max-w-[1320px] md:flex-none md:px-10 md:pb-24 md:pt-32 lg:px-16">
-      <div className="md:grid md:flex-none md:grid-cols-[minmax(320px,0.85fr)_minmax(440px,1.15fr)] md:items-center md:gap-[clamp(4rem,8vw,8.75rem)] flex flex-1 flex-col">
+      {/* Two-column from `lg`, not `md` — a measured reflow fix, not a
+          taste call. The old `md:` grid asked for minmax(320px,…) +
+          minmax(440px,…) + a clamp(4rem,…) gap, which is 824px of hard
+          minimums inside a container that only has `100vw - 80px` to
+          give. Between 768px and ~866px that column pair could not
+          shrink, so the photo overflowed the viewport and the whole
+          document scrolled sideways (measured: scrollWidth 864 at a
+          768px viewport). That band is exactly iPad portrait, and it is
+          also where a 1536px desktop lands at 200% browser zoom and a
+          1280px desktop at 150% — so it was a live WCAG 2.2 SC 1.4.10
+          Reflow failure, not just an awkward tablet.
+
+          Moving the split to `lg` gives the two columns 896px minimum to
+          work with, which clears the 824px they need. 768–1023px now
+          gets the stacked composition, which is the right answer anyway:
+          at 688px of usable width the 52px headline and a 440px photo
+          side by side were never going to read. `minmax(0,…)` on both
+          tracks is the belt-and-braces half of the fix — grid items
+          default to min-content minimum, so even above lg the tracks can
+          now shrink rather than push the row wider than its container.
+          Mobile (<768px) is untouched: it never entered this grid. */}
+      <div className="lg:grid lg:flex-none lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center lg:gap-[clamp(3rem,6vw,8.75rem)] flex flex-1 flex-col">
         <div className="shrink-0">
           {/* Sized from the reference, not from the spec's numeric scale.
               The spec says clamp(52px, 14vw, 68px), which rendered
@@ -178,7 +199,13 @@ export function EditorialHero() {
             EditorialScreen, which is 92svh rather than 100svh — so it
             fills its column exactly, lands at roughly half the screen,
             and leaves no slack to explain. */}
-        <figure className="relative mt-4 mb-0 min-h-[180px] flex-1 overflow-hidden rounded-[18px] bg-sand md:mt-0 md:aspect-[5/4] md:flex-none">
+        {/* These enhancements move md:->lg: with the grid above. At
+            768–1023px the hero is stacked now, so the photo still needs
+            its top margin (md:mt-0 would have butted it against the
+            review line) and still wants a real ratio rather than the
+            mobile `flex-1` fill — 16:10 is the stacked-tablet crop, 5:4
+            is the beside-the-copy crop the spec asks for. */}
+        <figure className="relative mt-4 mb-0 min-h-[180px] flex-1 overflow-hidden rounded-[18px] bg-sand md:aspect-[16/10] md:flex-none lg:mt-0 lg:aspect-[5/4]">
           {/* Absolutely positioned rather than a plain child: HeroCarousel
               renders `fill` images, which need a positioned ancestor with
               a resolved height. As a flex item the figure's height comes

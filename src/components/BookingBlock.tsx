@@ -177,8 +177,29 @@ export function BookingBlock() {
           44px tap-target height on the two legal links stays; that is a
           requirement (item 12), not slack. */}
       <div className={`${shellWide} pb-4! md:pb-6!`}>
-        <div className="md:max-w-2xl">
-          <div className="text-left">
+        <div className="md:max-w-2xl lg:max-w-none">
+          {/* DESKTOP (lg+): the ask on the left, the reference panel on
+              the right. On a phone this is one correct column — read the
+              invitation, hit Book, and the hours/address sit underneath
+              as the thing you check after deciding. At 1440px the same
+              column was 672px wide inside a 1192px section and 863px
+              tall, with the hours table pushed below the fold of the
+              section for no reason other than that a phone has no second
+              column to put it in.
+
+              The split follows the job each half does rather than
+              chopping the content in half by length: everything that
+              asks for a decision (heading, invitation, the three Quick
+              actions) stays in the reading column, and everything that
+              answers "can I actually come, and where" (hours, address)
+              becomes a reference panel beside it. That is also the
+              conversion-safe arrangement — the three actions keep one
+              uninterrupted vertical run and one visual weight order
+              (filled Book, outlined Call, alert-tinted Emergency), so
+              the single-primary-CTA hierarchy the page is built on is
+              unchanged; nothing new competes with Book. */}
+          <div className="text-left lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-start lg:gap-16">
+            <div>
             <Eyebrow>
               Visit us{openHours && ` · Open from ${openHours.time.split(" – ")[0]}`}
             </Eyebrow>
@@ -233,7 +254,7 @@ export function BookingBlock() {
                 The group is capped at the same max-w-md as the
                 hours/location block below so the two share a left AND a
                 right edge. */}
-            <div className="mb-7 max-w-md">
+            <div className="mb-7 max-w-md lg:mb-0">
               <p className="mb-2.5 text-xs font-medium uppercase tracking-wide text-espresso/80">
                 Quick actions
               </p>
@@ -262,6 +283,8 @@ export function BookingBlock() {
               </div>
             </div>
 
+            </div>
+
             {/* Same max-w-md as the Quick actions group, so the two
                 stack as one aligned column rather than two blocks of
                 different width.
@@ -286,7 +309,7 @@ export function BookingBlock() {
                 information. Closed days are dimmer than open ones so
                 the four bookable days are what the eye lands on (at a
                 contrast-safe step — see the comment on the rows). */}
-            <div className="max-w-md rounded-2xl bg-sand/60 px-4 py-3.5">
+            <div className="max-w-md rounded-2xl bg-sand/60 px-4 py-3.5 lg:mt-0 lg:max-w-none lg:px-5 lg:py-5">
               <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-espresso/80">
                 Office hours
               </p>

@@ -226,35 +226,47 @@ export function AppointmentForm() {
           />
         </div>
 
-        <Field
-          name="email"
-          label="Email"
-          type="email"
-          inputMode="email"
-          autoComplete="email"
-          value={values.email}
-          error={visibleErrors.email}
-          onChange={(v) => updateValue("email", v)}
-          onBlur={() => handleBlur("email")}
-          inputRef={(el) => {
-            fieldRefs.current.email = el;
-          }}
-        />
+        {/* Paired from sm up, matching the first/last-name row directly
+            above. Two reasons, both about the wide view: a 558px-wide
+            input for a 10-digit phone number reads as "we want a lot
+            here" — field width is a size cue, and the form-usability
+            literature is consistent that a control much wider than its
+            expected input invites hesitation — and pairing them takes two
+            rows out of a form whose whole design goal is to look like one
+            screen rather than a questionnaire. `grid` with no column count
+            below sm is a single column with the same `gap-5` these two
+            already sat in, so the phone layout is unchanged. */}
+        <div className="grid sm:grid-cols-2 gap-5">
+          <Field
+            name="email"
+            label="Email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            value={values.email}
+            error={visibleErrors.email}
+            onChange={(v) => updateValue("email", v)}
+            onBlur={() => handleBlur("email")}
+            inputRef={(el) => {
+              fieldRefs.current.email = el;
+            }}
+          />
 
-        <Field
-          name="phone"
-          label="Phone number"
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          value={values.phone}
-          error={visibleErrors.phone}
-          onChange={(v) => updateValue("phone", v)}
-          onBlur={() => handleBlur("phone")}
-          inputRef={(el) => {
-            fieldRefs.current.phone = el;
-          }}
-        />
+          <Field
+            name="phone"
+            label="Phone number"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            value={values.phone}
+            error={visibleErrors.phone}
+            onChange={(v) => updateValue("phone", v)}
+            onBlur={() => handleBlur("phone")}
+            inputRef={(el) => {
+              fieldRefs.current.phone = el;
+            }}
+          />
+        </div>
 
         <div>
           <p className="text-sm text-espresso/70 mb-2">{anxietyNote}</p>

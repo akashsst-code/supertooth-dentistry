@@ -99,7 +99,18 @@ export function EditorialTrustBlock() {
             leaves an obvious surface to hang the tap-to-expand behaviour
             back on if that ever returns. No icons: Section 9 says never
             one beside every text row. */}
-        <ul className="mt-10 flex flex-col gap-3 md:mt-12 md:max-w-3xl">
+        {/* DESKTOP (lg+): two columns. Measured at 1440px, these five
+            rows were a 768px column inside a 1192px section — 424px of
+            sand doing nothing to their right — and each row's detail line
+            ran to 71 characters, at the top of the 50–75 readability
+            band. Two columns bring the measure to roughly 45 and cut
+            ~350px of scroll, and a five-item scan list is exactly the
+            content type that reads better as a block than as a queue.
+            `items-start` here (unlike the service cards) because these
+            are borderless ivory tiles with no shared visual bottom edge —
+            an uneven baseline reads as normal text ragging, not as a
+            broken card. Below lg the stack is untouched. */}
+        <ul className="mt-10 flex flex-col gap-3 md:mt-12 md:max-w-3xl lg:grid lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-4">
           {differentiators.map((d) => (
             <li key={d.title} className="rounded-2xl bg-warm-ivory p-6 md:p-7">
               <h3 className="font-editorial text-xl font-medium leading-snug tracking-[-0.02em] text-espresso md:text-2xl">
