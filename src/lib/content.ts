@@ -149,6 +149,33 @@ export const hoursByDay = hours.flatMap(({ days, time }) => {
 // free of specific promises (no time windows, no "guaranteed") per the
 // no-unverifiable-claims rule. "In-network" doesn't need one — its
 // expanded panel is the real carrier list instead.
+// Carrier lists live above `differentiators` rather than further down
+// the file because the in-network row derives its copy from them —
+// a `const` referenced before its declaration is a runtime TDZ
+// error, not a hoisting convenience. Nothing else about them changed.
+export const insuranceCarriers = [
+  "Delta Dental",
+  "Premera Blue Cross",
+  "Aetna",
+  "Cigna",
+  "Guardian",
+  "Humana",
+]; // named per Akash in chat as examples of majors to feature — confirmed
+// accurate against the practice's current network status by Akash
+// 2026-09-02 (item 2), no longer Placeholder-wrapped.
+
+/**
+ * Short-name teaser for the hero's one-line trust strip specifically —
+ * "Delta Dental, Premera Blue Cross, Aetna" doesn't fit one line on a
+ * phone alongside the "In-network:" label and "+ more", so this trims
+ * to the colloquial short names Akash used in chat. Full/proper names
+ * still live in insuranceCarriers above for every other section
+ * (InsuranceBlock, the /services carrier chips) — this is a
+ * presentation-only abbreviation for one tight space, not a separate
+ * source of truth.
+ */
+export const insuranceCarriersHeroTeaser = ["Delta", "Premera", "Aetna"];
+
 // Backlog items 62 and 64 (2026-09-03 homepage review, WI-06/WI-07).
 // Two changes, both Akash's:
 //
@@ -174,16 +201,37 @@ export const hoursByDay = hours.flatMap(({ days, time }) => {
 // are the same capability the same-day-crown row rests on.
 export const differentiators = [
   {
+    // Akash, 2026-09-03: "for in-network, list all the plans… say
+    // something like a, b, c… and more… we handle the insurance
+    // papers." Names derive from `insuranceCarriersHeroTeaser` above
+    // rather than being retyped, so the row can't drift from the list
+    // the insurance surfaces publish; the short names are what that
+    // export exists for, since the proper names ("Premera Blue Cross")
+    // run to three lines in this row at 375px.
     title: "In-network with most plans",
-    detail: "We handle the insurance paperwork.",
+    detail: `${insuranceCarriersHeroTeaser.join(", ")} and more — we handle the insurance paperwork.`,
     image: { src: "/team/front-desk.jpg", alt: "A team member at the front desk" },
   },
   {
-    title: "Modern, digital dentistry",
-    detail: "Digital scans, designed and milled in-house.",
-    image: { src: "/team/team-itero-scan.jpg", alt: "A team member reviewing a digital scan on-screen" },
+    // Moved to position 2 and renamed on Akash's call, 2026-09-03:
+    // "move (we make space) up to same day visits 2nd after in-network…
+    // say same day visits, and below, same day for emergency, and same
+    // or next day for non-emergency."
+    //
+    // Worth being explicit about what changed, because this is the same
+    // subject item 62 removed: the claim that came off was an
+    // unqualified "Same-day appointments — real availability", which he
+    // called inaccurate. What goes back is his own split — same day for
+    // an emergency, same or next day otherwise — stated by the practice
+    // owner as what the practice actually delivers. It is a stronger
+    // claim than the "we make space" wording it replaces, and it is his
+    // to make; item 62's rule is satisfied by it being confirmed, not
+    // by it being vague. Recorded on backlog items 62/64.
+    title: "Same-day visits",
+    detail: "Same day for an emergency, same or next day for everything else.",
+    image: { src: "/office/office-1.webp", alt: "Front desk and reception area" },
     expandedNote:
-      "Your teeth are scanned digitally rather than pressed into a tray of putty, and that scan is what the crown is designed from — the same file from the first appointment to the finished tooth.",
+      "For a toothache, a chipped tooth or swelling, call us and we'll see you the day you call. For everything else it's usually the same day or the next one. Outside office hours there's always an on-call dentist.",
   },
   {
     title: "Same-day crowns",
@@ -193,36 +241,28 @@ export const differentiators = [
       "Crowns are designed and milled right here in one visit — no impressions sent to an outside lab, no temporary crown, no second appointment.",
   },
   {
-    // Akash, 2026-09-03, asked for the Botox qualification to be
-    // highlighted here and not only in the credential badges ("yes, we
-    // do, and want to highlight, even in earlier section 2"). The
-    // credential itself is now settled as AAFE (see credentialBadges
-    // above). Wording claims the training and the use, never an
-    // outcome — a therapeutic Botox row that promised relief would be
-    // a treatment-outcome claim, which is the one thing the
-    // no-unverifiable-claims rule will not carry.
-    title: "Botox for jaw pain and headaches",
-    detail: "Therapeutic Botox, AAFE trained and certified.",
+    // Modern/digital keeps its place ahead of the Botox row: the
+    // review's stated rationale ranked it the SECOND differentiator
+    // overall, and with same-day visits and crowns inserted above it,
+    // fourth is as high as that ordering survives. Flip it with the row
+    // below if the Botox highlight should outrank it.
+    title: "Modern, digital dentistry",
+    detail: "Digital scans, designed and milled in-house.",
+    image: { src: "/team/team-itero-scan.jpg", alt: "A team member reviewing a digital scan on-screen" },
+    expandedNote:
+      "Your teeth are scanned digitally rather than pressed into a tray of putty, and that scan is what the crown is designed from — the same file from the first appointment to the finished tooth.",
+  },
+  {
+    // Two lines total, per Akash 2026-09-03 ("for botox keep to two
+    // lines"): a one-line title and a one-line detail at 375px. The
+    // longer "Botox for jaw pain and headaches" wrapped the title onto
+    // a second line, making the row four lines deep. Still claims the
+    // training and the use, never an outcome.
+    title: "Botox for TMJ and headaches",
+    detail: "AAFE trained and certified.",
     image: { src: "/team/archana-candid-crop.jpg", alt: "Dr. Archana Dubey in the office" },
     expandedNote:
       "Clenching and jaw tension can drive headaches, and therapeutic Botox is one of the options for it. We'll examine you first and tell you honestly whether it's the right fit for what you're feeling.",
-  },
-  {
-    // Item 62's replacement row, and the answer to the claim that was
-    // removed. Akash's own framing, 2026-09-03: "can we say something
-    // that's a culmination of same day when we have, or ASAP, same-day
-    // emergency, we work to make space". This is the honest version of
-    // that — a process, not a guarantee, and it matches the practice's
-    // own live-site wording ("in most cases, emergency visits are
-    // accommodated on the day you call as soon as we can schedule an
-    // appointment"). What it deliberately does NOT say is that routine
-    // appointments are available same-day, which is the claim he called
-    // inaccurate in the first place.
-    title: "We make space when it's urgent",
-    detail: "Same-day when we have it, as soon as we can when we don't.",
-    image: { src: "/office/office-1.webp", alt: "Front desk and reception area" },
-    expandedNote:
-      "For a toothache, a chipped tooth or swelling, call us — in most cases we can see you the day you call, and when we can't we'll tell you the soonest we can. Outside office hours there's always an on-call dentist.",
   },
 ];
 
@@ -264,16 +304,6 @@ export const offers = {
   },
 };
 
-export const insuranceCarriers = [
-  "Delta Dental",
-  "Premera Blue Cross",
-  "Aetna",
-  "Cigna",
-  "Guardian",
-  "Humana",
-]; // named per Akash in chat as examples of majors to feature — confirmed
-// accurate against the practice's current network status by Akash
-// 2026-09-02 (item 2), no longer Placeholder-wrapped.
 
 // Real office photography — supplied by Akash 2026-08-23, replaces the
 // placeholder tiles that previously stood in for this section (Section 8
@@ -335,17 +365,6 @@ export const heroPhotos = [
   { src: "/team/archana-profile.jpg", alt: "Dr. Archana Dubey, DDS, MDS" },
 ];
 
-/**
- * Short-name teaser for the hero's one-line trust strip specifically —
- * "Delta Dental, Premera Blue Cross, Aetna" doesn't fit one line on a
- * phone alongside the "In-network:" label and "+ more", so this trims
- * to the colloquial short names Akash used in chat. Full/proper names
- * still live in insuranceCarriers above for every other section
- * (InsuranceBlock, the /services carrier chips) — this is a
- * presentation-only abbreviation for one tight space, not a separate
- * source of truth.
- */
-export const insuranceCarriersHeroTeaser = ["Delta", "Premera", "Aetna"];
 
 // Dr. Archana Dubey's real bio and credentials — supplied by Akash
 // 2026-08-23, resolves the "Dr. Archana bio" content blocker in
