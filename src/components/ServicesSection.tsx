@@ -1,20 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AlignerIcon, ClockIcon, CrownIcon, MedicalCrossIcon, SparkleIcon, ToothIcon } from "./icons";
+import { AlignerIcon, CrownIcon, MedicalCrossIcon, SparkleIcon, SyringeIcon, ToothIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
 import { services, servicesEmergencyShortcut } from "@/lib/content";
 import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
 
 // One per category, in the order content.ts declares them: a checkup, a
-// repair, a cosmetic change, straightening.
-const cardIcons = [ToothIcon, CrownIcon, SparkleIcon, AlignerIcon];
+// repair, a cosmetic change, straightening, jaw pain. The last one also
+// does double duty as that card's image fallback — it is the only
+// category with no photograph yet.
+const cardIcons = [ToothIcon, CrownIcon, SparkleIcon, AlignerIcon, SyringeIcon];
 
 // Horizontal offset (px from center) of the connector segment in each
 // gap between cards — one entry per gap, so services.length - 1 values.
 // Deliberately not all 0: a single straight line down the center is the
 // thing Akash asked off of. Small enough that it never comes close to
 // a card's own edge at the narrowest (375px) viewport.
-const connectorOffsets = [-22, 18, -14];
+const connectorOffsets = [-22, 18, -14, 20];
 
 /**
  * Services teaser — positioned after Testimonials. Cards kept from the
@@ -89,7 +91,7 @@ export function ServicesSection({
             container is already max-w-3xl. */}
         <div className={`flex flex-col ${editorial ? "md:max-w-3xl" : ""}`}>
           {services.map((s, i) => {
-            const Icon = cardIcons[i] ?? ClockIcon;
+            const Icon = cardIcons[i] ?? ToothIcon;
             return (
               <div key={s.title}>
                 {i > 0 && (
@@ -120,13 +122,23 @@ export function ServicesSection({
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
+                      /* Falls back to the card's OWN icon rather than a
+                         hardcoded clock — with a real category using this
+                         path now, a stock clock on the jaw-pain card
+                         would read as a mistake rather than a placeholder. */
                       <div className="flex h-full items-center justify-center">
-                        <ClockIcon className="h-16 w-16 text-terracotta" />
+                        <Icon className="h-16 w-16 text-terracotta" />
                       </div>
                     )}
-                    <span className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-warm-ivory/90 text-terracotta-dark shadow-sm backdrop-blur-sm">
-                      <Icon className="h-4 w-4" />
-                    </span>
+                    {/* The badge exists to sit ON a photograph. On the
+                        one card with no photo the tile already renders
+                        the same icon at 64px, so the badge would just be
+                        the same mark twice in one box. */}
+                    {s.image && (
+                      <span className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-warm-ivory/90 text-terracotta-dark shadow-sm backdrop-blur-sm">
+                        <Icon className="h-4 w-4" />
+                      </span>
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col p-5 sm:p-6">
                     <h3 className={`mb-1 text-espresso ${editorial ? "font-editorial text-xl font-medium tracking-[-0.02em]" : "font-display text-lg sm:text-xl font-semibold"}`}>

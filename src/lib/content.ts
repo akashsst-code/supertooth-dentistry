@@ -192,6 +192,38 @@ export const differentiators = [
     expandedNote:
       "Crowns are designed and milled right here in one visit — no impressions sent to an outside lab, no temporary crown, no second appointment.",
   },
+  {
+    // Akash, 2026-09-03, asked for the Botox qualification to be
+    // highlighted here and not only in the credential badges ("yes, we
+    // do, and want to highlight, even in earlier section 2"). The
+    // credential itself is now settled as AAFE (see credentialBadges
+    // above). Wording claims the training and the use, never an
+    // outcome — a therapeutic Botox row that promised relief would be
+    // a treatment-outcome claim, which is the one thing the
+    // no-unverifiable-claims rule will not carry.
+    title: "Botox for jaw pain and headaches",
+    detail: "Therapeutic Botox, AAFE trained and certified.",
+    image: { src: "/team/archana-candid-crop.jpg", alt: "Dr. Archana Dubey in the office" },
+    expandedNote:
+      "Clenching and jaw tension can drive headaches, and therapeutic Botox is one of the options for it. We'll examine you first and tell you honestly whether it's the right fit for what you're feeling.",
+  },
+  {
+    // Item 62's replacement row, and the answer to the claim that was
+    // removed. Akash's own framing, 2026-09-03: "can we say something
+    // that's a culmination of same day when we have, or ASAP, same-day
+    // emergency, we work to make space". This is the honest version of
+    // that — a process, not a guarantee, and it matches the practice's
+    // own live-site wording ("in most cases, emergency visits are
+    // accommodated on the day you call as soon as we can schedule an
+    // appointment"). What it deliberately does NOT say is that routine
+    // appointments are available same-day, which is the claim he called
+    // inaccurate in the first place.
+    title: "We make space when it's urgent",
+    detail: "Same-day when we have it, as soon as we can when we don't.",
+    image: { src: "/office/office-1.webp", alt: "Front desk and reception area" },
+    expandedNote:
+      "For a toothache, a chipped tooth or swelling, call us — in most cases we can see you the day you call, and when we can't we'll tell you the soonest we can. Outside office hours there's always an on-call dentist.",
+  },
 ];
 
 // Backlog item 13 — checked directly against the live Google Business
@@ -467,15 +499,19 @@ export const credentialBadges: CredentialBadge[] = [
   { icon: "graduationCap", title: "DDS, University of Colorado", detail: "Doctor of Dental Surgery", group: "Experience & Education" },
   { icon: "aligner", title: "Certified Invisalign Provider", detail: "Clear aligner treatment", group: "Certifications & Training" },
   { icon: "aligner", title: "AACA Gold Status Provider", detail: "American Academy of Clear Aligners", group: "Certifications & Training" },
-  // Title wording is Akash's own (2026-09-03): "AACE trained and
-  // certified botox provider". Note the acronym differs from the
-  // issuing body previously recorded here — this entry's `detail` read
-  // "American Academy of Facial Esthetics (AAFE)". Rather than assert
-  // an expansion that contradicts the title, `detail` states the
-  // credential without naming an organisation until Akash confirms
-  // which acronym is right; the AAFE attribution is preserved in this
-  // comment so it can go straight back in if AAFE was correct.
-  { icon: "syringe", title: "AACE Trained and Certified Botox Provider", detail: "Trained and certified in therapeutic and esthetic Botox", group: "Certifications & Training" },
+  // Backlog item 63, resolved 2026-09-03: the acronym was recorded two
+  // different ways — "AAFE" when Akash supplied the credentials on
+  // 2026-09-02, "AACE" in the 2026-09-03 review notes — so this row
+  // deliberately named no organisation until he settled it. He did,
+  // directly: "aafe for botox". The issuing body is the American
+  // Academy of Facial Esthetics, which also matches the review's own
+  // written wording, so the 2026-09-03 "AACE" reading was a
+  // transcription artifact. Organisation now names itself in `detail`,
+  // the same shape as the AACA row above. Item 63 still wants the
+  // certificate itself on file before launch — this is the practice
+  // owner's confirmation, which is the tier used for capability claims,
+  // not the document.
+  { icon: "syringe", title: "AAFE Trained and Certified Botox Provider", detail: "American Academy of Facial Esthetics", group: "Certifications & Training" },
   { icon: "implant", title: "Trained in Implant Dentistry", detail: "Implant placement & restoration", group: "Certifications & Training" },
   { icon: "badge", title: "Member, AGD", detail: "Academy of General Dentistry", group: "Professional Memberships" },
   { icon: "shieldCheck", title: "Member, ADA", detail: "American Dental Association", group: "Professional Memberships" },
@@ -567,7 +603,7 @@ export const services = [
     title: "Checkups & cleanings",
     clinical: "General & preventive dentistry",
     detail: "The visit that keeps the other ones small — and anything we find gets explained before it's treated.",
-    includes: ["Comprehensive exams", "X-rays", "Cleanings", "Gum (periodontal) care"],
+    includes: ["Comprehensive exams", "X-rays", "Cleanings", "Gum (periodontal) care", "Sealants and fluoride"],
     real: true,
     image: {
       src: "https://images.unsplash.com/photo-1663755489920-5e09f66d011a?auto=format&fit=crop&w=1200&q=80",
@@ -580,9 +616,10 @@ export const services = [
     detail: "Chipped, cracked, worn down or missing — the work that gets a tooth back to chewing and looking like itself.",
     includes: [
       "Same-day crowns",
-      "Fillings and bonding",
+      "Metal-free fillings and bonding",
       "Root canals and extractions",
-      "Bridges, dentures and implant restorations",
+      "Bridges and dentures",
+      "Implant restorations",
     ],
     real: true,
     image: {
@@ -594,7 +631,7 @@ export const services = [
     title: "Change how your smile looks",
     clinical: "Cosmetic dentistry",
     detail: "For the tooth you notice in every photograph. You'll see what's possible, and what it involves, before anything is decided.",
-    includes: ["Veneers", "Teeth whitening", "Smile design"],
+    includes: ["Veneers", "Teeth whitening", "Smile design", "Cosmetic consultations"],
     real: true,
     image: {
       src: "https://images.unsplash.com/photo-1777331903190-341a3dd0441b?auto=format&fit=crop&w=1200&q=80",
@@ -611,6 +648,33 @@ export const services = [
       src: "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=1200&q=80",
       alt: "Clear aligner tray held up against a smile",
     },
+  },
+  {
+    // The fifth door, held back on 2026-09-03 pending item 63 and
+    // released the same day: Akash confirmed the practice treats these
+    // patients and asked for it to be highlighted ("yes, we do, and
+    // want to highlight"). The credential behind it is settled as AAFE.
+    //
+    // Copy claims the treatment and the assessment, never the result —
+    // "Botox relieves your headaches" would be a treatment-outcome
+    // claim about an individual patient, which neither this repo's
+    // no-unverifiable-claims rule nor the ADA's veracity principle
+    // carries. Night guards sit here rather than under checkups because
+    // clenching is the problem they solve, and this is the clenching
+    // door.
+    //
+    // NO PHOTO YET, deliberately: every other card's image is
+    // patient-facing stock chosen in the 2026-09-01 round, and there is
+    // nothing in `public/` for this one. ServicesSection falls back to
+    // an icon tile in the same box, so the grid keeps its shape. Logged
+    // on item 60 — this card is the first thing that should get a real
+    // practice photo.
+    title: "Jaw clenching, TMJ and headaches",
+    clinical: "Therapeutic Botox and night guards",
+    detail:
+      "Clenching and jaw tension can drive headaches. We examine first, then tell you honestly whether therapeutic Botox or a night guard is the right fit.",
+    includes: ["Therapeutic Botox (AAFE certified)", "Night guards", "Jaw and bite assessment"],
+    real: true,
   },
 ];
 
@@ -742,14 +806,15 @@ export const faqs = [
     // Deliberately no phone number baked in here — see the file-level
     // comment above. FAQSection.tsx prepends the one confirmed real
     // number (`contact.phone`) when it renders this specific answer.
-    // Item 62 sweep: this previously promised "in most cases we can
-    // accommodate emergency visits the same day you call". That is a
-    // time-bound availability promise of exactly the kind Akash called
-    // inaccurate, so it is process-first here until item 63 confirms
-    // what the practice actually delivers — at which point the stronger
-    // wording goes straight back in.
+    // Item 62 stripped this back to a pure process answer while the
+    // availability question was open. Akash confirmed it on 2026-09-03
+    // ("same-day emergency, we work to make space"), which also matches
+    // the practice's own live site word for word ("in most cases,
+    // emergency visits are accommodated on the day you call as soon as
+    // we can schedule an appointment") and its on-call line. Restored
+    // to that — hedged the way he hedged it, and still process-first.
     answer:
-      "Call us right away and tell us what's happening — urgent problems come first, and we'll tell you the soonest we can see you.",
+      "Call us right away and tell us what's happening. In most cases we can see you the day you call, and when we can't we'll tell you the soonest we can. Outside office hours there's always an on-call dentist.",
   },
   {
     question: "Do you have a referral program?",

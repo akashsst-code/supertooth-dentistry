@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { CredentialBadges } from "./CredentialBadges";
-import { CrownIcon, ShieldCheckIcon, SparkleIcon } from "./icons";
+import { ClockIcon, CrownIcon, ShieldCheckIcon, SparkleIcon, SyringeIcon } from "./icons";
 import { BookingCtaRow, ExpandCard, InsuranceExpandCard } from "./InsuranceExpandCard";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { archana, differentiators, officeBlurb } from "@/lib/content";
@@ -11,12 +11,13 @@ import { archana, differentiators, officeBlurb } from "@/lib/content";
  * content (docs/supertooth-build-principles.md Section 2, "content is
  * separable from presentation"). Order matches the differentiators
  * order in content.ts, reordered 2026-09-03 for backlog items 62/64:
- * in-network, modern/digital dentistry, same-day crowns. TrustBlock
+ * in-network, modern/digital dentistry, same-day crowns, Botox for jaw
+ * pain, and making space when it's urgent. TrustBlock
  * itself is no longer rendered on any route — the homepage uses
  * EditorialTrustBlock — but it is kept as the non-editorial fallback,
  * so its icons have to track the same data.
  */
-const differentiatorIcons = [ShieldCheckIcon, SparkleIcon, CrownIcon];
+const differentiatorIcons = [ShieldCheckIcon, SparkleIcon, CrownIcon, SyringeIcon, ClockIcon];
 
 /**
  * Trust block — locked in docs/supertooth-ux-flow.md Section 2, ordered
