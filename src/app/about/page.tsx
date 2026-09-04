@@ -38,7 +38,7 @@ export default function AboutPage() {
       <Nav />
       <main id="main-content" tabIndex={-1} className="pt-16">
         <div className="border-b border-sand bg-warm-ivory">
-          <div className="mx-auto max-w-3xl px-4 sm:px-6 py-3 flex items-center gap-3">
+          <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 sm:px-6 py-3 flex items-center gap-3">
             <Link
               href="/"
               className="tap-target inline-flex items-center gap-1.5 text-sm font-medium text-espresso/70 hover:text-terracotta transition-colors -ml-2 px-2"
@@ -65,7 +65,7 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10 sm:py-14">
+        <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 sm:px-6 py-10 sm:py-14">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta-dark mb-2">
             Meet your dentist
           </p>

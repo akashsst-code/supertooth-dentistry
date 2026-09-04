@@ -104,17 +104,24 @@ export default function InsuranceNewPatientsPage() {
 
         <InsuranceBlock />
 
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 pb-10">
-          <div className="rounded-2xl border border-sand bg-warm-ivory p-6 sm:p-8">
+        {/* Two short, independent answers that were stacked as two
+            full-width cards — roughly 500px of desktop scroll to deliver
+            about six lines of text between them. They are the same kind
+            of thing (a question a new patient asks before booking) and
+            neither is more important than the other, so at lg they sit
+            side by side. `items-start` keeps them at their natural
+            heights rather than padding the shorter one out. Below lg they
+            are two stacked cards exactly as before, which is why they
+            were merged into one container rather than restyled. */}
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 pb-10 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
+          <div className="rounded-2xl border border-sand bg-warm-ivory p-6 sm:p-8 mb-10 lg:mb-0">
             <h2 className="font-display text-lg font-semibold text-espresso mb-2">No insurance?</h2>
             <p className="text-espresso/80 leading-relaxed !mb-0">
               Call us to talk about your options — we&apos;re happy to walk through what a visit
               looks like and answer questions before you commit to anything.
             </p>
           </div>
-        </div>
 
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 pb-10">
           <div className="rounded-2xl border border-sand bg-warm-ivory p-6 sm:p-8">
             <h2 className="font-display text-lg font-semibold text-espresso mb-2">
               What to bring to your first visit

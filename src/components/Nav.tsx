@@ -59,11 +59,21 @@ export function Nav() {
   return (
     <>
       <header className="fixed top-0 inset-x-0 z-50 bg-warm-ivory/95 backdrop-blur border-b border-sand">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between xl:max-w-[1320px] xl:px-16">
           <Logo />
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8" aria-label="Primary">
+          {/* Desktop nav — switched on at `lg`, not `md`. The comment on
+              the Backlog link below already documented the problem this
+              fixes: at 768–790px the labels inside this row wrap to two
+              lines and the Book pill grows to 40–60px inside a 64px
+              header. That was true of the whole row, not just the sixth
+              item, so the row is now gated where it actually fits rather
+              than patched item by item — and the hamburger covers
+              768–1023px instead of being hidden there. It also puts this
+              header on the same breakpoint as EditorialNav's new desktop
+              row, so the site has one place where it becomes "desktop"
+              rather than two. */}
+          <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
             {nav.map((item) => (
               <Link
                 key={item.href}
@@ -102,10 +112,10 @@ export function Nav() {
 
                 `gap-6 lg:gap-8` keeps lg+ pixel-identical to before and buys
                 back a little room in that md band. */}
-            <span className="hidden lg:block h-5 w-px bg-espresso/15" aria-hidden="true" />
+            <span className="hidden xl:block h-5 w-px bg-espresso/15" aria-hidden="true" />
             <Link
               href="/backlog"
-              className="group hidden lg:inline-flex items-baseline gap-1.5 text-sm text-espresso/70 hover:text-terracotta transition-colors -ml-4"
+              className="group hidden xl:inline-flex items-baseline gap-1.5 text-sm text-espresso/70 hover:text-terracotta transition-colors -ml-4"
             >
               Backlog
               <span className="text-xs text-espresso/70 group-hover:text-terracotta/60 transition-colors">
@@ -122,7 +132,7 @@ export function Nav() {
           </nav>
 
           {/* Mobile controls */}
-          <div className="flex md:hidden items-center gap-1 min-[375px]:gap-2">
+          <div className="flex lg:hidden items-center gap-1 min-[375px]:gap-2">
             <a
               href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
               aria-label="Call the practice"
@@ -156,7 +166,7 @@ export function Nav() {
           collapsed this menu's fixed inset-0 box to the header's own
           65px height instead of the viewport. */}
       {open && (
-        <div className="md:hidden fixed inset-0 top-16 bg-warm-ivory z-40 flex flex-col overflow-y-auto">
+        <div className="lg:hidden fixed inset-0 top-16 bg-warm-ivory z-40 flex flex-col overflow-y-auto">
           <nav className="flex flex-col px-6 py-8 gap-6" aria-label="Mobile primary">
             {nav.map((item) => (
               <Link

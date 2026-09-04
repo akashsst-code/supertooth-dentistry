@@ -53,7 +53,7 @@ export function ServicesSection({
         className={
           editorial
             ? shellWide
-            : "mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-24"
+            : "mx-auto max-w-3xl lg:max-w-5xl px-4 sm:px-6 py-16 sm:py-24"
         }
       >
         {/* Editorial variant uses the shared section opening — eyebrow,
@@ -88,21 +88,60 @@ export function ServicesSection({
             editorial variant's container is now full width so its
             heading shares the page's left spine; the card stack keeps
             its own narrower measure. /services is unaffected — its own
-            container is already max-w-3xl. */}
-        <div className={`flex flex-col ${editorial ? "md:max-w-3xl" : ""}`}>
+            container is already max-w-3xl.
+
+            DESKTOP (lg+): this becomes a grid. The one-column stack is
+            the right shape on a phone and the wrong one on a laptop, and
+            the measurements are unambiguous — at 1440px this section ran
+            4,849px tall (5.4 full desktop screens for five cards), while
+            the cards themselves sat in a 768px column with 424px of dead
+            ivory to their right for the entire scroll. The body copy
+            inside them measured 76 characters per line and the 13px
+            sub-service run 88 — the latter past the 80-character
+            ceiling WCAG 2.2 SC 1.4.8 sets, and both past the 50–75 band
+            the readability literature settles on. (Measured in real `ch`
+            units against the rendered font, not estimated from pixel
+            width.)
+
+            One change fixes all three at once, which is why it is a grid
+            rather than three separate tweaks: two columns at lg and three
+            from xl put the same five cards in two or three rows instead
+            of five, use the width that was empty, and narrow each card's
+            measure to 45–60 characters without touching a single font
+            size.
+
+            Cards stretch to their row height (`lg:h-full` on both the
+            grid item and the card inside it) rather than sitting on a
+            ragged baseline — the detail lines run one to three lines
+            long, and with five uniform photo tiles above them, unequal
+            card bottoms in the same row read as a rendering fault rather
+            than as variety. The card is already `flex flex-col` with a
+            `flex-1` body, so the Schedule action lands on a common
+            baseline for free. Mobile and tablet keep the stack and the
+            connectors exactly as reviewed. */}
+        <div
+          className={`flex flex-col lg:grid lg:grid-cols-2 lg:gap-8 xl:grid-cols-3 ${
+            editorial ? "md:max-w-3xl lg:max-w-none" : ""
+          }`}
+        >
           {services.map((s, i) => {
             const Icon = cardIcons[i] ?? ToothIcon;
             return (
-              <div key={s.title}>
+              <div key={s.title} className="lg:h-full">
+                {/* The hand-drawn connector segments are a vertical
+                    device: they exist to carry the eye from one card down
+                    to the next in a single column. In a grid there is no
+                    "next card below" to point at, so they are dropped
+                    rather than left dangling. */}
                 {i > 0 && (
-                  <div className="relative h-7 sm:h-14" aria-hidden="true">
+                  <div className="relative h-7 sm:h-14 lg:hidden" aria-hidden="true">
                     <span
                       className="absolute top-0 bottom-0 w-px bg-espresso/15"
                       style={{ left: `calc(50% + ${connectorOffsets[i - 1]}px)` }}
                     />
                   </div>
                 )}
-                <div className="group flex flex-col overflow-hidden rounded-2xl border border-sand bg-warm-ivory shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                <div className="group flex flex-col overflow-hidden rounded-2xl border border-sand bg-warm-ivory shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg lg:h-full">
                   {/* 16:10 on a phone, 4:3 from sm up. The uniform-tile
                       rule from Akash's 2026-09-01 round is about every
                       card being the SAME size, and it still holds — but
@@ -118,7 +157,7 @@ export function ServicesSection({
                         src={s.image.src}
                         alt={s.image.alt}
                         fill
-                        sizes="(min-width: 640px) 40rem, 100vw"
+                        sizes="(min-width: 1280px) 25rem, (min-width: 1024px) 34rem, (min-width: 640px) 40rem, 100vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
@@ -202,7 +241,9 @@ export function ServicesSection({
             Blueprint v2's services-overview spec asks for exactly this —
             a shortcut on this surface, not a category. */}
         <p
-          className={`mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] text-espresso/70 ${editorial ? "md:max-w-3xl" : ""}`}
+          className={`mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] text-espresso/70 ${
+            editorial ? "md:max-w-3xl lg:max-w-none" : ""
+          }`}
         >
           <MedicalCrossIcon className="h-4 w-4 shrink-0 text-terracotta-dark" />
           {servicesEmergencyShortcut.text}{" "}

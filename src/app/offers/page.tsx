@@ -50,7 +50,7 @@ export default function OffersPage() {
       <Nav />
       <main id="main-content" tabIndex={-1} className="pt-16">
         <div className="border-b border-sand bg-warm-ivory">
-          <div className="mx-auto max-w-3xl px-4 sm:px-6 py-3 flex items-center gap-3">
+          <div className="mx-auto max-w-3xl lg:max-w-4xl px-4 sm:px-6 py-3 flex items-center gap-3">
             <Link
               href="/"
               className="tap-target inline-flex items-center gap-1.5 text-sm font-medium text-espresso/70 hover:text-terracotta transition-colors -ml-2 px-2"
@@ -77,7 +77,7 @@ export default function OffersPage() {
           </div>
         </div>
 
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 py-6 sm:py-10">
+        <div className="mx-auto max-w-3xl lg:max-w-4xl px-4 sm:px-6 py-6 sm:py-10">
           {/* Not "New patients" — the first offer card's own label is
               already that, and the two stacked read as a stutter. */}
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-terracotta-dark">
@@ -115,22 +115,31 @@ export default function OffersPage() {
             ))}
           </div>
 
-          <Link
-            href="/contact"
-            className="tap-target w-full inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-6 py-4 text-base font-semibold text-warm-ivory hover:brightness-110 transition mb-2"
-          >
-            <CalendarIcon />
-            Book Appointment
-          </Link>
-          <a
-            href={tel}
-            className="tap-target w-full inline-flex items-center justify-center gap-2 rounded-full border border-espresso/20 px-6 py-3 text-sm font-semibold text-espresso hover:border-terracotta-dark hover:text-terracotta-dark transition-colors mb-8"
-          >
-            <PhoneIcon />
-            Call {contact.phone}
-          </a>
+          {/* Same treatment as /emergency: 100%-width pills are a phone
+              affordance and become 800px banners on a laptop. Stacked and
+              full-width below sm (gap-2/mb-8 reproducing the old mb-2/
+              mb-8 exactly), a row from sm up. Book keeps the filled
+              surface and Call the outline, so the primary/secondary
+              hierarchy the conversion research asks for survives the
+              change from a column to a row. */}
+          <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Link
+              href="/contact"
+              className="tap-target w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(to_right,var(--color-terracotta)_0%,var(--color-terracotta-dark)_10%)] px-6 py-4 text-base font-semibold text-warm-ivory hover:brightness-110 transition"
+            >
+              <CalendarIcon />
+              Book Appointment
+            </Link>
+            <a
+              href={tel}
+              className="tap-target w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full border border-espresso/20 px-6 py-3 text-sm font-semibold text-espresso hover:border-terracotta-dark hover:text-terracotta-dark transition-colors"
+            >
+              <PhoneIcon />
+              Call {contact.phone}
+            </a>
+          </div>
 
-          <p className="text-sm text-espresso/70">
+          <p className="text-sm text-espresso/70 lg:max-w-[68ch]">
             Wondering what your insurance covers?{" "}
             <Link
               href="/insurance-new-patients"
