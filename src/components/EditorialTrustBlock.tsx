@@ -2,7 +2,7 @@ import Image from "next/image";
 import { CredentialBadges } from "./CredentialBadges";
 import { OfficeCarousel } from "./OfficeCarousel";
 import { archana, differentiators, officeBlurb } from "@/lib/content";
-import { Accent, Eyebrow, SectionHeading, shellWide } from "./editorial";
+import { Accent, Eyebrow, SectionHeading, SectionLink, shellWide } from "./editorial";
 
 /**
  * EditorialTrustBlock — "page 2", carrying the screen-1 editorial system
@@ -112,6 +112,25 @@ export function EditorialTrustBlock() {
           ))}
         </ul>
 
+        {/* Two of the five differentiators above are claims those pages
+            answer in full — "In-network with most plans" is the whole
+            subject of /insurance-new-patients, and someone reading a
+            "why choose us" list is by definition still deciding. Kept to
+            one line of two quiet text links rather than a row of
+            buttons; the section's job is still trust, not navigation.
+            NOT placed in BookingBlock: Akash removed a "New patient?
+            Start here" line from that section by name, and this does not
+            put it back. */}
+        {/* A <div>, not a <p>: this is a group of two links, not a
+            sentence, and wrapping flex items in a paragraph also drags
+            in the global p margin that then has to be cancelled. They
+            wrap to two rows at 375px, which is why gap-y is set rather
+            than left to the 44px tap boxes to imply. */}
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-1 md:max-w-3xl">
+          <SectionLink href="/insurance-new-patients">Insurance &amp; new patients</SectionLink>
+          <SectionLink href="/offers">Current offers</SectionLink>
+        </div>
+
         {/* Dr. Archana — now the second block on the page, ahead of the
           office carousel (Akash's call, 2026-09-03). This reverses the
           earlier "office above bio" ordering recorded in this file's
@@ -192,6 +211,14 @@ export function EditorialTrustBlock() {
           <div className="mt-10 border-t border-espresso/20 pt-6 md:mt-14 md:pt-8">
             <CredentialBadges editorial quadrant />
           </div>
+
+          {/* /about carries the same bio at length plus the full
+              credential list. This block is the homepage's summary of
+              it and, until now, the page it summarises was unreachable
+              from here. */}
+          <SectionLink href="/about" className="mt-6">
+            More about Dr. Archana
+          </SectionLink>
         </div>
 
         {/* Office carousel is reused as-is rather than reskinned: it is

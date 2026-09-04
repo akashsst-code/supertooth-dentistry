@@ -147,9 +147,27 @@ body {
   line-height: 1.5;
 }
 
-/* WCAG 2.2 SC 1.4.12: paragraph spacing >= 2x font size */
+/* Paragraph rhythm.
+ *
+ * This was `margin-bottom: 2em`, cited as WCAG 2.2 SC 1.4.12. That reads
+ * the criterion backwards: 1.4.12 requires a page to stay readable and
+ * unclipped when a USER applies 2em paragraph spacing (via a user
+ * stylesheet or a reading tool) — it does not ask the page to ship at
+ * 2em. Shipping it cost roughly 880px of pure margin on the homepage
+ * alone (29 paragraphs), about a full phone screen of nothing.
+ *
+ * The tell that it was wrong is in the codebase: 30 patient-facing
+ * `mb-0!` / `!mb-*` overrides existed for no reason other than to
+ * cancel this rule out, and several component comments name it as the
+ * single largest cause of dead space they had to fight.
+ *
+ * 1em is a normal, generous paragraph rhythm. Conformance with 1.4.12
+ * is unaffected and was verified by measurement, not assumption: with
+ * 2em spacing, 1.5 line-height, 0.12em letter-spacing and 0.16em
+ * word-spacing all forced on via a test stylesheet, no text on any
+ * route clips or overlaps. */
 p {
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 
 /* 44x44px minimum touch target, per locked accessibility requirement */

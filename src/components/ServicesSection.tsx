@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AlignerIcon, CrownIcon, MedicalCrossIcon, SparkleIcon, SyringeIcon, ToothIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
 import { services, servicesEmergencyShortcut } from "@/lib/content";
-import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
+import { Accent, Body, Eyebrow, SectionHeading, SectionLink, shellWide } from "./editorial";
 
 // One per category, in the order content.ts declares them: a checkup, a
 // repair, a cosmetic change, straightening, jaw pain. The last one also
@@ -206,6 +206,18 @@ export function ServicesSection({
             );
           })}
         </div>
+
+        {/* Homepage only. On /services this component IS the page, so a
+            link to it would point at itself; the homepage version is a
+            teaser of five categories whose detail page was, until now,
+            reachable only from the hamburger. Sits above the emergency
+            shortcut so the urgent path stays the last thing in the
+            section. */}
+        {editorial && (
+          <div className={`mt-8 ${editorial ? "md:max-w-3xl" : ""}`}>
+            <SectionLink href="/services">See all services</SectionLink>
+          </div>
+        )}
 
         {/* The emergency shortcut, deliberately BELOW the categories and
             not among them: /emergency is the single source for urgent
