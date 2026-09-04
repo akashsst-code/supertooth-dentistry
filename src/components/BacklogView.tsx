@@ -90,7 +90,17 @@ const VIEWPORT_LABELS: Record<Viewport, string> = {
   any: "any width",
 };
 
-type Filter = "all" | Priority | "blocked" | "moved" | "conflict" | "blueprint" | "decided" | "launch" | "foundation";
+type Filter =
+  | "all"
+  | Priority
+  | "blocked"
+  | "moved"
+  | "conflict"
+  | "blueprint"
+  | "review"
+  | "decided"
+  | "launch"
+  | "foundation";
 type Sort = "wave" | "score";
 
 // Mobile-first coverage, computed from the data so the headline numbers
@@ -110,7 +120,8 @@ const blockingCount = blockingItems.length;
 /** The other half of P0: needed, but the site can honestly open without them. */
 const foundationItems = backlog.filter((i) => i.priority === "P0" && !i.launchBlocking);
 const foundationCount = foundationItems.length;
-const blueprintCount = backlog.filter((i) => i.source !== "original").length;
+const blueprintCount = backlog.filter((i) => i.source === "blueprint" || i.source === "merged").length;
+const reviewCount = backlog.filter((i) => i.source === "review").length;
 
 export function BacklogView() {
   const [filter, setFilter] = useState<Filter>("all");
@@ -127,7 +138,8 @@ export function BacklogView() {
         if (filter === "decided") return Boolean(item.decision);
         if (filter === "launch") return item.launchBlocking;
         if (filter === "foundation") return item.priority === "P0" && !item.launchBlocking;
-        if (filter === "blueprint") return item.source !== "original";
+        if (filter === "blueprint") return item.source === "blueprint" || item.source === "merged";
+        if (filter === "review") return item.source === "review";
         return item.priority === filter;
       }),
     [filter],
@@ -167,6 +179,7 @@ export function BacklogView() {
     { key: "blocked", label: "Blocked on Akash", count: counts.blocked },
     { key: "moved", label: "Re-prioritised", count: counts.moved },
     { key: "blueprint", label: "From blueprint", count: blueprintCount },
+    { key: "review", label: "From your review", count: reviewCount },
     { key: "conflict", label: "Needs your call", count: conflictCount },
     { key: "decided", label: "You ruled", count: decidedCount },
   ];
@@ -203,14 +216,26 @@ export function BacklogView() {
               mobile-first test scenario an agent can run to prove it&apos;s done.
             </p>
             <p className="text-espresso/75 max-w-2xl !mb-4">
-              Now merged with the Downtown Seattle family-dental blueprint:{" "}
+              Merged with the Downtown Seattle family-dental blueprint:{" "}
               <span className="font-medium text-espresso">{blueprintCount} new or enriched items</span>,
               a {Object.keys(harnessById).length}-check global test harness, and{" "}
-              and{" "}
-              <span className="font-medium text-terracotta">
+              <span className="font-medium text-espresso">
                 {decidedCount} conflicts with locked decisions
               </span>{" "}
-              surfaced rather than silently applied — all three now ruled on.
+              surfaced rather than silently applied, and since ruled on.
+            </p>
+            <p className="text-espresso/75 max-w-2xl !mb-4">
+              Plus{" "}
+              <span className="font-medium text-espresso">
+                {reviewCount} items distilled from your 2026-09-03 homepage review
+              </span>{" "}
+              — two of them launch-blocking, because the site currently publishes an
+              appointment claim you called inaccurate and a credential string nobody has
+              verified. {conflictCount === 1 ? "One" : String(conflictCount)}{" "}
+              <span className="font-medium text-terracotta">
+                {conflictCount === 1 ? "question is" : "questions are"} back with you
+              </span>{" "}
+              before the work can start.
             </p>
             <p className="text-sm text-espresso/60 max-w-2xl !mb-6">
               Reasoning and sources:{" "}
@@ -720,7 +745,11 @@ function ItemCard({
               )}
               {item.source !== "original" && (
                 <span className="inline-flex items-center rounded-full border border-espresso/25 px-2 py-0.5 text-xs text-espresso/55">
-                  {item.source === "blueprint" ? "New — blueprint" : "Enriched"}
+                  {item.source === "blueprint"
+                    ? "New — blueprint"
+                    : item.source === "review"
+                      ? "New — your review"
+                      : "Enriched"}
                 </span>
               )}
               <span
@@ -975,6 +1004,12 @@ function ItemCard({
                 ))}
               </ul>
             </div>
+
+            {item.reviewRef && (
+              <Field label="Review source">
+                <span className="font-mono text-[0.92em]">{item.reviewRef}</span>
+              </Field>
+            )}
 
             {item.blueprintRef && (
               <Field label="Blueprint source">

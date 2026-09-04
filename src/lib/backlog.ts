@@ -155,8 +155,15 @@ export function viewportOf(step: TestStep): Viewport {
  * - `original`  — from the first patient-needs research pass (2026-08-30).
  * - `blueprint` — new, from the Downtown Seattle blueprint intake.
  * - `merged`    — existed already, materially enriched by the blueprint.
+ * - `review`    — from a recorded review session with Akash, distilled
+ *   into work items. Kept distinct from `blueprint` on purpose: a
+ *   blueprint item is an outside recommendation this repo chose to take,
+ *   a review item is a direct instruction from the practice owner, and
+ *   the two carry different authority when they disagree with each other.
+ *   Every review item names the session and the work-item number it came
+ *   from in `reviewRef`, the same way blueprint items name a section.
  */
-export type Source = "original" | "blueprint" | "merged";
+export type Source = "original" | "blueprint" | "merged" | "review";
 
 /**
  * A blueprint recommendation that contradicts a locked decision in this
@@ -222,6 +229,8 @@ export type BacklogItem = {
   decision?: Decision;
   /** Section(s) of the blueprint this draws on, for traceability. */
   blueprintRef?: string;
+  /** Review session + work item this came from (source: "review"). */
+  reviewRef?: string;
   /** Global Test Harness checks that apply — see src/lib/test-harness.ts. */
   harness: string[];
   /** Set only when this item contradicts a locked decision. */
@@ -6876,6 +6885,16 @@ export const backlog: BacklogItem[] = [
         mobile:
           "Render delay is disproportionately a mobile problem because of the CPU throttling (4x slowdown) mobile devices and this item's own measurement apply — the same JS cost that's invisible on a fast desktop CPU shows up as a visible stall here.",
       },
+      {
+        name: "web.dev — Optimize long tasks",
+        url: "https://web.dev/articles/optimize-long-tasks",
+        whatGood:
+          "Names the specific main-thread patterns that stall painting — long tasks, hydration work and script evaluation blocking the next frame — and gives a way to attribute a stall to one of them from a trace rather than guessing at it.",
+        takeaway:
+          "Copy the attribution method: read the trace for what actually occupies the main thread in the render-delay window before changing anything. Don't apply its yield/defer remedies blind — the fix has to name the blocking work first.",
+        mobile:
+          "Long tasks are the mobile failure mode specifically: at Lighthouse's 4x CPU throttling a task that costs 30ms on a laptop costs over 100ms here, which is the scale of the ~960ms stall this item is chasing.",
+      },
     ],
     test: {
       preconditions: ["Deployed preview available (not localhost)", "Item 27 and item 38's fetchPriority fix already in place"],
@@ -7206,6 +7225,897 @@ export const backlog: BacklogItem[] = [
       pass: ["0 color-contrast violations on all 8 patient-facing routes", "No locked base token changed"],
       gotchas: [
         "Don't fix this by bumping one opacity value everywhere — text-espresso/70 (used for real body copy, not fine print) already passes; a blanket find-and-replace risks either under-fixing the failing ones or unnecessarily darkening ones that are already fine.",
+      ],
+    },
+  },
+  // ───────────── FROM THE 2026-09-03 RECORDED HOMEPAGE REVIEW ─────────────
+  // Thirteen work items were distilled from that session (WI-01 – WI-13).
+  // Six of them are already shipped and were verified against the running
+  // site on 2026-09-03 rather than taken on trust — WI-02 (no address in
+  // the opening view), WI-03 (editorial type system), WI-04 (refreshed
+  // logo lockup), WI-05 (spacing above "Why choose us"), WI-10's heading
+  // placement, and WI-13 (new-patient offer moved off the homepage into
+  // the menu and /offers). The seven below are what is actually left, and
+  // two of them gate go-live: the site currently publishes a claim the
+  // practice said is inaccurate, and a credential string nobody has
+  // verified.
+  {
+    id: 62,
+    title: "Replace the \"Same-day appointments\" claim with one the practice can keep",
+    priority: "P0",
+    source: "review",
+    reviewRef: "2026-09-03 homepage review — WI-07 (transcript 00:12:54–00:13:24; chat 8:30 PM)",
+    launchBlocking: true,
+    blockingGround: "legal",
+    harness: ["GTH-10", "GTH-11", "GTH-1", "GTH-6", "GTH-13"],
+    originalPriority: "P0",
+    pin: "legal",
+    repriorityNote:
+      "Pinned legal. It scores P0 on its own (43.0), but the pin is the honest label: this is a published capability claim the practice itself called inaccurate, so shipping it is not a prioritisation question.",
+    scores: { conversion: 4, reach: 4, risk: 5, effort: 5, readiness: 3 },
+    effort: "S",
+    status: "not-started",
+    wave: 1,
+    job: "Trust what the site tells me before I commit to an appointment",
+    story:
+      "As a patient reading the first thing the practice says about itself, every promise on the page is one the practice will actually keep when I call.",
+    problem:
+      "\"Same-day appointments\" is the FIRST differentiator on the homepage — `differentiators[0]` in content.ts, rendered at the top of the Why-choose-us block — with the supporting line \"Real availability, not a form-and-wait\" and an expanded panel promising held slots for urgent needs. In the 2026-09-03 review that claim was explicitly challenged as inaccurate; same-day CROWNS were confirmed and kept, and the two must not be conflated. \"Instant online booking\" was floated as the replacement but not settled, and item 15 (Tab32 online booking) is still blocked, so that replacement cannot be asserted yet either. Verified live on 2026-09-03 at 375×812: the claim is present, first, and above the fold-plus-one.",
+    where:
+      "src/lib/content.ts — `differentiators[0]` (title, detail, expandedNote); also `services[0].detail` (\"same-day appointments when you need them\"), BookingBlock.tsx (\"same-day slots are often available\") and the emergency FAQ answer, which carry the same promise in weaker forms",
+    scope: [
+      "Confirm with Akash what the booking system can actually guarantee today — same-day for urgent needs only, next-day, or nothing time-bound at all",
+      "Rewrite `differentiators[0]` to the confirmed capability; if nothing is guaranteed, drop the row rather than soften it",
+      "Sweep the three secondary places the same promise appears in weaker wording so the page doesn't contradict itself",
+      "Leave \"Same-day crowns\" untouched — it was confirmed in the same review and is a separate, real capability",
+      "Record the confirmed wording and who confirmed it in the content.ts comment, the way the pricing and carrier lines already do",
+    ],
+    acceptance: [
+      "No time-bound appointment promise appears anywhere on the site unless Akash has confirmed the practice delivers it consistently",
+      "\"Same-day crowns\" still appears and is unchanged",
+      "The confirmed wording, the date and the person who confirmed it are recorded in content.ts",
+      "The homepage, /services, BookingBlock and the FAQ all state the same availability promise, not three different ones",
+    ],
+    evidence:
+      "Practice tier, direct: the claim was challenged by the practice owner in the 2026-09-03 review — \"same-day appointment\" called inaccurate while same-day crowns were retained. Standards tier: the ADA Principles of Ethics require advertising to be truthful and not materially misleading, and the FTC's health-products guidance holds that an objective capability claim needs substantiation before it is made, not after it is questioned. This is the same rule item 2 applied to pricing and carriers; this is one instance that pass did not catch, because it reads as a service description rather than a claim.",
+    dependsOn: null,
+    outOfScope:
+      "Building instant online booking. That is item 15 and is blocked on Tab32 — this item must be resolvable today with wording alone, and it cannot wait on a booking integration to stop publishing an inaccurate claim.",
+    references: [
+      {
+        name: "FTC — Health Products Compliance Guidance",
+        url: "https://www.ftc.gov/business-guidance/resources/health-products-compliance-guidance",
+        whatGood:
+          "States the substantiation rule plainly: an objective claim carries an implied promise that the advertiser already had a reasonable basis for it at the time it was made. It also treats the net impression on an ordinary reader as the thing being judged, not the literal words in isolation.",
+        takeaway:
+          "Copy the timing rule — substantiate before publishing, not when challenged. Copy the net-impression test too: \"real availability, not a form-and-wait\" promises more than the three words above it.",
+        mobile:
+          "Net impression is a mobile problem specifically: at 375px this row is one of the first things on screen after the hero, with no surrounding context to qualify it, so the claim lands harder and earlier than it would in a desktop column. Any qualifier that only fits on a wide screen has not qualified anything.",
+      },
+      {
+        name: "ADA — Principles of Ethics and Code of Professional Conduct",
+        url: "https://www.ada.org/about/principles/code-of-ethics",
+        whatGood:
+          "Section 5 (Veracity) makes truthfulness a professional obligation rather than a marketing preference, and specifically addresses advertising and representation of services — the exact category this row falls into.",
+        takeaway:
+          "Copy the framing that a dental practice's public claims are held to a professional standard. Don't treat it as a checklist to satisfy once; it applies to every published capability line.",
+        mobile:
+          "No UI of its own. The mobile-relevant requirement it implies: on a phone the differentiator rows are the practice's entire self-description above the fold, so each one has to stand alone truthfully with no supporting page around it.",
+      },
+      {
+        name: "NHS — Find a dentist",
+        url: "https://www.nhs.uk/nhs-services/dentists/",
+        whatGood:
+          "Describes availability in terms of what the patient should do next (call, check, be added to a list) rather than promising a time window it cannot guarantee across thousands of practices. It is the model for stating a real process instead of an unbacked outcome.",
+        takeaway:
+          "Copy the move from promise to process — \"call us and we'll find the next available time\" is honest and still useful. Don't copy the bureaucratic tone; the practice's voice is warmer than this.",
+        mobile:
+          "Built mobile-first for people looking for urgent care on a phone: short lines, one action per block, no claim that needs a second paragraph to qualify it. That is exactly the constraint this row has at 375px.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "Akash has confirmed, in writing, what appointment availability the practice actually guarantees",
+        "Running at $BASE with the confirmed wording in place",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, load the homepage and read every differentiator row plus its expanded panel, then grep the rendered text for \"same-day\", \"same day\", \"walk-in\" and \"today\".",
+          tool: "browser",
+          expect:
+            "Every hit is either the confirmed appointment wording or the (untouched) same-day-crowns row. No unconfirmed time promise remains.",
+        },
+        {
+          action:
+            "At 375×812, visit /services, the booking section and the FAQ, and compare each availability sentence against the homepage's.",
+          tool: "browser",
+          expect:
+            "All four state the same promise. A weaker or stronger restatement anywhere counts as a failure — three different promises is the same defect as one wrong one.",
+        },
+        {
+          action:
+            "Diff content.ts and confirm the comment above `differentiators` records the confirmed wording, the confirming person and the date.",
+          tool: "shell",
+          viewport: "any",
+          expect:
+            "A provenance comment exists in the same form the pricing and carrier lines already use, so the next person doesn't re-litigate it.",
+        },
+        {
+          action:
+            "At 1280px, re-read the differentiator block to confirm the rewritten row still reads as a differentiator rather than a disclaimer.",
+          tool: "browser",
+          viewport: "1280",
+          expect: "The row still earns its place in the list, or it has been removed rather than hedged into meaninglessness.",
+        },
+      ],
+      mobileFirst: [
+        "At 375×812 the first differentiator row states only what the practice can deliver, with no qualifier that requires a wider screen to be visible",
+        "No horizontal scroll and no truncation of the rewritten row at 320px",
+      ],
+      pass: [
+        "Zero unconfirmed appointment-timing claims anywhere on the site",
+        "Same-day crowns unchanged and still present",
+        "One consistent availability promise across homepage, /services, booking and FAQ",
+        "Provenance recorded in content.ts",
+      ],
+      gotchas: [
+        "Removing the row silently leaves the Why-choose-us block with two items and an odd rhythm — decide the replacement content in item 64 rather than shipping a gap.",
+        "\"Same-day crowns\" and \"same-day appointments\" are one grep apart. A careless find-and-replace deletes a real capability along with the unreal one.",
+      ],
+    },
+  },
+  {
+    id: 63,
+    title: "Substantiate the six claims the 2026-09-03 review put in question",
+    priority: "P0",
+    source: "review",
+    reviewRef: "2026-09-03 homepage review — WI-08 (chat 8:30 and 8:33 PM), WI-10 credential line",
+    launchBlocking: true,
+    blockingGround: "legal",
+    harness: ["GTH-10", "GTH-11", "GTH-3", "GTH-9"],
+    originalPriority: "P0",
+    pin: "legal",
+    repriorityNote:
+      "Pinned legal. One of the six — the Botox credential — is live right now with a code comment admitting nobody knows whether the acronym is correct. A published professional credential nobody has verified is not a backlog-priority question.",
+    scores: { conversion: 3, reach: 5, risk: 5, effort: 3, readiness: 2 },
+    effort: "M",
+    status: "blocked",
+    wave: 2,
+    job: "Believe the practice's credentials and coverage without having to check them myself",
+    story:
+      "As a patient choosing a dentist on credentials and insurance, everything the site states about them is verifiably true, and anything that couldn't be verified simply isn't there.",
+    problem:
+      "The review named six specific things to verify before publication. One is already published wrong-or-unknown: CredentialBadges renders \"AACE Trained and Certified Botox Provider\", and the comment above it in content.ts says outright that the acronym came from a source that differs from the American Academy of Facial Esthetics (AAFE) and that nobody confirmed which is right — the review's own wording is \"AAFE Trained & Certified Botox Provider\". A \"Gold Provider\" status was also discussed and is NOT currently on the site; it must stay off unless independently substantiated. The other four — which plans \"in-network with most plans\" actually covers, whether same-day crowns are consistently available, whether instant online booking is live, and the exact downtown-location wording — are all either published or about to be written into the rewritten Why-choose-us block (item 64), which is why this blocks that item rather than trailing it.",
+    where:
+      "src/lib/content.ts — `credentials` (the AACE/AAFE row), `insuranceCarriers`, `differentiators`, `practice` (location wording); CredentialBadges.tsx renders the credential row on the homepage and /about",
+    scope: [
+      "Get the credential certificate or the AAFE registry entry and set the string to exactly what it says — acronym, wording and capitalisation",
+      "Confirm the carrier list behind \"in-network with most plans\" is current, and that \"most\" is defensible against the list actually accepted",
+      "Confirm same-day crowns are consistently available, not occasionally — the differentiator states it without qualification",
+      "Confirm whether instant online booking is live before any wording in item 62 or 64 depends on it",
+      "Confirm the exact location wording the practice wants to stand behind (\"downtown\", \"Queen Anne\", or both)",
+      "Keep \"Gold Provider\" off the site unless a certificate or registry entry is produced — omission is the default, not the fallback",
+      "Record each answer, its source and its date in the content.ts comment beside the value it substantiates",
+    ],
+    acceptance: [
+      "The published Botox credential string matches an actual certificate or registry entry character for character",
+      "No \"Gold Provider\" claim appears anywhere unless independently substantiated",
+      "Every carrier named on the site is currently accepted, with the verification date recorded",
+      "Same-day crowns and any booking-speed claim are stated only at the level the practice consistently delivers",
+      "Each of the six answers is recorded in content.ts with its source and date, so the next verification pass starts from evidence rather than from scratch",
+    ],
+    evidence:
+      "Practice tier: the six items come directly from the 2026-09-03 review, where Akash listed what had to be checked before publication. Internal: content.ts already carries the admission that the AACE/AAFE acronym is unresolved — the risk here is documented in the codebase, not hypothetical. Standards tier: professional credentials are the highest-consequence category of claim on a healthcare site; the ADA's veracity principle and the FTC's substantiation rule both apply, and a wrong credential acronym is not a typo but a misstatement of qualification. This is the specific instance item 2's sweep and item 31's pre-launch gate are supposed to catch; it is logged here so it cannot fall between the two.",
+    dependsOn: null,
+    outOfScope:
+      "Rewriting the Why-choose-us copy or reordering it — that is item 64, which consumes these answers. This item produces verified facts and nothing else.",
+    references: [
+      {
+        name: "American Academy of Facial Esthetics (AAFE)",
+        url: "https://www.facialesthetics.org/",
+        whatGood:
+          "The actual issuing body for the training the review named, with its own naming of the certifications it awards — which is the only authority that settles the AACE-versus-AAFE question one way or the other.",
+        takeaway:
+          "Copy the issuer's own wording verbatim rather than a paraphrase of it. Don't infer the acronym from an old marketing page; that is exactly how the current uncertainty got into the file.",
+        mobile:
+          "The credential renders as a badge row on a 375px screen where it wraps to two lines, so the exact string length matters — a longer correct name has to be checked at mobile width before it is accepted as a drop-in replacement.",
+      },
+      {
+        name: "Washington State DOH — Provider Credential Search",
+        url: "https://fortress.wa.gov/doh/providercredentialsearch/",
+        whatGood:
+          "The state's own register of licensed providers and the status of their credentials — an independent, public source that can confirm licensure claims without relying on anything the practice supplies about itself.",
+        takeaway:
+          "Copy the principle of checking a claim against a register that the practice does not control. Use it for licensure; it will not cover private certifications like Botox training, which need the issuer instead.",
+        mobile:
+          "A verification tool used by the team, not by patients, so its own mobile behaviour is not the point. The mobile-relevant requirement it sets: anything it confirms must still be stated in a form short enough to render honestly in a 375px badge row.",
+      },
+      {
+        name: "FTC — Health Products Compliance Guidance",
+        url: "https://www.ftc.gov/business-guidance/resources/health-products-compliance-guidance",
+        whatGood:
+          "Sets out that qualifications and expertise claims must be substantiated by the evidence a qualified person would require, and that the advertiser holds that burden rather than the reader.",
+        takeaway:
+          "Copy the default: if it can't be substantiated, it doesn't get published. Apply it to \"Gold Provider\" specifically — absence of evidence resolves to omission, not to a softened version of the claim.",
+        mobile:
+          "Qualifiers are the first thing lost at 375px, where badges truncate and lists collapse. That makes the substantiate-or-omit rule stricter on mobile than on desktop, not looser.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "Akash has supplied a certificate, registry entry or written confirmation for each of the six items",
+        "Running at $BASE with the verified strings in place",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, load the homepage and /about and read the credential badges aloud against the supplied certificate, character by character including the acronym.",
+          tool: "manual",
+          expect:
+            "The rendered string matches the certificate exactly. Any difference in acronym, wording or capitalisation is a failure, not a rounding error.",
+        },
+        {
+          action:
+            "At 375×812, grep the full rendered text of every route for \"Gold Provider\", \"AACE\" and \"AAFE\".",
+          tool: "browser",
+          expect:
+            "Zero hits for \"Gold Provider\" and zero for the unverified acronym; only the verified credential string appears.",
+        },
+        {
+          action:
+            "Compare every carrier in `insuranceCarriers` against the practice's current participation list and record the check date.",
+          tool: "manual",
+          viewport: "any",
+          expect:
+            "Every listed carrier is currently accepted, and the comment in content.ts carries the date and the source of that confirmation.",
+        },
+        {
+          action:
+            "Diff content.ts and confirm each of the six values now carries a provenance comment naming the source and the date.",
+          tool: "shell",
+          viewport: "any",
+          expect:
+            "Six recorded answers, each traceable to a document or a named confirmation, matching the pattern already used for pricing and service areas.",
+        },
+        {
+          action:
+            "At 1280px, confirm the verified credential strings still fit their badge layout without wrapping into an unreadable stack.",
+          tool: "browser",
+          viewport: "1280",
+          expect: "Layout holds with the real strings, which may be longer than the placeholders they replace.",
+        },
+      ],
+      mobileFirst: [
+        "At 375×812 every verified credential renders in full — a string that only fits when truncated has not been published honestly",
+        "No horizontal scroll at 320px with the longest verified string in place",
+      ],
+      pass: [
+        "Credential string matches its certificate exactly",
+        "No unsubstantiated \"Gold Provider\" claim anywhere",
+        "All six answers recorded with source and date in content.ts",
+        "Every carrier, capability and location claim on the site traces to one of the recorded answers",
+      ],
+      gotchas: [
+        "\"Verified by Akash\" is not the same as verified — for the credential specifically, the certificate or the issuer's registry is the source, since the current wrong-or-unknown string also came from a practice-supplied page.",
+        "Omitting \"Gold Provider\" produces no visible diff, so it is easy to believe it was handled. Grep for it explicitly; the absence is the acceptance criterion.",
+      ],
+    },
+  },
+  {
+    id: 64,
+    title: "Lead \"Why choose us\" with in-network, and rebuild the row set",
+    priority: "P0",
+    source: "review",
+    reviewRef: "2026-09-03 homepage review — WI-06 (chat 8:30 PM; transcript 00:07:29–00:16:15, 00:37:53–00:39:42)",
+    launchBlocking: false,
+    harness: ["GTH-10", "GTH-6", "GTH-13", "GTH-14", "GTH-11"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 5, reach: 5, risk: 2, effort: 5, readiness: 3 },
+    effort: "S",
+    status: "not-started",
+    wave: 2,
+    job: "Find out fast whether this practice is a realistic option for me",
+    story:
+      "As an insurance-driven patient scanning the first block below the hero, the first thing I read is whether you take my plan — not a capability I have no way to evaluate.",
+    problem:
+      "The review's stated rationale was that most patients here are insurance-driven, so in-network participation should lead and modern/digital care should follow as the second differentiator. The live order is the opposite: \"Same-day appointments\" (the claim item 62 is removing), then \"Same-day crowns\", then \"In-network with most plans\" third — verified on the running site 2026-09-03 at 375×812, where in-network lands roughly a screen below the hero. The review also specified the full order to aim at: in-network, modern/digital experience, same-day crowns, verified Botox qualification, verified convenience benefit, care/skill/choice, downtown location — and asked for short scannable rows rather than paragraphs, with scheduling still the primary action.",
+    where:
+      "src/lib/content.ts — `differentiators`; rendered by EditorialTrustBlock.tsx (and TrustBlock.tsx, which is still the component on every non-editorial route)",
+    scope: [
+      "Reorder so in-network is first and the modern/digital experience is second",
+      "Add the rows the review named that don't exist yet — modern/digital experience, the verified Botox qualification, the verified convenience benefit, care/skill/choice, downtown location — using only wording item 63 has substantiated",
+      "Keep each row to a heading plus one short line; the review asked for scannable, not prose",
+      "Replace the row item 62 vacates rather than leaving a gap in the rhythm",
+      "Confirm the block still reads as a list at 375px once it grows past three rows — if seven rows push the bio a full screen further down, trim rather than scroll",
+      "Leave scheduling as the only primary action in the section",
+    ],
+    acceptance: [
+      "In-network is the first row and the modern/digital experience is the second",
+      "Every row traces to a verified answer from item 63 — no row asserts something that pass did not confirm",
+      "No row exceeds a heading plus one line",
+      "At 375px the block's total height is recorded before and after, and any growth over roughly one screenful is justified or trimmed",
+      "Scheduling remains the section's only primary action",
+    ],
+    evidence:
+      "Practice tier, direct: the ordering and its rationale are Akash's, stated twice in the session — insurance-driven patients first, modern/digital second. Usability tier: NN/g's eyetracking work finds attention concentrated in the first screenfuls, which is the argument for spending the first row on the qualifier most patients actually filter by rather than on a capability claim. Internal: docs/supertooth-webflow-build-spec.md Section 1 makes new-patient conversion the goal, and insurance participation is the most common disqualifier in the researched patient scenarios.",
+    dependsOn: "62, 63",
+    outOfScope:
+      "Redesigning the Why-choose-us block's visual treatment. The surface, type and spacing were settled in the editorial pass and reviewed on 2026-09-03; this is a content order and content set change.",
+    references: [
+      {
+        name: "NN/g — First 2 Paragraphs: Most Read",
+        url: "https://www.nngroup.com/articles/first-2-paragraphs/",
+        whatGood:
+          "Measures how sharply attention falls off after the opening of a block of content, which turns \"what goes first\" from a taste argument into a measurable one. It is the evidence behind spending row one on the highest-filtering fact.",
+        takeaway:
+          "Copy the principle that the first item carries disproportionate weight, so it should answer the question that disqualifies the most readers. Don't read it as permission to bury the rest — the later rows still have to earn their place.",
+        mobile:
+          "The effect is stronger at 375px, where a row is a larger share of the screen and the reader is thumb-scrolling past anything that doesn't apply to them. In-network placed third is effectively a screen's worth of scrolling behind two claims a patient can't act on.",
+      },
+      {
+        name: "GOV.UK — Writing for GOV.UK",
+        url: "https://www.gov.uk/guidance/content-design/writing-for-gov-uk",
+        whatGood:
+          "Front-loads the most important information and insists on short, scannable, plain-language chunks tested against how people actually read on a screen rather than how organisations like to describe themselves.",
+        takeaway:
+          "Copy front-loading and the one-idea-per-chunk rule for these rows. Don't copy the institutional register — the practice's voice is warmer, and the rows still have to sound like a person.",
+        mobile:
+          "GOV.UK is designed mobile-first for people on poor connections and small screens; its content chunks are sized so a single idea fits without scrolling. That is the size test for each row here.",
+      },
+      {
+        name: "Delta Dental — Find a dentist",
+        url: "https://www.deltadental.com/us/en/member/find-a-dentist.html",
+        whatGood:
+          "Shows the actual decision path an insurance-driven patient takes: plan first, everything else after. It is the competing journey this block is trying to short-circuit by answering the plan question on the practice's own page.",
+        takeaway:
+          "Copy the recognition that coverage is the first filter, not a footnote. Don't copy the carrier-directory framing — the practice can be warmer and more specific than a search result.",
+        mobile:
+          "Their flow is phone-oriented and answers the coverage question in the first view; if our page makes a patient scroll past two capability claims to reach the same answer, we lose to the directory that answered it immediately.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "Items 62 and 63 are resolved — the removed claim is settled and every candidate row has a verified fact behind it",
+        "Running at $BASE with the reordered rows in place",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, load the homepage and record the order of the differentiator headings and the scroll position of the first one.",
+          tool: "browser",
+          expect:
+            "In-network is first, modern/digital second, and the first row sits within the first screenful after the hero.",
+        },
+        {
+          action:
+            "At 375×812, measure the block's total height in screenfuls and compare it against the pre-change measurement.",
+          tool: "browser",
+          expect:
+            "Growth is recorded. More than about one extra screenful means rows must be trimmed rather than accepted, per this item's own acceptance criteria.",
+        },
+        {
+          action:
+            "Cross-check every row's wording against the recorded answers from item 63.",
+          tool: "manual",
+          viewport: "any",
+          expect: "Each row maps to a verified answer. Any row without one is removed before this item can pass.",
+        },
+        {
+          action:
+            "At 1280px, confirm the reordered list still reads as a single scannable column rather than a wall of rows.",
+          tool: "browser",
+          viewport: "1280",
+          expect: "The block holds its rhythm at desktop width with the larger row count.",
+        },
+      ],
+      mobileFirst: [
+        "At 375×812 the in-network row is the first thing read below the hero",
+        "Every row is a heading plus at most one line at 375px, with no truncation and no horizontal scroll at 320px",
+      ],
+      pass: [
+        "Order matches the review: in-network first, modern/digital second",
+        "Every row traces to a verified fact",
+        "Block height growth at 375px recorded and justified",
+        "Scheduling is still the section's only primary action",
+      ],
+      gotchas: [
+        "TrustBlock.tsx and EditorialTrustBlock.tsx both render `differentiators`. Reordering the data changes both, which is correct — but check both, because only one is on the homepage.",
+        "Seven rows is what the review named, not a target. If three verified rows read better than seven padded ones, ship three and say so.",
+      ],
+    },
+  },
+  {
+    id: 65,
+    title: "Rebuild the \"What we treat\" taxonomy before touching its copy",
+    priority: "P0",
+    source: "review",
+    reviewRef: "2026-09-03 homepage review — WI-11 (chat 8:46 PM; transcript 00:22:32–00:33:29)",
+    launchBlocking: false,
+    harness: ["GTH-10", "GTH-11", "GTH-12"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 5, reach: 5, risk: 2, effort: 3, readiness: 2 },
+    effort: "M",
+    status: "blocked",
+    wave: 2,
+    job: "Find my own problem in the list of what this practice does",
+    story:
+      "As a patient with a specific reason for coming in, I can find the category that covers it without knowing which clinical bucket a dentist would file it under.",
+    problem:
+      "The review's instruction was explicit: \"What we treat\" needs a fresh information architecture and fresh copy, not incremental editing. The categories named in writing were general dentistry, cosmetic dentistry, Invisalign, Botox for headaches/TMJ, and implant restorations — with exams, x-rays and cleanings as general/preventive supporting services, and same-day crowns, fillings and bonding as restorative ones. The live section carries four cards (general & preventive, same-day crowns, cosmetic, restorative), so Invisalign and Botox — both named as top-level categories and both real capabilities — are currently invisible on the homepage, while same-day crowns sits at the same level as an entire discipline. Two questions were left open in the session and cannot be answered by whoever writes the copy.",
+    where:
+      "src/lib/content.ts — `services`; rendered by ServicesSection.tsx on the homepage and behind /services",
+    scope: [
+      "Settle the two open questions: whether restorative care is top-level or nested under general dentistry, and whether emergency care becomes a category (it was raised verbally and dropped from the written list)",
+      "Write the agreed hierarchy down as parent categories with their supporting services, so parent/child relationships are explicit rather than implied by card order",
+      "Reconcile it with the existing /emergency page and item 7 — an emergency category that duplicates that page's job needs a reason",
+      "Check the resulting top-level count against what fits a 375px screen before committing to it",
+      "Leave the copy alone until the hierarchy is agreed — that is item 66",
+    ],
+    acceptance: [
+      "A written, non-overlapping hierarchy exists with explicit parent/child relationships",
+      "Both open questions are answered and recorded with who answered them and when",
+      "Every named category is a real, verified capability",
+      "The top-level count is validated at 375px, not just on desktop",
+    ],
+    evidence:
+      "Practice tier, direct: the categories and the \"fresh IA, not incremental editing\" instruction are Akash's, from the 2026-09-03 session. Usability tier: NN/g's work on category naming and card sorting finds that users fail to find services filed under organisation-internal groupings even when the service is present — which is the live failure here, with Invisalign and Botox absent from the top level despite being named capabilities. Internal: docs/supertooth-ux-flow.md and the build spec Section 2 both treat the services surface as an entry point rather than a catalogue.",
+    dependsOn: null,
+    outOfScope:
+      "Writing the treatment copy, and building per-service pages. The copy is item 66; per-service pages are item 18. This item produces an agreed structure and nothing else.",
+    conflict: {
+      locked:
+        "The four-category `services` set in content.ts — general & preventive, same-day crowns, cosmetic, restorative — built to docs/supertooth-webflow-build-spec.md Section 2 and shipped as item 11's minimum /services page.",
+      blueprint:
+        "The 2026-09-03 review names five top-level categories instead — general dentistry, cosmetic dentistry, Invisalign, Botox for headaches/TMJ, implant restorations — which promotes two capabilities that are currently absent and demotes same-day crowns from a top-level card to a restorative sub-service.",
+      question:
+        "Is restorative care its own top-level category or a child of general dentistry, and does emergency care get a category of its own given /emergency already exists?",
+    },
+    references: [
+      {
+        name: "NN/g — Card Sorting: Uncover Users' Mental Models",
+        url: "https://www.nngroup.com/articles/card-sorting-definition/",
+        whatGood:
+          "A concrete, cheap method for deciding groupings from how patients actually think rather than from how a practice files its own procedures — which is exactly the disagreement this item has to settle.",
+        takeaway:
+          "Copy the method, even in a lightweight form: sort the named services with a handful of non-dental people before committing. Don't run a full study; the decision here is between two defensible structures, not an open question.",
+        mobile:
+          "Category depth costs more on a phone: every extra level is another tap and another screen. A structure that tests fine on a desktop sitemap can still fail at 375px, so validate the top-level count at mobile width before agreeing it.",
+      },
+      {
+        name: "Cleveland Clinic — Health Library",
+        url: "https://my.clevelandclinic.org/health",
+        whatGood:
+          "Organises a very large clinical catalogue around what a patient came in with, not around departmental structure, and keeps the top level short enough to scan while still reaching everything underneath.",
+        takeaway:
+          "Copy the patient-symptom entry point and the shallow top level. Don't copy the volume — a five-person practice needs five findable doors, not an encyclopedia.",
+        mobile:
+          "Their top level is a short scannable list on a phone with progressive disclosure beneath it, which is the pattern our section needs if it grows from four categories to five plus sub-services.",
+      },
+      {
+        name: "NHS — Dental health",
+        url: "https://www.nhs.uk/live-well/dental-health/",
+        whatGood:
+          "Names treatments in the words patients use and groups them by the problem they solve, with no assumption that the reader knows the difference between restorative and prosthodontic work.",
+        takeaway:
+          "Copy the patient-language naming for the categories themselves — the label is part of the IA, not decoration applied later. Don't copy its public-health framing.",
+        mobile:
+          "Designed for a phone first: one idea per screen, short category labels that don't wrap awkwardly at 375px. Our category names have to survive the same constraint inside a card grid.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "Akash has answered both open questions — restorative placement, and emergency as a category",
+        "The proposed hierarchy is written down before any code changes",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, lay the proposed top-level categories into the existing card grid and measure the section's height in screenfuls.",
+          tool: "browser",
+          expect:
+            "The section stays scannable at mobile width. Live baseline was 2.48 screens with four cards; a five-card set that pushes it past roughly three screens needs the structure revisited, not the padding.",
+        },
+        {
+          action:
+            "Check every proposed category and sub-service against the verified capability list from item 63 and against Dr. Dubey's bio.",
+          tool: "manual",
+          viewport: "any",
+          expect: "No category names a service the practice has not confirmed it provides.",
+        },
+        {
+          action:
+            "Walk the hierarchy looking for overlap: any service that could reasonably sit under two parents.",
+          tool: "manual",
+          viewport: "any",
+          expect:
+            "Zero ambiguous placements, or an explicit decision recorded for each one. Same-day crowns in particular sits between restorative and its own former top-level card.",
+        },
+        {
+          action:
+            "At 375×812, hand the top-level labels to someone outside dentistry and ask which they would tap for a chipped tooth, a headache and a straightening question.",
+          tool: "manual",
+          expect:
+            "All three land on the intended category without hesitation. A wrong tap is a naming problem to fix now, not in the copy pass.",
+        },
+      ],
+      mobileFirst: [
+        "The agreed top-level set is validated in the real card grid at 375×812 before it is accepted",
+        "Category labels fit their cards at 375px without truncation or awkward wrapping",
+      ],
+      pass: [
+        "Both open questions answered and recorded",
+        "A written hierarchy with explicit parent/child relationships exists",
+        "No overlapping placements, or each one explicitly decided",
+        "Top-level count validated at 375px",
+      ],
+      gotchas: [
+        "Emergency care appeared verbally and not in the final written list. Treat that as undecided rather than as a rejection — but reconcile it against /emergency before adding a category that competes with an existing page.",
+        "\"Fresh IA, not incremental editing\" is the instruction. Reordering the four existing cards and adding one is incremental editing wearing a new label.",
+      ],
+    },
+  },
+  {
+    id: 66,
+    title: "Write treatment copy in patient language, with a Schedule action on every category",
+    priority: "P0",
+    source: "review",
+    reviewRef: "2026-09-03 homepage review — WI-12 (chat 8:46 PM; transcript 00:28:20–00:33:29)",
+    launchBlocking: false,
+    harness: ["GTH-10", "GTH-6", "GTH-14", "GTH-15", "GTH-4"],
+    originalPriority: "P0",
+    pin: null,
+    scores: { conversion: 5, reach: 4, risk: 2, effort: 3, readiness: 2 },
+    effort: "M",
+    status: "blocked",
+    wave: 2,
+    job: "Understand what a treatment does for me, then book it without hunting for the button",
+    story:
+      "As a patient who found the category that matches my problem, I understand what it fixes in plain words and I can book from right there, without scrolling back to the top of the page.",
+    problem:
+      "The review asked for wholly new copy rather than patched existing text, and for every treatment to carry an immediate scheduling path. The live cards carry a single detail line each and no per-card action — booking is reachable only from the fixed header or the section further down the page, so a patient who has just decided \"yes, that one\" has to leave the thing that convinced them to act on it. The copy that exists also leans on internal framing (\"restorative care\", \"digitally scanned and milled in-house\") rather than on what the patient walks out with.",
+    where:
+      "src/lib/content.ts — `services` detail text; ServicesSection.tsx — the card layout that would carry a per-category action",
+    scope: [
+      "Write each category's copy around the patient's need and the outcome, not the procedure name — one short paragraph maximum",
+      "Write the sub-service lines the agreed hierarchy needs, in the same voice",
+      "Add a Schedule action to every category, sized and placed to the locked 44px minimum and reachable in the thumb zone at 375px",
+      "Check the added actions against the existing CTA rhythm — the homepage already has a fixed header CTA and a booking section, and five more buttons must not turn the page into a wall of terracotta",
+      "Route every action to the same booking destination the rest of the site uses, so there is one path to maintain",
+    ],
+    acceptance: [
+      "Every category explains the patient need and the outcome, with no internal terminology left unexplained",
+      "Every category has a working Schedule action that reaches the real booking path",
+      "Every action is at least 44×44px and passes the tap-target harness checks at 375px",
+      "No claim in the new copy goes beyond what item 63 verified",
+      "The page's total CTA count at 375px is recorded, and the added actions are shown not to compete with the primary booking ask",
+    ],
+    evidence:
+      "Practice tier, direct: both halves — new copy, and a scheduling path per treatment — are Akash's instructions from the 2026-09-03 session. Usability tier: NN/g's reading research finds users scan rather than read on the web, and act at the point of conviction rather than returning to a global control; that is the argument for a per-category action rather than one at the section's end. Internal: docs/supertooth-build-principles.md Section 8 sets the 44×44px floor these controls must clear, and the build spec makes scheduling the primary action everywhere.",
+    dependsOn: "63, 65",
+    outOfScope:
+      "Per-service pages with their own FAQ and schema — that is item 18, and it is deliberately later. This item is the homepage and /services surface only.",
+    references: [
+      {
+        name: "NN/g — How Users Read on the Web",
+        url: "https://www.nngroup.com/articles/how-users-read-on-the-web/",
+        whatGood:
+          "Establishes that people scan rather than read, and that scannable, objective, front-loaded copy measurably outperforms promotional prose on the same page — with the measurement rather than the assertion.",
+        takeaway:
+          "Copy the front-loaded, one-idea-per-chunk structure and the removal of promotional language. Don't shorten to the point of vagueness; a patient still needs to know what the treatment actually does.",
+        mobile:
+          "Scanning is more extreme at 375px, where a paragraph is most of the visible card. Each category's first line has to carry the meaning on its own, because it may be the only line read before the thumb moves.",
+      },
+      {
+        name: "GOV.UK — Writing for GOV.UK",
+        url: "https://www.gov.uk/guidance/content-design/writing-for-gov-uk",
+        whatGood:
+          "Insists on the words the audience uses rather than the institution's own vocabulary, and pairs each piece of content with the action it exists to support — which is precisely the copy-plus-CTA pairing this item needs.",
+        takeaway:
+          "Copy the plain-language rule and the content-serves-an-action framing. Don't copy the neutral civic tone — this is a practice introducing itself, not a government notice.",
+        mobile:
+          "Their patterns are mobile-first and put the action immediately after the content that motivates it, rather than at the bottom of a long page. That placement rule is the one to apply to the per-category Schedule buttons.",
+      },
+      {
+        name: "NHS — Dental health",
+        url: "https://www.nhs.uk/live-well/dental-health/",
+        whatGood:
+          "Explains treatments in terms of the problem they solve and what actually happens at the appointment, without either clinical shorthand or sales language — the register this copy is aiming at.",
+        takeaway:
+          "Copy the need-and-outcome framing and the calm tone. Don't copy its length; a homepage card has a paragraph, not a page.",
+        mobile:
+          "Written for phone reading with short paragraphs and no jargon that needs a second screen to unpack — the same constraint every category card here has at 375px.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "Item 65's hierarchy is agreed and item 63's verified facts are recorded",
+        "Running at $BASE with the new copy and per-category actions in place",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, read every category card and check that the first line names the patient's problem or outcome rather than the procedure category.",
+          tool: "browser",
+          expect:
+            "Every card leads with what it does for the patient. Internal terminology appears only where it is immediately explained.",
+        },
+        {
+          action:
+            "At 375×812, measure every Schedule action on the section: width, height and distance from the bottom of its card.",
+          tool: "browser",
+          expect:
+            "All are at least 44×44px and sit within their own card, so the action a patient taps is unambiguously the one they read about.",
+        },
+        {
+          action:
+            "At 375×812, tap each category's Schedule action in turn and follow where it lands.",
+          tool: "browser",
+          expect:
+            "Every action reaches the same real booking path used elsewhere on the site — no dead links, no per-card variant destination.",
+        },
+        {
+          action:
+            "Cross-check every sentence of the new copy against the verified answers from item 63.",
+          tool: "manual",
+          viewport: "any",
+          expect: "No sentence asserts a capability, timing or credential that pass did not confirm.",
+        },
+        {
+          action:
+            "At 1280px, confirm the added per-card actions still read as secondary to the page's primary booking ask.",
+          tool: "browser",
+          viewport: "1280",
+          expect: "The section does not become a grid of competing primary buttons at desktop width.",
+        },
+      ],
+      mobileFirst: [
+        "At 375×812 every category's Schedule action is reachable without leaving the card that motivated it",
+        "Every action clears 44×44px and the section produces no horizontal scroll at 320px",
+      ],
+      pass: [
+        "Every category explains need and outcome in patient language",
+        "Every category has a working Schedule action reaching the real booking path",
+        "All actions clear the 44px floor at 375px",
+        "No unverified claim in the new copy",
+      ],
+      gotchas: [
+        "Five new terracotta buttons on a page that already has a fixed-header CTA is how a clear primary action becomes noise. Consider a quieter treatment for the per-card actions and check the result at 375px before assuming more buttons is more conversion.",
+        "\"Schedule\" on a card and \"Book a visit\" in the header are the same action with two names. Pick one label for the primary booking path and use it everywhere.",
+      ],
+    },
+  },
+  {
+    id: 67,
+    title: "Rewrite the office section around care, skill and choice",
+    priority: "P1",
+    source: "review",
+    reviewRef: "2026-09-03 homepage review — WI-09 (chat 8:32 PM; transcript 00:16:44–00:18:19)",
+    launchBlocking: false,
+    harness: ["GTH-10", "GTH-11", "GTH-5"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 2, reach: 3, risk: 2, effort: 5, readiness: 3 },
+    effort: "S",
+    status: "not-started",
+    wave: 2,
+    job: "Get a feel for the place before I decide to walk in",
+    story:
+      "As a patient deciding whether this practice is for me, the paragraph under the office photos tells me what the people there believe, not which machines they own.",
+    problem:
+      "The review asked to keep the opening \"step into our office\" line, shorten it, and replace the technology-heavy remainder with the practice's own values — care, skill and choice — which already exist in the practice's current website copy. The live blurb runs the other way: after the opening clause it lists \"comfortable treatment rooms, same-day crown technology on-site\", so the one place on the homepage that could say what the practice believes spends itself on equipment that is already claimed twice elsewhere on the page.",
+    where: "src/lib/content.ts — `officeBlurb`; rendered under the office carousel in EditorialTrustBlock.tsx and TrustBlock.tsx",
+    scope: [
+      "Retrieve the canonical care/skill/choice language from the practice's existing website rather than paraphrasing it",
+      "Keep the opening line, shortened",
+      "Replace the equipment list with the values, in the same voice as the rest of the section",
+      "Check the same-day-crown claim isn't lost from the page — it belongs in the differentiator row and the services card, not here",
+    ],
+    acceptance: [
+      "The opening line survives, shortened",
+      "The values are represented in the practice's own words, with the source recorded",
+      "No equipment or technology claim remains in this paragraph",
+      "The paragraph still reads as tone rather than as a factual claim needing verification",
+    ],
+    evidence:
+      "Practice tier, direct: the instruction, the retained opening line and the care/skill/choice framing are Akash's, from the 2026-09-03 session, and the values already exist as published copy on the practice's current site — so this is retrieval, not invention. Usability tier: NN/g's work on \"about\" content finds that visitors use it to judge whether an organisation is credible and a fit, which a specification list does not answer.",
+    dependsOn: null,
+    outOfScope:
+      "The conservative-care statement (item 28) and the anxiety/comfort content (item 16). Both are separate, larger commitments with their own verification needs; this is one paragraph of existing values copy.",
+    references: [
+      {
+        name: "NN/g — \"About Us\" Information on Websites",
+        url: "https://www.nngroup.com/articles/about-us-information-on-websites/",
+        whatGood:
+          "Finds that visitors read this content specifically to judge credibility and fit, and that vague or self-congratulatory copy actively costs trust — with the specific failure patterns named rather than gestured at.",
+        takeaway:
+          "Copy the finding that concrete beliefs beat generic warmth. Don't take it as licence to write a manifesto; this is one short paragraph under a photo carousel.",
+        mobile:
+          "At 375px this paragraph sits below a carousel and competes with the next section for a thumb that is already moving. Shorter is not a style preference here — the review asked for it, and the mobile context is why it is right.",
+      },
+      {
+        name: "GOV.UK — Writing for GOV.UK",
+        url: "https://www.gov.uk/guidance/content-design/writing-for-gov-uk",
+        whatGood:
+          "Gives a concrete standard for cutting a paragraph to the sentence that carries the meaning, and for removing words that describe the organisation rather than help the reader.",
+        takeaway:
+          "Copy the editing discipline for the shortening half of this item. Don't flatten the warmth out of it — the values are the point, and a values statement written in civil-service register says nothing.",
+        mobile:
+          "Its brevity rules exist because of small screens and slow connections; a paragraph that needs three thumb-scrolls under a photo carousel has already lost the reader it was written for.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "The canonical care/skill/choice wording has been retrieved from the practice's existing site and recorded",
+        "Running at $BASE with the rewritten blurb in place",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, scroll to the office section and read the blurb, checking the opening line survives and the values appear.",
+          tool: "browser",
+          expect:
+            "The opening line is present and shorter; care, skill and choice are represented; no equipment list remains.",
+        },
+        {
+          action:
+            "Grep the rendered homepage for \"same-day crown\" and confirm it still appears in the differentiator row and the services card.",
+          tool: "browser",
+          expect: "The capability is still claimed where it belongs, so removing it from this paragraph loses nothing.",
+        },
+        {
+          action:
+            "Diff content.ts to confirm the comment above `officeBlurb` records where the values language came from.",
+          tool: "shell",
+          viewport: "any",
+          expect: "Provenance recorded, matching the pattern used for the other retrieved practice copy.",
+        },
+      ],
+      mobileFirst: [
+        "At 375×812 the rewritten blurb is shorter than the one it replaces, measured in rendered lines, not in intent",
+      ],
+      pass: [
+        "Opening line retained and shortened",
+        "Values present in the practice's own words with the source recorded",
+        "No technology or equipment claim left in this paragraph",
+        "Same-day crowns still claimed elsewhere on the page",
+      ],
+      gotchas: [
+        "\"Care, skill and choice\" is existing published copy. Rewriting it into something that sounds better is the one failure mode here — retrieve it, don't improve it.",
+      ],
+    },
+  },
+  {
+    id: 68,
+    title: "Finish the homepage photo sequence: patient-facing images and a closing portrait",
+    priority: "P1",
+    source: "review",
+    reviewRef: "2026-09-03 homepage review — WI-01 (chat 8:15–8:16 PM; transcript 00:00:48–00:03:34)",
+    launchBlocking: false,
+    harness: ["GTH-1", "GTH-8", "GTH-11", "GTH-19"],
+    originalPriority: "P1",
+    pin: null,
+    scores: { conversion: 3, reach: 3, risk: 2, effort: 3, readiness: 2 },
+    effort: "M",
+    status: "blocked",
+    wave: 2,
+    job: "See who I'd actually be seeing, and people like me being treated",
+    story:
+      "As a patient deciding on a dentist from photographs, I see the doctor first, real patients somewhere in the middle, and the doctor again as the page closes.",
+    problem:
+      "The review asked for a specific photo sequence: open on a prominent doctor image, close on a doctor image, replace the unflattering images in between, and introduce patient-facing imagery. Verified on the running site 2026-09-03: the hero carousel already opens on Dr. Dubey and its last slide is her profile portrait, so the bookends within the carousel are satisfied — but every one of its seven frames is staff or office, with no patient-facing image anywhere in it, and the page itself ends on the booking block with no closing portrait. The keep/replace calls on the intermediate frames need Akash's eye, and the sources named were his phone, Archana's phone, and Instagram.",
+    where:
+      "src/lib/content.ts — `heroPhotos`, `officePhotos`, and the stock images in `services` and `offers`; HeroCarousel.tsx and OfficeCarousel.tsx render them",
+    scope: [
+      "Assemble a contact sheet of everything available from the three named sources, at the size it will actually render",
+      "Get keep/replace/add calls on each existing frame rather than guessing which are the unflattering ones",
+      "Add at least one patient-facing image to the sequence, replacing a staff frame rather than lengthening the carousel",
+      "Decide whether the page closes on a doctor image, and where — the booking block currently carries no photograph at all",
+      "Confirm usage rights and consent for every image of an identifiable person before it ships, patients especially",
+      "Check every replacement at 375px for crop, focal point and file weight before accepting it",
+    ],
+    acceptance: [
+      "A doctor image opens the page and a doctor image closes it",
+      "At least one patient-facing image appears in the sequence",
+      "No image Akash marked for replacement is still live, and no placeholder or stock image remains in the hero sequence",
+      "Written consent exists for every identifiable patient, and usage rights are confirmed for every image",
+      "Every new image is checked at 375px for crop and focal point, and the page's mobile LCP is re-measured after the swap",
+    ],
+    evidence:
+      "Practice tier, direct: the sequence, the replacements and the photo sources are Akash's, from the 2026-09-03 session. Compliance: an identifiable patient photograph requires written authorization — the same HIPAA constraint the testimonial rule in docs/supertooth-build-principles.md Section 8 applies to names, and it applies to faces at least as strongly. Internal: item 60 already covers replacing the stock photography with real practice photos and is blocked on the same asset supply, which is why this item depends on it rather than duplicating it.",
+    dependsOn: "60",
+    outOfScope:
+      "Replacing the stock imagery on /services and /offers — that is item 60. This item is the homepage sequence and the patient-facing addition specifically.",
+    references: [
+      {
+        name: "NN/g — Photos as Web Content",
+        url: "https://www.nngroup.com/articles/photos-as-web-content/",
+        whatGood:
+          "Eyetracking evidence that people look hard at photos of real, relevant people and ignore decorative or generic ones entirely — the difference between a photograph doing work and a photograph occupying space.",
+        takeaway:
+          "Copy the real-people-over-stock finding, which is the whole argument for this item and for item 60. Don't read it as more photos being better; the sequence gets shorter and more deliberate, not longer.",
+        mobile:
+          "At 375px a hero photograph is roughly half the opening screen, so a weak or badly cropped frame costs proportionally more than it would on desktop. Every replacement has to be judged at phone width, not in a contact sheet on a laptop.",
+      },
+      {
+        name: "W3C WAI — Understanding Non-text Content (WCAG 2.2)",
+        url: "https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html",
+        whatGood:
+          "Defines what alternative text has to accomplish for each image, and distinguishes informative images from decorative ones — which decides whether each new frame needs a description or an empty alt.",
+        takeaway:
+          "Copy the informative-versus-decorative test for every image added here. Don't invent identities in alt text: content.ts already avoids naming people whose names aren't confirmed, and that rule holds for new photos.",
+        mobile:
+          "Non-text content requirements are viewport-independent, but the mobile-relevant consequence is real: on a phone the carousel is the largest element on screen, so a missing or wrong alt is the largest thing a screen-reader user gets wrong about the page.",
+      },
+      {
+        name: "web.dev — Optimize Largest Contentful Paint",
+        url: "https://web.dev/articles/optimize-lcp",
+        whatGood:
+          "Explains why the opening image is usually the LCP element and what actually moves the number — discovery, priority and file weight — rather than generic advice to compress images.",
+        takeaway:
+          "Copy the discipline of re-measuring after swapping the hero image. Don't assume a real photo is heavier than the one it replaces, or lighter — measure it.",
+        mobile:
+          "LCP is measured on a throttled mobile connection, and items 27 and 57 already fought this exact page's LCP to roughly the threshold. A heavier hero photo can undo that work, so the re-measurement is part of this item, not a follow-up.",
+      },
+    ],
+    test: {
+      preconditions: [
+        "Akash and Archana have supplied the available photography and made keep/replace calls on the existing frames",
+        "Written consent is on file for any identifiable patient",
+        "Running at $BASE with the new sequence in place",
+      ],
+      steps: [
+        {
+          action:
+            "At 375×812, load the homepage and record the first image on screen and the last image before the footer.",
+          tool: "browser",
+          expect: "The first is a doctor image and the page closes on one — the bookend the review asked for, at the page level and not only inside the carousel.",
+        },
+        {
+          action:
+            "At 375×812, step through every carousel frame and classify each as doctor, staff, office or patient-facing.",
+          tool: "browser",
+          expect:
+            "At least one patient-facing frame is present, no frame marked for replacement survives, and the sequence is no longer than it was.",
+        },
+        {
+          action:
+            "Check each new image's alt text against the informative/decorative test, and confirm no alt text names a person whose identity is not confirmed.",
+          tool: "browser",
+          expect:
+            "Informative images have descriptive alt text; decorative ones are empty-alt and aria-hidden; no invented identities.",
+        },
+        {
+          action:
+            "Re-run a throttled mobile Lighthouse pass against the deployed preview and compare LCP with the pre-swap median of roughly 2.6s.",
+          tool: "shell",
+          viewport: "any",
+          expect: "LCP has not regressed. If it has, the replacement image is resized or re-encoded rather than accepted.",
+        },
+        {
+          action:
+            "Confirm consent and usage rights for every identifiable person are recorded before the images go live.",
+          tool: "manual",
+          viewport: "any",
+          expect: "A written record exists for each. Anything without one does not ship, however good the photograph is.",
+        },
+      ],
+      mobileFirst: [
+        "Every replacement frame is judged at 375×812 at its real rendered crop before it is accepted",
+        "Mobile LCP re-measured after the swap and not regressed",
+      ],
+      pass: [
+        "Doctor image opens and closes the page",
+        "At least one patient-facing image in the sequence",
+        "No replaced-or-placeholder image remains in the hero sequence",
+        "Consent and usage rights recorded for every identifiable person",
+        "Mobile LCP not regressed",
+      ],
+      gotchas: [
+        "A phone photo that looks fine full-screen can crop badly into a 4:5 frame at 375px — check the real rendered crop, not the original.",
+        "Patient-facing stock photography would satisfy the letter of \"patient-facing imagery\" and defeat its purpose. The review asked for real people; item 60 is the same argument.",
       ],
     },
   },
