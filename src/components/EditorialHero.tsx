@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { editorialHero, reviews } from "@/lib/content";
+import { contact, editorialHero, reviews } from "@/lib/content";
 import { HeroCarousel } from "./HeroCarousel";
-import { GoogleGIcon, StarIcon } from "./icons";
+import { GoogleGIcon, PhoneIcon, StarIcon } from "./icons";
 
 /**
  * EditorialHero — homepage screen 1, built to
@@ -11,7 +11,11 @@ import { GoogleGIcon, StarIcon } from "./icons";
  * picks between them.
  *
  * The spec's structural rules, and where each is enforced below:
- *   - One headline, one support line, one action, one photograph.
+ *   - One headline, one support line, one PRIMARY action, one
+ *     photograph. A secondary tap-to-call sits beside Book as of
+ *     2026-09-03 (Akash's call) — outlined rather than filled, so the
+ *     single-focal-point intent of the rule survives the second control.
+ *     See the comment on the button row.
  *   - Text NEVER sits on the photograph. This is the sharpest break
  *     from Hero.tsx, whose whole composition is copy over a scrim.
  *   - Separation comes from whitespace, not borders or cards.
@@ -85,22 +89,52 @@ export function EditorialHero() {
             {editorialHero.support}
           </p>
 
-          <Link
-            href="/contact"
-            /* Deliberately not `.tap-target`: that helper sets a flat
-               min-height:44px from unlayered CSS, which outranks a
-               Tailwind min-h utility and would shrink this button below
-               its intended height. 52px clears the 44px accessibility
-               floor on its own, so the helper has nothing to add here.
-               52px is a deliberate middle: the reference's own button
-               maps to ~35px, which is unusable as a touch target, and
-               the spec's 56–60px is what made the first pass look
-               bottom-heavy. Width lands at ~44% of the content column,
-               matching the reference. */
-            className="mt-6 inline-flex min-h-[52px] items-center justify-center rounded-lg bg-terracotta-dark px-8 font-editorial text-sm font-medium uppercase tracking-[0.1em] text-warm-ivory transition-[background-color,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-espresso active:translate-y-px md:mt-8 md:min-h-[58px] md:px-10 md:text-base"
-          >
-            {editorialHero.cta}
-          </Link>
+          {/* Two actions, not one — Akash's call: calling is the second
+              real path into the practice and was only reachable from the
+              nav (and only after scroll). The spec's "one action" rule
+              (Section 7) is about one *primary* action, and that is
+              preserved by hierarchy rather than by count: Book keeps the
+              filled terracotta-dark surface, Call is a hairline outline
+              on the page's own ground, so the eye still lands on one
+              button. Same 52/58px height and radius, so they read as a
+              pair rather than two unrelated controls. */}
+          <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-8">
+            <Link
+              href="/contact"
+              /* Deliberately not `.tap-target`: that helper sets a flat
+                 min-height:44px from unlayered CSS, which outranks a
+                 Tailwind min-h utility and would shrink this button below
+                 its intended height. 52px clears the 44px accessibility
+                 floor on its own, so the helper has nothing to add here.
+                 52px is a deliberate middle: the reference's own button
+                 maps to ~35px, which is unusable as a touch target, and
+                 the spec's 56–60px is what made the first pass look
+                 bottom-heavy. px-8 (not a width) so Book and Call size to
+                 their own labels and the row still fits a 320px screen. */
+              className="inline-flex min-h-[52px] items-center justify-center rounded-lg bg-terracotta-dark px-8 font-editorial text-sm font-medium uppercase tracking-[0.1em] text-warm-ivory transition-[background-color,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-espresso active:translate-y-px md:min-h-[58px] md:px-10 md:text-base"
+            >
+              {editorialHero.cta}
+            </Link>
+
+            {/* The visible label changes with the room available, not the
+                destination: "Call" on mobile, where the full number plus
+                Book would crowd a 320px screen, and the real number from
+                md up where it also does trust work. `aria-label` carries
+                the number in both cases, and it leads with "Call" so
+                voice control still matches the visible word.
+                Digits are what the tracking-[0.1em] uppercase treatment
+                is applied to, which is why this stays `not-italic`
+                tabular-looking and needs no separate type ramp. */}
+            <a
+              href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}
+              aria-label={`Call ${contact.phone}`}
+              className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-lg border border-espresso/25 px-6 font-editorial text-sm font-medium uppercase tracking-[0.1em] text-espresso transition-[background-color,border-color,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-espresso/40 hover:bg-espresso/5 active:translate-y-px md:min-h-[58px] md:px-7 md:text-base"
+            >
+              <PhoneIcon className="h-4 w-4 shrink-0" />
+              <span className="md:hidden">Call</span>
+              <span className="hidden md:inline">{contact.phone}</span>
+            </a>
+          </div>
 
           {/* Reviews — see the deviation note in the file header. Akash
               asked for the bare count in parentheses rather than a

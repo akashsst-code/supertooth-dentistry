@@ -11,10 +11,10 @@ import { Footer } from "@/components/Footer";
 
 /**
  * Homepage — single-page-led funnel. Current order: Trust (differentiators
- * -> office-photo carousel, moved above Dr. Archana's bio per Akash's
- * later call -> bio) -> Testimonials (right after the office blurb) ->
- * Services -> Location/map -> New-patient offers (kept last on purpose)
- * -> Booking -> Footer.
+ * -> Dr. Archana's bio, moved back above the office-photo carousel per
+ * Akash's call 2026-09-03 -> office carousel) -> Testimonials (right
+ * after the office blurb) -> Services -> Location/map -> New-patient
+ * offers (kept last on purpose) -> Booking -> Footer.
  *
  * FAQ (AEO/SEO requirement, docs/supertooth-webflow-build-spec.md Section
  * 7) sits right before Booking — resolves last-minute objections
