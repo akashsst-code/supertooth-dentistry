@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AlignerIcon, CrownIcon, MedicalCrossIcon, SparkleIcon, SyringeIcon, ToothIcon } from "./icons";
 import { Placeholder } from "./Placeholder";
 import { services, servicesEmergencyShortcut } from "@/lib/content";
-import { Accent, Body, Eyebrow, SectionHeading, shellWide } from "./editorial";
+import { Accent, Body, Eyebrow, SectionHeading, SectionLink, shellWide } from "./editorial";
 
 // One per category, in the order content.ts declares them: a checkup, a
 // repair, a cosmetic change, straightening, jaw pain. The last one also
@@ -161,7 +161,15 @@ export function ServicesSection({
                         ~32px of dead space between every line. Spacing is
                         controlled with mt-* only. Same trap EditorialHero
                         documents. */}
-                    <p className="mt-1 mb-0! text-[13px] font-medium text-espresso/45">{s.clinical}</p>
+                    {/* Was text-[13px] text-espresso/45, measured at
+                        2.47:1 against the card's Warm Ivory ground —
+                        a WCAG 1.4.3 failure at any size, and 13px also
+                        undercut this site's own 14px fine-print floor
+                        (globals.css, --text-xs). text-xs is that token;
+                        /70 is the lightest step that clears 4.5:1 here
+                        (4.77:1). Still visibly the quietest line in the
+                        card, which was the point of the treatment. */}
+                    <p className="mt-1 mb-0! text-xs font-medium text-espresso/70">{s.clinical}</p>
                     <p className="mt-3 mb-0! text-[15px] leading-relaxed text-espresso/70">
                       {s.real ? s.detail : <Placeholder>{s.detail}</Placeholder>}
                     </p>
@@ -169,7 +177,11 @@ export function ServicesSection({
                         bulleted list: at 375px a chip row for four items
                         is three rows of boxes, and this is a scanning
                         aid under a paragraph, not a navigation surface. */}
-                    <p className="mt-3 mb-0! text-[13px] leading-relaxed text-espresso/55">
+                    {/* Same fix as the clinical subtitle above — was
+                        3.18:1 at 13px. This line is the one carrying
+                        the actual sub-service names, so it was the
+                        worst place on the page to be sub-threshold. */}
+                    <p className="mt-3 mb-0! text-xs leading-relaxed text-espresso/70">
                       {s.includes.join(" · ")}
                     </p>
                     {/* Item 66: a scheduling path from the thing that
@@ -195,6 +207,18 @@ export function ServicesSection({
           })}
         </div>
 
+        {/* Homepage only. On /services this component IS the page, so a
+            link to it would point at itself; the homepage version is a
+            teaser of five categories whose detail page was, until now,
+            reachable only from the hamburger. Sits above the emergency
+            shortcut so the urgent path stays the last thing in the
+            section. */}
+        {editorial && (
+          <div className={`mt-8 ${editorial ? "md:max-w-3xl" : ""}`}>
+            <SectionLink href="/services">See all services</SectionLink>
+          </div>
+        )}
+
         {/* The emergency shortcut, deliberately BELOW the categories and
             not among them: /emergency is the single source for urgent
             guidance (item 7), and a fifth card would duplicate
@@ -202,7 +226,11 @@ export function ServicesSection({
             Blueprint v2's services-overview spec asks for exactly this —
             a shortcut on this surface, not a category. */}
         <p
-          className={`mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] text-espresso/70 ${editorial ? "md:max-w-3xl" : ""}`}
+          /* /80 not /70: this paragraph sits on the Sand ground, where
+             espresso/70 measures 4.42:1 — under AA by a hair, where the
+             same value on Warm Ivory passes at 4.77:1. The only line on
+             the page that fails purely because of what's behind it. */
+          className={`mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] text-espresso/80 ${editorial ? "md:max-w-3xl" : ""}`}
         >
           <MedicalCrossIcon className="h-4 w-4 shrink-0 text-terracotta-dark" />
           {servicesEmergencyShortcut.text}{" "}

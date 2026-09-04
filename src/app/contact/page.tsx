@@ -72,6 +72,37 @@ export default function ContactPage() {
             <AppointmentForm />
 
             <p className="mt-6 text-center text-xs text-espresso/70">{contact.address}</p>
+            {/* This is the one page on the site that asks for a name,
+                email, phone and a free-text description of a dental
+                problem, and it was the only page with no route to the
+                privacy policy — the footer is deliberately omitted here
+                (see this file's header comment), which took the
+                site-wide link with it. A single line, below the form
+                rather than above it, so it doesn't sit between someone
+                and the submit button. */}
+            <p className="mt-2 text-center text-xs text-espresso/70">
+              We use what you send only to contact you about care.{" "}
+              <Link
+                href="/privacy"
+                className="font-medium text-terracotta-dark underline underline-offset-4 hover:text-terracotta"
+              >
+                Privacy policy
+              </Link>{" "}
+              ·{" "}
+              {/* This page renders no Footer (see the header comment),
+                  which also meant it was the one route with no path to
+                  the display settings — the accessibility entry point
+                  the footer carries everywhere else. /accessibility
+                  hosts the same controls inline, so linking it here
+                  restores that on the one page a reader is most likely
+                  to be struggling with a form. */}
+              <Link
+                href="/accessibility"
+                className="font-medium text-terracotta-dark underline underline-offset-4 hover:text-terracotta"
+              >
+                Accessibility
+              </Link>
+            </p>
           </div>
         </div>
       </main>

@@ -147,9 +147,27 @@ body {
   line-height: 1.5;
 }
 
-/* WCAG 2.2 SC 1.4.12: paragraph spacing >= 2x font size */
+/* Paragraph rhythm.
+ *
+ * This was `margin-bottom: 2em`, cited as WCAG 2.2 SC 1.4.12. That reads
+ * the criterion backwards: 1.4.12 requires a page to stay readable and
+ * unclipped when a USER applies 2em paragraph spacing (via a user
+ * stylesheet or a reading tool) — it does not ask the page to ship at
+ * 2em. Shipping it cost roughly 880px of pure margin on the homepage
+ * alone (29 paragraphs), about a full phone screen of nothing.
+ *
+ * The tell that it was wrong is in the codebase: 30 patient-facing
+ * `mb-0!` / `!mb-*` overrides existed for no reason other than to
+ * cancel this rule out, and several component comments name it as the
+ * single largest cause of dead space they had to fight.
+ *
+ * 1em is a normal, generous paragraph rhythm. Conformance with 1.4.12
+ * is unaffected and was verified by measurement, not assumption: with
+ * 2em spacing, 1.5 line-height, 0.12em letter-spacing and 0.16em
+ * word-spacing all forced on via a test stylesheet, no text on any
+ * route clips or overlaps. */
 p {
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 
 /* 44x44px minimum touch target, per locked accessibility requirement */
@@ -189,4 +207,73 @@ p {
   .animate-slow-zoom {
     animation: none;
   }
+}
+
+/* ============================================================
+ * Display preferences — the site's own accessibility controls
+ * ============================================================
+ * Driven by src/lib/display-preferences.ts, which writes
+ * `--user-text-scale` and the `data-contrast` / `data-motion`
+ * attributes onto <html> before first paint. Full reasoning for why
+ * this is a first-party preference panel and NOT an accessibility
+ * overlay widget lives in that file's header comment.
+ *
+ * Text scale. Every --text-* token above is authored in `rem`, so
+ * scaling the root font size scales the entire locked type scale in
+ * proportion — headline-to-body relationships hold, and no individual
+ * size has to be overridden. Tailwind's rem-based spacing scales with
+ * it, which is what keeps a 130% page looking composed rather than
+ * like large text crammed into small boxes. This is additive to
+ * browser zoom, never a replacement for it: pinch-zoom and the
+ * browser's own text-size setting keep working on top of this.
+ */
+html {
+  font-size: calc(100% * var(--user-text-scale, 1));
+}
+
+/* High contrast. The design leans on opacity variants of the locked
+ * palette (text-espresso/70 and friends) for muted secondary text.
+ * Several of those sit between 2.5:1 and 4.5:1 against Warm Ivory or
+ * Sand, which is fine as a deliberate visual hierarchy but not enough
+ * for everyone. This drops every such variant back to the full-strength
+ * token — 11.7:1 espresso on warm-ivory — without touching the locked
+ * base color values themselves.
+ *
+ * The attribute-substring selectors match the literal Tailwind class
+ * (`text-espresso/70` appears verbatim in the class attribute), which
+ * is what lets one rule cover every opacity step without enumerating
+ * them. `!important` is needed because Tailwind's own color utility is
+ * equally specific and wins on source order otherwise. */
+[data-contrast="high"] [class*="text-espresso/"] {
+  color: var(--color-espresso) !important;
+}
+[data-contrast="high"] [class*="text-warm-ivory/"] {
+  color: var(--color-warm-ivory) !important;
+}
+[data-contrast="high"] [class*="text-terracotta/"] {
+  color: var(--color-terracotta-dark) !important;
+}
+/* Hairline borders and dividers are decorative at default contrast and
+ * near-invisible to some readers; give them a real edge here. */
+[data-contrast="high"] [class*="border-espresso/"],
+[data-contrast="high"] [class*="border-sand"] {
+  border-color: var(--color-espresso) !important;
+}
+/* A thicker focus ring for the same reason — the halo pattern above
+ * stays, this just makes it unmissable. */
+[data-contrast="high"] :focus-visible {
+  outline-width: 3px;
+}
+
+/* Reduced motion, chosen on the site rather than in the OS. The
+ * rAF-driven carousels also read this preference in JS (they can't be
+ * stopped by CSS alone) — see useReducedMotion in
+ * src/components/useDisplayPreferences.ts. */
+[data-motion="reduced"] *,
+[data-motion="reduced"] *::before,
+[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
 }

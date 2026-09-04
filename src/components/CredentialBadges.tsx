@@ -159,7 +159,7 @@ export function CredentialBadges({
             className={`mb-0! uppercase text-terracotta-dark ${
               editorial
                 ? "font-editorial text-xs font-medium tracking-[0.16em]"
-                : "font-display text-[11px] font-semibold tracking-[0.14em]"
+                : "font-display text-xs font-semibold tracking-[0.14em]"
             }`}
           >
             {group}
@@ -220,7 +220,7 @@ function QuadrantCredentials({ editorial }: { editorial: boolean }) {
 
   const label = editorial
     ? "font-editorial text-xs font-medium tracking-[0.16em]"
-    : "font-display text-[11px] font-semibold tracking-[0.14em]";
+    : "font-display text-xs font-semibold tracking-[0.14em]";
 
   return (
     <div className="grid grid-cols-1 gap-y-6 md:grid-cols-2 md:gap-x-10 md:gap-y-0 lg:gap-x-14">

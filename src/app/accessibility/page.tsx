@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { DisplaySettings } from "@/components/DisplaySettings";
 import { contact, accessibilityStatement } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -68,6 +69,23 @@ export default function AccessibilityPage() {
               the World Wide Web Consortium (W3C). We have not yet completed a full audit against this standard, so
               we don&apos;t claim full conformance today.
             </p>
+          </div>
+
+          {/* Display settings, inline and always visible — the primary
+              home for the panel the footer opens as a dialog. Placed
+              above "Known limitations" on purpose: someone who lands
+              here because the site is hard to read should reach a
+              control before they reach a list of things we haven't
+              fixed yet. The same <DisplaySettings> component the footer
+              renders, so the two can never drift apart. */}
+          <div className="rounded-2xl border border-sand bg-sand/30 p-6 mb-8">
+            <h2 className="font-display text-lg font-semibold text-espresso mb-2">Display settings</h2>
+            <p className="text-espresso/80 mb-6">
+              Adjust the text size, contrast and motion on this site. These are our own controls —
+              they change the real page, not a layer on top of it — and they never interfere with
+              your browser&apos;s or phone&apos;s own accessibility settings.
+            </p>
+            <DisplaySettings variant="inline" />
           </div>
 
           <div>
