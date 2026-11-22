@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { AppointmentForm } from "@/components/AppointmentForm";
-import { contact } from "@/lib/content";
+import { contact, mapDirectionsUrl } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Request an Appointment | Super Tooth Dentistry",
@@ -71,7 +71,25 @@ export default function ContactPage() {
 
             <AppointmentForm />
 
-            <p className="mt-6 text-center text-xs text-espresso/70">{contact.address}</p>
+            {/* GTH-17 wants a maps deep link wherever an address is shown,
+                and this was the one place showing one as dead text. It is
+                also the page a patient reads right before driving here, so
+                plain text meant retyping the address into a maps app by
+                hand. `mapDirectionsUrl` is the same `?api=1&query=` link
+                item 59 added for the two map embeds, which hands off to
+                whichever maps app the phone actually has. `tap-expand`
+                because the line is 12px type with clear space around it —
+                visible size unchanged, hit area at the locked 44px. */}
+            <p className="mt-6 text-center text-xs text-espresso/70">
+              <a
+                href={mapDirectionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tap-expand inline-block underline underline-offset-2 hover:text-terracotta-dark transition-colors"
+              >
+                {contact.address}
+              </a>
+            </p>
             {/* This is the one page on the site that asks for a name,
                 email, phone and a free-text description of a dental
                 problem, and it was the only page with no route to the
