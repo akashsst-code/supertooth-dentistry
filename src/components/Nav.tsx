@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Logo } from "./Logo";
+import { useDialogBehavior } from "./useDialogBehavior";
 import { contact, hours, nav } from "@/lib/content";
 
 /**
@@ -38,6 +39,15 @@ import { contact, hours, nav } from "@/lib/content";
 export function Nav() {
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Moves focus into the sheet, keeps Tab inside it, and freezes the
+  // page behind it. Measured before this existed: opening the menu left
+  // focus on <body>, five links inside <main> stayed tabbable behind an
+  // opaque overlay, and the page scrolled underneath. Escape-to-close
+  // and the focus return in closeMenu() below already worked and are
+  // untouched.
+  useDialogBehavior(open, menuRef);
 
   // Backlog item 30 — Escape closes the mobile menu, and focus returns
   // to its trigger either way (Escape or the header button toggling it
@@ -68,7 +78,16 @@ export function Nav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-espresso hover:text-terracotta transition-colors"
+                /* These are the ONLY nav links a phone held sideways
+                   gets: the hamburger is `md:hidden` and an 844x390
+                   landscape viewport is past the md breakpoint, so the
+                   desktop row is what renders there. Measured 40-166px
+                   wide by 20px tall — under the locked minimum on a
+                   surface that is genuinely touched, which is GTH-21's
+                   point. `tap-expand` lifts the hit area to 44px without
+                   changing the row's look on a real desktop (the 24px
+                   `gap-6` leaves room, so no two boxes meet). */
+                className="tap-expand text-sm font-medium text-espresso hover:text-terracotta transition-colors"
               >
                 {item.label}
               </Link>
@@ -156,7 +175,13 @@ export function Nav() {
           collapsed this menu's fixed inset-0 box to the header's own
           65px height instead of the viewport. */}
       {open && (
-        <div className="md:hidden fixed inset-0 top-16 bg-warm-ivory z-40 flex flex-col overflow-y-auto">
+        <div
+          ref={menuRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site menu"
+          className="md:hidden fixed inset-0 top-16 bg-warm-ivory z-40 flex flex-col overflow-y-auto"
+        >
           <nav className="flex flex-col px-6 py-8 gap-6" aria-label="Mobile primary">
             {nav.map((item) => (
               <Link

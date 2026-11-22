@@ -30,8 +30,27 @@ const EMERGENCY_QUESTION = "What should I do if I have a dental emergency?";
  * accordion and the structured data can never drift apart — one source
  * of truth, per docs/supertooth-build-principles.md Section 2.
  */
+/**
+ * How many questions render before "Show all". Thirteen collapsed rows
+ * measured 1,633px on a 375px screen — two full phone screens, in the
+ * section immediately before the booking ask, which is the worst place
+ * on the page to spend them.
+ *
+ * Six is the cut, and nothing is lost to make it: the FAQPage JSON-LD
+ * below is built from the whole `faqs` array regardless of what is
+ * rendered, so all thirteen Q&A pairs still reach search engines
+ * exactly as before. The remaining seven are one tap away in place —
+ * no navigation, no second page, and the button says how many there
+ * are rather than a vague "more".
+ */
+const INITIAL_QUESTION_COUNT = 6;
+
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [showAll, setShowAll] = useState(false);
+
+  const visibleFaqs = showAll ? faqs : faqs.slice(0, INITIAL_QUESTION_COUNT);
+  const hiddenCount = faqs.length - INITIAL_QUESTION_COUNT;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -68,8 +87,8 @@ export function FAQSection() {
 
       {/* Reading measure, left-aligned against the page's spine rather
           than centred — see the shellWide comment in editorial.tsx. */}
-      <div className="flex flex-col gap-3 md:max-w-3xl">
-        {faqs.map((faq, i) => {
+      <div id="faq-list" className="flex flex-col gap-3 md:max-w-3xl">
+        {visibleFaqs.map((faq, i) => {
           const open = openIndex === i;
           const isEmergency = faq.question === EMERGENCY_QUESTION;
           return (
@@ -85,7 +104,7 @@ export function FAQSection() {
                 aria-expanded={open}
                 aria-controls={`faq-panel-${i}`}
                 id={`faq-trigger-${i}`}
-                className="tap-target w-full flex items-start gap-4 p-5 text-left"
+                className="tap-target w-full flex items-start gap-4 px-5 py-4 text-left"
               >
                 <span className="flex-1 font-editorial text-lg font-medium text-espresso leading-snug">
                   {faq.question}
@@ -124,6 +143,25 @@ export function FAQSection() {
           );
         })}
       </div>
+
+      {/* Expands in place rather than navigating. `aria-expanded` +
+          `aria-controls` point at the same list the button grows, so a
+          screen reader is told this is a disclosure and where its
+          content lands. Once expanded the button is gone rather than
+          becoming "Show fewer" — collapsing a list someone deliberately
+          opened, in a section they were reading, is not a thing anyone
+          asked for. */}
+      {!showAll && hiddenCount > 0 && (
+        <button
+          type="button"
+          onClick={() => setShowAll(true)}
+          aria-expanded={false}
+          aria-controls="faq-list"
+          className="tap-target mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-2xl border border-espresso/25 px-5 py-3 font-editorial text-base font-medium text-espresso transition-colors hover:border-terracotta-dark hover:text-terracotta-dark md:w-auto md:max-w-3xl"
+        >
+          Show {hiddenCount} more {hiddenCount === 1 ? "question" : "questions"}
+        </button>
+      )}
     </div>
     </section>
   );

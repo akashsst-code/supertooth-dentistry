@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { heroPhotos } from "@/lib/content";
+import { useReducedMotion } from "./useDisplayPreferences";
 
 const SLIDE_DURATION_MS = 4500;
 const CROSSFADE_MS = 1200;
@@ -58,14 +59,15 @@ export function HeroCarousel({
   surfaceClass?: string;
 } = {}) {
   const [index, setIndex] = useState(0);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Was a one-shot matchMedia read in an effect. useReducedMotion also
+  // honours the site's own Motion setting (footer > Display settings)
+  // and, unlike the old read, listens for the OS media query changing
+  // after mount — someone toggling reduced motion in their system
+  // settings with this page open now has it take effect.
+  const reducedMotion = useReducedMotion();
   const playing = !reducedMotion;
-
-  useEffect(() => {
-    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  }, []);
 
   useEffect(() => {
     if (!playing) return;

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DisplaySettings } from "./DisplaySettings";
 import { practice } from "@/lib/content";
 
 /**
@@ -9,29 +10,46 @@ function LegalLinks({ merged }: { merged: boolean }) {
   const link = merged
     ? "text-espresso/80 hover:text-terracotta-dark"
     : "text-espresso/70 hover:text-terracotta-dark";
+  const dot = (
+    <span className="text-espresso/20" aria-hidden="true">
+      ·
+    </span>
+  );
   return (
-    <nav
-      aria-label="Legal"
-      className={`flex flex-wrap items-center gap-x-1 gap-y-1 ${
-        merged ? "-ml-2" : "justify-center"
-      }`}
+    /* The row is a flex line containing a <nav> of destinations plus one
+       control. Display settings is deliberately NOT inside that <nav>:
+       it opens a dialog on this page, it doesn't navigate anywhere, and
+       a button announced inside a navigation landmark reads as a broken
+       link to a screen reader. Same visual row, correct semantics. */
+    <div
+      className={`flex flex-wrap items-center gap-x-1 gap-y-1 ${merged ? "-ml-2" : "justify-center"}`}
     >
-      <Link
-        href="/privacy"
-        className={`tap-target inline-flex items-center px-2 text-xs transition-colors ${link}`}
-      >
-        Privacy
-      </Link>
-      <span className="text-espresso/20" aria-hidden="true">
-        ·
-      </span>
-      <Link
-        href="/accessibility"
-        className={`tap-target inline-flex items-center px-2 text-xs transition-colors ${link}`}
-      >
-        Accessibility
-      </Link>
-    </nav>
+      <nav aria-label="Legal" className="flex flex-wrap items-center gap-x-1 gap-y-1">
+        <Link
+          href="/privacy"
+          className={`tap-target inline-flex items-center px-2 text-xs transition-colors ${link}`}
+        >
+          Privacy
+        </Link>
+        {dot}
+        <Link
+          href="/accessibility"
+          className={`tap-target inline-flex items-center px-2 text-xs transition-colors ${link}`}
+        >
+          Accessibility
+        </Link>
+      </nav>
+      {dot}
+      {/* The site's accessibility entry point lives here, in the footer
+          of every page, rather than as a floating corner widget. That
+          placement is the whole point: a pinned button is the failure
+          mode overlay tools are most criticised for, because at high
+          zoom it covers the content the reader magnified in order to
+          read. In the footer it scrolls like everything else, and
+          /accessibility carries the same controls inline for anyone who
+          gets there first. */}
+      <DisplaySettings />
+    </div>
   );
 }
 

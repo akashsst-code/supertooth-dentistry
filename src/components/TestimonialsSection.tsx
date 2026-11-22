@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { GoogleGIcon, PauseIcon, PlayIcon, StarIcon } from "./icons";
 import { reviews, testimonials } from "@/lib/content";
+import { useReducedMotion } from "./useDisplayPreferences";
 
 /**
  * Longest quote first, then descending (Akash). Two reasons, one of
@@ -62,12 +63,11 @@ export function TestimonialsSection() {
   const lastFrameTimeRef = useRef<number | null>(null);
 
   const [userPaused, setUserPaused] = useState(false);
-  // Lazy initializer (not an effect+setState) — reducedMotion never
-  // drives JSX output, only whether the rAF loop below starts, so there's
-  // no SSR/client render mismatch to worry about here.
-  const [reducedMotion] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
+  // Shared hook now, so this strip also stops for the site's own Motion
+  // setting (footer > Display settings) and not just the OS one. Same
+  // as before, reducedMotion drives only whether the rAF loop starts —
+  // never JSX output — so there is still no hydration concern.
+  const reducedMotion = useReducedMotion();
 
   const playing = !userPaused && !reducedMotion;
 

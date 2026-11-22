@@ -1,3 +1,4 @@
+import Link from "next/link";
 /**
  * Shared type primitives for the editorial homepage variation
  * (docs/supertooth-mobile-design-spec.md). Extracted from
@@ -166,5 +167,42 @@ export function EditorialSection({
         {children}
       </div>
     </section>
+  );
+}
+
+/**
+ * A quiet inline link out of a homepage section into the page that
+ * carries that subject in full.
+ *
+ * Added 2026-09-03 to close a real gap: before this, the homepage
+ * linked to none of /services, /about, /offers or /insurance-new-patients
+ * outside the hamburger — every service card pointed at /contact, so a
+ * reader who wanted to read more rather than book had nowhere to go, and
+ * those four pages received no internal links at all.
+ *
+ * Deliberately a text action, not a button. The page has exactly one
+ * primary ask (book) and one secondary (call); a row of filled pills
+ * pointing at reading material would compete with both. Same treatment
+ * as the Schedule action already used inside the service cards —
+ * terracotta-dark, underlined, min-h-44px with a -1px/px-1 pull so the
+ * tap target meets the floor without visually indenting the label.
+ */
+export function SectionLink({
+  href,
+  children,
+  className = "",
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`-ml-1 inline-flex min-h-[44px] w-fit items-center gap-1.5 px-1 font-editorial text-base font-medium text-terracotta-dark underline decoration-terracotta/40 underline-offset-4 transition-colors hover:text-espresso hover:decoration-espresso/40 ${className}`}
+    >
+      {children}
+      <span aria-hidden="true">&rarr;</span>
+    </Link>
   );
 }
