@@ -58,7 +58,7 @@ export default function InsuranceNewPatientsPage() {
             <nav aria-label="Breadcrumb">
               <ol className="flex items-center gap-1.5 text-sm text-espresso/70">
                 <li>
-                  <Link href="/" className="hover:text-terracotta transition-colors">
+                  <Link href="/" className="tap-expand hover:text-terracotta transition-colors">
                     Home
                   </Link>
                 </li>

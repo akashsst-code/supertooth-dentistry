@@ -56,7 +56,23 @@ import { GoogleGIcon, PhoneIcon, StarIcon } from "./icons";
 export function EditorialHero() {
   return (
     <section className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-6 pb-5 pt-20 md:max-w-[1320px] md:flex-none md:px-10 md:pb-24 md:pt-32 lg:px-16">
-      <div className="md:grid md:flex-none md:grid-cols-[minmax(320px,0.85fr)_minmax(440px,1.15fr)] md:items-center md:gap-[clamp(4rem,8vw,8.75rem)] flex flex-1 flex-col">
+      {/* The two-column track minimums (320px + 440px + a clamped gap that
+          is ≥64px) add up to ~827px, but the md tier starts at 768px with
+          only 688px of content box inside `md:px-10`. Between 768px and
+          ~930px the grid therefore could not fit and pushed the photo
+          column past the viewport — a real horizontal scroll, measured at
+          844×390 (landscape phone): scrollX reached 24px at 100% text and
+          124px at 200%. That is WCAG 1.3.4 (orientation) and 1.4.10
+          (reflow), both on the locked compliance checklist.
+
+          Fixed by letting the tracks shrink at the md tier and restoring
+          the designed minimums at lg, where they genuinely fit (1024px −
+          `lg:px-16` = 896px of content box against ~842px of demand). So
+          ≥1024px renders pixel-identically to before; only the 768–1023px
+          band, which no desktop design targets and which in practice is a
+          phone held sideways, changes — and there it keeps the same two
+          columns, just proportional rather than floored. */}
+      <div className="md:grid md:flex-none md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:grid-cols-[minmax(320px,0.85fr)_minmax(440px,1.15fr)] md:items-center md:gap-[clamp(4rem,8vw,8.75rem)] flex flex-1 flex-col">
         <div className="shrink-0">
           {/* Sized from the reference, not from the spec's numeric scale.
               The spec says clamp(52px, 14vw, 68px), which rendered

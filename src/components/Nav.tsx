@@ -78,7 +78,16 @@ export function Nav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-espresso hover:text-terracotta transition-colors"
+                /* These are the ONLY nav links a phone held sideways
+                   gets: the hamburger is `md:hidden` and an 844x390
+                   landscape viewport is past the md breakpoint, so the
+                   desktop row is what renders there. Measured 40-166px
+                   wide by 20px tall — under the locked minimum on a
+                   surface that is genuinely touched, which is GTH-21's
+                   point. `tap-expand` lifts the hit area to 44px without
+                   changing the row's look on a real desktop (the 24px
+                   `gap-6` leaves room, so no two boxes meet). */
+                className="tap-expand text-sm font-medium text-espresso hover:text-terracotta transition-colors"
               >
                 {item.label}
               </Link>

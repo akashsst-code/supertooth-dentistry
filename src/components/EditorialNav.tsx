@@ -92,7 +92,12 @@ export function EditorialNav() {
                the widest single item in this row and 0.28em across ten
                letters is 21px of pure letter-spacing. Above 360px the
                spec's 0.28em is untouched. */
-            className="font-editorial text-[15px] font-normal uppercase leading-none tracking-[0.16em] min-[360px]:tracking-[0.28em] text-espresso"
+            /* `tap-expand`, not `tap-target`: the wordmark's own box is
+               15px tall (leading-none on 15px type), so the locked 44px
+               minimum has to come from hit area rather than from height —
+               growing the box would drop the wordmark off its optical
+               baseline against the controls opposite it. */
+            className="tap-expand font-editorial text-[15px] font-normal uppercase leading-none tracking-[0.16em] min-[360px]:tracking-[0.28em] text-espresso"
             aria-label={`${practice.name}, home`}
           >
             Supertooth
@@ -130,7 +135,12 @@ export function EditorialNav() {
               </a>
               <Link
                 href="/contact"
-                className="inline-flex min-h-[38px] shrink-0 items-center justify-center rounded-lg bg-terracotta-dark px-3 min-[360px]:px-4 font-editorial text-xs font-medium uppercase tracking-[0.1em] text-warm-ivory"
+                /* The pill stays visually 38px tall — it is sized to sit
+                   inside the editorial header without dominating the
+                   wordmark — so the missing 6px of the locked 44px
+                   minimum come from `tap-expand`'s hit area instead.
+                   Measured at 320px: 67x38 visible, 67x44 tappable. */
+                className="tap-expand inline-flex min-h-[38px] shrink-0 items-center justify-center rounded-lg bg-terracotta-dark px-3 min-[360px]:px-4 font-editorial text-xs font-medium uppercase tracking-[0.1em] text-warm-ivory"
               >
                 Book
               </Link>

@@ -176,6 +176,40 @@ p {
   min-height: 44px;
 }
 
+/* Same locked 44x44 minimum, for controls whose VISIBLE size has to stay
+ * small — a wordmark, a breadcrumb crumb, a text nav link. `.tap-target`
+ * works by growing the box, which is wrong for these: item 27 already
+ * tried that on the hero trust strip and Akash's review feedback was
+ * that the forced 44px min-height pushed the strip visibly apart.
+ *
+ * So this grows only the HIT area, via a centred absolutely-positioned
+ * ::after that is at least 44x44 and never smaller than the control
+ * itself. The pseudo-element inherits the link's own stacking context
+ * and carries no paint, so nothing moves and nothing is drawn — the
+ * same technique already used inline in HeroAddressMap's address button
+ * (`after:absolute after:-inset-3.5`), lifted into a named utility so
+ * the eight breadcrumbs and the nav links don't each restate it.
+ *
+ * Only for controls with clear space around them. Do NOT use it on a
+ * link inside a sentence: the expanded box would reach into the lines
+ * above and below and start swallowing their taps. Those stay as they
+ * are (WCAG 2.5.8 exempts inline links for exactly this reason). */
+.tap-expand {
+  position: relative;
+}
+
+.tap-expand::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  min-width: 44px;
+  height: 100%;
+  min-height: 44px;
+}
+
 /* Backlog item 30 — visible focus ring, checked against the locked
  * palette rather than left to browser default. Section backgrounds on
  * this site swing from light (warm-ivory/sand) to dark (espresso, in

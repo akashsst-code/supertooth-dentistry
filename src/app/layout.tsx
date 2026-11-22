@@ -25,7 +25,7 @@ function expandDayRange(range: string): string[] {
 function to24Hour(time: string): string {
   const match = time.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
   if (!match) return time;
-  let [, hourStr, minute, meridiem] = match;
+  const [, hourStr, minute, meridiem] = match;
   let hour = parseInt(hourStr, 10) % 12;
   if (meridiem.toUpperCase() === "PM") hour += 12;
   return `${String(hour).padStart(2, "0")}:${minute}`;
